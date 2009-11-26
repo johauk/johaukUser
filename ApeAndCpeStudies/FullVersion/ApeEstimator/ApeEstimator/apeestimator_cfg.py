@@ -88,7 +88,7 @@ process.ApeEstimatorCosmics1 = ApeEstimatorCosmics
 
 ## Output File Configuration
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string('/afs/cern.ch/user/h/hauk/cms/CMSSW_3_3_1/src/ApeEstimator/ApeEstimator/hists/test.root'),
+    fileName = cms.string('$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/test.root'),
     closeFileFast = cms.untracked.bool(True)
 )
 

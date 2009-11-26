@@ -40,7 +40,7 @@ process.load("Alignment.TrackerTreeGenerator.trackertreegenerator_cfi")
 
 ## Output File Configuration
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string('/afs/cern.ch/user/h/hauk/cms/CMSSW_3_3_1/src/Alignment/TrackerTreeGenerator/hists/TrackerTree.root')
+    fileName = cms.string('$CMSSW_BASE/src/Alignment/TrackerTreeGenerator/hists/TrackerTree.root')
 )
 
 
