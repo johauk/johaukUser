@@ -50,7 +50,9 @@ ApeEstimator = cms.EDAnalyzer('ApeEstimator',
     vErrHists = cms.vuint32(),
     
     #File containing TrackerTree with ideal Geometry
-    TrackerTreeFile = cms.string("/afs/cern.ch/user/h/hauk/cms/CMSSW_3_3_1/src/Alignment/TrackerTreeGenerator/hists/TrackerTree.root"),
+#    TrackerTreeFile = cms.string('$CMSSW_BASE/src/Alignment/TrackerTreeGenerator/hists/TrackerTree.root'),
+#    TrackerTreeFile = cms.string('$CMSSW_BASE/src/Alignment/TrackerTreeGenerator/hists/TrackerTree.root'),
+    TrackerTreeFile = cms.string('/afs/cern.ch/user/h/hauk/cms/testing/CMSSW_3_3_1/src/Alignment/TrackerTreeGenerator/hists/TrackerTree.root'),
     
     #Sectors for same APE
     Sectors = cms.VPSet()
