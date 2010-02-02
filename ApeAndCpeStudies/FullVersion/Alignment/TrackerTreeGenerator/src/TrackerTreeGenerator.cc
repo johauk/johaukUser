@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Fri Jan 16 14:09:52 CET 2009
-// $Id$
+// $Id: TrackerTreeGenerator.cc,v 1.1 2009/11/26 15:42:30 hauk Exp $
 //
 //
 
@@ -25,34 +25,43 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
-#include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
+//#include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
+#include "Geometry/Records/interface/IdealGeometryRecord.h"
+#include "Geometry/TrackerNumberingBuilder/interface/GeometricDet.h"
+#include "Geometry/TrackerGeometryBuilder/interface/TrackerGeomBuilderFromGeometricDet.h"
 
+#include "Geometry/CommonDetUnit/interface/TrackingGeometry.h"
 #include "Geometry/CommonDetUnit/interface/GeomDet.h"
-#include "DataFormats/GeometrySurface/interface/Surface.h"
-//#include "Alignment/CommonAlignment/interface/AlignableObjectId.h"
-//#include "Alignment/TrackerAlignment/interface/AlignableTracker.h"
-#include "Geometry/CommonTopologies/interface/StripTopology.h"
 #include "Geometry/CommonDetUnit/interface/GeomDetUnit.h"
-
-#include "Alignment/TrackerTreeGenerator/interface/TrackerTreeVariables.h"
+#include "Geometry/CommonTopologies/interface/StripTopology.h"
+#include "DataFormats/DetId/interface/DetId.h"
+#include "DataFormats/GeometrySurface/interface/Surface.h"
 
 #include "DataFormats/Math/interface/deltaPhi.h"
-//#include "DataFormats/SiPixelDetId/interface/PixelSubdetector.h"
-//#include "DataFormats/SiStripDetId/interface/StripSubdetector.h"
+#include "DataFormats/SiPixelDetId/interface/PixelSubdetector.h"
+#include "DataFormats/SiStripDetId/interface/StripSubdetector.h"
 #include "DataFormats/SiPixelDetId/interface/PXBDetId.h"
 #include "DataFormats/SiPixelDetId/interface/PXFDetId.h"
 #include "DataFormats/SiStripDetId/interface/TIBDetId.h"
 #include "DataFormats/SiStripDetId/interface/TIDDetId.h"
 #include "DataFormats/SiStripDetId/interface/TOBDetId.h"
 #include "DataFormats/SiStripDetId/interface/TECDetId.h"
+#include "DataFormats/GeometryVector/interface/LocalPoint.h"
+#include "DataFormats/GeometryVector/interface/GlobalPoint.h"
 
 #include "FWCore/ServiceRegistry/interface/Service.h"
-#include "PhysicsTools/UtilAlgos/interface/TFileService.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
+#include "CommonTools/UtilAlgos/interface/TFileDirectory.h"
+//#include "CommonTools/Utils/interface/TFileDirectory.h" // not yet in release
+
+#include "Alignment/TrackerTreeGenerator/interface/TrackerTreeVariables.h"
 
 #include "TTree.h"
 //
@@ -106,14 +115,15 @@ TrackerTreeGenerator::~TrackerTreeGenerator()
 void
 TrackerTreeGenerator::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-   //using namespace edm;
    edm::ESHandle<TrackerGeometry> tkGeom;
-   iSetup.get<TrackerDigiGeometryRecord>().get(tkGeom);
+   //iSetup.get<TrackerDigiGeometryRecord>().get(tkGeom);
+   // now try to take directly the ideal geometry independent of used geometry in Global Tag
+   edm::ESHandle<GeometricDet> geometricDet;
+   iSetup.get<IdealGeometryRecord>().get(geometricDet);
+   TrackerGeomBuilderFromGeometricDet trackerBuilder;
+   tkGeom = trackerBuilder.build(&(*geometricDet));
    
    const TrackerGeometry *bareTkGeomPtr = &(*tkGeom);
-   
-   //AlignableObjectId aliobjid;
-   //AlignableTracker aliTracker(&(*tkGeom));
    
    edm::LogInfo("TrackerTreeGenerator") //<< "@SUB=analyze"
                                         << "There are " << bareTkGeomPtr->detIds().size()
@@ -129,14 +139,10 @@ TrackerTreeGenerator::analyze(const edm::Event& iEvent, const edm::EventSetup& i
    
    std::vector<DetId>::const_iterator iDet;
    for(iDet = detIdContainer.begin(); iDet != detIdContainer.end(); ++iDet){
-     const DetId& detId = *iDet;
      
-     //const GeomDet* geomDet = tkGeom->idToDet(*(&detId));
-     //const Surface& surface = geomDet->surface();
-     
+     const DetId& detId     = *iDet;
      const GeomDet& geomDet = *tkGeom->idToDet(*(&detId));
      const Surface& surface = (&geomDet)->surface();
-     
      
      TrackerTreeVariables tkTreeVar;
      uint32_t rawId = detId.rawId();
