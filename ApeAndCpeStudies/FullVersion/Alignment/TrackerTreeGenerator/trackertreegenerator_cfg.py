@@ -28,6 +28,7 @@ process.load("Configuration.StandardSequences.Geometry_cff")
 ## CONDITIONS
 # use always ideal conditions to get no influence from Alignment on absolute Positions, Orientations...
 # so it is clear that when choosing special regions in e.g. globalPhi, Modules of the same Rod are contained in the same region
+# --- this is now improved, it is always taken from ideal geometry independent of the GlobalTag
 #process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cfi")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 #process.GlobalTag.globaltag = 'IDEAL_V12::All'
