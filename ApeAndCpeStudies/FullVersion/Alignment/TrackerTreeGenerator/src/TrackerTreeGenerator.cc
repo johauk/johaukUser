@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Fri Jan 16 14:09:52 CET 2009
-// $Id: TrackerTreeGenerator.cc,v 1.1 2009/11/26 15:42:30 hauk Exp $
+// $Id: TrackerTreeGenerator.cc,v 1.2 2010/02/02 15:20:46 hauk Exp $
 //
 //
 
@@ -22,44 +22,42 @@
 #include <memory>
 
 // user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "FWCore/ServiceRegistry/interface/Service.h"
 
-#include "FWCore/Framework/interface/ESHandle.h"
-#include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
-//#include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
-#include "Geometry/Records/interface/IdealGeometryRecord.h"
-#include "Geometry/TrackerNumberingBuilder/interface/GeometricDet.h"
-#include "Geometry/TrackerGeometryBuilder/interface/TrackerGeomBuilderFromGeometricDet.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
+#include "CommonTools/UtilAlgos/interface/TFileDirectory.h"
+//#include "CommonTools/Utils/interface/TFileDirectory.h" // not yet in release
 
-#include "Geometry/CommonDetUnit/interface/TrackingGeometry.h"
-#include "Geometry/CommonDetUnit/interface/GeomDet.h"
-#include "Geometry/CommonDetUnit/interface/GeomDetUnit.h"
-#include "Geometry/CommonTopologies/interface/StripTopology.h"
 #include "DataFormats/DetId/interface/DetId.h"
-#include "DataFormats/GeometrySurface/interface/Surface.h"
-
-#include "DataFormats/Math/interface/deltaPhi.h"
 #include "DataFormats/SiPixelDetId/interface/PixelSubdetector.h"
-#include "DataFormats/SiStripDetId/interface/StripSubdetector.h"
 #include "DataFormats/SiPixelDetId/interface/PXBDetId.h"
 #include "DataFormats/SiPixelDetId/interface/PXFDetId.h"
+#include "DataFormats/SiStripDetId/interface/StripSubdetector.h"
 #include "DataFormats/SiStripDetId/interface/TIBDetId.h"
 #include "DataFormats/SiStripDetId/interface/TIDDetId.h"
 #include "DataFormats/SiStripDetId/interface/TOBDetId.h"
 #include "DataFormats/SiStripDetId/interface/TECDetId.h"
 #include "DataFormats/GeometryVector/interface/LocalPoint.h"
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"
+#include "DataFormats/GeometrySurface/interface/Surface.h"
+#include "DataFormats/Math/interface/deltaPhi.h"
 
-#include "FWCore/ServiceRegistry/interface/Service.h"
-#include "CommonTools/UtilAlgos/interface/TFileService.h"
-#include "CommonTools/UtilAlgos/interface/TFileDirectory.h"
-//#include "CommonTools/Utils/interface/TFileDirectory.h" // not yet in release
+//#include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
+#include "Geometry/Records/interface/IdealGeometryRecord.h"
+#include "Geometry/TrackerNumberingBuilder/interface/GeometricDet.h"
+#include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
+#include "Geometry/TrackerGeometryBuilder/interface/TrackerGeomBuilderFromGeometricDet.h"
+#include "Geometry/CommonDetUnit/interface/TrackingGeometry.h"
+#include "Geometry/CommonDetUnit/interface/GeomDet.h"
+#include "Geometry/CommonDetUnit/interface/GeomDetUnit.h"
+#include "Geometry/CommonTopologies/interface/StripTopology.h"
 
 #include "Alignment/TrackerTreeGenerator/interface/TrackerTreeVariables.h"
 
