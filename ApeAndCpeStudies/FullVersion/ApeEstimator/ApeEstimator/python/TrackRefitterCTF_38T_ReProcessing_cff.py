@@ -8,14 +8,11 @@ from Configuration.StandardSequences.Geometry_cff import *
 
 
 ## CONDITIONS
-#from Configuration.StandardSequences.FrontierConditions_GlobalTag_cfi import *
-#from Alignment.HIPAlignmentAlgorithm.FrontierConditions_GlobalTag_cff import *
 from Configuration.StandardSequences.FrontierConditions_GlobalTag_cff import *
-#GlobalTag.connect = "frontier://FrontierProd/CMS_COND_21X_GLOBALTAG"
 ## --- Ideal MonteCarlo ---
-#GlobalTag.globaltag = 'DESIGN_31X_V8::All'
-#GlobalTag.globaltag = 'MC_31X_V9::All'    # same, but bad channels are masked
-## --- First ReProcessing ---
+#GlobalTag.globaltag = 'DESIGN_3X_V8B::All'    # peak mode
+#GlobalTag.globaltag = 'MC_3XY_V9B::All'    # same, but bad channels are masked
+## --- First ReProcessing (CRAFT '09) ---
 GlobalTag.globaltag = 'CRAFT09_R_V4::All'
 
 
@@ -24,16 +21,16 @@ GlobalTag.globaltag = 'CRAFT09_R_V4::All'
 #from CalibTracker.Configuration.Common.PoolDBESSource_cfi import *
 import CalibTracker.Configuration.Common.PoolDBESSource_cfi
 
-#myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
-#    connect = 'frontier://FrontierProd/CMS_COND_31X_FROM21X', # or your sqlite file
-#    toGet = cms.VPSet(
-#      cms.PSet(
-#        record = cms.string('TrackerAlignmentRcd'),
-#        tag = cms.string('TrackerIdealGeometry210_mc') # your tag
-#        )
-#      )
-#    )
-#es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+    connect = 'frontier://FrontierProd/CMS_COND_31X_FROM21X', # or your sqlite file
+    toGet = cms.VPSet(
+      cms.PSet(
+        record = cms.string('TrackerAlignmentRcd'),
+        tag = cms.string('TrackerIdealGeometry210_mc') # your tag
+        )
+      )
+    )
+es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
 
 ## APE (set to zero)
 myTrackerAlignmentErr = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
@@ -62,11 +59,13 @@ from RecoVertex.BeamSpotProducer.BeamSpot_cfi import *
 
 ## CPE (combine StripCPEgeometric with standard-PixelCPE)
 from RecoLocalTracker.SiStripRecHitConverter.StripCPEgeometric_cfi import *
+StripCPEgeometricESProducer.APVpeakmode = True
 TTRHBuilderGeometricAndTemplate = cms.ESProducer("TkTransientTrackingRecHitBuilderESProducer",
     #StripCPE = cms.string('StripCPEfromTrackAngle'), # cms.string('StripCPEgeometric'),
     StripCPE = cms.string('StripCPEgeometric'),
     ComponentName = cms.string('WithGeometricAndTemplate'),
-    PixelCPE = cms.string('PixelCPEGeneric'), # cms.string('PixelCPETemplateReco'),
+    #PixelCPE = cms.string('PixelCPEGeneric'),
+    PixelCPE = cms.string('PixelCPETemplateReco'),
     Matcher = cms.string('StandardMatcher'),
     ComputeCoarseLocalPositionFromDisk = cms.bool(False)
 )
@@ -75,7 +74,7 @@ TTRHBuilderGeometricAndTemplate = cms.ESProducer("TkTransientTrackingRecHitBuild
 
 ## TRACK REFITTER (input for Track Selector)
 from RecoTracker.TrackProducer.TrackRefitters_cff import *
-TrackRefitter1 = RecoTracker.TrackProducer.TrackRefitters_cff.TrackRefitterP5.clone(
+TrackRefitterForApeEstimator = RecoTracker.TrackProducer.TrackRefitters_cff.TrackRefitterP5.clone(
     src = 'ALCARECOTkAlCosmicsCTF0T' #'ALCARECOTkAlCosmicsCosmicTF0T' #'ALCARECOTkAlCosmicsCosmicTF'
           #'ALCARECOTkAlCosmicsCTF' #'ALCARECOTkAlCosmicsRS0T' #'ALCARECOTkAlCosmicsRS'
     ,TTRHBuilder = 'WithGeometricAndTemplate'     # use StripCPEgeometric instead of standard
@@ -88,7 +87,7 @@ TrackRefitter1 = RecoTracker.TrackProducer.TrackRefitters_cff.TrackRefitterP5.cl
 
 ## SEQUENCE
 RefitterSequence = cms.Sequence(offlineBeamSpot
-                                *TrackRefitter1
+                                *TrackRefitterForApeEstimator
 				)
 
 
