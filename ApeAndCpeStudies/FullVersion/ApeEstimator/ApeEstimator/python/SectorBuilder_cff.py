@@ -37,6 +37,20 @@ SubdetSectors = cms.VPSet(
 
 
 
+# Only TID and TEC (means only one for e.g. both endcaps)
+TIDTEC = cms.VPSet(
+  cms.PSet(
+    EmptySector.clone(
+    subdetId = [4]
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    subdetId = [6]
+  )),
+)
+
+
+
 
 # Only TIB and TOB, cosmic-like quartering (upper, lower, left, right part)
 TIBTOBQuarters = cms.VPSet(
