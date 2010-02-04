@@ -7,7 +7,7 @@ import os
 ApeEstimator = cms.EDAnalyzer('ApeEstimator',
     
     #Input source of Tracks
-    tjTkAssociationMapTag = cms.InputTag("TrackRefitter1"),
+    tjTkAssociationMapTag = cms.InputTag("TrackRefitterForApeEstimator"),
     
     #Max nr of tracks per event:
     # default = 0, no event selection
