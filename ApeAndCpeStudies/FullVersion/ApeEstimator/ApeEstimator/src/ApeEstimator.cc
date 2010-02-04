@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id$
+// $Id: ApeEstimator.cc,v 1.1 2009/11/26 16:14:13 hauk Exp $
 //
 //
 
@@ -26,40 +26,59 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-
-#include "DataFormats/TrackReco/interface/Track.h"
-//#include "DataFormats/TrackReco/interface/TrackFwd.h"
-#include "TrackingTools/PatternTools/interface/Trajectory.h"
-#include "TrackingTools/PatternTools/interface/TrajTrackAssociation.h"
-
 #include "FWCore/ServiceRegistry/interface/Service.h"
-#include "PhysicsTools/UtilAlgos/interface/TFileService.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 
-#include "TrackingTools/TrackFitters/interface/TrajectoryStateCombiner.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
+#include "CommonTools/UtilAlgos/interface/TFileDirectory.h"
+//#include "CommonTools/Utils/interface/TFileDirectory.h" // not yet in release
 
-#include "DataFormats/SiStripDetId/interface/SiStripDetId.h"
+#include "DataFormats/Common/interface/Handle.h"
+#include "DataFormats/CLHEP/interface/AlgebraicObjects.h"
+#include "DataFormats/CLHEP/interface/Migration.h"
+#include "DataFormats/TrackReco/interface/Track.h"
+#include "DataFormats/TrackingRecHit/interface/TrackingRecHit.h"
+#include "DataFormats/DetId/interface/DetId.h"
 #include "DataFormats/TrackerRecHit2D/interface/SiStripRecHit2D.h"
 #include "DataFormats/TrackerRecHit2D/interface/SiStripMatchedRecHit2D.h"
 #include "DataFormats/TrackerRecHit2D/interface/ProjectedSiStripRecHit2D.h"
 #include "DataFormats/TrackerRecHit2D/interface/SiPixelRecHit.h"
+#include "DataFormats/GeometryVector/interface/LocalPoint.h"
+//#include "DataFormats/GeometrySurface/interface/LocalError.h" // which one of LocalError.h to include ?
+#include "DataFormats/GeometryCommonDetAlgo/interface/LocalError.h"
+#include "DataFormats/GeometryCommonDetAlgo/interface/MeasurementPoint.h"
+#include "DataFormats/GeometryCommonDetAlgo/interface/MeasurementError.h"
+#include "DataFormats/SiPixelDetId/interface/PixelSubdetector.h"
+#include "DataFormats/SiStripDetId/interface/StripSubdetector.h"
+#include "DataFormats/SiStripDetId/interface/SiStripDetId.h"
+#include "DataFormats/SiPixelCluster/interface/SiPixelCluster.h"
+#include "DataFormats/SiStripCluster/interface/SiStripCluster.h"
 
-#include "Geometry/TrackerGeometryBuilder/interface/StripGeomDetUnit.h"
+#include "TrackingTools/PatternTools/interface/Trajectory.h"
+#include "TrackingTools/PatternTools/interface/TrajTrackAssociation.h"
+#include "TrackingTools/PatternTools/interface/TrajectoryMeasurement.h"
+#include "TrackingTools/PatternTools/interface/MeasurementExtractor.h"
+#include "TrackingTools/TrackFitters/interface/TrajectoryStateCombiner.h"
+#include "TrackingTools/TransientTrackingRecHit/interface/TransientTrackingRecHit.h"
+#include "TrackingTools/TrajectoryState/interface/TrajectoryStateOnSurface.h"
+
+#include "Geometry/CommonDetUnit/interface/GeomDetUnit.h"
 #include "Geometry/CommonTopologies/interface/RadialStripTopology.h"
-#include "DataFormats/GeometryCommonDetAlgo/interface/MeasurementVector.h"
+#include "Geometry/TrackerGeometryBuilder/interface/StripGeomDetUnit.h"
 
 #include "CondFormats/Alignment/interface/Definitions.h"
 
-#include "TrackingTools/PatternTools/interface/MeasurementExtractor.h"
-
 #include "AnalysisDataFormats/SiStripClusterInfo/interface/SiStripClusterInfo.h"
+//#include "RecoLocalTracker/SiStripClusterizer/interface/SiStripClusterInfo.h" // not yet in release
 
 #include "ApeEstimator/ApeEstimator/interface/TrackerSectorStruct.h"
 #include "ApeEstimator/ApeEstimator/interface/TrackerDetectorStruct.h"
 #include "ApeEstimator/ApeEstimator/interface/EventVariables.h"
 #include "ApeEstimator/ApeEstimator/interface/ReducedTrackerTreeVariables.h"
-
 
 #include "TH1.h"
 #include "TH2.h"
@@ -67,6 +86,7 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TF1.h"
+#include "TString.h"
 
 
 //
@@ -137,9 +157,6 @@ class ApeEstimator : public edm::EDAnalyzer {
 //
 // constants, enums and typedefs
 //
-
-const int kBPIX = PixelSubdetector::PixelBarrel;
-const int kFPIX = PixelSubdetector::PixelEndcap;
 
 //
 // static data member definitions
@@ -755,10 +772,10 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
   
   if(theParameterSet.getParameter<bool>("applyTrackCuts")){
     trackCut_ = false;
-    //if(trkParams.hitsValid<10 || trkParams.hits2D<2 || trkParams.pt<1. || trkParams.p<1. || trkParams.p>500. || trkParams.norChi2>100. || trkParams.phi>0.)trackCut_ = true;
+    if(trkParams.hitsValid<10 || trkParams.hits2D<2 || trkParams.pt<4. || trkParams.p<1. || trkParams.p>500. || trkParams.norChi2>100. || trkParams.phi>0.)trackCut_ = true;
     //if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.p<20. || trkParams.p>500. || trkParams.norChi2>10. || trkParams.phi>0. || trkParams.meanPhiSensToNorm>0.9599)trackCut_ = true;  //55degree
-    if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.p<4. || trkParams.p>500. || trkParams.norChi2>10. || trkParams.phi>0. || trkParams.meanPhiSensToNorm>0.9599
-                              || trkParams.pt<4.)trackCut_ = true;  //55degree
+    //if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.p<4. || trkParams.p>500. || trkParams.norChi2>10. || trkParams.phi>0. || trkParams.meanPhiSensToNorm>0.9599
+    //                          || trkParams.pt<4.)trackCut_ = true;  //55degree
     //if(trkParams.hitsValid<15 || trkParams.hits2D<2 || trkParams.p<20. || trkParams.p>500. || trkParams.norChi2>10. || trkParams.phi>0. || trkParams.meanPhiSensToNorm>0.9599
     //                          || trkParams.pt<10.)trackCut_ = true;  //55degree
   }
@@ -1470,7 +1487,7 @@ ApeEstimator::isHit2D(const TrackingRecHit &hit) const
   } else {
     const DetId detId(hit.geographicalId());
     if (detId.det() == DetId::Tracker) {
-      if (detId.subdetId() == kBPIX || detId.subdetId() == kFPIX) {
+      if (detId.subdetId() == PixelSubdetector::PixelBarrel || detId.subdetId() == PixelSubdetector::PixelEndcap) {
         return true; // pixel is always 2D
       } else { // should be SiStrip now
 	const SiStripDetId stripId(detId);
