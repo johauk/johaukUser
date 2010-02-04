@@ -39,8 +39,6 @@ process.options = cms.untracked.PSet(
 
 
 
-
-
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
 
 
@@ -49,40 +47,54 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
 ## Input Files (CRAFT '09)
 ##
 ## --- Monte Carlo ---
+#process.load("ApeEstimator.ApeEstimator.CRAFT_mc_22X_cff")
+#process.load("ApeEstimator.ApeEstimator.CRAFT_mc_31X_cff")
 ## --- First Reprocessing ---
 process.load("ApeEstimator.ApeEstimator.run109011_109624_FirstRepro_cff")
+
+
 
 ##
 ## Whole Refitter Sequence
 ##
-#process.load("ApeEstimator.ApeEstimator.TrackRefitterCTF_38T_MonteCarlo_cff")
-process.load("ApeEstimator.ApeEstimator.TrackRefitterCTF_38T_ReProcessing_cff")
+process.load("ApeEstimator.ApeEstimator.TrackRefitter_38T_cff")
+## --- Monte Carlo ---
+#process.GlobalTag.globaltag = 'DESIGN_3X_V8B::All'    # peak mode
+#process.GlobalTag.globaltag = 'MC_3XY_V9B::All'    # same, but bad channels are masked
+## --- First Reprocessing ---
+process.GlobalTag.globaltag = 'CRAFT09_R_V4::All'
+## --- Further information (Monte Carlo and Data) ---
+#process.StripCPEgeometricESProducer.APVpeakmode = False
+#process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
+#process.TTRHBuilderGeometricAndTemplate.PixelCPE = 'PixelCPEGeneric'
+#process.TrackRefitterForApeEstimator.src = 'ALCARECOTkAlCosmicsCTF0T'
 
 
 
-#from ApeEstimator.ApeEstimator.apeestimator_cfi import *
-#from ApeEstimator.ApeEstimator.SectorBuilder_cff import *
-#process.ApeEstimator1 = ApeEstimator.clone(
-#  maxTracksPerEvent = cms.uint32(2),
-#  #applyTrackCuts = False,
-#  minGoodHitsPerTrack = cms.uint32(1),
-#  residualErrorBinning = cms.vdouble(0.0005,0.0010,0.0015,0.0020,0.0025,0.0030,0.0035,0.0040,0.0050,0.0070,0.0100), # 5-100um
-#  #zoomHists = False,
-#  vErrHists = cms.vuint32(1,2,3,4,5),
-#  #Sectors = SubdetSectors
-#  #Sectors = TIBTOBQuarters
-#  Sectors = TIBTOBQuarters2DSeparation
+## Choose Alignment (w/o touching APE)
+#import CalibTracker.Configuration.Common.PoolDBESSource_cfi
+#process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+#    connect = 'frontier://FrontierProd/CMS_COND_31X_FROM21X', # or your sqlite file
+#    toGet = cms.VPSet(
+#      cms.PSet(
+#        record = cms.string('TrackerAlignmentRcd'),
+#        tag = cms.string('TrackerIdealGeometry210_mc') # 'TrackerAlignment_2009_v2_offline'
+#      )
+#    )
 #)
-#process.ApeEstimator1.HitSelector.errXHit = cms.vdouble(0.,0.0060)  # 60um, to exclude very large clusters
-#process.ApeEstimator1.HitSelector.phiSens = cms.vdouble(-0.1,1.0472)  # [0,60] degree
-
+#process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
 
 
 
 ## ApeEstimator
 from ApeEstimator.ApeEstimator.apeestimator_cff import *
 process.ApeEstimatorCosmics1 = ApeEstimatorCosmics
-
+process.ApeEstimatorCosmics1.Sectors = TIDTEC
+process.ApeEstimatorCosmics1.HitSelector.width = []
+process.ApeEstimatorCosmics1.HitSelector.edgeStrips = []
+process.ApeEstimatorCosmics1.HitSelector.sOverN = []
+process.ApeEstimatorCosmics1.HitSelector.phiSensX = []
+process.ApeEstimatorCosmics1.HitSelector.phiSensY = []
 
 
 
@@ -95,7 +107,6 @@ process.TFileService = cms.Service("TFileService",
 
 
 process.p = cms.Path(process.RefitterSequence
-                     #*process.ApeEstimator1
 		     *process.ApeEstimatorCosmics1
 )
 
