@@ -12,36 +12,42 @@ struct TrackStruct{
     
     HitParameterStruct(): hitState(ok),
                  isModuleUsable(true),
-		 width(0), charge(0), chargeLR(0), maxStrip(0), maxStripInv(0), maxCharge(0), maxIndex(0),
-		 baryStrip(-999.), sOverN(-999.),
-		 resX(-999.), norResX(-999.), xHit(-999.), xTrk(-999.),
-                 errXHit(-999.), errXTrk(-999.), errX(-999.), errX2(-999.),
-                 phiSens(-999.), phiSensX(-999.), phiSensY(-999.){}
+		 width(0), charge(0), maxStrip(0), maxStripInv(0), maxCharge(0), maxIndex(0),
+		 chargeOnEdges(-999.F), chargeAsymmetry(-999.F), 
+		 baryStrip(-999.F), sOverN(-999.F),
+		 projWidth(-999.F),
+		 resX(-999.F), norResX(-999.F), xHit(-999.F), xTrk(-999.F),
+                 errXHit(-999.F), errXTrk(-999.F), errX(-999.F), errX2(-999.F),
+                 phiSens(-999.F), phiSensX(-999.F), phiSensY(-999.F),
+		 probX(-999.F){}
     
     HitState hitState;
     std::vector<unsigned int> sectors;
     // cluster parameters
     bool isModuleUsable;
-    unsigned int width, charge, chargeLR, maxStrip, maxStripInv, maxCharge, maxIndex;
+    unsigned int width, charge, maxStrip, maxStripInv, maxCharge, maxIndex;
+    float chargeOnEdges, chargeAsymmetry;
     float baryStrip, sOverN;
+    float projWidth;
     // trackFit results
     float resX, norResX, xHit, xTrk,
           errXHit, errXTrk, errX, errX2,
-          phiSens, phiSensX, phiSensY;
+          phiSens, phiSensX, phiSensY,
+	  probX;
   };
   
   struct TrackParameterStruct{
     
     TrackParameterStruct(): hitsSize(-999), hitsValid(-999), hitsInvalid(-999),
 		   hits2D(-999), layersMissed(-999), charge(-999),
-		   chi2(-999.), ndof(-999.), norChi2(-999.),
-                   eta(-999.), theta(-999.), phi(-999.),
-                   p(-999.), pt(-999.), meanPhiSensToNorm(-999.){}
+		   chi2(-999.F), ndof(-999.F), norChi2(-999.F),
+                   eta(-999.F), theta(-999.F), phi(-999.F),d0(-999.F), dz(-999.F),
+                   p(-999.F), pt(-999.F), meanPhiSensToNorm(-999.F){}
     
     int hitsSize, hitsValid, hitsInvalid,
         hits2D, layersMissed, charge;
     float chi2, ndof, norChi2,
-          eta, theta, phi,
+          eta, theta, phi, d0, dz,
 	  p, pt, meanPhiSensToNorm;
   };
   
