@@ -39,7 +39,7 @@ process.options = cms.untracked.PSet(
 
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10001) )
 
 
 
@@ -65,7 +65,7 @@ process.load("ApeEstimator.ApeEstimator.TrackRefitter_38T_cff")
 process.GlobalTag.globaltag = 'CRAFT09_R_V4::All'
 ## --- Further information (Monte Carlo and Data) ---
 #process.StripCPEgeometricESProducer.APVpeakmode = False
-#process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
+process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
 #process.TTRHBuilderGeometricAndTemplate.PixelCPE = 'PixelCPEGeneric'
 #process.TrackRefitterForApeEstimator.src = 'ALCARECOTkAlCosmicsCTF0T'
 
@@ -89,12 +89,17 @@ process.GlobalTag.globaltag = 'CRAFT09_R_V4::All'
 ## ApeEstimator
 from ApeEstimator.ApeEstimator.apeestimator_cff import *
 process.ApeEstimatorCosmics1 = ApeEstimatorCosmics
-process.ApeEstimatorCosmics1.Sectors = TIDTEC
+process.ApeEstimatorCosmics1.maxTracksPerEvent = 0
+process.ApeEstimatorCosmics1.applyTrackCuts = False
+process.ApeEstimatorCosmics1.zoomHists = False
+process.ApeEstimatorCosmics1.Sectors = TIBTOB
 process.ApeEstimatorCosmics1.HitSelector.width = []
 process.ApeEstimatorCosmics1.HitSelector.edgeStrips = []
 process.ApeEstimatorCosmics1.HitSelector.sOverN = []
 process.ApeEstimatorCosmics1.HitSelector.phiSensX = []
 process.ApeEstimatorCosmics1.HitSelector.phiSensY = []
+process.ApeEstimatorCosmics1.apeScaling = 0.5
+process.ApeEstimatorCosmics1.ApeOutputFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/apeOutput.txt'
 
 
 
