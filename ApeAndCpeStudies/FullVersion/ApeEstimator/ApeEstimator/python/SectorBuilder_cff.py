@@ -52,6 +52,23 @@ TIDTEC = cms.VPSet(
 
 
 
+
+# Only TIB and TOB
+TIBTOB = cms.VPSet(
+  cms.PSet(
+    EmptySector.clone(
+    subdetId = [3]
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    subdetId = [5]
+  )),
+)
+
+
+
+
+
 # Only TIB and TOB, cosmic-like quartering (upper, lower, left, right part)
 TIBTOBQuarters = cms.VPSet(
   
@@ -101,6 +118,41 @@ TIBTOBQuarters = cms.VPSet(
 )
 
 
+
+
+
+# Only TIB and TOB + Separation of pitches + Separation of 1D and 2D layers
+TIBTOBPitchAnd2DSeparation = cms.VPSet(
+  
+  # TIB
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1,2],
+    subdetId = [3],
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3,4],
+    subdetId = [3],
+  )),
+  
+  # TOB
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1,2],
+    subdetId = [5],
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3,4],
+    subdetId = [5],
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [5,6],
+    subdetId = [5],
+  )),
+)
 
 
 
