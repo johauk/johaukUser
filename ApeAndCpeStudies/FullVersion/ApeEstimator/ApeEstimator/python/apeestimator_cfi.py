@@ -22,9 +22,10 @@ ApeEstimator = cms.EDAnalyzer('ApeEstimator',
       #Parameters for Cuts on Clusters (independent of track reconstruction, but associated to a track's hit)
       width = cms.vuint32(),        #interval, needs even number of arguments. for int specify one number n as interval (n,n)
       charge = cms.vdouble(),
-      chargeLR = cms.vdouble(),
       edgeStrips = cms.vuint32(),   #how many strips on edge to exclude wrt. maxStrip (on both edges)
       maxCharge = cms.vdouble(),
+      chargeOnEdges = cms.vdouble(),    # fraction of charge on edge strips of cluster
+      chargeAsymmetry = cms.vdouble(),     # asymmetry of charge on edge strips of cluster
       maxIndex = cms.vuint32(),
       sOverN = cms.vdouble(),
       
@@ -56,6 +57,12 @@ ApeEstimator = cms.EDAnalyzer('ApeEstimator',
     TrackerTreeFile = cms.string(os.environ['CMSSW_BASE'] + '/src/Alignment/TrackerTreeGenerator/hists/TrackerTree.root'),
     
     #Sectors for same APE
-    Sectors = cms.VPSet()
+    Sectors = cms.VPSet(),
+    
+    #multiplicative APE scaling factor (to prevent overestimation, since estimation is iterative process)
+    apeScaling = cms.double(1.),
+    
+    #File name for text file where calculated APE values are written to
+    ApeOutputFile = cms.string(os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/apeOutput.txt'),
     
 )
