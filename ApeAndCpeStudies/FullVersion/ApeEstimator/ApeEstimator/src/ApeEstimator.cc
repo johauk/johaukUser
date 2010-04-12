@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.1 2009/11/26 16:14:13 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.2 2010/02/04 18:41:31 hauk Exp $
 //
 //
 
@@ -21,6 +21,7 @@
 // system include files
 #include <memory>
 #include <sstream>
+#include <fstream>
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -87,7 +88,19 @@
 #include "TTree.h"
 #include "TF1.h"
 #include "TString.h"
+#include "TMath.h"
 
+
+#include "RecoLocalTracker/SiStripRecHitConverter/interface/StripCPE.h"
+#include "Geometry/CommonTopologies/interface/StripTopology.h"
+
+#include "MagneticField/Engine/interface/MagneticField.h"
+#include "CondFormats/SiStripObjects/interface/SiStripLorentzAngle.h"
+#include "DataFormats/GeometryVector/interface/LocalVector.h"
+#include "DataFormats/GeometrySurface/interface/Bounds.h"
+#include "FWCore/Framework/interface/ESHandle.h"
+#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
+#include "CondFormats/DataRecord/interface/SiStripLorentzAngleRcd.h"
 
 //
 // class decleration
@@ -133,7 +146,7 @@ class ApeEstimator : public edm::EDAnalyzer {
       void calculateAPE();
       
       // ----------member data ---------------------------
-      edm::ParameterSet theParameterSet;
+      edm::ParameterSet parameterSet_;
       std::map<unsigned int, TrackerSectorStruct> mTkSector_;
       TrackerDetectorStruct tkDetector_;
       
@@ -166,8 +179,8 @@ class ApeEstimator : public edm::EDAnalyzer {
 // constructors and destructor
 //
 ApeEstimator::ApeEstimator(const edm::ParameterSet& iConfig):
-theParameterSet(iConfig), trackCut_(false), maxTracksPerEvent_(theParameterSet.getParameter<unsigned int>("maxTracksPerEvent")),
-minGoodHitsPerTrack_(theParameterSet.getParameter<unsigned int>("minGoodHitsPerTrack"))
+parameterSet_(iConfig), trackCut_(false), maxTracksPerEvent_(parameterSet_.getParameter<unsigned int>("maxTracksPerEvent")),
+minGoodHitsPerTrack_(parameterSet_.getParameter<unsigned int>("minGoodHitsPerTrack"))
 {
    counter1 = counter2 = counter3 = counter4 = counter5 = counter6 = 0;
 }
@@ -187,7 +200,7 @@ ApeEstimator::~ApeEstimator()
 void
 ApeEstimator::sectorBuilder(){
   
-  TFile* tkTreeFile(TFile::Open((theParameterSet.getParameter<std::string>("TrackerTreeFile")).c_str()));
+  TFile* tkTreeFile(TFile::Open((parameterSet_.getParameter<std::string>("TrackerTreeFile")).c_str()));
   if(tkTreeFile){
     edm::LogInfo("SectorBuilder")<<"TrackerTreeFile OK";
   }else{
@@ -239,7 +252,7 @@ ApeEstimator::sectorBuilder(){
   
   //Loop over all Sectors
   unsigned int sectorCounter(1);
-  std::vector<edm::ParameterSet> vSectors(theParameterSet.getParameter<std::vector<edm::ParameterSet> >("Sectors"));
+  std::vector<edm::ParameterSet> vSectors(parameterSet_.getParameter<std::vector<edm::ParameterSet> >("Sectors"));
   edm::LogInfo("SectorBuilder")<<"There are "<<vSectors.size()<<" Sectors definded";
   std::vector<edm::ParameterSet>::const_iterator iPSet;
   for(iPSet = vSectors.begin(); iPSet != vSectors.end();++iPSet, ++sectorCounter){
@@ -359,7 +372,7 @@ ApeEstimator::checkIntervalsForSectors(const unsigned int sectorCounter, const s
     if(iEntry%2==0 && intervalBegin>*iId){
       edm::LogError("SectorBuilder")<<"Incorrect Sector Definition (Position Vector Intervals): \t"
                                     <<intervalBegin<<" is bigger than "<<*iId<<" but is expected to be smaller"
-                                    <<"\n... sector selection is not applied,  sector "<<sectorCounter<<" is not built";
+                                    <<"\n... sector selection is not applied, sector "<<sectorCounter<<" is not built";
       return false;
     }
   }
@@ -435,7 +448,7 @@ ApeEstimator::statistics(const TrackerSectorStruct& allSectors, const Int_t nMod
 
 void
 ApeEstimator::residualErrorBinning(){
-   std::vector<double> vResidualErrorBinning(theParameterSet.getParameter<std::vector<double> >("residualErrorBinning"));
+   std::vector<double> vResidualErrorBinning(parameterSet_.getParameter<std::vector<double> >("residualErrorBinning"));
    if(vResidualErrorBinning.size()==1){
      edm::LogError("ResidualErrorBinning")<<"Incorrect selection of Residual Error Bins (used for APE calculation): \t"
                                           <<"Only one argument passed, so no interval is specified"
@@ -470,7 +483,7 @@ ApeEstimator::residualErrorBinning(){
 void
 ApeEstimator::bookSectorHists(){
   
-  std::vector<unsigned int> vErrHists(theParameterSet.getParameter<std::vector<unsigned int> >("vErrHists"));
+  std::vector<unsigned int> vErrHists(parameterSet_.getParameter<std::vector<unsigned int> >("vErrHists"));
   for(std::vector<unsigned int>::iterator iErrHists = vErrHists.begin(); iErrHists != vErrHists.end(); ++iErrHists){
     for(std::vector<unsigned int>::iterator iErrHists2 = iErrHists; iErrHists2 != vErrHists.end();){
       ++iErrHists2;
@@ -484,9 +497,9 @@ ApeEstimator::bookSectorHists(){
   for(std::map<unsigned int,TrackerSectorStruct>::iterator iSec = mTkSector_.begin(); iSec != mTkSector_.end(); ++iSec){
     if((*iSec).second.vRawId.size()==0)continue;
     
-    bool zoomHists(theParameterSet.getParameter<bool>("zoomHists"));
+    bool zoomHists(parameterSet_.getParameter<bool>("zoomHists"));
     
-    int widthMax = zoomHists ? 20 : 200;
+    double widthMax = zoomHists ? 20. : 200.;
     double chargeMax = zoomHists ? 1000. : 10000.;
     double sOverNMax = zoomHists? 200. : 2000.;
     
@@ -497,9 +510,11 @@ ApeEstimator::bookSectorHists(){
     double sigmaX2Max = sigmaXMax*sigmaXMax;
     double sigmaXHitMax = zoomHists ? 0.02 : 1.;
     
+    double norChi2Max = zoomHists ? 20. : 1000.;
+    double d0Max = zoomHists ? 100. : 100.;
+    double dzMax = zoomHists ? 200. : 600.;
     double pMax = zoomHists ? 100. : 5000.;
     double invPMax = zoomHists ? 0.05 : 10.;   //begins at 20GeV, 0.1GeV
-    double norChi2Max = zoomHists ? 20. : 1000.;
     
     
     edm::Service<TFileService> fileService;
@@ -507,139 +522,66 @@ ApeEstimator::bookSectorHists(){
     std::stringstream sector; sector << "Sector_" << (*iSec).first;
     TFileDirectory secDir = fileService->mkdir(sector.str().c_str());
     
-    (*iSec).second.IsModuleUsable = secDir.make<TH1F>("h_isModuleUsable","is module usable;;# hits",4,-1,3);
-    (*iSec).second.Width          = secDir.make<TH1F>("h_width","cluster width w_{cl};w_{cl}  [# strips];# hits",widthMax,0,widthMax);
-    (*iSec).second.Charge         = secDir.make<TH1F>("h_charge","cluster charge c_{cl};c_{cl}  [APV counts];# hits",100,0,chargeMax);
-    (*iSec).second.ChargeLR       = secDir.make<TH1F>("h_chargeLR","cluster surround charge c_{cl,LR};c_{cl,LR}  [APV counts];# hits",100,0,chargeMax);
-    (*iSec).second.MaxStrip       = secDir.make<TH1F>("h_maxStrip","strip with max. charge n_{cl,max};n_{cl,max}  [# strips];# hits",800,-10,790);
-    (*iSec).second.MaxCharge      = secDir.make<TH1F>("h_maxCharge","charge of strip with max. charge c_{cl,max};c_{cl,max}  [APV counts];# hits",100,-10,290);
-    (*iSec).second.MaxIndex       = secDir.make<TH1F>("h_maxIndex","cluster-index of strip with max. charge i_{cl,max};i_{cl,max}  [# strips];# hits",10,0,10);
-    (*iSec).second.BaryStrip      = secDir.make<TH1F>("h_baryStrip","barycenter of cluster charge b_{cl};b_{cl}  [# strips];# hits",800,-10,790);
-    (*iSec).second.SOverN         = secDir.make<TH1F>("h_sOverN","signal over noise s/N;s/N;# hits",100,0,sOverNMax);
     
-    (*iSec).second.ResX      = secDir.make<TH1F>("h_resX","residual r_{x};(x_{track}-x_{hit})'  [cm];# hits",100,-resXAbsMax,resXAbsMax);
-    (*iSec).second.NorResX   = secDir.make<TH1F>("h_norResX","normalized residual r_{x}/#sigma_{x};(x_{track}-x_{hit})'/#sigma_{x};# hits",100,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.XHit      = secDir.make<TH1F>("h_xHit"," hit measurement x_{hit};x_{hit}  [cm];# hits",100,-20,20);
-    (*iSec).second.XTrk      = secDir.make<TH1F>("h_xTrk","track prediction x_{track};x_{track}  [cm];# hits",100,-20,20);
+    // Cluster Parameters
+    (*iSec).second.setCorrHistParams(&secDir,norResXAbsMax,sigmaXHitMax,sigmaXMax);
+    (*iSec).second.mCorrelationHists["Width"] = (*iSec).second.bookCorrHists("Width","cluster width","w_{cl}","[# strips]",200,20,0.,widthMax,"nph");
+    (*iSec).second.mCorrelationHists["Charge"] = (*iSec).second.bookCorrHists("Charge","cluster charge","c_{cl}","[APV counts]",100,50,0.,chargeMax,"nph");
+    (*iSec).second.mCorrelationHists["MaxStrip"] = (*iSec).second.bookCorrHists("MaxStrip","strip with max. charge","n_{cl,max}","[# strips]",800,800,-10.,790.,"npht");
+    (*iSec).second.mCorrelationHists["MaxCharge"] = (*iSec).second.bookCorrHists("MaxCharge","charge of strip with max. charge","c_{cl,max}","[APV counts]",300,75,-10.,290.,"nph");
+    (*iSec).second.mCorrelationHists["MaxIndex"] = (*iSec).second.bookCorrHists("MaxIndex","cluster-index of strip with max. charge","i_{cl,max}","[# strips]",10,10,0.,10.,"nph");
+    (*iSec).second.mCorrelationHists["ChargeOnEdges"] = (*iSec).second.bookCorrHists("ChargeOnEdges","fraction of charge on edge strips","(c_{cl,L}+c_{cl,R})/c_{cl}","",60,60,-0.1,1.1,"nph");
+    (*iSec).second.mCorrelationHists["ChargeAsymmetry"] = (*iSec).second.bookCorrHists("ChargeAsymmetry","asymmetry of charge on edge strips","(c_{cl,L}-c_{cl,R})/c_{cl}","",110,55,-1.1,1.1,"nph");
+    (*iSec).second.mCorrelationHists["BaryStrip"] = (*iSec).second.bookCorrHists("BaryStrip","barycenter of cluster charge","b_{cl}","[# strips]",800,100,-10.,790.,"nph");
+    (*iSec).second.mCorrelationHists["SOverN"] = (*iSec).second.bookCorrHists("SOverN","signal over noise","s/N","",100,50,0,sOverNMax,"nph");
+    (*iSec).second.mCorrelationHists["WidthProj"] = (*iSec).second.bookCorrHists("WidthProj","projected width","w_{p}","[# strips]",200,20,0.,widthMax,"nph");
+    (*iSec).second.mCorrelationHists["WidthDiff"] = (*iSec).second.bookCorrHists("WidthDiff","width difference","w_{p} - w_{cl}","[# strips]",200,20,-widthMax/2.,widthMax/2.,"nph");
     
-    (*iSec).second.SigmaXHit = secDir.make<TH1F>("h_sigmaXHit","hit error #sigma_{x,hit};#sigma_{x,hit}  [cm];# hits",105,sigmaXMin,sigmaXMax);
-    (*iSec).second.SigmaXTrk = secDir.make<TH1F>("h_sigmaXTrk","track error #sigma_{x,track};#sigma_{x,track}  [cm];# hits",105,sigmaXMin,sigmaXMax);
-    (*iSec).second.SigmaX    = secDir.make<TH1F>("h_sigmaX","residual error #sigma_{x};#sigma_{x}  [cm];# hits",105,sigmaXMin,sigmaXMax);
-    (*iSec).second.SigmaX2   = secDir.make<TH1F>("h_sigmaX2","squared residual error #sigma_{x}^{2};#sigma_{x}^{2}  [cm^{2}];# hits",105,sigmaXMin,sigmaX2Max); //no mistake !
+    (*iSec).second.WidthVsWidthProjected = secDir.make<TH2F>("h2_widthVsWidthProj","w_{cl} vs. w_{p};w_{p}  [# strips];w_{cl}  [# strips]",static_cast<int>(widthMax),0,widthMax,static_cast<int>(widthMax),0,widthMax);
+    (*iSec).second.PWidthVsWidthProjected = secDir.make<TProfile>("p_widthVsWidthProj","w_{cl} vs. w_{p};w_{p}  [# strips];w_{cl}  [# strips]",static_cast<int>(widthMax),0,widthMax);
     
-    (*iSec).second.PhiSens   = secDir.make<TH1F>("h_phiSens" ,"track angle on sensor #phi_{module};#phi_{module}  [ ^{o}];# hits"    ,94,-2,92);
-    (*iSec).second.PhiSensX  = secDir.make<TH1F>("h_phiSensX","track angle on sensor #phi_{x,module};#phi_{x,module}  [ ^{o}];# hits",184,-92,92);
-    (*iSec).second.PhiSensY  = secDir.make<TH1F>("h_phiSensY","track angle on sensor #phi_{y,module};#phi_{y,module}  [ ^{o}];# hits",184,-92,92);
+    (*iSec).second.WidthDiffVsMaxStrip = secDir.make<TH2F>("h2_widthDiffVsMaxStrip","(w_{p} - w_{cl}) vs. n_{cl,max};n_{cl,max};w_{p} - w_{cl}  [# strips]",800,-10.,790.,static_cast<int>(widthMax),-widthMax/2.,widthMax/2.);
+    (*iSec).second.PWidthDiffVsMaxStrip = secDir.make<TProfile>("p_widthDiffVsMaxStrip","(w_{p} - w_{cl}) vs. n_{cl,max};n_{cl,max};w_{p} - w_{cl}  [# strips]",800,-10.,790.);
     
-    (*iSec).second.NorResXVsWidth          = secDir.make<TH2F>("h2_norResXVsWidth","r_{x}/#sigma_{x} vs. w_{cl};w_{cl}  [# strips];(x_{track}-x_{hit})'/#sigma_{x}",widthMax,0,widthMax,25,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.NorResXVsCharge         = secDir.make<TH2F>("h2_norResXVsCharge","r_{x}/#sigma_{x} vs. c_{cl};c_{cl}  [APV counts];(x_{track}-x_{hit})'/#sigma_{x}",100,0,chargeMax,25,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.NorResXVsChargeLR       = secDir.make<TH2F>("h2_norResXVsChargeLR","r_{x}/#sigma_{x} vs. c_{cl,LR};c_{cl,LR}  [APV counts];(x_{track}-x_{hit})'/#sigma_{x}",100,0,chargeMax,25,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.NorResXVsMaxStrip       = secDir.make<TH2F>("h2_norResXVsMaxStrip","r_{x}/#sigma_{x} vs. n_{cl,max};n_{cl,max}  [# strips];(x_{track}-x_{hit})'/#sigma_{x}",800,-10,790,25,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.NorResXVsMaxCharge      = secDir.make<TH2F>("h2_norResXVsMaxCharge","r_{x}/#sigma_{x} vs. c_{cl,max};c_{cl,max}  [APV counts];(x_{track}-x_{hit})'/#sigma_{x}",100,-10,290,25,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.NorResXVsMaxIndex       = secDir.make<TH2F>("h2_norResXVsMaxIndex","r_{x}/#sigma_{x} vs. i_{cl,max};i_{cl,max}  [# strips];(x_{track}-x_{hit})'/#sigma_{x}",10,0,10,25,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.NorResXVsBaryStrip      = secDir.make<TH2F>("h2_norResXVsBaryStrip","r_{x}/#sigma_{x} vs. b_{cl};b_{cl}  [# strips];(x_{track}-x_{hit})'/#sigma_{x}",100,-10,790,25,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.NorResXVsSOverN         = secDir.make<TH2F>("h2_norResXVsSOverN","r_{x}/#sigma_{x} vs. s/N;s/N;(x_{track}-x_{hit})'/#sigma_{x}",100,0,sOverNMax,25,-norResXAbsMax,norResXAbsMax);
     
-    (*iSec).second.NorResXVsP              = secDir.make<TH2F>("h2_norResXVsP","r_{x}/#sigma_{x} vs. |p|;|p|  [GeV];(x_{track}-x_{hit})'/#sigma_{x}",50,0,pMax,25,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.NorResXVsMeanAngle      = secDir.make<TH2F>("h2_norResXVsMeanAngle","r_{x}/#sigma_{x} vs. <#phi_{module}>;<#phi_{module}>  [ ^{o}];(x_{track}-x_{hit})'/#sigma_{x}",25,-5,95,25,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.NorResXVsHitsValid      = secDir.make<TH2F>("h2_norResXVsHitsValid","r_{x}/#sigma_{x} vs. # hits  [valid];# hits  [valid];(x_{track}-x_{hit})'/#sigma_{x}",50,0,50,25,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.NorResXVsHitsGood       = secDir.make<TH2F>("h2_norResXVsHitsGood","r_{x}/#sigma_{x} vs. # hits  [good];# hits  [good];(x_{track}-x_{hit})'/#sigma_{x}",50,0,50,25,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.NorResXVsHitsInvalid    = secDir.make<TH2F>("h2_norResXVsHitsInvalid","r_{x}/#sigma_{x} vs. # hits  [invalid];# hits  [invalid];(x_{track}-x_{hit})'/#sigma_{x}",20,0,20,25,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.NorResXVsLayersMissed   = secDir.make<TH2F>("h2_norResXVsLayersMissed","r_{x}/#sigma_{x} vs. # layers  [missed];# layers  [missed];(x_{track}-x_{hit})'/#sigma_{x}",10,0,10,25,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.NorResXVsNorChi2        = secDir.make<TH2F>("h2_norResXVsNorChi2","r_{x}/#sigma_{x} vs. #chi^{2}/ndof;#chi^{2}/ndof;(x_{track}-x_{hit})'/#sigma_{x}",50,0,norChi2Max,25,-norResXAbsMax,norResXAbsMax);
+    // Hit Parameters
+    (*iSec).second.mCorrelationHists["SigmaXHit"] = (*iSec).second.bookCorrHists("SigmaXHit","hit error","#sigma_{x,hit}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
+    (*iSec).second.mCorrelationHists["SigmaXTrk"] = (*iSec).second.bookCorrHists("SigmaXTrk","track error","#sigma_{x,track}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
+    (*iSec).second.mCorrelationHists["SigmaX"]    = (*iSec).second.bookCorrHists("SigmaX","residual error","#sigma_{x}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
+    (*iSec).second.mCorrelationHists["PhiSens"]   = (*iSec).second.bookCorrHists("PhiSens","track angle on sensor","#phi_{module}","[ ^{o}]",94,47,-2,92,"nphtr");
+    (*iSec).second.mCorrelationHists["PhiSensX"]  = (*iSec).second.bookCorrHists("PhiSensX","track angle on sensor","#phi_{x,module}","[ ^{o}]",184,92,-92,92,"nphtr");
+    (*iSec).second.mCorrelationHists["PhiSensY"]  = (*iSec).second.bookCorrHists("PhiSensY","track angle on sensor","#phi_{y,module}","[ ^{o}]",184,92,-92,92,"nphtr");
     
-    (*iSec).second.NorResXVsPhiSens        = secDir.make<TH2F>("h2_norResXVsPhiSens","r_{x}/#sigma_{x} vs. #phi_{module};#phi_{module}  [ ^{o}];(x_{track}-x_{hit})'/#sigma_{x}",47,-2,92,25,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.NorResXVsPhiSensX       = secDir.make<TH2F>("h2_norResXVsPhiSensX","r_{x}/#sigma_{x} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];(x_{track}-x_{hit})'/#sigma_{x}",92,-92,92,25,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.NorResXVsPhiSensY       = secDir.make<TH2F>("h2_norResXVsPhiSensY","r_{x}/#sigma_{x} vs. #phi_{y,module};#phi_{y,module}  [ ^{o}];(x_{track}-x_{hit})'/#sigma_{x}",92,-92,92,25,-norResXAbsMax,norResXAbsMax);
+    (*iSec).second.XHit    = secDir.make<TH1F>("h_XHit"," hit measurement x_{hit};x_{hit}  [cm];# hits",100,-20,20);
+    (*iSec).second.XTrk    = secDir.make<TH1F>("h_XTrk","track prediction x_{track};x_{track}  [cm];# hits",100,-20,20);
+    (*iSec).second.SigmaX2 = secDir.make<TH1F>("h_SigmaX2","squared residual error #sigma_{x}^{2};#sigma_{x}^{2}  [cm^{2}];# hits",105,sigmaXMin,sigmaX2Max); //no mistake !
+    (*iSec).second.ResX    = secDir.make<TH1F>("h_ResX","residual r_{x};(x_{track}-x_{hit})'  [cm];# hits",100,-resXAbsMax,resXAbsMax);
+    (*iSec).second.NorResX = secDir.make<TH1F>("h_NorResX","normalized residual r_{x}/#sigma_{x};(x_{track}-x_{hit})'/#sigma_{x};# hits",100,-norResXAbsMax,norResXAbsMax);
+    (*iSec).second.ProbX   = secDir.make<TH1F>("h_ProbX","residual probability;prob(r_{x}^{2}/#sigma_{x}^{2},1);# hits",60,-0.1,1.1);
     
-    (*iSec).second.SigmaXHitVsWidth        = secDir.make<TH2F>("h2_sigmaXHitVsWidth","#sigma_{x,hit} vs. w_{cl};w_{cl}  [# strips];#sigma_{x,hit}  [cm]",widthMax,0,widthMax,100,0,sigmaXHitMax);
-    (*iSec).second.SigmaXHitVsCharge       = secDir.make<TH2F>("h2_sigmaXHitVsCharge","#sigma_{x,hit} vs. c_{cl};c_{cl}  [APV counts];#sigma_{x,hit}  [cm]",100,0,chargeMax,100,0,sigmaXHitMax);
-    (*iSec).second.SigmaXHitVsChargeLR     = secDir.make<TH2F>("h2_sigmaXHitVsChargeLR","#sigma_{x,hit} vs. c_{cl,LR};c_{cl,LR}  [APV counts];#sigma_{x,hit}  [cm]",100,0,chargeMax,100,0,sigmaXHitMax);
-    (*iSec).second.SigmaXHitVsMaxStrip     = secDir.make<TH2F>("h2_sigmaXHitVsMaxStrip","#sigma_{x,hit} vs. n_{cl,max};n_{cl,max}  [# strips];#sigma_{x,hit}  [cm]",800,-10,790,100,0,sigmaXHitMax);
-    (*iSec).second.SigmaXHitVsMaxCharge    = secDir.make<TH2F>("h2_sigmaXHitVsMaxCharge","#sigma_{x,hit} vs. c_{cl,max};c_{cl,max}  [APV counts];#sigma_{x,hit}  [cm]",100,-10,290,100,0,sigmaXHitMax);
-    (*iSec).second.SigmaXHitVsMaxIndex     = secDir.make<TH2F>("h2_sigmaXHitVsMaxIndex","#sigma_{x,hit} vs. i_{cl,max};i_{cl,max}  [# strips];#sigma_{x,hit}  [cm]",10,0,10,100,0,sigmaXHitMax);
-    (*iSec).second.SigmaXHitVsBaryStrip    = secDir.make<TH2F>("h2_sigmaXHitVsBaryStrip","#sigma_{x,hit} vs. b_{cl};b_{cl}  [# strips];#sigma_{x,hit}  [cm]",100,-10,790,100,0,sigmaXHitMax);
-    (*iSec).second.SigmaXHitVsSOverN       = secDir.make<TH2F>("h2_sigmaXHitVsSOverN","#sigma_{x,hit} vs. s/N;s/N;#sigma_{x,hit}  [cm]",100,0,sOverNMax,100,0,sigmaXHitMax);
+    (*iSec).second.WidthVsPhiSensX = secDir.make<TH2F>("h2_widthVsPhiSensX","w_{cl} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];w_{cl}  [# strips]",92,-92,92,static_cast<int>(widthMax),0,widthMax);
+    (*iSec).second.PWidthVsPhiSensX = secDir.make<TProfile>("p_widthVsPhiSensX","w_{cl} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];w_{cl}  [# strips]",92,-92,92);
     
-    (*iSec).second.SigmaXTrkVsP            = secDir.make<TH2F>("h2_sigmaXTrkVsP","#sigma_{x,track} vs. |p|;|p|  [GeV];#sigma_{x,track}  [cm]",50,0,pMax,25,0,1);
-    (*iSec).second.SigmaXTrkVsInvP         = secDir.make<TH2F>("h2_sigmaXTrkVsInvP","#sigma_{x,track} vs. 1/|p|;1/|p|  [GeV^{-1}];#sigma_{x,track}  [cm]",25,0,invPMax,25,0,1);
-    (*iSec).second.SigmaXTrkVsMeanAngle    = secDir.make<TH2F>("h2_sigmaXTrkVsMeanAngle","#sigma_{x,track} vs. <#phi_{module}>;<#phi_{module}>  [ ^{o}];#sigma_{x,track}  [cm]",25,-5,95,25,0,1);
-    (*iSec).second.SigmaXTrkVsHitsValid    = secDir.make<TH2F>("h2_sigmaXTrkVsHitsValid","#sigma_{x,track} vs. # hits  [valid];# hits  [valid];#sigma_{x,track}  [cm]",50,0,50,25,0,1);
-    (*iSec).second.SigmaXTrkVsHitsGood     = secDir.make<TH2F>("h2_sigmaXTrkVsHitsGood","#sigma_{x,track} vs. # hits  [good];# hits  [good];#sigma_{x,track}  [cm]",50,0,50,25,0,1);
-    (*iSec).second.SigmaXTrkVsHitsInvalid  = secDir.make<TH2F>("h2_sigmaXTrkVsHitsInvalid","#sigma_{x,track} vs. # hits  [invalid];# hits  [invalid];#sigma_{x,track}  [cm]",20,0,20,25,0,1);
-    (*iSec).second.SigmaXTrkVsLayersMissed = secDir.make<TH2F>("h2_sigmaXTrkVsLayersMissed","#sigma_{x,track} vs. # layers  [missed];# layers  [missed];#sigma_{x,track}  [cm]",10,0,10,25,0,1);
-    (*iSec).second.SigmaXVsNorChi2         = secDir.make<TH2F>("h2_sigmaXVsNorChi2","#sigma_{x} vs. #chi^{2}/ndof;#chi^{2}/ndof;#sigma_{x}  [cm]",50,0,norChi2Max,25,0,1);
     
-    (*iSec).second.SigmaXHitVsPhiSens      = secDir.make<TH2F>("h2_sigmaXHitVsPhiSens" ,"#sigma_{x,hit} vs. #phi_{module};#phi_{module}  [ ^{o}];#sigma_{x,hit}  [cm]",47,-2,92,50,0,sigmaXHitMax);
-    (*iSec).second.SigmaXHitVsPhiSensX     = secDir.make<TH2F>("h2_sigmaXHitVsPhiSensX","#sigma_{x,hit} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];#sigma_{x,hit}  [cm]",92,-92,92,50,0,sigmaXHitMax);
-    (*iSec).second.SigmaXHitVsPhiSensY     = secDir.make<TH2F>("h2_sigmaXHitVsPhiSensY","#sigma_{x,hit} vs. #phi_{y,module};#phi_{y,module}  [ ^{o}];#sigma_{x,hit}  [cm]",92,-92,92,50,0,sigmaXHitMax);
-    (*iSec).second.SigmaXTrkVsPhiSens      = secDir.make<TH2F>("h2_sigmaXTrkVsPhiSens" ,"#sigma_{x,track} vs. #phi_{module};#phi_{module}  [ ^{o}];#sigma_{x,track}  [cm]",47,-2,92,50,0,1);
-    (*iSec).second.SigmaXTrkVsPhiSensX     = secDir.make<TH2F>("h2_sigmaXTrkVsPhiSensX","#sigma_{x,track} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];#sigma_{x,track}  [cm]",92,-92,92,50,0,1);
-    (*iSec).second.SigmaXTrkVsPhiSensY     = secDir.make<TH2F>("h2_sigmaXTrkVsPhiSensY","#sigma_{x,track} vs. #phi_{y,module};#phi_{y,module}  [ ^{o}];#sigma_{x,track}  [cm]",92,-92,92,50,0,1);
-    (*iSec).second.SigmaXVsPhiSens         = secDir.make<TH2F>("h2_sigmaXVsPhiSens" ,"#sigma_{x} vs. #phi_{module};#phi_{module}  [ ^{o}];#sigma_{x,track}  [cm]",47,-2,92,50,0,1);
-    (*iSec).second.SigmaXVsPhiSensX        = secDir.make<TH2F>("h2_sigmaXVsPhiSensX","#sigma_{x} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];#sigma_{x}  [cm]",92,-92,92,50,0,1);
-    (*iSec).second.SigmaXVsPhiSensY        = secDir.make<TH2F>("h2_sigmaXVsPhiSensY","#sigma_{x} vs. #phi_{y,module};#phi_{y,module}  [ ^{o}];#sigma_{x}  [cm]",92,-92,92,50,0,1);
+    // Track Parameters
+    (*iSec).second.mCorrelationHists["HitsValid"] = (*iSec).second.bookCorrHists("HitsValid","# hits","[valid]",50,0,50,"npt");
+    (*iSec).second.mCorrelationHists["HitsGood"] = (*iSec).second.bookCorrHists("HitsGood","# hits","[good]",50,0,50,"npt");
+    (*iSec).second.mCorrelationHists["HitsInvalid"] = (*iSec).second.bookCorrHists("HitsInvalid","# hits","[invalid]",20,0,20,"npt");
+    (*iSec).second.mCorrelationHists["LayersMissed"] = (*iSec).second.bookCorrHists("LayersMissed","# layers","[missed]",10,0,10,"npt");
+    (*iSec).second.mCorrelationHists["NorChi2"] = (*iSec).second.bookCorrHists("NorChi2","#chi^{2}/ndof","",50,0,norChi2Max,"npr");
+    (*iSec).second.mCorrelationHists["Theta"] = (*iSec).second.bookCorrHists("Theta","#theta","[ ^{o}]",40,-10,190,"npt");
+    (*iSec).second.mCorrelationHists["Phi"] = (*iSec).second.bookCorrHists("Phi","#phi","[ ^{o}]",76,-190,190,"npt");
+    (*iSec).second.mCorrelationHists["D0"] = (*iSec).second.bookCorrHists("D0","d_{0}","[cm]",40,-d0Max,d0Max,"npt");
+    (*iSec).second.mCorrelationHists["Dz"] = (*iSec).second.bookCorrHists("Dz","d_{z}","[cm]",40,-dzMax,dzMax,"npt");
+    (*iSec).second.mCorrelationHists["Pt"] = (*iSec).second.bookCorrHists("Pt","p_{t}","[GeV]",50,0,pMax,"npt");
+    (*iSec).second.mCorrelationHists["P"] = (*iSec).second.bookCorrHists("P","|p|","[GeV]",50,0,pMax,"npt");
+    (*iSec).second.mCorrelationHists["InvP"] = (*iSec).second.bookCorrHists("InvP","1/|p|","[GeV^{-1}]",25,0,invPMax,"t");
+    (*iSec).second.mCorrelationHists["MeanAngle"] = (*iSec).second.bookCorrHists("MeanAngle","<#phi_{module}>","[ ^{o}]",25,-5,95,"npt");
+    //(*iSec).second.mCorrelationHists[""] = (*iSec).second.bookCorrHists("","","",,,,"nphtr");
     
-    (*iSec).second.NorResXVsSigmaXHit      = secDir.make<TH2F>("h2_norResXVsSigmaXHit","r_{x}/#sigma_{x} vs. #sigma_{x,hit};#sigma_{x,hit}  [cm];(x_{track}-x_{hit})'/#sigma_{x}",20,0,0.01,25,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.NorResXVsSigmaXTrk      = secDir.make<TH2F>("h2_norResXVsSigmaXTrk","r_{x}/#sigma_{x} vs. #sigma_{x,track};#sigma_{x,track}  [cm];(x_{track}-x_{hit})'/#sigma_{x}",20,0,0.01,25,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.NorResXVsSigmaX         = secDir.make<TH2F>("h2_norResXVsSigmaX","r_{x}/#sigma_{x} vs. #sigma_{x};#sigma_{x}  [cm];(x_{track}-x_{hit})'/#sigma_{x}",20,0,0.01,25,-norResXAbsMax,norResXAbsMax);
     
-    (*iSec).second.WidthVsPhiSensX         = secDir.make<TH2F>("h2_widthVsPhiSensX","w_{cl} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];w_{cl}  [# strips]",92,-92,92,widthMax,0,widthMax);
     
-    (*iSec).second.PNorResXVsWidth          = secDir.make<TProfile>("p_norResXVsWidth","r_{x}/#sigma_{x} vs. w_{cl};w_{cl}  [# strips];(x_{track}-x_{hit})'/#sigma_{x}",widthMax,0,widthMax,"s");
-    (*iSec).second.PNorResXVsCharge         = secDir.make<TProfile>("p_norResXVsCharge","r_{x}/#sigma_{x} vs. c_{cl};c_{cl}  [APV counts];(x_{track}-x_{hit})'/#sigma_{x}",100,0,chargeMax,"s");
-    (*iSec).second.PNorResXVsChargeLR       = secDir.make<TProfile>("p_norResXVsChargeLR","r_{x}/#sigma_{x} vs. c_{cl,LR};c_{cl,LR}  [APV counts];(x_{track}-x_{hit})'/#sigma_{x}",100,0,chargeMax,"s");
-    (*iSec).second.PNorResXVsMaxStrip       = secDir.make<TProfile>("p_norResXVsMaxStrip","r_{x}/#sigma_{x} vs. n_{cl,max};n_{cl,max}  [# strips];(x_{track}-x_{hit})'/#sigma_{x}",800,-10,790,"s");
-    (*iSec).second.PNorResXVsMaxCharge      = secDir.make<TProfile>("p_norResXVsMaxCharge","r_{x}/#sigma_{x} vs. c_{cl,max};c_{cl,max}  [APV counts];(x_{track}-x_{hit})'/#sigma_{x}",100,-10,290,"s");
-    (*iSec).second.PNorResXVsMaxIndex       = secDir.make<TProfile>("p_norResXVsMaxIndex","r_{x}/#sigma_{x} vs. i_{cl,max};i_{cl,max}  [# strips];(x_{track}-x_{hit})'/#sigma_{x}",10,0,10,"s");
-    (*iSec).second.PNorResXVsBaryStrip      = secDir.make<TProfile>("p_norResXVsBaryStrip","r_{x}/#sigma_{x} vs. b_{cl};b_{cl}  [# strips];(x_{track}-x_{hit})'/#sigma_{x}",100,-10,790,"s");
-    (*iSec).second.PNorResXVsSOverN         = secDir.make<TProfile>("p_norResXVsSOverN","r_{x}/#sigma_{x} vs. s/N;s/N;(x_{track}-x_{hit})'/#sigma_{x}",100,0,sOverNMax,"s");
     
-    (*iSec).second.PNorResXVsP              = secDir.make<TProfile>("p_norResXVsP","r_{x}/#sigma_{x} vs. |p|;|p|  [GeV];(x_{track}-x_{hit})'/#sigma_{x}",50,0,pMax,"s");
-    (*iSec).second.PNorResXVsMeanAngle      = secDir.make<TProfile>("p_norResXVsMeanAngle","r_{x}/#sigma_{x} vs. <#phi_{module}>;<#phi_{module}>  [ ^{o}];(x_{track}-x_{hit})'/#sigma_{x}",25,-5,95,"s");
-    (*iSec).second.PNorResXVsHitsValid      = secDir.make<TProfile>("p_norResXVsHitsValid","r_{x}/#sigma_{x} vs. # hits  [valid];# hits  [valid];(x_{track}-x_{hit})'/#sigma_{x}",50,0,50,"s");
-    (*iSec).second.PNorResXVsHitsGood       = secDir.make<TProfile>("p_norResXVsHitsGood","r_{x}/#sigma_{x} vs. # hits  [good];# hits  [good];(x_{track}-x_{hit})'/#sigma_{x}",50,0,50,"s");
-    (*iSec).second.PNorResXVsHitsInvalid    = secDir.make<TProfile>("p_norResXVsHitsInvalid","r_{x}/#sigma_{x} vs. # hits  [invalid];# hits  [invalid];(x_{track}-x_{hit})'/#sigma_{x}",20,0,20,"s");
-    (*iSec).second.PNorResXVsLayersMissed   = secDir.make<TProfile>("p_norResXVsLayersMissed","r_{x}/#sigma_{x} vs. # layers  [missed];# layers  [missed];(x_{track}-x_{hit})'/#sigma_{x}",10,0,10,"s");
-    (*iSec).second.PNorResXVsNorChi2        = secDir.make<TProfile>("p_norResXVsNorChi2","r_{x}/#sigma_{x} vs. #chi^{2}/ndof;#chi^{2}/ndof;(x_{track}-x_{hit})'/#sigma_{x}",50,0,norChi2Max,"s");
-    
-    (*iSec).second.PNorResXVsPhiSens        = secDir.make<TProfile>("p_norResXVsPhiSens","r_{x}/#sigma_{x} vs. #phi_{module};#phi_{module}  [ ^{o}];(x_{track}-x_{hit})'/#sigma_{x}",47,-2,92,"s");
-    (*iSec).second.PNorResXVsPhiSensX       = secDir.make<TProfile>("p_norResXVsPhiSensX","r_{x}/#sigma_{x} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];(x_{track}-x_{hit})'/#sigma_{x}",92,-92,92,"s");
-    (*iSec).second.PNorResXVsPhiSensY       = secDir.make<TProfile>("p_norResXVsPhiSensY","r_{x}/#sigma_{x} vs. #phi_{y,module};#phi_{y,module}  [ ^{o}];(x_{track}-x_{hit})'/#sigma_{x}",92,-92,92,"s");
-    
-    (*iSec).second.PSigmaXHitVsWidth        = secDir.make<TProfile>("p_sigmaXHitVsWidth","#sigma_{x,hit} vs. w_{cl};w_{cl}  [# strips];#sigma_{x,hit}  [cm]",widthMax,0,widthMax);
-    (*iSec).second.PSigmaXHitVsCharge       = secDir.make<TProfile>("p_sigmaXHitVsCharge","#sigma_{x,hit} vs. c_{cl};c_{cl}  [APV counts];#sigma_{x,hit}  [cm]",100,0,chargeMax);
-    (*iSec).second.PSigmaXHitVsChargeLR     = secDir.make<TProfile>("p_sigmaXHitVsChargeLR","#sigma_{x,hit} vs. c_{cl,LR};c_{cl,LR}  [APV counts];#sigma_{x,hit}  [cm]",100,0,chargeMax);
-    (*iSec).second.PSigmaXHitVsMaxStrip     = secDir.make<TProfile>("p_sigmaXHitVsMaxStrip","#sigma_{x,hit} vs. n_{cl,max};n_{cl,max}  [# strips];#sigma_{x,hit}  [cm]",800,-10,790);
-    (*iSec).second.PSigmaXHitVsMaxCharge    = secDir.make<TProfile>("p_sigmaXHitVsMaxCharge","#sigma_{x,hit} vs. c_{cl,max};c_{cl,max}  [APV counts];#sigma_{x,hit}  [cm]",100,-10,290);
-    (*iSec).second.PSigmaXHitVsMaxIndex     = secDir.make<TProfile>("p_sigmaXHitVsMaxIndex","#sigma_{x,hit} vs. i_{cl,max};i_{cl,max}  [# strips];#sigma_{x,hit}  [cm]",10,0,10);
-    (*iSec).second.PSigmaXHitVsBaryStrip    = secDir.make<TProfile>("p_sigmaXHitVsBaryStrip","#sigma_{x,hit} vs. b_{cl};b_{cl}  [# strips];#sigma_{x,hit}  [cm]",100,-10,790);
-    (*iSec).second.PSigmaXHitVsSOverN       = secDir.make<TProfile>("p_sigmaXHitVsSOverN","#sigma_{x,hit} vs. s/N;s/N;#sigma_{x,hit}  [cm]",100,0,sOverNMax);
-    
-    (*iSec).second.PSigmaXTrkVsP            = secDir.make<TProfile>("p_sigmaXTrkVsP","#sigma_{x,track} vs. |p|; |p|  [GeV];#sigma_{x,track}  [cm]",50,0,pMax);
-    (*iSec).second.PSigmaXTrkVsInvP         = secDir.make<TProfile>("p_sigmaXTrkVsInvP","#sigma_{x,track} vs. 1/|p|; 1/|p|  [GeV^{-1}];#sigma_{x,track}  [cm]",25,0,invPMax);
-    (*iSec).second.PSigmaXTrkVsMeanAngle    = secDir.make<TProfile>("p_sigmaXTrkVsMeanAngle","#sigma_{x,track} vs. <#phi_{module}>;<#phi_{module}>  [ ^{o}];#sigma_{x,track}",25,-5,95);
-    (*iSec).second.PSigmaXTrkVsHitsValid    = secDir.make<TProfile>("p_sigmaXTrkVsHitsValid","#sigma_{x,track} vs. # hits;# hits  [valid];#sigma_{x,track}  [cm]",50,0,50);
-    (*iSec).second.PSigmaXTrkVsHitsGood     = secDir.make<TProfile>("p_sigmaXTrkVsHitsGood","#sigma_{x,track} vs. # hits  [good];# hits  [good];#sigma_{x,track}  [cm]",50,0,50);
-    (*iSec).second.PSigmaXTrkVsHitsInvalid  = secDir.make<TProfile>("p_sigmaXTrkVsHitsInvalid","#sigma_{x,track} vs. # hits  [invalid];# hits  [invalid];#sigma_{x,track}  [cm]",20,0,20);
-    (*iSec).second.PSigmaXTrkVsLayersMissed = secDir.make<TProfile>("p_sigmaXTrkVsLayersMissed","#sigma_{x,track} vs. # layers  [missed];# layers  [missed];#sigma_{x,track}  [cm]",10,0,10);
-    (*iSec).second.PSigmaXVsNorChi2         = secDir.make<TProfile>("p_sigmaXVsNorChi2","#sigma_{x} vs. #chi^{2}/ndof;#chi^{2}/ndof;#sigma_{x}  [cm]",50,0,norChi2Max);
-    
-    (*iSec).second.PSigmaXHitVsPhiSens      = secDir.make<TProfile>("p_sigmaXHitVsPhiSens" ,"#sigma_{x,hit} vs. #phi_{module};#phi_{module}  [ ^{o}];#sigma_{x,hit}  [cm]",47,-2,92);
-    (*iSec).second.PSigmaXHitVsPhiSensX     = secDir.make<TProfile>("p_sigmaXHitVsPhiSensX","#sigma_{x,hit} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];#sigma_{x,hit}  [cm]",92,-92,92);
-    (*iSec).second.PSigmaXHitVsPhiSensY     = secDir.make<TProfile>("p_sigmaXHitVsPhiSensY","#sigma_{x,hit} vs. #phi_{y,module};#phi_{y,module}  [ ^{o}];#sigma_{x,hit}  [cm]",92,-92,92);
-    (*iSec).second.PSigmaXTrkVsPhiSens      = secDir.make<TProfile>("p_sigmaXTrkVsPhiSens" ,"#sigma_{x,track} vs. #phi_{module};#phi_{module}  [ ^{o}];#sigma_{x,track}  [cm]",47,-2,92);
-    (*iSec).second.PSigmaXTrkVsPhiSensX     = secDir.make<TProfile>("p_sigmaXTrkVsPhiSensX","#sigma_{x,track} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];#sigma_{x,track}  [cm]",92,-92,92);
-    (*iSec).second.PSigmaXTrkVsPhiSensY     = secDir.make<TProfile>("p_sigmaXTrkVsPhiSensY","#sigma_{x,track} vs. #phi_{y,module};#phi_{y,module}  [ ^{o}];#sigma_{x,track}  [cm]",92,-92,92);
-    (*iSec).second.PSigmaXVsPhiSens         = secDir.make<TProfile>("p_sigmaXVsPhiSens" ,"#sigma_{x} vs. #phi_{module};#phi_{module}  [ ^{o}];#sigma_{x}  [cm]",47,-2,92);
-    (*iSec).second.PSigmaXVsPhiSensX        = secDir.make<TProfile>("p_sigmaXVsPhiSensX","#sigma_{x} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];#sigma_{x}  [cm]",92,-92,92);
-    (*iSec).second.PSigmaXVsPhiSensY        = secDir.make<TProfile>("p_sigmaXVsPhiSensY","#sigma_{x} vs. #phi_{y,module};#phi_{y,module}  [ ^{o}];#sigma_{x}  [cm]",92,-92,92);
-    
-    (*iSec).second.PNorResXVsSigmaXHit      = secDir.make<TProfile>("p_norResXVsSigmaXHit","r_{x}/#sigma_{x} vs. #sigma_{x,hit};#sigma_{x,hit}  [cm];(x_{track}-x_{hit})'/#sigma_{x}",20,0,0.01,"s");
-    (*iSec).second.PNorResXVsSigmaXTrk      = secDir.make<TProfile>("p_norResXVsSigmaXTrk","r_{x}/#sigma_{x} vs. #sigma_{x,track};#sigma_{x,track}  [cm];(x_{track}-x_{hit})'/#sigma_{x}",20,0,0.01,"s");
-    (*iSec).second.PNorResXVsSigmaX         = secDir.make<TProfile>("p_norResXVsSigmaX","r_{x}/#sigma_{x} vs. #sigma_{x};#sigma_{x}  [cm];(x_{track}-x_{hit})'/#sigma_{x}",20,0,0.01,"s");
-    
-    (*iSec).second.PWidthVsPhiSensX         = secDir.make<TProfile>("p_widthVsPhiSensX","w_{cl} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];w_{cl}  [# strips]",92,-92,92);
     
     for(std::vector<unsigned int>::iterator iErrHists = vErrHists.begin(); iErrHists != vErrHists.end(); ++iErrHists){
       double xMin(0.01*(*iErrHists-1)), xMax(0.01*(*iErrHists));
@@ -662,21 +604,17 @@ ApeEstimator::bookSectorHists(){
     }
     
     //Result plots (one hist per sector containing one bin per interval)
-    std::vector<double> vBinX(theParameterSet.getParameter<std::vector<double> >("residualErrorBinning"));
-    //int nBinX(mResErrBins_.size()), minBinX(1), maxBinX(nBinX+minBinX);
+    std::vector<double> vBinX(parameterSet_.getParameter<std::vector<double> >("residualErrorBinning"));
     TFileDirectory resDir = secDir.mkdir("Results");
-    //(*iSec).second.Entries        = resDir.make<TH1F>("h_entries","# hits used;# interval;# hits",nBinX,minBinX,maxBinX);
-    //(*iSec).second.MeanX          = resDir.make<TH1F>("h_meanX","residual mean <r_{x}/#sigma_{x}>;# interval;<r_{x}/#sigma_{x}>",nBinX,minBinX,maxBinX);
-    //(*iSec).second.RmsX           = resDir.make<TH1F>("h_rmsX","residual rms RMS(r_{x}/#sigma_{x});# interval;RMS(r_{x}/#sigma_{x})",nBinX,minBinX,maxBinX);
-    //(*iSec).second.FitMeanX       = resDir.make<TH1F>("h_fitMeanX","fitted residual mean #mu_{x};# interval;#mu_{x}",nBinX,minBinX,maxBinX);
-    //(*iSec).second.ResidualWidthX = resDir.make<TH1F>("h_residualWidthX","residual width #Delta_{x};# interval;#Delta_{x}",nBinX,minBinX,maxBinX);
-    //(*iSec).second.ApeX           = resDir.make<TH1F>("h_apeX","alignment precision APE_{x};# interval;APE_{x}",nBinX,minBinX,maxBinX);
-    (*iSec).second.Entries        = resDir.make<TH1F>("h_entries","# hits used;#sigma_{x}  [cm];# hits",vBinX.size()-1,&(vBinX[0]));
-    (*iSec).second.MeanX          = resDir.make<TH1F>("h_meanX","residual mean <r_{x}/#sigma_{x}>;#sigma_{x}  [cm];<r_{x}/#sigma_{x}>",vBinX.size()-1,&(vBinX[0]));
-    (*iSec).second.RmsX           = resDir.make<TH1F>("h_rmsX","residual rms RMS(r_{x}/#sigma_{x});#sigma_{x}  [cm];RMS(r_{x}/#sigma_{x})",vBinX.size()-1,&(vBinX[0]));
-    (*iSec).second.FitMeanX       = resDir.make<TH1F>("h_fitMeanX","fitted residual mean #mu_{x};#sigma_{x}  [cm];#mu_{x}",vBinX.size()-1,&(vBinX[0]));
-    (*iSec).second.ResidualWidthX = resDir.make<TH1F>("h_residualWidthX","residual width #Delta_{x};#sigma_{x}  [cm];#Delta_{x}",vBinX.size()-1,&(vBinX[0]));
-    (*iSec).second.ApeX           = resDir.make<TH1F>("h_apeX","alignment precision APE_{x};#sigma_{x}  [cm];APE_{x}",vBinX.size()-1,&(vBinX[0]));
+    (*iSec).second.Entries         = resDir.make<TH1F>("h_entries","# hits used;#sigma_{x}  [cm];# hits",vBinX.size()-1,&(vBinX[0]));
+    (*iSec).second.MeanX           = resDir.make<TH1F>("h_meanX","residual mean <r_{x}/#sigma_{x}>;#sigma_{x}  [cm];<r_{x}/#sigma_{x}>",vBinX.size()-1,&(vBinX[0]));
+    (*iSec).second.RmsX            = resDir.make<TH1F>("h_rmsX","residual rms RMS(r_{x}/#sigma_{x});#sigma_{x}  [cm];RMS(r_{x}/#sigma_{x})",vBinX.size()-1,&(vBinX[0]));
+    (*iSec).second.FitMeanX1       = resDir.make<TH1F>("h_fitMeanX1","fitted residual mean #mu_{x};#sigma_{x}  [cm];#mu_{x}",vBinX.size()-1,&(vBinX[0]));
+    (*iSec).second.ResidualWidthX1 = resDir.make<TH1F>("h_residualWidthX1","residual width #Delta_{x};#sigma_{x}  [cm];#Delta_{x}",vBinX.size()-1,&(vBinX[0]));
+    (*iSec).second.ApeX1           = resDir.make<TH1F>("h_apeX1","alignment precision APE_{x};#sigma_{x}  [cm];APE_{x}",vBinX.size()-1,&(vBinX[0]));
+    (*iSec).second.FitMeanX2       = resDir.make<TH1F>("h_fitMeanX2","fitted residual mean #mu_{x};#sigma_{x}  [cm];#mu_{x}",vBinX.size()-1,&(vBinX[0]));
+    (*iSec).second.ResidualWidthX2 = resDir.make<TH1F>("h_residualWidthX2","residual width #Delta_{x};#sigma_{x}  [cm];#Delta_{x}",vBinX.size()-1,&(vBinX[0]));
+    (*iSec).second.ApeX2           = resDir.make<TH1F>("h_apeX2","alignment precision APE_{x};#sigma_{x}  [cm];APE_{x}",vBinX.size()-1,&(vBinX[0]));
   }
 }
 
@@ -686,12 +624,15 @@ ApeEstimator::bookSectorHists(){
 void
 ApeEstimator::bookTrackHists(){
   
-  bool zoomHists(theParameterSet.getParameter<bool>("zoomHists"));
+  bool zoomHists(parameterSet_.getParameter<bool>("zoomHists"));
   
   int trackSizeBins = zoomHists ? 21 : 201;
   double trackSizeMax = trackSizeBins -1;
+  
   double chi2Max = zoomHists ? 200. : 2000.;
   double norChi2Max = zoomHists ? 40. : 1000.;
+  double d0max = zoomHists ? 100. : 100.;
+  double dzmax = zoomHists ? 200. : 600.;
   double pMax = zoomHists ? 100. : 5000.;
   
   edm::Service<TFileService> fileService;
@@ -708,11 +649,13 @@ ApeEstimator::bookTrackHists(){
   tkDetector_.Chi2         = trkDir.make<TH1F>("h_chi2"," #chi^{2};#chi^{2};# tracks",100,0,chi2Max);
   tkDetector_.Ndof         = trkDir.make<TH1F>("h_ndof","# degrees of freedom ndof;ndof;# tracks",101,-1,100);
   tkDetector_.NorChi2      = trkDir.make<TH1F>("h_norChi2","normalized #chi^{2};#chi^{2}/ndof;# tracks",200,0,norChi2Max);
-  tkDetector_.Eta          = trkDir.make<TH1F>("h_eta","pseudorapidity #eta;#eta;# tracks",50,-3,3);
+  tkDetector_.Eta          = trkDir.make<TH1F>("h_eta","pseudorapidity #eta;#eta;# tracks",100,-5,5);
   tkDetector_.Theta        = trkDir.make<TH1F>("h_theta","polar angle #theta;#theta  [ ^{o}];# tracks",100,-10,190);
   tkDetector_.Phi          = trkDir.make<TH1F>("h_phi","azimuth angle #phi;#phi  [ ^{o}];# tracks",190,-190,190);
-  tkDetector_.P	           = trkDir.make<TH1F>("h_p","momentum magnitude |p|;|p|  [GeV];# tracks",100,0,pMax);
+  tkDetector_.D0           = trkDir.make<TH1F>("h_d0","Closest approach d_{0};d_{0}  [cm];# tracks",200,-d0max, d0max);
+  tkDetector_.Dz           = trkDir.make<TH1F>("h_dz","Closest approach d_{z};d_{z}  [cm];# tracks",200,-dzmax, dzmax);
   tkDetector_.Pt	   = trkDir.make<TH1F>("h_pt","transverse momentum p_{t};p_{t}  [GeV];# tracks",100,0,pMax);
+  tkDetector_.P	           = trkDir.make<TH1F>("h_p","momentum magnitude |p|;|p|  [GeV];# tracks",100,0,pMax);
   tkDetector_.MeanAngle    = trkDir.make<TH1F>("h_meanAngle","mean angle on module <#phi_{module}>;<#phi_{module}>  [ ^{o}];# tracks",100,-5,95);
   tkDetector_.HitsGood     = trkDir.make<TH1F>("h_hitsGood","# hits  [good];# hits  [good];# tracks",51,-1,50);
   
@@ -748,6 +691,8 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
   trkParams.eta          = track.eta();
   trkParams.theta        = track.theta();
   trkParams.phi          = track.phi();
+  trkParams.d0           = track.d0();
+  trkParams.dz           = track.dz();
   trkParams.p            = track.p();
   trkParams.pt           = track.pt();
   
@@ -770,9 +715,12 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
   trkParams.hits2D            = count2D;
   trkParams.meanPhiSensToNorm = meanPhiSensToNorm;
   
-  if(theParameterSet.getParameter<bool>("applyTrackCuts")){
+  if(parameterSet_.getParameter<bool>("applyTrackCuts")){
     trackCut_ = false;
-    if(trkParams.hitsValid<10 || trkParams.hits2D<2 || trkParams.pt<4. || trkParams.p<1. || trkParams.p>500. || trkParams.norChi2>100. || trkParams.phi>0.)trackCut_ = true;
+    if(trkParams.hitsValid<8 || trkParams.pt<1. || trkParams.p<4.)trackCut_ = true;
+    //if(trkParams.hitsValid<10 || trkParams.hits2D<2 || trkParams.pt<4. || trkParams.p<1. || trkParams.p>500. || trkParams.norChi2>100. || trkParams.phi>0.)trackCut_ = true;
+    //if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.pt<4. || trkParams.p<10. || trkParams.p>500. || trkParams.norChi2>10. || trkParams.phi>0.)trackCut_ = true;
+    //if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.pt<4. || trkParams.p<10. || trkParams.p>500. || trkParams.phi>0.)trackCut_ = true;
     //if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.p<20. || trkParams.p>500. || trkParams.norChi2>10. || trkParams.phi>0. || trkParams.meanPhiSensToNorm>0.9599)trackCut_ = true;  //55degree
     //if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.p<4. || trkParams.p>500. || trkParams.norChi2>10. || trkParams.phi>0. || trkParams.meanPhiSensToNorm>0.9599
     //                          || trkParams.pt<4.)trackCut_ = true;  //55degree
@@ -782,7 +730,7 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
   else{
     //repeat intrinsic ALCARECO cuts after track refitting 
     trackCut_ = false;
-    if(trkParams.hitsValid<7)trackCut_ = true;
+    if(trkParams.hitsValid<7 && trkParams.hits2D<2)trackCut_ = true;
   }
   
   return trkParams;
@@ -958,37 +906,101 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& iMeass, const edm::E
   hitParams.resX    = resXprime;
   hitParams.norResX = norResXprime;
   
+  float norResX2(norResXprime*norResXprime);
+  hitParams.probX   = TMath::Prob(norResX2,1);
   
   
-   if(mTkTreeVar_[rawId].subdetId==PixelSubdetector::PixelBarrel || mTkTreeVar_[rawId].subdetId==PixelSubdetector::PixelEndcap){
-     //const SiPixelRecHit& pixelHit = dynamic_cast<const SiPixelRecHit&>(recHit);
-     //const SiPixelCluster& pixelCluster = *pixelHit.cluster();
-   }
-   else if(mTkTreeVar_[rawId].subdetId==StripSubdetector::TIB || mTkTreeVar_[rawId].subdetId==StripSubdetector::TOB ||
-           mTkTreeVar_[rawId].subdetId==StripSubdetector::TID || mTkTreeVar_[rawId].subdetId==StripSubdetector::TEC){
-     if(!dynamic_cast<const SiStripRecHit2D*>(&recHit)){
-       edm::LogError("FillHitVariables")<<"RecHit in Strip is 'Matched' or 'Projected', but here all should be monohits per module";
-       hitParams.hitState = TrackStruct::invalid; return hitParams;
-     }
-     const SiStripRecHit2D& stripHit = dynamic_cast<const SiStripRecHit2D&>(recHit);
-     const SiStripCluster& stripCluster = *stripHit.cluster();
-     SiStripClusterInfo clusterInfo = SiStripClusterInfo(stripCluster, iSetup);
-     
-     hitParams.isModuleUsable = clusterInfo.IsModuleUsable();
-     hitParams.width          = clusterInfo.width();
-     hitParams.maxStrip       = clusterInfo.maxStrip() +1;
-     hitParams.maxStripInv    = mTkTreeVar_[rawId].nStrips - hitParams.maxStrip +1;
-     hitParams.charge         = clusterInfo.charge();
-     hitParams.maxCharge      = clusterInfo.maxCharge();
-     hitParams.maxIndex       = clusterInfo.maxIndex();
-     hitParams.chargeLR       = clusterInfo.chargeLR().first + clusterInfo.chargeLR().second;
-     hitParams.baryStrip      = clusterInfo.baryStrip() +1.;
-     hitParams.sOverN         = clusterInfo.signalOverNoise();
-   }
-   else{
-     edm::LogError("FillHitVariables")<<"Incorrect subdetector ID, hit not associated to tracker";
-     hitParams.hitState = TrackStruct::notInTracker; return hitParams;
-   }
+  
+  // Cluster parameters
+  
+  if(mTkTreeVar_[rawId].subdetId==PixelSubdetector::PixelBarrel || mTkTreeVar_[rawId].subdetId==PixelSubdetector::PixelEndcap){
+    //const SiPixelRecHit& pixelHit = dynamic_cast<const SiPixelRecHit&>(recHit);
+    //const SiPixelCluster& pixelCluster = *pixelHit.cluster();
+  }
+  else if(mTkTreeVar_[rawId].subdetId==StripSubdetector::TIB || mTkTreeVar_[rawId].subdetId==StripSubdetector::TOB ||
+          mTkTreeVar_[rawId].subdetId==StripSubdetector::TID || mTkTreeVar_[rawId].subdetId==StripSubdetector::TEC){
+    if(!dynamic_cast<const SiStripRecHit2D*>(&recHit)){
+      edm::LogError("FillHitVariables")<<"RecHit in Strip is 'Matched' or 'Projected', but here all should be monohits per module";
+      hitParams.hitState = TrackStruct::invalid; return hitParams;
+    }
+    const SiStripRecHit2D& stripHit = dynamic_cast<const SiStripRecHit2D&>(recHit);
+    const SiStripCluster& stripCluster = *stripHit.cluster();
+    SiStripClusterInfo clusterInfo = SiStripClusterInfo(stripCluster, iSetup);
+    
+    hitParams.isModuleUsable   = clusterInfo.IsModuleUsable();
+    hitParams.width            = clusterInfo.width();
+    hitParams.maxStrip         = clusterInfo.maxStrip() +1;
+    hitParams.maxStripInv      = mTkTreeVar_[rawId].nStrips - hitParams.maxStrip +1;
+    hitParams.charge           = clusterInfo.charge();
+    hitParams.maxCharge        = clusterInfo.maxCharge();
+    hitParams.maxIndex         = clusterInfo.maxIndex();
+    hitParams.chargeOnEdges    = static_cast<float>(clusterInfo.chargeLR().first + clusterInfo.chargeLR().second)/static_cast<float>(hitParams.charge);
+    hitParams.chargeAsymmetry  = static_cast<float>(clusterInfo.chargeLR().first - clusterInfo.chargeLR().second)/static_cast<float>(hitParams.charge);
+    hitParams.baryStrip        = clusterInfo.baryStrip() +1.;
+    hitParams.sOverN           = clusterInfo.signalOverNoise();
+    
+    // Calculate projection length corrected by drift
+    if(!hit.detUnit()){hitParams.hitState = TrackStruct::invalid; return hitParams;} // is it a single physical module?
+    const GeomDetUnit& detUnit = *hit.detUnit();
+    if(!dynamic_cast<const StripTopology*>(&detUnit.topology())){hitParams.hitState = TrackStruct::invalid; return hitParams;}
+    
+    
+    edm::ESHandle<MagneticField> magFieldHandle;
+    iSetup.get<IdealMagneticFieldRecord>().get(magFieldHandle);
+    
+    edm::ESHandle<SiStripLorentzAngle> lorentzAngleHandle;
+    iSetup.get<SiStripLorentzAngleRcd>().get(lorentzAngleHandle);
+    
+    
+    const StripGeomDetUnit * stripDet = (const StripGeomDetUnit*)(&detUnit);
+    const MagneticField * magField(magFieldHandle.product());
+    LocalVector bField = (stripDet->surface()).toLocal(magField->inTesla(stripDet->surface().position()));
+    const SiStripLorentzAngle * lorentzAngle(lorentzAngleHandle.product());
+    float tanLorentzAnglePerTesla = lorentzAngle->getLorentzAngle(stripDet->geographicalId().rawId());
+    float dirX = -tanLorentzAnglePerTesla * bField.y();
+    float dirY = tanLorentzAnglePerTesla * bField.x();
+    float dirZ = 1.; // E field always in z direction
+    LocalVector driftDirection(dirX,dirY,dirZ);
+    
+    
+    const Bounds& bounds = stripDet->specificSurface().bounds();
+    float maxLength = std::sqrt(std::pow(bounds.length(),2)+std::pow(bounds.width(),2));
+    float thickness = bounds.thickness();
+    LocalVector drift = driftDirection * thickness;
+    
+    
+    
+    const StripTopology& topol = dynamic_cast<const StripTopology&>(detUnit.topology());
+    LocalVector momentumDir(tsos.localDirection());
+    LocalPoint momentumPos(tsos.localPosition());
+    LocalVector scaledMomentumDir(momentumDir);
+    if(momentumDir.z() > 0.)scaledMomentumDir *= std::fabs(thickness/momentumDir.z());
+    else if(momentumDir.z() < 0.)scaledMomentumDir *= -std::fabs(thickness/momentumDir.z());
+    else scaledMomentumDir *= maxLength/momentumDir.mag();
+    
+    float projEdge1 = topol.measurementPosition(momentumPos - 0.5*scaledMomentumDir).x();
+    //std::cout<<"Edge 1: "<<projEdge1<<"\n";
+    if(projEdge1 < 0.)projEdge1 = 0.;
+    else if(projEdge1 > mTkTreeVar_[rawId].nStrips)projEdge1 = mTkTreeVar_[rawId].nStrips;
+    float projEdge2 = topol.measurementPosition(momentumPos + 0.5*scaledMomentumDir).x();
+    //std::cout<<"Edge 2: "<<projEdge2<<"\n";
+    if(projEdge2 < 0.)projEdge1 = 0.;
+    else if(projEdge2 > mTkTreeVar_[rawId].nStrips)projEdge1 = mTkTreeVar_[rawId].nStrips;
+    
+    
+    float coveredStrips = std::fabs(projEdge2 - projEdge1);
+    //std::cout<<"Covered strips: "<<coveredStrips<<"\nWidth: "<<hitParams.width<<"\n";
+    
+    hitParams.projWidth = coveredStrips;
+    
+    
+    
+    
+  }
+  else{
+    edm::LogError("FillHitVariables")<<"Incorrect subdetector ID, hit not associated to tracker";
+    hitParams.hitState = TrackStruct::notInTracker; return hitParams;
+  }
   
   
   if(!hitParams.isModuleUsable){hitParams.hitState = TrackStruct::invalid; return hitParams;}
@@ -1007,10 +1019,11 @@ void
 ApeEstimator::hitSelection(){
   this->setHitSelectionMapUInt("width");
   this->setHitSelectionMap("charge");
-  this->setHitSelectionMap("chargeLR");
   this->setHitSelectionMapUInt("edgeStrips");
   this->setHitSelectionMap("maxCharge");
   this->setHitSelectionMapUInt("maxIndex");
+  this->setHitSelectionMap("chargeOnEdges");
+  this->setHitSelectionMap("chargeAsymmetry");
   this->setHitSelectionMap("sOverN");
   
   this->setHitSelectionMap("resX");
@@ -1081,7 +1094,7 @@ ApeEstimator::hitSelection(){
 
 void
 ApeEstimator::setHitSelectionMap(const std::string& cutVariable){
-  edm::ParameterSet parSet(theParameterSet.getParameter<edm::ParameterSet>("HitSelector"));
+  edm::ParameterSet parSet(parameterSet_.getParameter<edm::ParameterSet>("HitSelector"));
   std::vector<double> vCutVariable(parSet.getParameter<std::vector<double> >(cutVariable));
   if(vCutVariable.size()%2==1){
     edm::LogError("HitSelector")<<"Invalid Hit Selection for "<<cutVariable<<": need even number of arguments (intervals)"
@@ -1097,7 +1110,7 @@ ApeEstimator::setHitSelectionMap(const std::string& cutVariable){
 
 void
 ApeEstimator::setHitSelectionMapUInt(const std::string& cutVariable){
-  edm::ParameterSet parSet(theParameterSet.getParameter<edm::ParameterSet>("HitSelector"));
+  edm::ParameterSet parSet(parameterSet_.getParameter<edm::ParameterSet>("HitSelector"));
   std::vector<unsigned int> vCutVariable(parSet.getParameter<std::vector<unsigned int> >(cutVariable));
   if(vCutVariable.size()%2==1){
     edm::LogError("HitSelector")<<"Invalid Hit Selection for "<<cutVariable<<": need even number of arguments (intervals)"
@@ -1122,20 +1135,21 @@ ApeEstimator::hitSelected(const TrackStruct::HitParameterStruct& hitParams)const
     if(0==(*iMap).second.size())continue;
     float variable(999.F);
     
-    if     ((*iMap).first == "charge")   variable = hitParams.charge;
-    else if((*iMap).first == "chargeLR") variable = hitParams.chargeLR;
-    else if((*iMap).first == "maxCharge")variable = hitParams.maxCharge;
-    else if((*iMap).first == "sOverN")   variable = hitParams.sOverN;
+    if     ((*iMap).first == "charge")          variable = hitParams.charge;
+    else if((*iMap).first == "maxCharge")       variable = hitParams.maxCharge;
+    else if((*iMap).first == "chargeOnEdges")   variable = hitParams.chargeOnEdges;
+    else if((*iMap).first == "chargeAsymmetry") variable = hitParams.chargeAsymmetry;
+    else if((*iMap).first == "sOverN")          variable = hitParams.sOverN;
     
-    else if((*iMap).first == "resX")     variable = hitParams.resX;
-    else if((*iMap).first == "norResX")  variable = hitParams.norResX;
-    else if((*iMap).first == "errXHit")  variable = hitParams.errXHit;
-    else if((*iMap).first == "errXTrk")  variable = hitParams.errXTrk;
-    else if((*iMap).first == "errX")     variable = hitParams.errX;
-    else if((*iMap).first == "errX2")    variable = hitParams.errX2;
-    else if((*iMap).first == "phiSens")  variable = hitParams.phiSens;
-    else if((*iMap).first == "phiSensX") variable = hitParams.phiSensX;
-    else if((*iMap).first == "phiSensY") variable = hitParams.phiSensY;
+    else if((*iMap).first == "resX")            variable = hitParams.resX;
+    else if((*iMap).first == "norResX")         variable = hitParams.norResX;
+    else if((*iMap).first == "errXHit")         variable = hitParams.errXHit;
+    else if((*iMap).first == "errXTrk")         variable = hitParams.errXTrk;
+    else if((*iMap).first == "errX")            variable = hitParams.errX;
+    else if((*iMap).first == "errX2")           variable = hitParams.errX2;
+    else if((*iMap).first == "phiSens")         variable = hitParams.phiSens;
+    else if((*iMap).first == "phiSensX")        variable = hitParams.phiSensX;
+    else if((*iMap).first == "phiSensY")        variable = hitParams.phiSensY;
     
     int iEntry(1); double intervalBegin(999.);
     for(std::vector<double>::const_iterator iVec = (*iMap).second.begin(); iVec != (*iMap).second.end(); ++iVec, ++iEntry){
@@ -1176,10 +1190,9 @@ ApeEstimator::fillHists(const TrackStruct& trackStruct){
   tkDetector_.HitsGoodVsHitsValid->Fill(trackStruct.trkParams.hitsValid,goodHitsPerTrack);
   tkDetector_.PHitsGoodVsHitsValid->Fill(trackStruct.trkParams.hitsValid,goodHitsPerTrack);
   
-  if(theParameterSet.getParameter<bool>("applyTrackCuts")){
+  if(parameterSet_.getParameter<bool>("applyTrackCuts")){
     // which tracks to take? need min. nr. of selected hits?
     if(goodHitsPerTrack < minGoodHitsPerTrack_)return;
-    //if(goodHitsPerTrack < 10)return;
   }
   
   tkDetector_.HitsSize    ->Fill(trackStruct.trkParams.hitsSize);
@@ -1194,6 +1207,8 @@ ApeEstimator::fillHists(const TrackStruct& trackStruct){
   tkDetector_.Eta         ->Fill(trackStruct.trkParams.eta);
   tkDetector_.Theta       ->Fill(trackStruct.trkParams.theta*180./M_PI);
   tkDetector_.Phi         ->Fill(trackStruct.trkParams.phi*180./M_PI);
+  tkDetector_.D0          ->Fill(trackStruct.trkParams.d0);
+  tkDetector_.Dz          ->Fill(trackStruct.trkParams.dz);
   tkDetector_.P	          ->Fill(trackStruct.trkParams.p);
   tkDetector_.Pt          ->Fill(trackStruct.trkParams.pt);
   tkDetector_.MeanAngle   ->Fill(trackStruct.trkParams.meanPhiSensToNorm*180./M_PI);
@@ -1208,151 +1223,76 @@ ApeEstimator::fillHists(const TrackStruct& trackStruct){
     if(iHit->hitState == TrackStruct::notAssignedToSectors)continue;
     
     for(std::map<unsigned int,TrackerSectorStruct>::iterator iSec = mTkSector_.begin(); iSec != mTkSector_.end(); ++iSec){
+      
       bool moduleInSector(false);
       for(std::vector<unsigned int>::const_iterator iUInt = (*iHit).sectors.begin(); iUInt != (*iHit).sectors.end(); ++iUInt){
 	if((*iSec).first == *iUInt){moduleInSector = true; break;}
       }
       if(!moduleInSector)continue;
       
-      (*iSec).second.PhiSens  ->Fill((*iHit).phiSens*180./M_PI);
-      (*iSec).second.PhiSensX ->Fill((*iHit).phiSensX*180./M_PI);
-      (*iSec).second.PhiSensY ->Fill((*iHit).phiSensY*180./M_PI);
       
-      //Put to earlier method (hit cuts and default value assignments may clash, def. of goodHitsPerTrack changes signeficantly)
-      //if(iHit->hitState == TrackStruct::invalid)continue;
-      //if(iHit->hitState == TrackStruct::negativeError)continue;
+      // Cluster Parameters
+      (*iSec).second.mCorrelationHists["Width"].fillCorrHists(*iHit,(*iHit).width);
+      (*iSec).second.mCorrelationHists["Charge"].fillCorrHists(*iHit,(*iHit).charge);
+      (*iSec).second.mCorrelationHists["MaxStrip"].fillCorrHists(*iHit,(*iHit).maxStrip);
+      (*iSec).second.mCorrelationHists["MaxCharge"].fillCorrHists(*iHit,(*iHit).maxCharge);
+      (*iSec).second.mCorrelationHists["MaxIndex"].fillCorrHists(*iHit,(*iHit).maxIndex);
+      (*iSec).second.mCorrelationHists["ChargeOnEdges"].fillCorrHists(*iHit,(*iHit).chargeOnEdges);
+      (*iSec).second.mCorrelationHists["ChargeAsymmetry"].fillCorrHists(*iHit,(*iHit).chargeAsymmetry);
+      (*iSec).second.mCorrelationHists["BaryStrip"].fillCorrHists(*iHit,(*iHit).baryStrip);
+      (*iSec).second.mCorrelationHists["SOverN"].fillCorrHists(*iHit,(*iHit).sOverN);
+      (*iSec).second.mCorrelationHists["WidthProj"].fillCorrHists(*iHit,(*iHit).projWidth);
+      (*iSec).second.mCorrelationHists["WidthDiff"].fillCorrHists(*iHit,(*iHit).projWidth-static_cast<float>((*iHit).width));
+      
+      (*iSec).second.WidthVsWidthProjected->Fill((*iHit).projWidth,(*iHit).width);
+      (*iSec).second.PWidthVsWidthProjected->Fill((*iHit).projWidth,(*iHit).width);
+      
+      (*iSec).second.WidthDiffVsMaxStrip->Fill((*iHit).maxStrip,(*iHit).projWidth-static_cast<float>((*iHit).width));
+      (*iSec).second.PWidthDiffVsMaxStrip->Fill((*iHit).maxStrip,(*iHit).projWidth-static_cast<float>((*iHit).width));
       
       
-      (*iSec).second.IsModuleUsable->Fill((*iHit).isModuleUsable);
-      (*iSec).second.Width	   ->Fill((*iHit).width);
-      (*iSec).second.Charge	   ->Fill((*iHit).charge);
-      (*iSec).second.ChargeLR      ->Fill((*iHit).chargeLR);
-      (*iSec).second.MaxStrip      ->Fill((*iHit).maxStrip);
-      (*iSec).second.MaxCharge     ->Fill((*iHit).maxCharge);
-      (*iSec).second.MaxIndex      ->Fill((*iHit).maxIndex);
-      (*iSec).second.BaryStrip     ->Fill((*iHit).baryStrip);
-      (*iSec).second.SOverN        ->Fill((*iHit).sOverN);
+      // Hit Parameters
+      (*iSec).second.mCorrelationHists["SigmaXHit"].fillCorrHists(*iHit,(*iHit).errXHit);
+      (*iSec).second.mCorrelationHists["SigmaXTrk"].fillCorrHists(*iHit,(*iHit).errXTrk);
+      (*iSec).second.mCorrelationHists["SigmaX"].fillCorrHists(*iHit,(*iHit).errX);
       
-      (*iSec).second.ResX     ->Fill((*iHit).resX);
-      (*iSec).second.NorResX  ->Fill((*iHit).norResX);
-      (*iSec).second.XHit     ->Fill((*iHit).xHit);
-      (*iSec).second.XTrk     ->Fill((*iHit).xTrk);
+      (*iSec).second.mCorrelationHists["PhiSens"].fillCorrHists(*iHit,(*iHit).phiSens*180./M_PI);
+      (*iSec).second.mCorrelationHists["PhiSensX"].fillCorrHists(*iHit,(*iHit).phiSensX*180./M_PI);
+      (*iSec).second.mCorrelationHists["PhiSensY"].fillCorrHists(*iHit,(*iHit).phiSensY*180./M_PI);
       
-      (*iSec).second.SigmaXHit->Fill((*iHit).errXHit);
-      (*iSec).second.SigmaXTrk->Fill((*iHit).errXTrk);
-      (*iSec).second.SigmaX   ->Fill((*iHit).errX);
-      (*iSec).second.SigmaX2  ->Fill((*iHit).errX2);
+      (*iSec).second.XHit   ->Fill((*iHit).xHit);
+      (*iSec).second.XTrk   ->Fill((*iHit).xTrk);
+      (*iSec).second.SigmaX2->Fill((*iHit).errX2);
       
-      (*iSec).second.NorResXVsWidth         ->Fill((*iHit).width,(*iHit).norResX);
-      (*iSec).second.NorResXVsCharge        ->Fill((*iHit).charge,(*iHit).norResX);
-      (*iSec).second.NorResXVsChargeLR      ->Fill((*iHit).chargeLR,(*iHit).norResX);
-      (*iSec).second.NorResXVsMaxStrip      ->Fill((*iHit).maxStrip,(*iHit).norResX);
-      (*iSec).second.NorResXVsMaxCharge     ->Fill((*iHit).maxCharge,(*iHit).norResX);
-      (*iSec).second.NorResXVsMaxIndex      ->Fill((*iHit).maxIndex,(*iHit).norResX);
-      (*iSec).second.NorResXVsBaryStrip     ->Fill((*iHit).baryStrip,(*iHit).norResX);
-      (*iSec).second.NorResXVsSOverN        ->Fill((*iHit).sOverN,(*iHit).norResX);
+      (*iSec).second.ResX   ->Fill((*iHit).resX);
+      (*iSec).second.NorResX->Fill((*iHit).norResX);
       
-      (*iSec).second.NorResXVsP             ->Fill(trackStruct.trkParams.p,(*iHit).norResX);
-      (*iSec).second.NorResXVsMeanAngle     ->Fill(trackStruct.trkParams.meanPhiSensToNorm*180./M_PI,(*iHit).norResX);
-      (*iSec).second.NorResXVsHitsValid     ->Fill(trackStruct.trkParams.hitsValid,(*iHit).norResX);
-      (*iSec).second.NorResXVsHitsGood      ->Fill(goodHitsPerTrack,(*iHit).norResX);
-      (*iSec).second.NorResXVsHitsInvalid   ->Fill(trackStruct.trkParams.hitsInvalid,(*iHit).norResX);
-      (*iSec).second.NorResXVsLayersMissed  ->Fill(trackStruct.trkParams.layersMissed,(*iHit).norResX);
-      (*iSec).second.NorResXVsNorChi2       ->Fill(trackStruct.trkParams.norChi2,(*iHit).norResX);
+      (*iSec).second.ProbX->Fill((*iHit).probX);
       
-      (*iSec).second.NorResXVsPhiSens       ->Fill((*iHit).phiSens*180./M_PI,(*iHit).norResX);
-      (*iSec).second.NorResXVsPhiSensX      ->Fill((*iHit).phiSensX*180./M_PI,(*iHit).norResX);
-      (*iSec).second.NorResXVsPhiSensY      ->Fill((*iHit).phiSensY*180./M_PI,(*iHit).norResX);
+      (*iSec).second.WidthVsPhiSensX->Fill((*iHit).phiSensX*180./M_PI,(*iHit).width);
+      (*iSec).second.PWidthVsPhiSensX->Fill((*iHit).phiSensX*180./M_PI,(*iHit).width);
       
-      (*iSec).second.SigmaXHitVsWidth       ->Fill((*iHit).width,(*iHit).errXHit);
-      (*iSec).second.SigmaXHitVsCharge      ->Fill((*iHit).charge,(*iHit).errXHit);
-      (*iSec).second.SigmaXHitVsChargeLR    ->Fill((*iHit).chargeLR,(*iHit).errXHit);
-      (*iSec).second.SigmaXHitVsMaxStrip    ->Fill((*iHit).maxStrip,(*iHit).errXHit);
-      (*iSec).second.SigmaXHitVsMaxCharge   ->Fill((*iHit).maxCharge,(*iHit).errXHit);
-      (*iSec).second.SigmaXHitVsMaxIndex    ->Fill((*iHit).maxIndex,(*iHit).errXHit);
-      (*iSec).second.SigmaXHitVsBaryStrip   ->Fill((*iHit).baryStrip,(*iHit).errXHit);
-      (*iSec).second.SigmaXHitVsSOverN      ->Fill((*iHit).sOverN,(*iHit).errXHit);
       
-      (*iSec).second.SigmaXTrkVsP           ->Fill(trackStruct.trkParams.p,(*iHit).errXTrk);
-      (*iSec).second.SigmaXTrkVsInvP        ->Fill(1./trackStruct.trkParams.p,(*iHit).errXTrk);
-      (*iSec).second.SigmaXTrkVsMeanAngle   ->Fill(trackStruct.trkParams.meanPhiSensToNorm*180./M_PI,(*iHit).errXTrk);
-      (*iSec).second.SigmaXTrkVsHitsValid   ->Fill(trackStruct.trkParams.hitsValid,(*iHit).errXTrk);
-      (*iSec).second.SigmaXTrkVsHitsGood    ->Fill(goodHitsPerTrack,(*iHit).errXTrk);
-      (*iSec).second.SigmaXTrkVsHitsInvalid ->Fill(trackStruct.trkParams.hitsInvalid,(*iHit).errXTrk);
-      (*iSec).second.SigmaXTrkVsLayersMissed->Fill(trackStruct.trkParams.layersMissed,(*iHit).errXTrk);
-      (*iSec).second.SigmaXVsNorChi2        ->Fill(trackStruct.trkParams.norChi2,(*iHit).errX);
+      // Track Parameters
+      (*iSec).second.mCorrelationHists["HitsValid"].fillCorrHists(*iHit,trackStruct.trkParams.hitsValid);
+      (*iSec).second.mCorrelationHists["HitsGood"].fillCorrHists(*iHit,goodHitsPerTrack);
+      (*iSec).second.mCorrelationHists["HitsInvalid"].fillCorrHists(*iHit,trackStruct.trkParams.hitsInvalid);
+      (*iSec).second.mCorrelationHists["LayersMissed"].fillCorrHists(*iHit,trackStruct.trkParams.layersMissed);
+      (*iSec).second.mCorrelationHists["NorChi2"].fillCorrHists(*iHit,trackStruct.trkParams.norChi2);
+      (*iSec).second.mCorrelationHists["Theta"].fillCorrHists(*iHit,trackStruct.trkParams.theta*180./M_PI);
+      (*iSec).second.mCorrelationHists["Phi"].fillCorrHists(*iHit,trackStruct.trkParams.phi*180./M_PI);
+      (*iSec).second.mCorrelationHists["D0"].fillCorrHists(*iHit,trackStruct.trkParams.d0);
+      (*iSec).second.mCorrelationHists["Dz"].fillCorrHists(*iHit,trackStruct.trkParams.dz);
+      (*iSec).second.mCorrelationHists["Pt"].fillCorrHists(*iHit,trackStruct.trkParams.pt);
+      (*iSec).second.mCorrelationHists["P"].fillCorrHists(*iHit,trackStruct.trkParams.p);
+      (*iSec).second.mCorrelationHists["InvP"].fillCorrHists(*iHit,1./trackStruct.trkParams.p);
+      (*iSec).second.mCorrelationHists["MeanAngle"].fillCorrHists(*iHit,trackStruct.trkParams.meanPhiSensToNorm*180./M_PI);
       
-      (*iSec).second.SigmaXHitVsPhiSens     ->Fill((*iHit).phiSens*180./M_PI,(*iHit).errXHit);
-      (*iSec).second.SigmaXHitVsPhiSensX    ->Fill((*iHit).phiSensX*180./M_PI,(*iHit).errXHit);
-      (*iSec).second.SigmaXHitVsPhiSensY    ->Fill((*iHit).phiSensY*180./M_PI,(*iHit).errXHit);
-      (*iSec).second.SigmaXTrkVsPhiSens     ->Fill((*iHit).phiSens*180./M_PI,(*iHit).errXTrk);
-      (*iSec).second.SigmaXTrkVsPhiSensX    ->Fill((*iHit).phiSensX*180./M_PI,(*iHit).errXTrk);
-      (*iSec).second.SigmaXTrkVsPhiSensY    ->Fill((*iHit).phiSensY*180./M_PI,(*iHit).errXTrk);
-      (*iSec).second.SigmaXVsPhiSens        ->Fill((*iHit).phiSens*180./M_PI,(*iHit).errX);
-      (*iSec).second.SigmaXVsPhiSensX       ->Fill((*iHit).phiSensX*180./M_PI,(*iHit).errX);
-      (*iSec).second.SigmaXVsPhiSensY       ->Fill((*iHit).phiSensY*180./M_PI,(*iHit).errX);
+      //(*iSec).second.mCorrelationHists[""].fillCorrHists(*iHit,(*iHit).);
       
-      (*iSec).second.NorResXVsSigmaXHit     ->Fill((*iHit).errXHit,(*iHit).norResX);
-      (*iSec).second.NorResXVsSigmaXTrk     ->Fill((*iHit).errXTrk,(*iHit).norResX);
-      (*iSec).second.NorResXVsSigmaX        ->Fill((*iHit).errX,(*iHit).norResX);
       
-      (*iSec).second.WidthVsPhiSensX        ->Fill((*iHit).phiSensX*180./M_PI,(*iHit).width);
       
-      (*iSec).second.PNorResXVsWidth         ->Fill((*iHit).width,(*iHit).norResX);
-      (*iSec).second.PNorResXVsCharge        ->Fill((*iHit).charge,(*iHit).norResX);
-      (*iSec).second.PNorResXVsChargeLR      ->Fill((*iHit).chargeLR,(*iHit).norResX);
-      (*iSec).second.PNorResXVsMaxStrip      ->Fill((*iHit).maxStrip,(*iHit).norResX);
-      (*iSec).second.PNorResXVsMaxCharge     ->Fill((*iHit).maxCharge,(*iHit).norResX);
-      (*iSec).second.PNorResXVsMaxIndex      ->Fill((*iHit).maxIndex,(*iHit).norResX);
-      (*iSec).second.PNorResXVsBaryStrip     ->Fill((*iHit).baryStrip,(*iHit).norResX);
-      (*iSec).second.PNorResXVsSOverN        ->Fill((*iHit).sOverN,(*iHit).norResX);
-      
-      (*iSec).second.PNorResXVsP             ->Fill(trackStruct.trkParams.p,(*iHit).norResX);
-      (*iSec).second.PNorResXVsMeanAngle     ->Fill(trackStruct.trkParams.meanPhiSensToNorm*180./M_PI,(*iHit).norResX);
-      (*iSec).second.PNorResXVsHitsValid     ->Fill(trackStruct.trkParams.hitsValid,(*iHit).norResX);
-      (*iSec).second.PNorResXVsHitsGood      ->Fill(goodHitsPerTrack,(*iHit).norResX);
-      (*iSec).second.PNorResXVsHitsInvalid   ->Fill(trackStruct.trkParams.hitsInvalid,(*iHit).norResX);
-      (*iSec).second.PNorResXVsLayersMissed  ->Fill(trackStruct.trkParams.layersMissed,(*iHit).norResX);
-      (*iSec).second.PNorResXVsNorChi2       ->Fill(trackStruct.trkParams.norChi2,(*iHit).norResX);
-      
-      (*iSec).second.PNorResXVsPhiSens       ->Fill((*iHit).phiSens*180./M_PI,(*iHit).norResX);
-      (*iSec).second.PNorResXVsPhiSensX      ->Fill((*iHit).phiSensX*180./M_PI,(*iHit).norResX);
-      (*iSec).second.PNorResXVsPhiSensY      ->Fill((*iHit).phiSensY*180./M_PI,(*iHit).norResX);
-      
-      (*iSec).second.PSigmaXHitVsWidth       ->Fill((*iHit).width,(*iHit).errXHit);
-      (*iSec).second.PSigmaXHitVsCharge      ->Fill((*iHit).charge,(*iHit).errXHit);
-      (*iSec).second.PSigmaXHitVsChargeLR    ->Fill((*iHit).chargeLR,(*iHit).errXHit);
-      (*iSec).second.PSigmaXHitVsMaxStrip    ->Fill((*iHit).maxStrip,(*iHit).errXHit);
-      (*iSec).second.PSigmaXHitVsMaxCharge   ->Fill((*iHit).maxCharge,(*iHit).errXHit);
-      (*iSec).second.PSigmaXHitVsMaxIndex    ->Fill((*iHit).maxIndex,(*iHit).errXHit);
-      (*iSec).second.PSigmaXHitVsBaryStrip   ->Fill((*iHit).baryStrip,(*iHit).errXHit);
-      (*iSec).second.PSigmaXHitVsSOverN      ->Fill((*iHit).sOverN,(*iHit).errXHit);
-      
-      (*iSec).second.PSigmaXTrkVsP	     ->Fill(trackStruct.trkParams.p,(*iHit).errXTrk);
-      (*iSec).second.PSigmaXTrkVsInvP        ->Fill(1./trackStruct.trkParams.p,(*iHit).errXTrk);
-      (*iSec).second.PSigmaXTrkVsMeanAngle   ->Fill(trackStruct.trkParams.meanPhiSensToNorm*180./M_PI,(*iHit).errXTrk);
-      (*iSec).second.PSigmaXTrkVsHitsValid   ->Fill(trackStruct.trkParams.hitsValid,(*iHit).errXTrk);
-      (*iSec).second.PSigmaXTrkVsHitsGood    ->Fill(goodHitsPerTrack,(*iHit).errXTrk);
-      (*iSec).second.PSigmaXTrkVsHitsInvalid ->Fill(trackStruct.trkParams.hitsInvalid,(*iHit).errXTrk);
-      (*iSec).second.PSigmaXTrkVsLayersMissed->Fill(trackStruct.trkParams.layersMissed,(*iHit).errXTrk);
-      (*iSec).second.PSigmaXVsNorChi2        ->Fill(trackStruct.trkParams.norChi2,(*iHit).errX);
-      
-      (*iSec).second.PSigmaXHitVsPhiSens     ->Fill((*iHit).phiSens*180./M_PI,(*iHit).errXHit);
-      (*iSec).second.PSigmaXHitVsPhiSensX    ->Fill((*iHit).phiSensX*180./M_PI,(*iHit).errXHit);
-      (*iSec).second.PSigmaXHitVsPhiSensY    ->Fill((*iHit).phiSensY*180./M_PI,(*iHit).errXHit);
-      (*iSec).second.PSigmaXTrkVsPhiSens     ->Fill((*iHit).phiSens*180./M_PI,(*iHit).errXTrk);
-      (*iSec).second.PSigmaXTrkVsPhiSensX    ->Fill((*iHit).phiSensX*180./M_PI,(*iHit).errXTrk);
-      (*iSec).second.PSigmaXTrkVsPhiSensY    ->Fill((*iHit).phiSensY*180./M_PI,(*iHit).errXTrk);
-      (*iSec).second.PSigmaXVsPhiSens        ->Fill((*iHit).phiSens*180./M_PI,(*iHit).errX);
-      (*iSec).second.PSigmaXVsPhiSensX       ->Fill((*iHit).phiSensX*180./M_PI,(*iHit).errX);
-      (*iSec).second.PSigmaXVsPhiSensY       ->Fill((*iHit).phiSensY*180./M_PI,(*iHit).errX);
-      
-      (*iSec).second.PNorResXVsSigmaXHit     ->Fill((*iHit).errXHit,(*iHit).norResX);
-      (*iSec).second.PNorResXVsSigmaXTrk     ->Fill((*iHit).errXTrk,(*iHit).norResX);
-      (*iSec).second.PNorResXVsSigmaX        ->Fill((*iHit).errX,(*iHit).norResX);
-      
-      (*iSec).second.PWidthVsPhiSensX        ->Fill((*iHit).phiSensX*180./M_PI,(*iHit).width);
-      
+      // Special Histograms
       for(std::map<std::string,std::vector<TH1*> >::iterator iMap = (*iSec).second.mSigmaX.begin(); iMap != (*iSec).second.mSigmaX.end(); ++iMap){
         for(std::vector<TH1*>::iterator iHist = (*iMap).second.begin(); iHist != (*iMap).second.end(); ++iHist){
 	  if     ((*iMap).first=="sigmaXHit")(*iHist)->Fill((*iHit).errXHit);
@@ -1381,19 +1321,33 @@ ApeEstimator::fillHists(const TrackStruct& trackStruct){
 
 void
 ApeEstimator::calculateAPE(){
+   // Set up text file for writing out APE values per module
+   ofstream apeOutputFile;
+   const std::string apeOutputFileName(parameterSet_.getParameter<std::string>("ApeOutputFile"));
+   apeOutputFile.open(apeOutputFileName.c_str());
+   if(apeOutputFile.is_open()){
+     edm::LogInfo("CalculateAPE")<<"Text file for writing APE values successfully opened";
+   }else{
+     edm::LogError("CalculateAPE")<<"Text file for writing APE values NOT opened,\n"
+                                  <<"...APE calculation stopped. Please check path of text file name in config:\n"
+				  <<"\t"<<apeOutputFileName;
+     return;
+   }
+   
+   const double apeScaling(parameterSet_.getParameter<double>("apeScaling"));
    for(std::map<unsigned int,TrackerSectorStruct>::iterator iSec = mTkSector_.begin(); iSec != mTkSector_.end(); ++iSec){
+     std::vector<std::pair<double,double> > vEntriesAndApePerBin;
+     
      for(std::map<unsigned int, std::map<std::string,TH1*> >::const_iterator iErrBins = (*iSec).second.mBinnedHists.begin();
          iErrBins != (*iSec).second.mBinnedHists.end(); ++iErrBins){
        std::map<std::string,TH1*> mHists = (*iErrBins).second;
        
-       
-       
        double entries = mHists["sigmaX"]->GetEntries();
        
-       if(entries<0.1){  // There are no entries outside histo range (over-, underflow) possible
+//       if(entries<0.1){  // There are no entries outside histo range (over-, underflow) possible
 //         edm::LogWarning("CalculateAPE")<<"\nNo valid entry in histogram \"sigmaX\" in error bin "<<(*iErrBins).first<<" of sector "<<(*iSec).first<<", APE is not calculated\n";
 	 //continue;
-       }
+//       }
        
        double meanSigmaX = mHists["sigmaX"]->GetMean();
        
@@ -1402,7 +1356,8 @@ ApeEstimator::calculateAPE(){
               xMax     = mHists["norResX"]->GetXaxis()->GetXmax(),
 	      integral = mHists["norResX"]->Integral(),
 	      mean     = mHists["norResX"]->GetMean(),
-	      rms      = mHists["norResX"]->GetRMS();
+	      rms      = mHists["norResX"]->GetRMS(),
+	      maximum  = mHists["norResX"]->GetBinContent(mHists["norResX"]->GetMaximumBin());
        
        //if(integral<0.1){  // There might be all entries outside histo range
        //  edm::LogWarning("CalculateAPE")<<"\nNo valid entry in histogram \"norResX\" in error bin "<<(*iErrBins).first<<" of sector "<<(*iSec).first<<", APE is not calculated\n";
@@ -1414,62 +1369,112 @@ ApeEstimator::calculateAPE(){
 //       std::cout<<"Test0a\t"<<entries<<"\t"<<integral<<"\n";
        
        // First Gaus Fit
+//       if(integral<2)continue;
        TF1 func1("mygaus", "gaus", xMin, xMax);
-       func1.SetParameters(integral, mean, rms);
-       TString fitOpt("RQ"); //TString fitOpt("IMR"); ("IRLL"); ("IRQ");
+       func1.SetParameters(maximum, mean, rms);
+       TString fitOpt("ILERQ"); //TString fitOpt("IMR"); ("IRLL"); ("IRQ");
+       Int_t fitResult(0);
+       if(integral>100.){
        if(mHists["norResX"]->Fit(&func1, fitOpt)){
-//         edm::LogWarning("CalculateAPE")<<"Fit1 did not work: "<<mHists["norResX"]->Fit(&func1, fitOpt);
-	 continue;
+         edm::LogWarning("CalculateAPE")<<"Fit1 did not work: "<<mHists["norResX"]->Fit(&func1, fitOpt);
+//	 continue;
        }
-       Int_t fitResult = mHists["norResX"]->Fit(&func1, fitOpt);
+       fitResult = mHists["norResX"]->Fit(&func1, fitOpt);
 //       std::cout<<"FitResult1\t"<<fitResult<<"\n";
+       }
        
 //       std::cout<<"Test0b\n";
        
        // Second Gaus Fit
-       TF1 *newFunc1 = mHists["norResX"]->GetFunction(func1.GetName());
+//       TF1 *newFunc1 = mHists["norResX"]->GetFunction(func1.GetName());
+//       if(!newFunc1)continue;
+//       Double_t mean1  = newFunc1->GetParameter(1);
+//       Double_t sigma1 = newFunc1->GetParameter(2);
        
-       Double_t mean1  = newFunc1->GetParameter(1);
-       Double_t sigma1 = newFunc1->GetParameter(2);
+       Double_t mean1  = func1.GetParameter(1);
+       Double_t sigma1 = func1.GetParameter(2);
+       //std::cout<<"\n\tTest "<<integral<<" "<<mean<<" "<<rms<<" "<<mean1<<" "<<sigma1<<"\n";
        
        TF1 func2("mygaus2","gaus",mean1 - 2.0 * TMath::Abs(sigma1),mean1 + 2.0 * TMath::Abs(sigma1));
-       func2.SetParameters(newFunc1->GetParameter(0),newFunc1->GetParameter(1),newFunc1->GetParameter(2));
+       func2.SetParameters(func1.GetParameter(0),mean1,sigma1);
+       if(integral>100.){
        if(mHists["norResX"]->Fit(&func2, fitOpt)){
-//         edm::LogWarning("CalculateAPE")<<"Fit2 did not work: "<<mHists["norResX"]->Fit(&func2, fitOpt);
+         edm::LogWarning("CalculateAPE")<<"Fit2 did not work: "<<mHists["norResX"]->Fit(&func2, fitOpt);
 	 continue;
        }
        fitResult = mHists["norResX"]->Fit(&func2, fitOpt);
 //       std::cout<<"FitResult2\t"<<fitResult<<"\n";
 //       std::cout<<"Test1\n";
+       }
        
-       TF1 *newFunc2 = mHists["norResX"]->GetFunction(func2.GetName());
-       mean1  = newFunc2->GetParameter(1);
-       sigma1 = newFunc2->GetParameter(2);
+       Double_t mean2  = func2.GetParameter(1);
+       Double_t sigma2 = func2.GetParameter(2);
+       std::cout<<"\n\tTest "<<integral<<" "<<mean<<" "<<rms<<" "<<mean1<<" "<<sigma1<<" "<<mean2<<" "<<sigma2<<"\n";
        
 //       std::cout<<"Test2\n";
        
-       double fitMean = mean1;
-       double residualWidth = sigma1;
+       double fitMean1(mean1), fitMean2(mean2);
+       double residualWidth1(sigma1), residualWidth2(sigma2);
        
-       double ape = meanSigmaX*sqrt(residualWidth*residualWidth -1);
-       if(isnan(ape))ape = -0.0010;
+       double ape1 = meanSigmaX*std::sqrt(residualWidth1*residualWidth1 -1.);
+       double ape2 = meanSigmaX*std::sqrt(residualWidth2*residualWidth2 -1.);
+       if(isnan(ape1))ape1 = -0.0010;
+       if(isnan(ape2))ape2 = -0.0010;
        
        (*iSec).second.Entries       ->SetBinContent((*iErrBins).first,integral);
        (*iSec).second.MeanX         ->SetBinContent((*iErrBins).first,mean);
        (*iSec).second.RmsX          ->SetBinContent((*iErrBins).first,rms);
        
-       if(entries<100.){fitMean = 0; ape = residualWidth = -0.0010;}
+       if(entries<100.){fitMean1 = 0; ape1 = residualWidth1 = -0.0010;
+                        fitMean2 = 0; ape2 = residualWidth2 = -0.0010;}
        
        //std::cout<<"\n\nSector, Bin "<<(*iSec).first<<"\t"<<(*iErrBins).first;
        //std::cout<<"\nEntries, MeanError, ResWidth, APE \t"<<entries<<"\t"<<meanSigmaX<<"\t"<<residualWidth<<"\t"<<ape<<"\n";
-       (*iSec).second.FitMeanX      ->SetBinContent((*iErrBins).first,fitMean);
-       (*iSec).second.ResidualWidthX->SetBinContent((*iErrBins).first,residualWidth);
-       (*iSec).second.ApeX          ->SetBinContent((*iErrBins).first,ape);
+       (*iSec).second.FitMeanX1      ->SetBinContent((*iErrBins).first,fitMean1);
+       (*iSec).second.ResidualWidthX1->SetBinContent((*iErrBins).first,residualWidth1);
+       (*iSec).second.ApeX1          ->SetBinContent((*iErrBins).first,ape1);
+       
+       (*iSec).second.FitMeanX2      ->SetBinContent((*iErrBins).first,fitMean2);
+       (*iSec).second.ResidualWidthX2->SetBinContent((*iErrBins).first,residualWidth2);
+       (*iSec).second.ApeX2          ->SetBinContent((*iErrBins).first,ape2);
+       
+       std::pair<double,double> entriesAndApePerBin(entries,ape2);
+       vEntriesAndApePerBin.push_back(entriesAndApePerBin);
+     }
+     
+     
+     // Question: how to calculate APE from different bins, mean value from all, weighted by entries ???
+     double apeX(-1.);
+     unsigned int interval(1), regardedInterval(1);
+     std::vector<std::pair<double,double> >::const_iterator iApeBins;
+     for(iApeBins = vEntriesAndApePerBin.begin(); iApeBins != vEntriesAndApePerBin.end(); ++iApeBins, ++interval){
+       if((*iApeBins).second < 0.){
+         edm::LogInfo("CalculateAPE")<<"Error interval "<<interval<<" has no valid APE calculated and is not regarded";
+	 continue;
+       }
+       if(regardedInterval==1)apeX = (*iApeBins).second;
+       else apeX += (*iApeBins).second;
+       ++regardedInterval;
+     }
+     apeX = apeX/static_cast<double>(regardedInterval);
+     
+     // scale APE with value given in cfg
+     apeX = apeX*apeScaling;
+     
+     if(vEntriesAndApePerBin.size() != 0)(*iSec).second.apeX = apeX;
+     else{
+       edm::LogError("CalculateAPE")<<"NO error interval of sector "<<(*iSec).first<<" has a valid APE calculated,\n...so cannot set APE";
+       continue;
+     }
+     
+     // Set the calculated APE spherical for all modules of the sector
+     std::vector<unsigned int>::const_iterator iRawId;
+     for(iRawId = (*iSec).second.vRawId.begin(); iRawId != (*iSec).second.vRawId.end(); ++iRawId){
+       apeOutputFile<<*iRawId<<" "<<std::fixed<<std::setprecision(5)<<apeX<<" "<<apeX<<" "<<apeX<<"\n";
      }
    }
+   apeOutputFile.close();
 }
-
-
 
 
 
@@ -1525,7 +1530,7 @@ ApeEstimator::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
    //edm::Handle<reco::TrackCollection> tracks;
    
-   edm::InputTag tjTag = theParameterSet.getParameter<edm::InputTag>("tjTkAssociationMapTag");
+   edm::InputTag tjTag = parameterSet_.getParameter<edm::InputTag>("tjTkAssociationMapTag");
    edm::Handle<TrajTrackAssociationCollection> m_TrajTracksMap;
    iEvent.getByLabel(tjTag, m_TrajTracksMap);
    
