@@ -26,6 +26,14 @@
 <use name=Geometry/TrackerGeometryBuilder>
 <use name=CondFormats/Alignment>
 <use name=AnalysisDataFormats/SiStripClusterInfo>
+<use name=RecoLocalTracker/SiStripRecHitConverter>
+<use name=MagneticField/Engine>
+<use name=CondFormats/SiStripObjects>
+<use name=DataFormats/GeometrySurface>
+<use name=MagneticField/Records>
+<use name=CondFormats/DataRecord>
+
+
 <use name=root>
 <flags EDM_PLUGIN=1>
 <export>
