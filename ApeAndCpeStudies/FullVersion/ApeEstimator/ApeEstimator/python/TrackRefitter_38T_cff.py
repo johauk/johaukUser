@@ -44,6 +44,20 @@ myTrackerAlignmentErr = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poo
 )
 es_prefer_trackerAlignmentErr = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentErr")
 
+### APE (as estimated with ApeEstimator)
+#myTrackerAlignmentErr = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+#    connect = cms.string('sqlite_file:/afs/cern.ch/user/h/hauk/cms/CMSSW_3_3_6_patch6/src/Alignment/CommonAlignmentAlgorithm/MyLocalApe.db'),
+#    toGet = cms.VPSet(
+#      cms.PSet(
+#        record = cms.string('TrackerAlignmentErrorRcd'),
+#        tag = cms.string('AlignmentErrors')
+#      )
+#    )
+#)
+#es_prefer_trackerAlignmentErr = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentErr")
+
+
+
 
 
 ## MAGNETIC FIELD
@@ -74,6 +88,11 @@ TTRHBuilderGeometricAndTemplate = cms.ESProducer("TkTransientTrackingRecHitBuild
 
 ## TRACK REFITTER (input for Track Selector)
 from RecoTracker.TrackProducer.TrackRefitters_cff import *
+# not used when < 0.
+FittingSmootherRKP5.EstimateCut = -1.
+# not used when < -15. (not yet implemented in used tag)
+#FittingSmootherRKP5.LogPixelProbabilityCut = -16.
+FittingSmootherRKP5.RejectTracks = False
 TrackRefitterForApeEstimator = RecoTracker.TrackProducer.TrackRefitters_cff.TrackRefitterP5.clone(
     src = 'ALCARECOTkAlCosmicsCTF0T' #'ALCARECOTkAlCosmicsCosmicTF0T' #'ALCARECOTkAlCosmicsCosmicTF'
           #'ALCARECOTkAlCosmicsCTF' #'ALCARECOTkAlCosmicsRS0T' #'ALCARECOTkAlCosmicsRS'
