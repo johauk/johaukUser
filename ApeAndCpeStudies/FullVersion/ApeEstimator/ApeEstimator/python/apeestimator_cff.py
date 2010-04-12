@@ -6,7 +6,7 @@ from ApeEstimator.ApeEstimator.SectorBuilder_cff import *
 
 
 ApeEstimatorCosmics = ApeEstimator.clone(
-  maxTracksPerEvent = 2,
+  maxTracksPerEvent = 1,
   #applyTrackCuts = False,
   minGoodHitsPerTrack = 1,
   residualErrorBinning = [0.0005,0.0010,0.0015,0.0020,0.0025,0.0030,0.0035,0.0040,0.0050,0.0070,0.0100], # 5-100um
