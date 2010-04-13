@@ -47,7 +47,6 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10001) )
 ## Input Files (CRAFT '09)
 ##
 ## --- Monte Carlo ---
-#process.load("ApeEstimator.ApeEstimator.CRAFT_mc_22X_cff")
 #process.load("ApeEstimator.ApeEstimator.CRAFT_mc_31X_cff")
 ## --- First Reprocessing ---
 process.load("ApeEstimator.ApeEstimator.run109011_109624_FirstRepro_cff")
@@ -61,8 +60,10 @@ process.load("ApeEstimator.ApeEstimator.TrackRefitter_38T_cff")
 ## --- Monte Carlo ---
 #process.GlobalTag.globaltag = 'DESIGN_3X_V8B::All'    # peak mode
 #process.GlobalTag.globaltag = 'MC_3XY_V9B::All'    # same, but bad channels are masked
+#process.GlobalTag.globaltag = 'DESIGN_3X_V26::All'
 ## --- First Reprocessing ---
-process.GlobalTag.globaltag = 'CRAFT09_R_V4::All'
+#process.GlobalTag.globaltag = 'CRAFT09_R_V4::All'
+process.GlobalTag.globaltag = 'CRAFT09_R_V9::All'
 ## --- Further information (Monte Carlo and Data) ---
 #process.StripCPEgeometricESProducer.APVpeakmode = False
 process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
@@ -105,7 +106,7 @@ process.ApeEstimatorCosmics1.ApeOutputFile = os.environ['CMSSW_BASE'] + '/src/Ap
 
 ## Output File Configuration
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string('$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/test.root'),
+    fileName = cms.string(os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/test.root'),
     closeFileFast = cms.untracked.bool(True)
 )
 

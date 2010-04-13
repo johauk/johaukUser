@@ -1,5 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 
+import os
+
+
 process = cms.Process("TrackerTreeGeneration")
 
 
@@ -29,10 +32,8 @@ process.load("Configuration.StandardSequences.Geometry_cff")
 # use always ideal conditions to get no influence from Alignment on absolute Positions, Orientations...
 # so it is clear that when choosing special regions in e.g. globalPhi, Modules of the same Rod are contained in the same region
 # --- this is now improved, it is always taken from ideal geometry independent of the GlobalTag
-#process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cfi")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-#process.GlobalTag.globaltag = 'IDEAL_V12::All'
-process.GlobalTag.globaltag = 'DESIGN_31X_V8::All'
+process.GlobalTag.globaltag = 'DESIGN_3X_V26::All'
 
 
 ## ANALYZER
@@ -41,7 +42,7 @@ process.load("Alignment.TrackerTreeGenerator.trackertreegenerator_cfi")
 
 ## Output File Configuration
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string('$CMSSW_BASE/src/Alignment/TrackerTreeGenerator/hists/TrackerTree.root')
+    fileName = cms.string(os.environ['CMSSW_BASE'] + '/src/Alignment/TrackerTreeGenerator/hists/TrackerTree.root')
 )
 
 

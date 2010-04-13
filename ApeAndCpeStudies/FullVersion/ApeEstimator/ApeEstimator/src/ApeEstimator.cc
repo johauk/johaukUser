@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.2 2010/02/04 18:41:31 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.3 2010/04/12 15:05:33 hauk Exp $
 //
 //
 
@@ -35,8 +35,7 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
-#include "CommonTools/UtilAlgos/interface/TFileDirectory.h"
-//#include "CommonTools/Utils/interface/TFileDirectory.h" // not yet in release
+#include "CommonTools/Utils/interface/TFileDirectory.h"
 
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/CLHEP/interface/AlgebraicObjects.h"
@@ -73,8 +72,7 @@
 
 #include "CondFormats/Alignment/interface/Definitions.h"
 
-#include "AnalysisDataFormats/SiStripClusterInfo/interface/SiStripClusterInfo.h"
-//#include "RecoLocalTracker/SiStripClusterizer/interface/SiStripClusterInfo.h" // not yet in release
+#include "RecoLocalTracker/SiStripClusterizer/interface/SiStripClusterInfo.h"
 
 #include "ApeEstimator/ApeEstimator/interface/TrackerSectorStruct.h"
 #include "ApeEstimator/ApeEstimator/interface/TrackerDetectorStruct.h"

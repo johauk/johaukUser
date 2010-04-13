@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Fri Jan 16 14:09:52 CET 2009
-// $Id: TrackerTreeGenerator.cc,v 1.2 2010/02/02 15:20:46 hauk Exp $
+// $Id: TrackerTreeGenerator.cc,v 1.3 2010/02/04 18:37:54 hauk Exp $
 //
 //
 
@@ -32,8 +32,7 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
-#include "CommonTools/UtilAlgos/interface/TFileDirectory.h"
-//#include "CommonTools/Utils/interface/TFileDirectory.h" // not yet in release
+#include "CommonTools/Utils/interface/TFileDirectory.h"
 
 #include "DataFormats/DetId/interface/DetId.h"
 #include "DataFormats/SiPixelDetId/interface/PixelSubdetector.h"
