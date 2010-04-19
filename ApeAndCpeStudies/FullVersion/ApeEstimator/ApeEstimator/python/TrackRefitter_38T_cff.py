@@ -102,13 +102,33 @@ TrackRefitterForApeEstimator = RecoTracker.TrackProducer.TrackRefitters_cff.Trac
     ,NavigationSchool = ''
 )
 
+TrackRefitterHighPurityForApeEstimator = TrackRefitterForApeEstimator.clone(
+    src = 'HighPuritySelector'
+)
+
+
+
+## FILTER for high purity tracks
+import Alignment.CommonAlignmentProducer.AlignmentTrackSelector_cfi
+HighPuritySelector = Alignment.CommonAlignmentProducer.AlignmentTrackSelector_cfi.AlignmentTrackSelector.clone(
+    applyBasicCuts = True,
+    filter = True,
+    src = 'ALCARECOTkAlMinBias',
+    trackQualities = ["highPurity"]
+)
+
 
 
 ## SEQUENCE
 RefitterSequence = cms.Sequence(offlineBeamSpot
                                 *TrackRefitterForApeEstimator
-				)
+)
 
+RefitterHighPuritySequence = cms.Sequence(
+    offlineBeamSpot
+    *HighPuritySelector
+    *TrackRefitterHighPurityForApeEstimator
+)
 
 
 
