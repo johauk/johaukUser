@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.3 2010/04/12 15:05:33 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.4 2010/04/13 14:19:57 hauk Exp $
 //
 //
 
@@ -43,6 +43,7 @@
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/TrackingRecHit/interface/TrackingRecHit.h"
 #include "DataFormats/DetId/interface/DetId.h"
+#include "DataFormats/TrackerRecHit2D/interface/SiStripRecHit1D.h"
 #include "DataFormats/TrackerRecHit2D/interface/SiStripRecHit2D.h"
 #include "DataFormats/TrackerRecHit2D/interface/SiStripMatchedRecHit2D.h"
 #include "DataFormats/TrackerRecHit2D/interface/ProjectedSiStripRecHit2D.h"
@@ -790,7 +791,7 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& iMeass, const edm::E
   
   
   if(!hit.isValid()){hitParams.hitState = TrackStruct::invalid; return hitParams;}
-       
+  
   LocalPoint lPHit = hit.localPosition(), lPTrk = tsos.localPosition();
   hitParams.xHit = lPHit.x();
   hitParams.xTrk = lPTrk.x();
@@ -917,13 +918,32 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& iMeass, const edm::E
   }
   else if(mTkTreeVar_[rawId].subdetId==StripSubdetector::TIB || mTkTreeVar_[rawId].subdetId==StripSubdetector::TOB ||
           mTkTreeVar_[rawId].subdetId==StripSubdetector::TID || mTkTreeVar_[rawId].subdetId==StripSubdetector::TEC){
-    if(!dynamic_cast<const SiStripRecHit2D*>(&recHit)){
+    if(!(dynamic_cast<const SiStripRecHit2D*>(&recHit) || dynamic_cast<const SiStripRecHit1D*>(&recHit))){
       edm::LogError("FillHitVariables")<<"RecHit in Strip is 'Matched' or 'Projected', but here all should be monohits per module";
       hitParams.hitState = TrackStruct::invalid; return hitParams;
     }
-    const SiStripRecHit2D& stripHit = dynamic_cast<const SiStripRecHit2D&>(recHit);
-    const SiStripCluster& stripCluster = *stripHit.cluster();
-    SiStripClusterInfo clusterInfo = SiStripClusterInfo(stripCluster, iSetup);
+    const SiStripCluster* clusterPtr(0);
+    if(mTkTreeVar_[rawId].subdetId==StripSubdetector::TIB || mTkTreeVar_[rawId].subdetId==StripSubdetector::TOB){
+      if(dynamic_cast<const SiStripRecHit1D*>(&recHit)){
+        const SiStripRecHit1D& stripHit = dynamic_cast<const SiStripRecHit1D&>(recHit);
+	clusterPtr = &(*stripHit.cluster());
+      }
+      else if(dynamic_cast<const SiStripRecHit2D*>(&recHit)){
+        edm::LogWarning("FillHitVariables")<<"Data has TIB/TOB hits as SiStripRecHit2D and not 1D. Probably data is processed with CMSSW<34X. Nevertheless everything should work fine";
+	const SiStripRecHit2D& stripHit = dynamic_cast<const SiStripRecHit2D&>(recHit);
+	clusterPtr = &(*stripHit.cluster());
+      }
+    }
+    else if(mTkTreeVar_[rawId].subdetId==StripSubdetector::TID || mTkTreeVar_[rawId].subdetId==StripSubdetector::TEC){
+       const SiStripRecHit2D& stripHit = dynamic_cast<const SiStripRecHit2D&>(recHit);
+       clusterPtr = &(*stripHit.cluster());
+    }
+    if(!clusterPtr){
+      edm::LogError("FillHitVariables")<<"Pointer to cluster not valid!!! This should never happen...";
+      hitParams.hitState = TrackStruct::invalid; return hitParams;
+    }
+    const SiStripCluster& stripCluster(*clusterPtr);
+    const SiStripClusterInfo clusterInfo = SiStripClusterInfo(stripCluster, iSetup);
     
     hitParams.isModuleUsable   = clusterInfo.IsModuleUsable();
     hitParams.width            = clusterInfo.width();
@@ -1333,6 +1353,7 @@ ApeEstimator::calculateAPE(){
    }
    
    const double apeScaling(parameterSet_.getParameter<double>("apeScaling"));
+   const double sigmaFactorFit(parameterSet_.getParameter<double>("sigmaFactorFit"));
    for(std::map<unsigned int,TrackerSectorStruct>::iterator iSec = mTkSector_.begin(); iSec != mTkSector_.end(); ++iSec){
      std::vector<std::pair<double,double> > vEntriesAndApePerBin;
      
@@ -1393,7 +1414,7 @@ ApeEstimator::calculateAPE(){
        Double_t sigma1 = func1.GetParameter(2);
        //std::cout<<"\n\tTest "<<integral<<" "<<mean<<" "<<rms<<" "<<mean1<<" "<<sigma1<<"\n";
        
-       TF1 func2("mygaus2","gaus",mean1 - 2.0 * TMath::Abs(sigma1),mean1 + 2.0 * TMath::Abs(sigma1));
+       TF1 func2("mygaus2","gaus",mean1 - sigmaFactorFit * TMath::Abs(sigma1),mean1 + sigmaFactorFit * TMath::Abs(sigma1));
        func2.SetParameters(func1.GetParameter(0),mean1,sigma1);
        if(integral>100.){
        if(mHists["norResX"]->Fit(&func2, fitOpt)){
@@ -1485,8 +1506,10 @@ ApeEstimator::isHit2D(const TrackingRecHit &hit) const
 {
   // we count SiStrip stereo modules as 2D if selected via countStereoHitAs2D_
   // (since they provide theta information)
-  if (!hit.isValid() || hit.dimension() < 2) {
-    return false; // some (muon...) stuff really has RecHit1D
+  // --- NO, here it is always set to true ---
+  if (!hit.isValid() ||
+      (hit.dimension() < 2 && !dynamic_cast<const SiStripRecHit1D*>(&hit))){
+    return false; // real RecHit1D - but SiStripRecHit1D depends on countStereoHitAs2D_
   } else {
     const DetId detId(hit.geographicalId());
     if (detId.det() == DetId::Tracker) {
@@ -1494,15 +1517,17 @@ ApeEstimator::isHit2D(const TrackingRecHit &hit) const
         return true; // pixel is always 2D
       } else { // should be SiStrip now
 	const SiStripDetId stripId(detId);
-	if (stripId.stereo()) return true; // 1D stereo modules ALWAYS as 2D hits
-        else if (dynamic_cast<const SiStripRecHit2D*>(&hit)) return false; // normal hit
+	if (stripId.stereo()) return true; // stereo modules
+        else if (dynamic_cast<const SiStripRecHit1D*>(&hit)
+		 || dynamic_cast<const SiStripRecHit2D*>(&hit)) return false; // rphi modules hit
+	//the following two are not used any more since ages... 
         else if (dynamic_cast<const SiStripMatchedRecHit2D*>(&hit)) return true; // matched is 2D
         else if (dynamic_cast<const ProjectedSiStripRecHit2D*>(&hit)) {
 	  const ProjectedSiStripRecHit2D* pH = static_cast<const ProjectedSiStripRecHit2D*>(&hit);
-	  return (true && this->isHit2D(pH->originalHit())); // depends on original...
+	  return (this->isHit2D(pH->originalHit())); // depends on original...
 	} else {
-          edm::LogError("UnkownType") << "@SUB=ApeEstimator::isHit2D"
-                                      << "Tracker hit not in pixel and neither SiStripRecHit2D nor "
+          edm::LogError("UnkownType") << "@SUB=AlignmentTrackSelector::isHit2D"
+                                      << "Tracker hit not in pixel, neither SiStripRecHit[12]D nor "
                                       << "SiStripMatchedRecHit2D nor ProjectedSiStripRecHit2D.";
           return false;
         }
