@@ -59,7 +59,10 @@ ApeEstimator = cms.EDAnalyzer('ApeEstimator',
     #Sectors for same APE
     Sectors = cms.VPSet(),
     
-    #multiplicative APE scaling factor (to prevent overestimation, since estimation is iterative process)
+    #Sigma factor for second gauss fit (+-2.5 sigma1 around mean1 of first fit)
+    sigmaFactorFit = cms.double(2.5),
+    
+    #Multiplicative APE scaling factor (to prevent overestimation, since estimation is iterative process)
     apeScaling = cms.double(1.),
     
     #File name for text file where calculated APE values are written to
