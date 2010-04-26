@@ -55,16 +55,16 @@ gStyle->SetLabelSize(0.05,"XY");
 
 
 gROOT->ProcessLine(".L ApeOverview.C+");
-gROOT->ProcessLine("ApeOverview a1(\"../mcZoom.root\");");
+gROOT->ProcessLine("ApeOverview a1(\"../hists/mcZoom.root\");");
 
-gROOT->ProcessLine("a1.onlyZoomedHists()");
+//gROOT->ProcessLine("a1.onlyZoomedHists()");
 
-gROOT->ProcessLine("a1.setSectorsForOverview(\"1,2,3,4,5,6,7,8\")");
-gROOT->ProcessLine("a1.setSectorsForOverview(\"1,3,5,7\")");
+//gROOT->ProcessLine("a1.setSectorsForOverview(\"1,2,3,4,5,6,7,8\")");
+gROOT->ProcessLine("a1.setSectorsForOverview(\"2\")");
 
 gROOT->ProcessLine("a1.getOverview();");
 //gROOT->ProcessLine("a1.printOverview();");
-gROOT->ProcessLine("a1.printOverview(\"../plots/mcZoom.ps\");");
+gROOT->ProcessLine("a1.printOverview(\"../hists/plots/mcZoom.ps\");");
 //gROOT->ProcessLine("a1.printOverview(\"../plots/mcHitSelZoom.ps\",ApeOverview::sector);");
 //gROOT->ProcessLine("a1.printOverview(\"apeOverview.ps\",ApeOverview::event);");
 
