@@ -1,8 +1,7 @@
-import FWCore.ParameterSet.Config as cms
-
 import os
 
-#"CMSSW_BASE": os.environ['CMSSW_BASE'],
+import FWCore.ParameterSet.Config as cms
+
 
 ApeEstimator = cms.EDAnalyzer('ApeEstimator',
     
