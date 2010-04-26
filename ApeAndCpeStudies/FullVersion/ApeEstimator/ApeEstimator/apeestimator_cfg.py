@@ -1,6 +1,6 @@
-import FWCore.ParameterSet.Config as cms
-
 import os
+
+import FWCore.ParameterSet.Config as cms
 
 
 process = cms.Process("Demo")
@@ -82,7 +82,8 @@ process.load("ApeEstimator.ApeEstimator.TrackRefitter_38T_cff")
 ## --- Run 132440-132478, First Reprocessing ---
 process.GlobalTag.globaltag = 'GR_R_35X_V6::All'
 ## --- Further information (Monte Carlo and Data) ---
-#process.StripCPEgeometricESProducer.APVpeakmode = False
+process.StripCPEgeometricESProducer.APVpeakmode = False
+process.OutOfTime.TOBlateBP = 0.05  # do not use in MC
 process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
 #process.TTRHBuilderGeometricAndTemplate.PixelCPE = 'PixelCPEGeneric'
 #process.TrackRefitterForApeEstimator.src = 'ALCARECOTkAlCosmicsCTF0T'
@@ -126,15 +127,15 @@ process.ApeEstimatorCosmics1.HitSelector.edgeStrips = []
 process.ApeEstimatorCosmics1.HitSelector.sOverN = []
 process.ApeEstimatorCosmics1.HitSelector.phiSensX = []
 process.ApeEstimatorCosmics1.HitSelector.phiSensY = []
-process.ApeEstimatorCosmics1.sigmaFactorFit = 2.0
+process.ApeEstimatorCosmics1.sigmaFactorFit = 2.5
 process.ApeEstimatorCosmics1.apeScaling = 0.5
-process.ApeEstimatorCosmics1.ApeOutputFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/apeOutput4.txt'
+process.ApeEstimatorCosmics1.ApeOutputFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/apeOutput.txt'
 process.ApeEstimatorCosmics1.tjTkAssociationMapTag = "TrackRefitterHighPurityForApeEstimator"
 
 
 ## Output File Configuration
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string(os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/test4.root'),
+    fileName = cms.string(os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/test.root'),
     closeFileFast = cms.untracked.bool(True)
 )
 
@@ -142,6 +143,7 @@ process.TFileService = cms.Service("TFileService",
 
 process.p = cms.Path(
     process.TriggerSelectionSequence*
+    #process.TriggerSelectionSequenceForMC*
     #process.RefitterSequence
     process.RefitterHighPuritySequence
     *process.ApeEstimatorCosmics1
