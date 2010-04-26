@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.4 2010/04/13 14:19:57 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.5 2010/04/19 09:11:42 hauk Exp $
 //
 //
 
@@ -510,8 +510,8 @@ ApeEstimator::bookSectorHists(){
     double sigmaXHitMax = zoomHists ? 0.02 : 1.;
     
     double norChi2Max = zoomHists ? 20. : 1000.;
-    double d0Max = zoomHists ? 100. : 100.;
-    double dzMax = zoomHists ? 200. : 600.;
+    double d0Max = zoomHists ? 1. : 40.;  // cosmics: 100.|100.
+    double dzMax = zoomHists ? 10. : 100.;  // cosmics: 200.|600.
     double pMax = zoomHists ? 100. : 5000.;
     double invPMax = zoomHists ? 0.05 : 10.;   //begins at 20GeV, 0.1GeV
     
@@ -630,8 +630,8 @@ ApeEstimator::bookTrackHists(){
   
   double chi2Max = zoomHists ? 200. : 2000.;
   double norChi2Max = zoomHists ? 40. : 1000.;
-  double d0max = zoomHists ? 100. : 100.;
-  double dzmax = zoomHists ? 200. : 600.;
+  double d0max = zoomHists ? 1. : 40.;  // cosmics: 100.|100.
+  double dzmax = zoomHists ? 10. : 100.;  // cosmics: 200.|600.
   double pMax = zoomHists ? 100. : 5000.;
   
   edm::Service<TFileService> fileService;
