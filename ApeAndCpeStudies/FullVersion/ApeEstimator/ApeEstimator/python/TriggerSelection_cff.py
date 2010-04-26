@@ -16,6 +16,13 @@ L1T1 = HLTrigger.HLTfilters.hltLevel1GTSeed_cfi.hltLevel1GTSeed.clone()
 L1T1.L1TechTriggerSeeding = cms.bool(True)
 L1T1.L1SeedsLogicalExpression=cms.string('0 AND (40 OR 41) AND NOT (36 OR 37 OR 38 OR 39) AND NOT ((42 AND (NOT 43)) OR (43 AND (NOT 42)))')
 
+L1T1forMC = HLTrigger.HLTfilters.hltLevel1GTSeed_cfi.hltLevel1GTSeed.clone()
+L1T1forMC.L1TechTriggerSeeding = cms.bool(True)
+L1T1forMC.L1SeedsLogicalExpression=cms.string('(40 OR 41) AND NOT (36 OR 37 OR 38 OR 39) AND NOT ((42 AND (NOT 43)) OR (43 AND (NOT 42)))')
+
+
+
+
 
 
 ## Filter for HLT physicsDeclared bit
@@ -36,5 +43,7 @@ TriggerSelectionSequence = cms.Sequence(
     *hltHighLevel
 )
 
-
+TriggerSelectionSequenceForMC = cms.Sequence(
+    L1T1forMC
+)
 
