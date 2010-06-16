@@ -268,7 +268,627 @@ TIBTOBQuarters2DSeparation = cms.VPSet(
 
 
 
+# Only TIB and TOB, quartering (upper, lower, left, right part) + Separation of layers and orientations
+TIBTOBQuartersLayerAndOrientationSeparation = cms.VPSet(
+  
+  # TIB layer 1, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [3],
+    wDirection = [1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [3],
+    wDirection = [1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [3],
+    wDirection = [1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [3],
+    wDirection = [1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
 
+  # TIB layer 1, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [3],
+    wDirection = [-1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [3],
+    wDirection = [-1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [3],
+    wDirection = [-1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [3],
+    wDirection = [-1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+
+  # TIB layer 2, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [3],
+    wDirection = [1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [3],
+    wDirection = [1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [3],
+    wDirection = [1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [3],
+    wDirection = [1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+  # TIB layer 2, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [3],
+    wDirection = [-1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [3],
+    wDirection = [-1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [3],
+    wDirection = [-1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [3],
+    wDirection = [-1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+
+  # TIB layer 3, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [3],
+    wDirection = [1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [3],
+    wDirection = [1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [3],
+    wDirection = [1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [3],
+    wDirection = [1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+  # TIB layer 3, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [3],
+    wDirection = [-1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [3],
+    wDirection = [-1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [3],
+    wDirection = [-1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [3],
+    wDirection = [-1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+
+  # TIB layer 4, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [3],
+    wDirection = [1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [3],
+    wDirection = [1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [3],
+    wDirection = [1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [3],
+    wDirection = [1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+  # TIB layer 4, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [3],
+    wDirection = [-1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [3],
+    wDirection = [-1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [3],
+    wDirection = [-1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [3],
+    wDirection = [-1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+
+
+
+
+  
+  # TOB layer 1, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+  # TOB layer 1, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+
+  # TOB layer 2, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+  # TOB layer 2, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+
+  # TOB layer 3, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+  # TOB layer 3, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+
+  # TOB layer 4, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+  # TOB layer 4, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+
+  # TOB layer 5, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [5],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [5],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [5],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [5],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+  # TOB layer 5, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [5],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [5],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [5],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [5],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+
+  # TOB layer 6, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [6],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [6],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [6],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [6],
+    subdetId = [5],
+    wDirection = [1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+  # TOB layer 6, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [6],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [0.7854,2.3562],   # [45,135] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [6],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-2.3562,-0.7854],   # [-135,-45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [6],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-0.7854,0.7854],   # [-45,45] degree
+  )),
+  cms.PSet(
+    EmptySector.clone(
+    layer = [6],
+    subdetId = [5],
+    wDirection = [-1],
+    posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
+  )),
+
+
+
+
+
+)
 
 
 
