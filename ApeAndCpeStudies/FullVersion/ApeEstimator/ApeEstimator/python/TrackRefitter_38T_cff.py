@@ -9,11 +9,6 @@ from Configuration.StandardSequences.Geometry_cff import *
 
 ## CONDITIONS
 from Configuration.StandardSequences.FrontierConditions_GlobalTag_cff import *
-## --- Ideal MonteCarlo ---
-#GlobalTag.globaltag = 'DESIGN_3X_V8B::All'    # peak mode
-#GlobalTag.globaltag = 'MC_3XY_V9B::All'    # same, but bad channels are masked
-## --- First ReProcessing (CRAFT '09) ---
-GlobalTag.globaltag = 'CRAFT09_R_V4::All'
 
 
 
@@ -90,9 +85,10 @@ TTRHBuilderGeometricAndTemplate = cms.ESProducer("TkTransientTrackingRecHitBuild
 from RecoTracker.TrackProducer.TrackRefitters_cff import *
 # not used when < 0.
 FittingSmootherRKP5.EstimateCut = -1.
-# not used when < -15. (not yet implemented in used tag)
-#FittingSmootherRKP5.LogPixelProbabilityCut = -16.
+# not used when < -15.
+FittingSmootherRKP5.LogPixelProbabilityCut = -16.
 FittingSmootherRKP5.RejectTracks = False
+FittingSmootherRKP5.BreakTrajWith2ConsecutiveMissing = False
 TrackRefitterForApeEstimator = RecoTracker.TrackProducer.TrackRefitters_cff.TrackRefitterP5.clone(
     src = 'ALCARECOTkAlCosmicsCTF0T' #'ALCARECOTkAlCosmicsCosmicTF0T' #'ALCARECOTkAlCosmicsCosmicTF'
           #'ALCARECOTkAlCosmicsCTF' #'ALCARECOTkAlCosmicsRS0T' #'ALCARECOTkAlCosmicsRS'
@@ -114,7 +110,9 @@ HighPuritySelector = Alignment.CommonAlignmentProducer.AlignmentTrackSelector_cf
     applyBasicCuts = True,
     filter = True,
     src = 'ALCARECOTkAlMinBias',
-    trackQualities = ["highPurity"]
+    etaMin = -999.,
+    etaMax = 999.,
+    trackQualities = ["highPurity"],
 )
 
 
