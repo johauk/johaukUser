@@ -16,12 +16,19 @@
 
 
 ApeOverview::ApeOverview(const TString inputFileName):
-inputFile_(TFile::Open(inputFileName)), onlyZoomedHists_(false)
+inputFile_(TFile::Open(inputFileName)), moduleNo_(1), onlyZoomedHists_(false), firstSelectedSector_("")
 {
   eventPadCounter_.first = eventPadCounter_.second = trackPadCounter_.first = trackPadCounter_.second = sectorCounter_ = 1;
 }
 
 ApeOverview::~ApeOverview(){}
+
+
+
+void
+ApeOverview::whichModuleInFile(int moduleNo){
+  moduleNo_ = moduleNo;
+}
 
 
 
@@ -58,7 +65,16 @@ ApeOverview::setSectorsForOverview(const TString sectors){
 
 void
 ApeOverview::getOverview(){
-  pluginDir_ = "ApeEstimatorCosmics1/";
+  //pluginDir_ = "ApeEstimatorCosmics1/";
+  //int nKeys = inputFile_->GetNkeys();
+  //pluginDir_ = inputFile_->GetListOfKeys()->At(0)->GetName();
+  //pluginDir_ += "/";
+  if(moduleNo_<1 || moduleNo_>inputFile_->GetNkeys()){
+    std::cout<<"Incorrect number given in method whichModuleInFile(...), cannot continue!!!\n";
+    return;
+  }
+  pluginDir_ = inputFile_->GetListOfKeys()->At(moduleNo_-1)->GetName();
+  pluginDir_ += "/";
   
   TDirectory* secDir(0);
   bool sectorBool(true);
@@ -100,6 +116,7 @@ ApeOverview::eventAndTrackHistos(){
   
   histDir_ = "EventVariables/";
   histLevel_ = event;
+  std::cout<<"List of event histograms to print:\n";
   
   if(!onlyZoomedHists_){
   this->drawHistToPad("h_trackSize",true);  //logScale only for 1d-hists? Also for Profiles, but not TH2?
@@ -107,6 +124,7 @@ ApeOverview::eventAndTrackHistos(){
   
   histDir_ = "TrackVariables/";
   histLevel_ = track;
+  std::cout<<"List of track histograms to print:\n";
   
   if(!onlyZoomedHists_){
   this->drawHistToPad("h_hitSize");
@@ -128,7 +146,7 @@ ApeOverview::eventAndTrackHistos(){
   this->setNewCanvas(dim1);
   
   this->drawHistToPad("h_pt");
-  this->drawHistToPad("h_d0");
+  this->drawHistToPad("h_d0Beamspot");
   this->drawHistToPad("h_dz");
   this->drawHistToPad("h_p");
   if(!onlyZoomedHists_){
@@ -156,13 +174,24 @@ ApeOverview::eventAndTrackHistos(){
     if(secDir){
       
       bool selectedSector(false);
-      if(vSelectedSector_.size() == 0)selectedSector = true;
+      std::stringstream ssFirstSelectedSector;
+      ssFirstSelectedSector << "Sector_";
+      if(vSelectedSector_.size() == 0){
+        selectedSector = true;
+	ssFirstSelectedSector << "1";
+      }
+      else{
+        ssFirstSelectedSector << *(vSelectedSector_.begin());
+      }
+      firstSelectedSector_ = ssFirstSelectedSector.str().c_str();
+      
       for(std::vector<unsigned int>::const_iterator iSelSec = vSelectedSector_.begin(); iSelSec != vSelectedSector_.end(); ++iSelSec){
         if(iSec==*iSelSec)selectedSector = true;
       }
       if(!selectedSector)continue;
       
       histDir_  = sectorName.str().c_str();
+      if(histDir_.BeginsWith(firstSelectedSector_))std::cout<<"List of hit histograms to print (showcase for "<<firstSelectedSector_<<", all other sectors identical):\n";
       
       this->drawHistToPad("sectorTitleSheet");
       
@@ -170,9 +199,9 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h_WidthProj");
       this->drawHistToPad("h_WidthDiff");
       if(!onlyZoomedHists_){
-      this->drawHistToPad("h_MaxStrip");
+      this->drawHistToPad("h_MaxStrip",false);
       this->drawHistToPad("h_MaxIndex");
-      this->drawHistToPad("h_BaryStrip");
+      this->drawHistToPad("h_BaryStrip",false);
       }
       this->drawHistToPad("h_Charge");
       this->drawHistToPad("h_SOverN");
@@ -186,7 +215,7 @@ ApeOverview::eventAndTrackHistos(){
       
       this->drawHistToPad("h_ResX");
       this->drawHistToPad("h_NorResX");
-      this->drawHistToPad("h_ProbX");
+      this->drawHistToPad("h_ProbX",false);
       this->drawHistToPad("h_SigmaXHit");
       this->drawHistToPad("h_SigmaXTrk");
       this->drawHistToPad("h_SigmaX");
@@ -226,7 +255,7 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_sigmaXTrkVsMaxStrip",false);
       this->setNewCanvas(dim2);
       }
-      this->drawHistToPad("h2_sigmaXTrkVsD0",false);
+      this->drawHistToPad("h2_sigmaXTrkVsD0Beamspot",false);
       this->drawHistToPad("h2_sigmaXTrkVsDz",false);
       this->drawHistToPad("h2_sigmaXTrkVsPt",false);
       this->drawHistToPad("h2_sigmaXTrkVsInvP",false);
@@ -270,7 +299,9 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_norResXVsLayersMissed",false);
       }
       this->drawHistToPad("h2_norResXVsP",false);
+      if(!onlyZoomedHists_){
       this->setNewCanvas(dim2);
+      }
       
       this->drawHistToPad("h2_norResXVsNorChi2",false);
       if(!onlyZoomedHists_){
@@ -278,7 +309,7 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_norResXVsPhi",false);
       }
       this->setNewCanvas(dim2);
-      this->drawHistToPad("h2_norResXVsD0",false);
+      this->drawHistToPad("h2_norResXVsD0Beamspot",false);
       this->drawHistToPad("h2_norResXVsDz",false);
       this->drawHistToPad("h2_norResXVsPt",false);
       
@@ -319,7 +350,9 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_probXVsLayersMissed",false);
       }
       this->drawHistToPad("h2_probXVsP",false);
+      if(!onlyZoomedHists_){
       this->setNewCanvas(dim2);
+      }
       
       this->drawHistToPad("h2_probXVsNorChi2",false);
       if(!onlyZoomedHists_){
@@ -327,7 +360,7 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_probXVsPhi",false);
       }
       this->setNewCanvas(dim2);
-      this->drawHistToPad("h2_probXVsD0",false);
+      this->drawHistToPad("h2_probXVsD0Beamspot",false);
       this->drawHistToPad("h2_probXVsDz",false);
       this->drawHistToPad("h2_probXVsPt",false);
       
@@ -430,14 +463,14 @@ ApeOverview::drawHistToPad(const TString histName, const bool setLogScale){
     (*(--(canvasPair->first.end())))->cd(padCounter->first);
     TH1 *hist1(0);
     inputFile_->GetObject(pluginDir_ + histDir_ + histName + ";1", hist1);
-    std::cout<<"\n\tDraw 1D Histo\t\t"<<pluginDir_<<histDir_<<histName<<"\n";
+    if(histDir_.BeginsWith(firstSelectedSector_) || histDir_ == "TrackVariables/" || histDir_ == "EventVariables/")std::cout<<"\tDraw 1D Histo\t\t"<<pluginDir_<<histDir_<<histName<<"\n";
     //GetEntries delivers double
     if(hist1){
       if(setLogScale==true && hist1->GetEffectiveEntries()>0.1)(*(--(canvasPair->first.end())))->cd(padCounter->first)->SetLogy();
       //if(setLogScale==true && hist1->Integral()>0.1)(*(--(canvasPair->first.end())))->cd(padCounter->first)->SetLogy();  // gives same result
       hist1->Draw();
     }
-    else{std::cout<<"\t\t\t\t... Histogram does not exist!\n"; if(padCounter->first == 1)canvasPair->first.pop_back(); return -1;}
+    else{if(histDir_.BeginsWith(firstSelectedSector_) || histDir_ == "TrackVariables/" || histDir_ == "EventVariables/")std::cout<<"\t\t\t\t... Histogram does not exist!\n"; if(padCounter->first == 1)canvasPair->first.pop_back(); return -1;}
     ++(padCounter->first);
     return 0;
   }
@@ -453,24 +486,24 @@ ApeOverview::drawHistToPad(const TString histName, const bool setLogScale){
     (*(--(canvasPair->second.end())))->cd(padCounter->second);
     TH2 *hist2(0);
     inputFile_->GetObject(pluginDir_ + histDir_ + histName + ";1", hist2);
-    std::cout<<"\n\tDraw 2D Histo\t\t"<<pluginDir_<<histDir_<<histName<<"\n";
+    if(histDir_.BeginsWith(firstSelectedSector_) || histDir_ == "TrackVariables/" || histDir_ == "EventVariables/")std::cout<<"\tDraw 2D Histo\t\t"<<pluginDir_<<histDir_<<histName<<"\n";
     if(hist2){
       if(setLogScale==true && hist2->GetEffectiveEntries()>0.1)(*(--(canvasPair->second.end())))->cd(padCounter->second)->SetLogy();
       hist2->Draw("box");
     }
-    else{std::cout<<"\t\t\t\t... Histogram does not exist!\n"; if(padCounter->second == 1)canvasPair->second.pop_back(); return -1;}
+    else{if(histDir_.BeginsWith(firstSelectedSector_) || histDir_ == "TrackVariables/" || histDir_ == "EventVariables/")std::cout<<"\t\t\t\t... Histogram does not exist!\n"; if(padCounter->second == 1)canvasPair->second.pop_back(); return -1;}
     
     (*(--(canvasPair->second.end())))->cd(padCounter->second+3);
     TString histNameP(histName);
     histNameP.ReplaceAll("h2_","p_");
     TProfile *histP(0);
     inputFile_->GetObject(pluginDir_ + histDir_ + histNameP + ";1", histP);
-    std::cout<<"\n\tDraw Profile Histo\t"<<pluginDir_<<histDir_<<histNameP<<"\n";
+    if(histDir_.BeginsWith(firstSelectedSector_) || histDir_ == "TrackVariables/" || histDir_ == "EventVariables/")std::cout<<"\tDraw Profile Histo\t"<<pluginDir_<<histDir_<<histNameP<<"\n";
     if(histP){
       if(setLogScale==true && histP->GetEffectiveEntries()>0.1)(*(--(canvasPair->second.end())))->cd(padCounter->second+3)->SetLogy();
       histP->Draw();
     }
-    else{std::cout<<"\t\t\t\t... Histogram does not exist!\n";return -1;}
+    else{if(histDir_.BeginsWith(firstSelectedSector_) || histDir_ == "TrackVariables/" || histDir_ == "EventVariables/")std::cout<<"\t\t\t\t... Histogram does not exist!\n";return -1;}
     ++(padCounter->second);
     return 0;
   }
@@ -506,8 +539,11 @@ ApeOverview::setNewCanvas(const PlotDimension& pDim){
 
 void
 ApeOverview::printOverview(const TString& outputFileName, const HistLevel& histLevel)const{
+  if(eventPair_.first.size()==0 && eventPair_.second.size()==0 &&
+     trackPair_.first.size()==0 && trackPair_.second.size()==0 &&
+     mSectorPair_.size()==0)return;
+  std::cout<<"\tCreate PostScript File:\t"<<outputFileName<<std::endl;
   TPostScript* ps = new TPostScript(outputFileName,112);
-  std::cout<<"\n\tPostScript File was created:\t"<<outputFileName<<std::endl;
   std::vector<TCanvas*>::const_iterator iCan;
   if(histLevel==event){
     for(iCan = eventPair_.first.begin(); iCan != eventPair_.first.end(); ++iCan){ps->NewPage();(*iCan)->Draw();}

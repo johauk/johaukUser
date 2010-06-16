@@ -18,7 +18,9 @@ class ApeOverview{
       ApeOverview(const TString inputFileName);
       ~ApeOverview();
       
-      void onlyZoomedHists();  //if wanted, has to be set before getOverview()
+      void whichModuleInFile(int);  // if several modules were registered in TFileService, give nr. of wanted one (alphabetical order)
+      
+      void onlyZoomedHists();  // if wanted, has to be set before getOverview()
       
       void setSectorsForOverview(const TString sectors);  // comma separated list; if wanted, has to be set before getOverview()
       
@@ -45,9 +47,13 @@ class ApeOverview{
       
       TFile* inputFile_;
       
+      int moduleNo_;
+      
       bool onlyZoomedHists_;
       
       std::vector<unsigned int> vSelectedSector_;
+      
+      TString firstSelectedSector_;
       
       TString pluginDir_, histDir_;
       
