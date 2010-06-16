@@ -32,6 +32,8 @@
 <use name=DataFormats/GeometrySurface>
 <use name=MagneticField/Records>
 <use name=CondFormats/DataRecord>
+<use name=DataFormats/BeamSpot>
+<use name=DataFormats/Math>
 
 
 <use name=root>
