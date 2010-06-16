@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.5 2010/04/19 09:11:42 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.6 2010/04/26 13:25:12 hauk Exp $
 //
 //
 
@@ -100,6 +100,9 @@
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
 #include "CondFormats/DataRecord/interface/SiStripLorentzAngleRcd.h"
+#include "DataFormats/BeamSpot/interface/BeamSpot.h"
+#include "DataFormats/Math/interface/Point3D.h"
+#include "FWCore/Utilities/interface/EDMException.h"
 
 //
 // class decleration
@@ -128,11 +131,11 @@ class ApeEstimator : public edm::EDAnalyzer {
       
       void residualErrorBinning();
       
-      void bookSectorHists();
+      void bookSectorHistsForAnalyzerMode();
+      void bookSectorHistsForApeCalculation();
       void bookTrackHists();
       
-      //TrackStruct::TrackParameterStruct fillTrackVariables(const reco::Track&, const Trajectory&)const;  // trackCut_ forbids const
-      TrackStruct::TrackParameterStruct fillTrackVariables(const reco::Track&, const Trajectory&);
+      TrackStruct::TrackParameterStruct fillTrackVariables(const reco::Track&, const Trajectory&, const reco::BeamSpot&);
       TrackStruct::HitParameterStruct fillHitVariables(const TrajectoryMeasurement&, const edm::EventSetup&);
       
       void hitSelection();
@@ -140,7 +143,8 @@ class ApeEstimator : public edm::EDAnalyzer {
       void setHitSelectionMapUInt(const std::string&);
       bool hitSelected(const TrackStruct::HitParameterStruct&)const;
       
-      void fillHists(const TrackStruct&);
+      void fillHistsForAnalyzerMode(const TrackStruct&);
+      void fillHistsForApeCalculation(const TrackStruct&);
       
       void calculateAPE();
       
@@ -161,9 +165,12 @@ class ApeEstimator : public edm::EDAnalyzer {
       const unsigned int maxTracksPerEvent_;
       const unsigned int minGoodHitsPerTrack_;
       
+      const bool analyzerMode_;
+      
+      const bool calculateApe_;
+      
       unsigned int counter1, counter2, counter3, counter4, counter5, counter6;
       
-      TH1* testHist;
 };
 
 //
@@ -179,7 +186,9 @@ class ApeEstimator : public edm::EDAnalyzer {
 //
 ApeEstimator::ApeEstimator(const edm::ParameterSet& iConfig):
 parameterSet_(iConfig), trackCut_(false), maxTracksPerEvent_(parameterSet_.getParameter<unsigned int>("maxTracksPerEvent")),
-minGoodHitsPerTrack_(parameterSet_.getParameter<unsigned int>("minGoodHitsPerTrack"))
+minGoodHitsPerTrack_(parameterSet_.getParameter<unsigned int>("minGoodHitsPerTrack")),
+analyzerMode_(parameterSet_.getParameter<bool>("analyzerMode")),
+calculateApe_(parameterSet_.getParameter<bool>("calculateApe"))
 {
    counter1 = counter2 = counter3 = counter4 = counter5 = counter6 = 0;
 }
@@ -419,26 +428,33 @@ ApeEstimator::checkModulePositions(const float id, const std::vector<double>& vI
 
 void
 ApeEstimator::statistics(const TrackerSectorStruct& allSectors, const Int_t nModules)const{
+  bool commonModules(false);
   for(std::map<unsigned int,TrackerSectorStruct>::const_iterator iSec = mTkSector_.begin(); iSec != mTkSector_.end(); ++iSec){
-    int nCommonModules(0);
     std::map<unsigned int,TrackerSectorStruct>::const_iterator iSec2(iSec);
     for(++iSec2; iSec2 != mTkSector_.end(); ++iSec2){
+      unsigned int nCommonModules(0);
       for(std::vector<unsigned int>::const_iterator iMod = (*iSec).second.vRawId.begin(); iMod != (*iSec).second.vRawId.end(); ++iMod){
         for(std::vector<unsigned int>::const_iterator iMod2 = (*iSec2).second.vRawId.begin(); iMod2 != (*iSec2).second.vRawId.end(); ++iMod2){
           if(*iMod2 == *iMod)++nCommonModules;
         }
       }
       if(nCommonModules==0)
-      edm::LogInfo("SectorBuilder")<<"Sector "<<(*iSec).first<<" and Sector "<<(*iSec2).first<< " have ZERO Modules in common";
-      else
-      edm::LogWarning("SectorBuilder")<<"Sector "<<(*iSec).first<<" and Sector "<<(*iSec2).first<< " have "<<nCommonModules<<" Modules in common";
+        ;//edm::LogInfo("SectorBuilder")<<"Sector "<<(*iSec).first<<" and Sector "<<(*iSec2).first<< " have ZERO Modules in common";
+      else{
+        edm::LogError("SectorBuilder")<<"Sector "<<(*iSec).first<<" and Sector "<<(*iSec2).first<< " have "<<nCommonModules<<" Modules in common";
+        commonModules = true;
+      }
     }
   }
   if(static_cast<int>(allSectors.vRawId.size())==nModules)
-  edm::LogInfo("SectorBuilder")<<"ALL Tracker Modules are contained in the Sectors";
+    edm::LogInfo("SectorBuilder")<<"ALL Tracker Modules are contained in the Sectors";
   else
-  edm::LogWarning("SectorBuilder")<<"There are "<<allSectors.vRawId.size()<<" Modules in all Sectors"
+    edm::LogWarning("SectorBuilder")<<"There are "<<allSectors.vRawId.size()<<" Modules in all Sectors"
                                <<" out of "<<nModules<<" Tracker Modules";
+  if(!commonModules)
+    edm::LogInfo("SectorBuilder")<<"There are ZERO modules associated to different sectors, no ambiguities exist";
+  else
+  edm::LogError("SectorBuilder")<<"There are modules associated to different sectors, APE value cannot be assigned reasonably";
 }
 
 
@@ -480,7 +496,7 @@ ApeEstimator::residualErrorBinning(){
 
 
 void
-ApeEstimator::bookSectorHists(){
+ApeEstimator::bookSectorHistsForAnalyzerMode(){
   
   std::vector<unsigned int> vErrHists(parameterSet_.getParameter<std::vector<unsigned int> >("vErrHists"));
   for(std::vector<unsigned int>::iterator iErrHists = vErrHists.begin(); iErrHists != vErrHists.end(); ++iErrHists){
@@ -504,6 +520,8 @@ ApeEstimator::bookSectorHists(){
     
     double resXAbsMax = zoomHists ? 0.5 : 5.;
     double norResXAbsMax = zoomHists ? 10. : 50.;
+    double probXMin = zoomHists ? -0.01 :  -0.1;
+    double probXMax = zoomHists ? 0.11 :  1.1;
     double sigmaXMin = zoomHists ? 0. : -0.05;
     double sigmaXMax = zoomHists ? 0.1 : 1.;
     double sigmaX2Max = sigmaXMax*sigmaXMax;
@@ -517,6 +535,10 @@ ApeEstimator::bookSectorHists(){
     
     
     edm::Service<TFileService> fileService;
+    if(!fileService){
+      throw edm::Exception( edm::errors::Configuration,
+                            "TFileService is not registered in cfg file" );
+    }
     
     std::stringstream sector; sector << "Sector_" << (*iSec).first;
     TFileDirectory secDir = fileService->mkdir(sector.str().c_str());
@@ -542,6 +564,9 @@ ApeEstimator::bookSectorHists(){
     (*iSec).second.WidthDiffVsMaxStrip = secDir.make<TH2F>("h2_widthDiffVsMaxStrip","(w_{p} - w_{cl}) vs. n_{cl,max};n_{cl,max};w_{p} - w_{cl}  [# strips]",800,-10.,790.,static_cast<int>(widthMax),-widthMax/2.,widthMax/2.);
     (*iSec).second.PWidthDiffVsMaxStrip = secDir.make<TProfile>("p_widthDiffVsMaxStrip","(w_{p} - w_{cl}) vs. n_{cl,max};n_{cl,max};w_{p} - w_{cl}  [# strips]",800,-10.,790.);
     
+    (*iSec).second.WidthDiffVsSigmaXHit = secDir.make<TH2F>("h2_widthDiffVsSigmaXHit","(w_{p} - w_{cl}) vs. #sigma_{x,hit};#sigma_{x,hit}  [cm];w_{p} - w_{cl}  [# strips]",100,0.,sigmaXMax,100,-10.,10.);
+    (*iSec).second.PWidthDiffVsSigmaXHit = secDir.make<TProfile>("p_widthDiffVsSigmaXHit","(w_{p} - w_{cl}) vs. #sigma_{x,hit};#sigma_{x,hit}  [cm];w_{p} - w_{cl}  [# strips]",100,0.,sigmaXMax);
+    
     
     // Hit Parameters
     (*iSec).second.mCorrelationHists["SigmaXHit"] = (*iSec).second.bookCorrHists("SigmaXHit","hit error","#sigma_{x,hit}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
@@ -556,7 +581,7 @@ ApeEstimator::bookSectorHists(){
     (*iSec).second.SigmaX2 = secDir.make<TH1F>("h_SigmaX2","squared residual error #sigma_{x}^{2};#sigma_{x}^{2}  [cm^{2}];# hits",105,sigmaXMin,sigmaX2Max); //no mistake !
     (*iSec).second.ResX    = secDir.make<TH1F>("h_ResX","residual r_{x};(x_{track}-x_{hit})'  [cm];# hits",100,-resXAbsMax,resXAbsMax);
     (*iSec).second.NorResX = secDir.make<TH1F>("h_NorResX","normalized residual r_{x}/#sigma_{x};(x_{track}-x_{hit})'/#sigma_{x};# hits",100,-norResXAbsMax,norResXAbsMax);
-    (*iSec).second.ProbX   = secDir.make<TH1F>("h_ProbX","residual probability;prob(r_{x}^{2}/#sigma_{x}^{2},1);# hits",60,-0.1,1.1);
+    (*iSec).second.ProbX   = secDir.make<TH1F>("h_ProbX","residual probability;prob(r_{x}^{2}/#sigma_{x}^{2},1);# hits",60,probXMin,probXMax);
     
     (*iSec).second.WidthVsPhiSensX = secDir.make<TH2F>("h2_widthVsPhiSensX","w_{cl} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];w_{cl}  [# strips]",92,-92,92,static_cast<int>(widthMax),0,widthMax);
     (*iSec).second.PWidthVsPhiSensX = secDir.make<TProfile>("p_widthVsPhiSensX","w_{cl} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];w_{cl}  [# strips]",92,-92,92);
@@ -570,7 +595,7 @@ ApeEstimator::bookSectorHists(){
     (*iSec).second.mCorrelationHists["NorChi2"] = (*iSec).second.bookCorrHists("NorChi2","#chi^{2}/ndof","",50,0,norChi2Max,"npr");
     (*iSec).second.mCorrelationHists["Theta"] = (*iSec).second.bookCorrHists("Theta","#theta","[ ^{o}]",40,-10,190,"npt");
     (*iSec).second.mCorrelationHists["Phi"] = (*iSec).second.bookCorrHists("Phi","#phi","[ ^{o}]",76,-190,190,"npt");
-    (*iSec).second.mCorrelationHists["D0"] = (*iSec).second.bookCorrHists("D0","d_{0}","[cm]",40,-d0Max,d0Max,"npt");
+    (*iSec).second.mCorrelationHists["D0Beamspot"] = (*iSec).second.bookCorrHists("D0Beamspot","d_{0, BS}","[cm]",40,-d0Max,d0Max,"npt");
     (*iSec).second.mCorrelationHists["Dz"] = (*iSec).second.bookCorrHists("Dz","d_{z}","[cm]",40,-dzMax,dzMax,"npt");
     (*iSec).second.mCorrelationHists["Pt"] = (*iSec).second.bookCorrHists("Pt","p_{t}","[GeV]",50,0,pMax,"npt");
     (*iSec).second.mCorrelationHists["P"] = (*iSec).second.bookCorrHists("P","|p|","[GeV]",50,0,pMax,"npt");
@@ -592,6 +617,42 @@ ApeEstimator::bookSectorHists(){
       (*iSec).second.mSigmaX["sigmaXTrk"].push_back(secDir.make<TH1F>(sigmaXTrk.str().c_str(),"track error #sigma_{x,track};#sigma_{x,track}  [cm];# hits",100,xMin,xMax));
       (*iSec).second.mSigmaX["sigmaX"   ].push_back(secDir.make<TH1F>(sigmaX.str().c_str(),"residual error #sigma_{x};#sigma_{x}  [cm];# hits",100,xMin,xMax));
     }
+    
+  }
+}
+
+
+
+void
+ApeEstimator::bookSectorHistsForApeCalculation(){
+  
+  std::vector<unsigned int> vErrHists(parameterSet_.getParameter<std::vector<unsigned int> >("vErrHists"));
+  for(std::vector<unsigned int>::iterator iErrHists = vErrHists.begin(); iErrHists != vErrHists.end(); ++iErrHists){
+    for(std::vector<unsigned int>::iterator iErrHists2 = iErrHists; iErrHists2 != vErrHists.end();){
+      ++iErrHists2;
+      if(*iErrHists==*iErrHists2){
+        edm::LogError("BookSectorHists")<<"Value of vErrHists in config exists twice: "<<*iErrHists<<"\n... delete one of both";
+        vErrHists.erase(iErrHists2);
+      }
+    }
+  }
+  
+  for(std::map<unsigned int,TrackerSectorStruct>::iterator iSec = mTkSector_.begin(); iSec != mTkSector_.end(); ++iSec){
+    if((*iSec).second.vRawId.size()==0)continue;
+    
+    
+    edm::Service<TFileService> fileService;
+    if(!fileService){
+      throw edm::Exception( edm::errors::Configuration,
+                            "TFileService is not registered in cfg file" );
+    }
+    
+    std::stringstream sector; sector << "Sector_" << (*iSec).first;
+    TFileDirectory secDir = fileService->mkdir(sector.str().c_str());
+    
+    
+    
+    if(!calculateApe_)continue;
     
     if(mResErrBins_.size()==0){mResErrBins_[1].first = 0.;mResErrBins_[1].second = 0.01;} // default if no selection taken into account: calculate APE with one bin with residual error 0-100um
     for(std::map<unsigned int,std::pair<double,double> >::const_iterator iErrBins = mResErrBins_.begin();
@@ -616,6 +677,9 @@ ApeEstimator::bookSectorHists(){
     (*iSec).second.ApeX2           = resDir.make<TH1F>("h_apeX2","alignment precision APE_{x};#sigma_{x}  [cm];APE_{x}",vBinX.size()-1,&(vBinX[0]));
   }
 }
+
+
+
 
 
 // -----------------------------------------------------------------------------------------------------------
@@ -651,7 +715,7 @@ ApeEstimator::bookTrackHists(){
   tkDetector_.Eta          = trkDir.make<TH1F>("h_eta","pseudorapidity #eta;#eta;# tracks",100,-5,5);
   tkDetector_.Theta        = trkDir.make<TH1F>("h_theta","polar angle #theta;#theta  [ ^{o}];# tracks",100,-10,190);
   tkDetector_.Phi          = trkDir.make<TH1F>("h_phi","azimuth angle #phi;#phi  [ ^{o}];# tracks",190,-190,190);
-  tkDetector_.D0           = trkDir.make<TH1F>("h_d0","Closest approach d_{0};d_{0}  [cm];# tracks",200,-d0max, d0max);
+  tkDetector_.D0Beamspot   = trkDir.make<TH1F>("h_d0Beamspot","Closest approach d_{0} wrt. beamspot;d_{0, BS}  [cm];# tracks",200,-d0max, d0max);
   tkDetector_.Dz           = trkDir.make<TH1F>("h_dz","Closest approach d_{z};d_{z}  [cm];# tracks",200,-dzmax, dzmax);
   tkDetector_.Pt	   = trkDir.make<TH1F>("h_pt","transverse momentum p_{t};p_{t}  [GeV];# tracks",100,0,pMax);
   tkDetector_.P	           = trkDir.make<TH1F>("h_p","momentum magnitude |p|;|p|  [GeV];# tracks",100,0,pMax);
@@ -671,8 +735,10 @@ ApeEstimator::bookTrackHists(){
 
 
 TrackStruct::TrackParameterStruct
-//ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& traj)const{  // trackCut_ forbids const
-ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& traj){
+ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& traj, const reco::BeamSpot& beamSpot){
+  
+  const math::XYZPoint beamPoint(beamSpot.x0(),beamSpot.y0(), beamSpot.z0());
+  //double d0BeamspotSigma = sqrt( Track->d0Error() * Track->d0Error() + 0.5* beamSpot.BeamWidthX()*beamSpot.BeamWidthX() + 0.5* beamSpot.BeamWidthY()*beamSpot.BeamWidthY() );
   
   static TrajectoryStateCombiner tsoscomb;
   
@@ -692,6 +758,8 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
   trkParams.phi          = track.phi();
   trkParams.d0           = track.d0();
   trkParams.dz           = track.dz();
+  trkParams.d0Beamspot   = -1.*track.dxy(beamPoint);
+  trkParams.dzBeamspot   = track.dz(beamPoint);
   trkParams.p            = track.p();
   trkParams.pt           = track.pt();
   
@@ -716,7 +784,11 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
   
   if(parameterSet_.getParameter<bool>("applyTrackCuts")){
     trackCut_ = false;
-    if(trkParams.hitsValid<8 || trkParams.pt<1. || trkParams.p<4.)trackCut_ = true;
+    if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.hitsInvalid>2 ||
+       trkParams.pt<6. || trkParams.p<10. || std::fabs(trkParams.d0Beamspot)>0.2 || std::fabs(trkParams.dz)>10.)trackCut_ = true;
+    //if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.pt<2. || trkParams.p<4. || std::fabs(trkParams.d0)>1. || std::fabs(trkParams.dz)>15.)trackCut_ = true;
+    //if(trkParams.hitsValid<10 || trkParams.hits2D<2 || trkParams.pt<1. || std::fabs(trkParams.d0)>1. || std::fabs(trkParams.dz)>15.)trackCut_ = true;
+    //if(trkParams.hitsValid<8 || trkParams.pt<1. || trkParams.p<4.)trackCut_ = true;
     //if(trkParams.hitsValid<10 || trkParams.hits2D<2 || trkParams.pt<4. || trkParams.p<1. || trkParams.p>500. || trkParams.norChi2>100. || trkParams.phi>0.)trackCut_ = true;
     //if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.pt<4. || trkParams.p<10. || trkParams.p>500. || trkParams.norChi2>10. || trkParams.phi>0.)trackCut_ = true;
     //if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.pt<4. || trkParams.p<10. || trkParams.p>500. || trkParams.phi>0.)trackCut_ = true;
@@ -727,9 +799,9 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
     //                          || trkParams.pt<10.)trackCut_ = true;  //55degree
   }
   else{
-    //repeat intrinsic ALCARECO cuts after track refitting 
+    //repeat intrinsic ALCARECO hit cuts after track refitting 
     trackCut_ = false;
-    if(trkParams.hitsValid<7 && trkParams.hits2D<2)trackCut_ = true;
+    if(trkParams.hitsValid<7 || trkParams.hits2D<2)trackCut_ = true;
   }
   
   return trkParams;
@@ -1036,6 +1108,8 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& iMeass, const edm::E
 void
 ApeEstimator::hitSelection(){
   this->setHitSelectionMapUInt("width");
+  this->setHitSelectionMap("widthProj");
+  this->setHitSelectionMap("widthDiff");
   this->setHitSelectionMap("charge");
   this->setHitSelectionMapUInt("edgeStrips");
   this->setHitSelectionMap("maxCharge");
@@ -1046,6 +1120,7 @@ ApeEstimator::hitSelection(){
   
   this->setHitSelectionMap("resX");
   this->setHitSelectionMap("norResX");
+  this->setHitSelectionMap("probX");
   this->setHitSelectionMap("errXHit");
   this->setHitSelectionMap("errXTrk");
   this->setHitSelectionMap("errX");
@@ -1153,7 +1228,9 @@ ApeEstimator::hitSelected(const TrackStruct::HitParameterStruct& hitParams)const
     if(0==(*iMap).second.size())continue;
     float variable(999.F);
     
-    if     ((*iMap).first == "charge")          variable = hitParams.charge;
+    if     ((*iMap).first == "widthProj")       variable = hitParams.projWidth;
+    else if((*iMap).first == "widthDiff")       variable = hitParams.projWidth-static_cast<float>(hitParams.width);
+    else if((*iMap).first == "charge")          variable = hitParams.charge;
     else if((*iMap).first == "maxCharge")       variable = hitParams.maxCharge;
     else if((*iMap).first == "chargeOnEdges")   variable = hitParams.chargeOnEdges;
     else if((*iMap).first == "chargeAsymmetry") variable = hitParams.chargeAsymmetry;
@@ -1161,6 +1238,7 @@ ApeEstimator::hitSelected(const TrackStruct::HitParameterStruct& hitParams)const
     
     else if((*iMap).first == "resX")            variable = hitParams.resX;
     else if((*iMap).first == "norResX")         variable = hitParams.norResX;
+    else if((*iMap).first == "probX")           variable = hitParams.probX;
     else if((*iMap).first == "errXHit")         variable = hitParams.errXHit;
     else if((*iMap).first == "errXTrk")         variable = hitParams.errXTrk;
     else if((*iMap).first == "errX")            variable = hitParams.errX;
@@ -1201,7 +1279,7 @@ ApeEstimator::hitSelected(const TrackStruct::HitParameterStruct& hitParams)const
 
 
 void
-ApeEstimator::fillHists(const TrackStruct& trackStruct){
+ApeEstimator::fillHistsForAnalyzerMode(const TrackStruct& trackStruct){
   
   unsigned int goodHitsPerTrack(trackStruct.vHitParams.size());
   tkDetector_.HitsGood->Fill(goodHitsPerTrack);
@@ -1225,7 +1303,7 @@ ApeEstimator::fillHists(const TrackStruct& trackStruct){
   tkDetector_.Eta         ->Fill(trackStruct.trkParams.eta);
   tkDetector_.Theta       ->Fill(trackStruct.trkParams.theta*180./M_PI);
   tkDetector_.Phi         ->Fill(trackStruct.trkParams.phi*180./M_PI);
-  tkDetector_.D0          ->Fill(trackStruct.trkParams.d0);
+  tkDetector_.D0Beamspot  ->Fill(trackStruct.trkParams.d0Beamspot);
   tkDetector_.Dz          ->Fill(trackStruct.trkParams.dz);
   tkDetector_.P	          ->Fill(trackStruct.trkParams.p);
   tkDetector_.Pt          ->Fill(trackStruct.trkParams.pt);
@@ -1268,6 +1346,9 @@ ApeEstimator::fillHists(const TrackStruct& trackStruct){
       (*iSec).second.WidthDiffVsMaxStrip->Fill((*iHit).maxStrip,(*iHit).projWidth-static_cast<float>((*iHit).width));
       (*iSec).second.PWidthDiffVsMaxStrip->Fill((*iHit).maxStrip,(*iHit).projWidth-static_cast<float>((*iHit).width));
       
+      (*iSec).second.WidthDiffVsSigmaXHit->Fill((*iHit).errXHit,(*iHit).projWidth-static_cast<float>((*iHit).width));
+      (*iSec).second.PWidthDiffVsSigmaXHit->Fill((*iHit).errXHit,(*iHit).projWidth-static_cast<float>((*iHit).width));
+      
       
       // Hit Parameters
       (*iSec).second.mCorrelationHists["SigmaXHit"].fillCorrHists(*iHit,(*iHit).errXHit);
@@ -1299,7 +1380,7 @@ ApeEstimator::fillHists(const TrackStruct& trackStruct){
       (*iSec).second.mCorrelationHists["NorChi2"].fillCorrHists(*iHit,trackStruct.trkParams.norChi2);
       (*iSec).second.mCorrelationHists["Theta"].fillCorrHists(*iHit,trackStruct.trkParams.theta*180./M_PI);
       (*iSec).second.mCorrelationHists["Phi"].fillCorrHists(*iHit,trackStruct.trkParams.phi*180./M_PI);
-      (*iSec).second.mCorrelationHists["D0"].fillCorrHists(*iHit,trackStruct.trkParams.d0);
+      (*iSec).second.mCorrelationHists["D0Beamspot"].fillCorrHists(*iHit,trackStruct.trkParams.d0Beamspot);
       (*iSec).second.mCorrelationHists["Dz"].fillCorrHists(*iHit,trackStruct.trkParams.dz);
       (*iSec).second.mCorrelationHists["Pt"].fillCorrHists(*iHit,trackStruct.trkParams.pt);
       (*iSec).second.mCorrelationHists["P"].fillCorrHists(*iHit,trackStruct.trkParams.p);
@@ -1319,6 +1400,43 @@ ApeEstimator::fillHists(const TrackStruct& trackStruct){
 	}
       }
       
+    }
+  }
+}
+
+
+
+void
+ApeEstimator::fillHistsForApeCalculation(const TrackStruct& trackStruct){
+  
+  unsigned int goodHitsPerTrack(trackStruct.vHitParams.size());
+  
+  if(parameterSet_.getParameter<bool>("applyTrackCuts")){
+    // which tracks to take? need min. nr. of selected hits?
+    if(goodHitsPerTrack < minGoodHitsPerTrack_)return;
+  }
+  
+  
+  for(std::vector<TrackStruct::HitParameterStruct>::const_iterator iHit = trackStruct.vHitParams.begin();
+      iHit != trackStruct.vHitParams.end(); ++iHit){
+    //Put here from earlier method
+    if(iHit->hitState == TrackStruct::notAssignedToSectors)continue;
+    
+    for(std::map<unsigned int,TrackerSectorStruct>::iterator iSec = mTkSector_.begin(); iSec != mTkSector_.end(); ++iSec){
+      
+      bool moduleInSector(false);
+      for(std::vector<unsigned int>::const_iterator iUInt = (*iHit).sectors.begin(); iUInt != (*iHit).sectors.end(); ++iUInt){
+	if((*iSec).first == *iUInt){moduleInSector = true; break;}
+      }
+      if(!moduleInSector)continue;
+      
+      
+      
+      
+      
+      
+      if(!calculateApe_)continue;
+      
       for(std::map<unsigned int,std::pair<double,double> >::const_iterator iErrBins = mResErrBins_.begin();
           iErrBins != mResErrBins_.end(); ++iErrBins){
 	if((*iHit).errX < (*iErrBins).second.first || (*iHit).errX >= (*iErrBins).second.second){
@@ -1331,6 +1449,8 @@ ApeEstimator::fillHists(const TrackStruct& trackStruct){
     }
   }
 }
+
+
 
 
 // -----------------------------------------------------------------------------------------------------------
@@ -1394,58 +1514,57 @@ ApeEstimator::calculateAPE(){
        TString fitOpt("ILERQ"); //TString fitOpt("IMR"); ("IRLL"); ("IRQ");
        Int_t fitResult(0);
        if(integral>100.){
-       if(mHists["norResX"]->Fit(&func1, fitOpt)){
-         edm::LogWarning("CalculateAPE")<<"Fit1 did not work: "<<mHists["norResX"]->Fit(&func1, fitOpt);
-//	 continue;
-       }
-       fitResult = mHists["norResX"]->Fit(&func1, fitOpt);
-//       std::cout<<"FitResult1\t"<<fitResult<<"\n";
+         if(mHists["norResX"]->Fit(&func1, fitOpt)){
+           edm::LogWarning("CalculateAPE")<<"Fit1 did not work: "<<mHists["norResX"]->Fit(&func1, fitOpt);
+           continue;
+         }
+         fitResult = mHists["norResX"]->Fit(&func1, fitOpt);
+         //std::cout<<"FitResult1\t"<<fitResult<<"\n";
        }
        
-//       std::cout<<"Test0b\n";
        
-       // Second Gaus Fit
-//       TF1 *newFunc1 = mHists["norResX"]->GetFunction(func1.GetName());
-//       if(!newFunc1)continue;
-//       Double_t mean1  = newFunc1->GetParameter(1);
-//       Double_t sigma1 = newFunc1->GetParameter(2);
        
        Double_t mean1  = func1.GetParameter(1);
        Double_t sigma1 = func1.GetParameter(2);
-       //std::cout<<"\n\tTest "<<integral<<" "<<mean<<" "<<rms<<" "<<mean1<<" "<<sigma1<<"\n";
        
        TF1 func2("mygaus2","gaus",mean1 - sigmaFactorFit * TMath::Abs(sigma1),mean1 + sigmaFactorFit * TMath::Abs(sigma1));
        func2.SetParameters(func1.GetParameter(0),mean1,sigma1);
        if(integral>100.){
-       if(mHists["norResX"]->Fit(&func2, fitOpt)){
-         edm::LogWarning("CalculateAPE")<<"Fit2 did not work: "<<mHists["norResX"]->Fit(&func2, fitOpt);
-	 continue;
-       }
-       fitResult = mHists["norResX"]->Fit(&func2, fitOpt);
-//       std::cout<<"FitResult2\t"<<fitResult<<"\n";
-//       std::cout<<"Test1\n";
+         if(mHists["norResX"]->Fit(&func2, fitOpt)){
+           edm::LogWarning("CalculateAPE")<<"Fit2 did not work: "<<mHists["norResX"]->Fit(&func2, fitOpt);
+	   continue;
+         }
+         fitResult = mHists["norResX"]->Fit(&func2, fitOpt);
        }
        
        Double_t mean2  = func2.GetParameter(1);
        Double_t sigma2 = func2.GetParameter(2);
-       std::cout<<"\n\tTest "<<integral<<" "<<mean<<" "<<rms<<" "<<mean1<<" "<<sigma1<<" "<<mean2<<" "<<sigma2<<"\n";
+//       std::cout<<"\n\tTest "<<integral<<" "<<mean<<" "<<rms<<" "<<mean1<<" "<<sigma1<<" "<<mean2<<" "<<sigma2<<"\n";
        
-//       std::cout<<"Test2\n";
        
        double fitMean1(mean1), fitMean2(mean2);
        double residualWidth1(sigma1), residualWidth2(sigma2);
        
-       double ape1 = meanSigmaX*std::sqrt(residualWidth1*residualWidth1 -1.);
-       double ape2 = meanSigmaX*std::sqrt(residualWidth2*residualWidth2 -1.);
+       double ape1(-0.0010), ape2(-0.0010);
+       if(residualWidth1 >= 1.)
+         ape1 = meanSigmaX*std::sqrt(residualWidth1*residualWidth1 -1.);
+       else
+         ape1 = -meanSigmaX*std::sqrt(-residualWidth1*residualWidth1 +1.);
+       if(residualWidth2 >= 1.)
+         ape2 = meanSigmaX*std::sqrt(residualWidth2*residualWidth2 -1.);
+       else
+         ape2 = -meanSigmaX*std::sqrt(-residualWidth2*residualWidth2 +1.);
        if(isnan(ape1))ape1 = -0.0010;
        if(isnan(ape2))ape2 = -0.0010;
+       
+       
+       if(entries<100.){mean     = 0.; rms  = -0.0010;
+                        fitMean1 = 0.; ape1 = residualWidth1 = -0.0010;
+			fitMean2 = 0.; ape2 = residualWidth2 = -0.0010;}
        
        (*iSec).second.Entries       ->SetBinContent((*iErrBins).first,integral);
        (*iSec).second.MeanX         ->SetBinContent((*iErrBins).first,mean);
        (*iSec).second.RmsX          ->SetBinContent((*iErrBins).first,rms);
-       
-       if(entries<100.){fitMean1 = 0; ape1 = residualWidth1 = -0.0010;
-                        fitMean2 = 0; ape2 = residualWidth2 = -0.0010;}
        
        //std::cout<<"\n\nSector, Bin "<<(*iSec).first<<"\t"<<(*iErrBins).first;
        //std::cout<<"\nEntries, MeanError, ResWidth, APE \t"<<entries<<"\t"<<meanSigmaX<<"\t"<<residualWidth<<"\t"<<ape<<"\n";
@@ -1457,6 +1576,7 @@ ApeEstimator::calculateAPE(){
        (*iSec).second.ResidualWidthX2->SetBinContent((*iErrBins).first,residualWidth2);
        (*iSec).second.ApeX2          ->SetBinContent((*iErrBins).first,ape2);
        
+       if(entries<100.)continue;
        std::pair<double,double> entriesAndApePerBin(entries,ape2);
        vEntriesAndApePerBin.push_back(entriesAndApePerBin);
      }
@@ -1479,6 +1599,29 @@ ApeEstimator::calculateAPE(){
      
      // scale APE with value given in cfg
      apeX = apeX*apeScaling;
+     
+     
+     
+     
+     // testing weighting of APE bins, also with negative values
+     double entriesW(0.), entriesWNeg(0.);
+     double testApeW2(-1.), testApeWNeg2(-1.);
+     for(iApeBins = vEntriesAndApePerBin.begin(); iApeBins != vEntriesAndApePerBin.end(); ++iApeBins, ++interval){
+       double testApe((*iApeBins).second);
+       if(entriesWNeg<1.)testApeWNeg2 = testApe*std::fabs(testApe)*((*iApeBins).first);    //weighted by no. of entries per bin. Care about sign!!!
+       else testApeWNeg2 += testApe*std::fabs(testApe)*((*iApeBins).first);
+       entriesWNeg += (*iApeBins).first;
+       
+       if(testApe < 0.)continue;
+       if(entriesW<1.)testApeW2 = testApe*testApe*((*iApeBins).first);    //weighted by no. of entries per bin
+       else testApeW2 += testApe*testApe*((*iApeBins).first);
+       entriesW += (*iApeBins).first;
+     }
+     double testApeWNeg(testApeWNeg2 >= 0. ? std::sqrt(testApeWNeg2/entriesWNeg) : -std::sqrt(-testApeWNeg2/entriesWNeg));
+     std::cout<<"\tWeighted APEs for sector "<<(*iSec).first<<": \t"<<std::sqrt(testApeW2/entriesW)<<" \t"<<testApeWNeg<<"\n";
+     
+     
+     
      
      if(vEntriesAndApePerBin.size() != 0)(*iSec).second.apeX = apeX;
      else{
@@ -1549,15 +1692,29 @@ ApeEstimator::isHit2D(const TrackingRecHit &hit) const
 void
 ApeEstimator::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-   //using namespace edm;
-
-   //edm::Handle<reco::TrackCollection> tracks;
    
+   reco::BeamSpot beamSpot;
+   edm::Handle<reco::BeamSpot> beamSpotHandle;
+   iEvent.getByLabel("offlineBeamSpot", beamSpotHandle);
+   
+   if (beamSpotHandle.isValid()){
+     beamSpot = *beamSpotHandle;
+   }
+   else
+   {
+     edm::LogError("ApeEstimator")<<"No beam spot available from EventSetup"
+                                  <<"\n...skip event";
+     return;
+   }
+   
+   
+   //edm::Handle<reco::TrackCollection> tracks;
    edm::InputTag tjTag = parameterSet_.getParameter<edm::InputTag>("tjTkAssociationMapTag");
    edm::Handle<TrajTrackAssociationCollection> m_TrajTracksMap;
    iEvent.getByLabel(tjTag, m_TrajTracksMap);
    
-   tkDetector_.TrkSize->Fill(m_TrajTracksMap->size());
+   if(analyzerMode_)tkDetector_.TrkSize->Fill(m_TrajTracksMap->size());
+   
    if(maxTracksPerEvent_!=0 && m_TrajTracksMap->size()>maxTracksPerEvent_)return;
    
    //Creation of (traj,track)
@@ -1580,7 +1737,7 @@ ApeEstimator::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      const reco::Track *track = (*iTrack).second;
      
      TrackStruct trackStruct;
-     trackStruct.trkParams = this->fillTrackVariables(*track, *traj);
+     trackStruct.trkParams = this->fillTrackVariables(*track, *traj, beamSpot);
      
      if(trackCut_)continue;
      
@@ -1592,7 +1749,8 @@ ApeEstimator::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        if(this->hitSelected(hitParams))trackStruct.vHitParams.push_back(hitParams);
      }
      
-     this->fillHists(trackStruct);
+     if(analyzerMode_)this->fillHistsForAnalyzerMode(trackStruct);
+     if(calculateApe_)this->fillHistsForApeCalculation(trackStruct);
    }
 }
 
@@ -1607,9 +1765,11 @@ ApeEstimator::beginJob(){
    
    this->residualErrorBinning();
    
-   this->bookSectorHists();
+   if(analyzerMode_)this->bookSectorHistsForAnalyzerMode();
    
-   this->bookTrackHists();
+   if(calculateApe_)this->bookSectorHistsForApeCalculation();
+   
+   if(analyzerMode_)this->bookTrackHists();
    
    
 }
@@ -1618,7 +1778,7 @@ ApeEstimator::beginJob(){
 void 
 ApeEstimator::endJob() {
    
-   this->calculateAPE();
+   if(calculateApe_)this->calculateAPE();
    
    edm::LogInfo("HitSelector")<<"\nThere are "<<counter1<< " negative Errors calculated\n";
 }
