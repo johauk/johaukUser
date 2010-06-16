@@ -25,14 +25,18 @@ L1T1forMC.L1SeedsLogicalExpression=cms.string('(40 OR 41) AND NOT (36 OR 37 OR 3
 
 
 
-## Filter for HLT physicsDeclared bit
-hltHighLevel = cms.EDFilter("HLTHighLevel",
-    TriggerResultsTag = cms.InputTag("TriggerResults","","HLT"),
-    HLTPaths = cms.vstring('HLT_PhysicsDeclared'),           # provide list of HLT paths (or patterns) you want
-    eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
-    andOr = cms.bool(True),             # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
-    throw = cms.bool(True)    # throw exception on unknown path names
-)
+## Filter for HLT physicsDeclared bit (outdated since 30.Apr.10, replace by the following lines)
+#hltHighLevel = cms.EDFilter("HLTHighLevel",
+#    TriggerResultsTag = cms.InputTag("TriggerResults","","HLT"),
+#    HLTPaths = cms.vstring('HLT_PhysicsDeclared'),           # provide list of HLT paths (or patterns) you want
+#    eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
+#    andOr = cms.bool(True),             # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
+#    throw = cms.bool(True)    # throw exception on unknown path names
+#)
+
+from HLTrigger.special.hltPhysicsDeclared_cfi import *
+hltPhysicsDeclared.L1GtReadoutRecordTag = 'gtDigis'
+
 
 
 
@@ -40,7 +44,8 @@ hltHighLevel = cms.EDFilter("HLTHighLevel",
 ## SEQUENCE
 TriggerSelectionSequence = cms.Sequence(
     L1T1
-    *hltHighLevel
+    #*hltHighLevel
+    *hltPhysicsDeclared
 )
 
 TriggerSelectionSequenceForMC = cms.Sequence(
