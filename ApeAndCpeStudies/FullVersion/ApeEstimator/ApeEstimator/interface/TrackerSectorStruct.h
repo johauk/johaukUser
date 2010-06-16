@@ -35,8 +35,9 @@ class TrackerSectorStruct{
 			 apeX(-1.F),
 			 ResX(0), NorResX(0), XHit(0), XTrk(0),
 			 SigmaX2(0), ProbX(0),
-			 WidthVsPhiSensX(0), WidthVsWidthProjected(0), WidthDiffVsMaxStrip(0),
-			 PWidthVsPhiSensX(0), PWidthVsWidthProjected(0), PWidthDiffVsMaxStrip(0){}
+			 WidthVsPhiSensX(0), WidthVsWidthProjected(0), WidthDiffVsMaxStrip(0), WidthDiffVsSigmaXHit(0),
+			 PWidthVsPhiSensX(0), PWidthVsWidthProjected(0), PWidthDiffVsMaxStrip(0), PWidthDiffVsSigmaXHit(0)
+			 {}
   
   
   
@@ -75,8 +76,8 @@ class TrackerSectorStruct{
   
   TH1 *ResX, *NorResX, *XHit, *XTrk,
       *SigmaX2, *ProbX;
-  TH2 *WidthVsPhiSensX, *WidthVsWidthProjected, *WidthDiffVsMaxStrip;
-  TProfile *PWidthVsPhiSensX, *PWidthVsWidthProjected, *PWidthDiffVsMaxStrip;
+  TH2 *WidthVsPhiSensX, *WidthVsWidthProjected, *WidthDiffVsMaxStrip, *WidthDiffVsSigmaXHit;
+  TProfile *PWidthVsPhiSensX, *PWidthVsWidthProjected, *PWidthDiffVsMaxStrip, *PWidthDiffVsSigmaXHit;
   
   std::map<std::string,std::vector<TH1*> > mSigmaX;
   
