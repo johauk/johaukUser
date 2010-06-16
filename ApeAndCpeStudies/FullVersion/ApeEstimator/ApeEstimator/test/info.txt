@@ -1,0 +1,9 @@
+DBS search string for data MinBias:
+
+find dataset where dataset like /MinimumBias/Commissioning10*TkAlMinBias* and dataset.tier = ALCARECO and dataset.status like VALID*
+
+
+
+DBS search string for mc MinBias:
+
+find dataset where dataset like /MinBias/Spring10* and dataset.tier = ALCARECO and dataset.status like VALID*
