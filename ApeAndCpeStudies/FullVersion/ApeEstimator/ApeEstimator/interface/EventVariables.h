@@ -41,13 +41,15 @@ struct TrackStruct{
     TrackParameterStruct(): hitsSize(-999), hitsValid(-999), hitsInvalid(-999),
 		   hits2D(-999), layersMissed(-999), charge(-999),
 		   chi2(-999.F), ndof(-999.F), norChi2(-999.F),
-                   eta(-999.F), theta(-999.F), phi(-999.F),d0(-999.F), dz(-999.F),
+                   eta(-999.F), theta(-999.F), phi(-999.F), d0(-999.F), dz(-999.F),
+		   d0Beamspot(-999.F), dzBeamspot(-999.F),
                    p(-999.F), pt(-999.F), meanPhiSensToNorm(-999.F){}
     
     int hitsSize, hitsValid, hitsInvalid,
         hits2D, layersMissed, charge;
     float chi2, ndof, norChi2,
           eta, theta, phi, d0, dz,
+	  d0Beamspot, dzBeamspot,
 	  p, pt, meanPhiSensToNorm;
   };
   
