@@ -29,7 +29,8 @@ process.options = cms.untracked.PSet(
 
 
 ## sources
-process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.Zmumu_Pat_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.Zmumu_Pat_cff")
+process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 #process.source = cms.Source("PoolSource",
 #    fileNames = cms.untracked.vstring(
 #      '/store/user/dammann/36X/Spring10/Zmumu/PATtuple_v6_35_1.root',
@@ -67,7 +68,7 @@ process.load("ZmumuAnalysis.Filter.TriggerFilter_cfi")
 process.TriggerFilter1 =  process.TriggerFilter.clone()
 
 ### filter for muon and jet kinematics, muon iso and quality				     
-process.load("ZmumuAnalysis.Configuration.sequences.eventSelection_cff")
+process.load("ZmumuAnalysis.Configuration.sequences.muonSelection_cff")
 
 ### event analyzer
 process.load("ZmumuAnalysis.Analyzer.EventAnalyzer_cfi")
