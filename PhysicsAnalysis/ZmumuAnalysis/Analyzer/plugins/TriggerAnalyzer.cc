@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Tue Jun  8 11:21:18 CEST 2010
-// $Id$
+// $Id: TriggerAnalyzer.cc,v 1.1 2010/06/22 15:46:28 hauk Exp $
 //
 //
 
@@ -60,12 +60,16 @@ class TriggerAnalyzer : public edm::EDAnalyzer {
       virtual void beginJob() ;
       virtual void analyze(const edm::Event&, const edm::EventSetup&);
       virtual void endJob() ;
-
+      
+      const double binomialError(const double&, const double&)const;
+      
       // ----------member data ---------------------------
       
       const edm::ParameterSet parameterSet_;
       
       const std::vector<std::string> hltPaths_;
+      
+      unsigned int n_events_;
       
       /// Shows which selected triggers have fired
       TH1 *TrigsFired;
@@ -90,7 +94,8 @@ class TriggerAnalyzer : public edm::EDAnalyzer {
 // constructors and destructor
 //
 TriggerAnalyzer::TriggerAnalyzer(const edm::ParameterSet& iConfig):
-parameterSet_(iConfig), hltPaths_(parameterSet_.getParameter<std::vector<std::string> >("hltPaths"))
+parameterSet_(iConfig), hltPaths_(parameterSet_.getParameter<std::vector<std::string> >("hltPaths")),
+n_events_(0)
 {
 }
 
@@ -103,6 +108,19 @@ TriggerAnalyzer::~TriggerAnalyzer()
 //
 // member functions
 //
+
+const double
+TriggerAnalyzer::binomialError(const double& numerator, const double& denominator)const
+{      
+  if(numerator>denominator) return 999999.;
+  
+  double error;
+  error=sqrt((1-numerator/denominator)*numerator/denominator/denominator);
+     
+  return error;
+}
+
+
 
 // ------------ method called to for each event  ------------
 void
@@ -145,13 +163,13 @@ TriggerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   
   TrigSelPassed->Fill(trigFired);
   
+  ++n_events_;
 }
 
 
 // ------------ method called once each job just before starting event loop  ------------
 void 
-TriggerAnalyzer::beginJob()
-{
+TriggerAnalyzer::beginJob(){
   edm::Service<TFileService> fileService;
   if(!fileService){
     throw edm::Exception( edm::errors::Configuration,
@@ -162,12 +180,12 @@ TriggerAnalyzer::beginJob()
   
   TFileDirectory dirTrig = fileService->mkdir("TriggerProperties");
   
-  TrigsFired = dirTrig.make<TH1F>("h_trigsFired","Fired triggers;Trigger Path;# events",nTrigPath,0,nTrigPath);
+  TrigsFired = dirTrig.make<TH1F>("h_trigsFired","Trigger efficiencies;Trigger Path;#epsilon",nTrigPath,0,nTrigPath);
   for(size_t iTrigPath=0; iTrigPath<nTrigPath; ++iTrigPath){  
     TrigsFired->GetXaxis()->SetBinLabel(iTrigPath+1, hltPaths_[iTrigPath].c_str());
   }
   
-  TrigSelPassed = dirTrig.make<TH1F>("h_trigSelPassed","Passed trigger selection;Trigger status;# events",2,0,2);
+  TrigSelPassed = dirTrig.make<TH1F>("h_trigSelPassed","Total efficiency;Trigger status;#epsilon_{tot}",2,0,2);
   TrigSelPassed->GetXaxis()->SetBinLabel(1, "failed");
   TrigSelPassed->GetXaxis()->SetBinLabel(2, "passed");
   
@@ -182,7 +200,19 @@ TriggerAnalyzer::beginJob()
 
 // ------------ method called once each job just after ending the event loop  ------------
 void 
-TriggerAnalyzer::endJob() {
+TriggerAnalyzer::endJob(){
+  // Normalise hists to no. of events
+  const double n_events(static_cast<double>(n_events_));
+  // cannot use size_t, since would be comparison between signed and unsigned expression
+  for(int i_Trig = 1; i_Trig <= TrigsFired->GetNbinsX(); ++i_Trig){
+    TrigsFired->SetBinContent(i_Trig,TrigsFired->GetBinContent(i_Trig)/n_events);
+    TrigsFired->SetBinError(i_Trig,this->binomialError(TrigsFired->GetBinContent(i_Trig)*n_events, n_events));
+  }
+  
+  for(int i_Trig = 1; i_Trig <= TrigSelPassed->GetNbinsX(); ++i_Trig){
+    TrigSelPassed->SetBinContent(i_Trig,TrigSelPassed->GetBinContent(i_Trig)/n_events);
+    TrigSelPassed->SetBinError(i_Trig,this->binomialError(TrigSelPassed->GetBinContent(i_Trig)*n_events, n_events));
+  }
 }
 
 //define this as a plug-in
