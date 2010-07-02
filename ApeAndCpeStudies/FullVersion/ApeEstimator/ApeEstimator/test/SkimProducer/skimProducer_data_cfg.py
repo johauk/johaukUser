@@ -43,20 +43,20 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 ## Input Files (CRAFT '09)
 ##
 ## --- Monte Carlo ---
-#process.load("ApeEstimator.ApeEstimator.CRAFT_mc_31X_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.CRAFT_mc_31X_cff")
 ## --- First Reprocessing ---
-#process.load("ApeEstimator.ApeEstimator.run109011_109624_FirstRepro_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.run109011_109624_FirstRepro_cff")
 ##
 ## Input Files (Collisions '10, MinBias 7 TeV)
 ##
 ## --- Monte Carlo ---
-#process.load("ApeEstimator.ApeEstimator.MinBias_mc_356_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.MinBias_mc_356_cff")
 ## --- Run 132440-132478, First Reprocessing --- (beamspot corrected)
-#process.load("ApeEstimator.ApeEstimator.MinBias_run132440_132478_R_356_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.MinBias_run132440_132478_R_356_cff")
 ## --- Run 133029-133158, Processing ---
-#process.load("ApeEstimator.ApeEstimator.MinBias_run133029_133158_P_356_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.MinBias_run133029_133158_P_356_cff")
 ## --- Run 132440-134987, First Reprocessing ---
-process.load("ApeEstimator.ApeEstimator.MinBias_run132440_134987_RMay06_358p3_cff")
+process.load("ApeEstimator.ApeEstimator.samples.MinBias_run132440_134987_RMay06_358p3_cff")
 
 
 
@@ -123,12 +123,8 @@ process.out = cms.OutputModule("PoolOutputModule",
     dropMetaDataForDroppedData = cms.untracked.bool(True),                                     
     fileName = cms.untracked.string('rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/data/MinBias/May6thReReco/MinBias_run132440_134987_RMay06_358p3.root')
 )
-
-process.out.outputCommands += ['drop *_*_*_RECO',
-                               'keep L1*_*_*_RECO',
-			       'drop *_L1T1*_*_*',
-			       'drop *_MEtoEDMConverter_*_*']
-
+process.load("ApeEstimator.ApeEstimator.PrivateSkim_EventContent_cff")
+process.out.outputCommands.extend(process.ApeSkimEventContent.outputCommands)
 
 
 
