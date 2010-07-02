@@ -7,7 +7,4 @@ EventAnalyzer = cms.EDAnalyzer('EventAnalyzer',
     jetSource = cms.InputTag("selectedPatJets"),
     # missingEt collection
     metSource = cms.InputTag("patMETs"),
-    
-    # should event weight be used for filling histograms?
-    useEventWeight = cms.bool(False),
 )

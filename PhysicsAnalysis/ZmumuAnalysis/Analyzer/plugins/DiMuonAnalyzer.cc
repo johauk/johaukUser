@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May 20 15:47:12 CEST 2010
-// $Id$
+// $Id: DiMuonAnalyzer.cc,v 1.1 2010/06/22 15:44:56 hauk Exp $
 //
 //
 
@@ -78,7 +78,7 @@ class DiMuonAnalyzer : public edm::EDAnalyzer {
       virtual void endJob() ;
       
       void bookHists(DiMuHists&, const TFileDirectory&);
-      void fillHists(DiMuHists&, const edm::Handle<pat::MuonCollection>&, const double);
+      void fillHists(DiMuHists&, const edm::Handle<pat::MuonCollection>&);
 
       // ----------member data ---------------------------
       
@@ -121,7 +121,7 @@ DiMuonAnalyzer::~DiMuonAnalyzer()
 
 
 void
-DiMuonAnalyzer::fillHists(DiMuHists& hists, const edm::Handle<pat::MuonCollection>& muons, const double weight){
+DiMuonAnalyzer::fillHists(DiMuHists& hists, const edm::Handle<pat::MuonCollection>& muons){
   // get leading muons      
   const pat::MuonCollection::const_reference mu1 = muons->at(0);
   const pat::MuonCollection::const_reference mu2 = muons->at(1);
@@ -144,13 +144,13 @@ DiMuonAnalyzer::fillHists(DiMuHists& hists, const edm::Handle<pat::MuonCollectio
   const double diMuMass = diMuVec.M();
   const double diPt = diMuVec.pt();
   
-  hists.EtaLow->Fill(etaLow, weight);
-  hists.EtaHigh->Fill(etaHigh, weight);
-  hists.PtLow->Fill(ptLow, weight);
-  hists.PtHigh->Fill(ptHigh, weight);
-  hists.DeltaEta->Fill(deltaEta, weight);
-  hists.DeltaPhi->Fill(deltaPhi*180./M_PI, weight);
-  hists.DiMass->Fill(diMuMass, weight);
+  hists.EtaLow->Fill(etaLow);
+  hists.EtaHigh->Fill(etaHigh);
+  hists.PtLow->Fill(ptLow);
+  hists.PtHigh->Fill(ptHigh);
+  hists.DeltaEta->Fill(deltaEta);
+  hists.DeltaPhi->Fill(deltaPhi*180./M_PI);
+  hists.DiMass->Fill(diMuMass);
   hists.DiPt->Fill(diPt);
 }
 
@@ -165,14 +165,6 @@ DiMuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   edm::Handle<pat::MuonCollection> muons; 
   iEvent.getByLabel(muonSource, muons);
   
-  // get weight when indicated, else weight is 1.
-  double weight(1.);
-  if(parameterSet_.getParameter<bool>("useEventWeight")){
-    edm::Handle<double> weightHandle;
-    iEvent.getByLabel("eventWeight",weightHandle);
-    weight = *weightHandle;
-  }
-  
   // test if muon collection contains at least two muons resp. exactly two muons
   if(muons->size()<2 || (parameterSet_.getParameter<bool>("exactlyTwoMuons") && muons->size()!=2) )return;
   
@@ -185,10 +177,10 @@ DiMuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   if(mu1.charge()*mu2.charge()>0.) isSameCharge = true;
   
   if(isSameCharge){
-    this->fillHists(histsSC_, muons, weight);
+    this->fillHists(histsSC_, muons);
   }
   else{
-    this->fillHists(histsOC_, muons, weight);
+    this->fillHists(histsOC_, muons);
   }
 }
 

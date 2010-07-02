@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu Jun  3 17:42:24 CEST 2010
-// $Id$
+// $Id: EventAnalyzer.cc,v 1.1 2010/06/22 15:45:30 hauk Exp $
 //
 //
 
@@ -123,19 +123,11 @@ EventAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                                         <<"\n...skipping event";
   }
   
-  // get weight when indicated, else weight is 1.
-  double weight(1.);
-  if(parameterSet_.getParameter<bool>("useEventWeight")){
-    edm::Handle<double> weightHandle;
-    iEvent.getByLabel("eventWeight",weightHandle);
-    weight = *weightHandle;
-  }
-  
-  MuonSize->Fill(muons->size(), weight);
-  JetSize->Fill(jets->size(), weight);
+  MuonSize->Fill(muons->size());
+  JetSize->Fill(jets->size());
   //float met = (mets->begin())->corSumEt();  // do not understand, what this is...
   float met = (mets->begin())->et();
-  MissingEt->Fill(met, weight);
+  MissingEt->Fill(met);
 
 }
 
