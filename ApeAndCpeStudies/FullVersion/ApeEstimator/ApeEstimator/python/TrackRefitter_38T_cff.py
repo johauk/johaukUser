@@ -83,11 +83,15 @@ TTRHBuilderGeometricAndTemplate = cms.ESProducer("TkTransientTrackingRecHitBuild
 
 ## TRACK REFITTER (input for Track Selector)
 from RecoTracker.TrackProducer.TrackRefitters_cff import *
+# -- Maximal contribution to chi2 value of track fit, e.g. = 20. means normalized residual < sqrt(20.)
 # not used when < 0.
 FittingSmootherRKP5.EstimateCut = -1.
+# -- some cut on pixel hit probability
 # not used when < -15.
 FittingSmootherRKP5.LogPixelProbabilityCut = -16.
+# -- do not know what exactly this track rejection does
 FittingSmootherRKP5.RejectTracks = False
+# -- two track segments if true or only "first" one ???
 FittingSmootherRKP5.BreakTrajWith2ConsecutiveMissing = False
 TrackRefitterForApeEstimator = RecoTracker.TrackProducer.TrackRefitters_cff.TrackRefitterP5.clone(
     src = 'ALCARECOTkAlCosmicsCTF0T' #'ALCARECOTkAlCosmicsCosmicTF0T' #'ALCARECOTkAlCosmicsCosmicTF'
