@@ -83,7 +83,7 @@ TTRHBuilderGeometricAndTemplate = cms.ESProducer("TkTransientTrackingRecHitBuild
 
 ## TRACK REFITTER (input for Track Selector)
 from RecoTracker.TrackProducer.TrackRefitters_cff import *
-# -- Maximal contribution to chi2 value of track fit, e.g. = 20. means normalized residual < sqrt(20.)
+# -- Maximal contribution of individual hit to chi2 value of track fit, e.g. = 20. means normalized residual < sqrt(20.)
 # not used when < 0.
 FittingSmootherRKP5.EstimateCut = -1.
 # -- some cut on pixel hit probability
