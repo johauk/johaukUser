@@ -39,12 +39,12 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load('Configuration.EventContent.EventContent_cff')
 
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.177 $'),
+    version = cms.untracked.string('$Revision: 1.1 $'),
     annotation = cms.untracked.string('MinBias_7TeV.cfi nevts:10'),
     name = cms.untracked.string('PyReleaseValidation')
 )
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(10)
 )
 process.options = cms.untracked.PSet(
 
@@ -71,34 +71,12 @@ process.load("ApeEstimator.ApeEstimator.PrivateSkim_EventContent_cff")
 process.output.outputCommands.extend(process.SimulationEventContent.outputCommands)
 
 # Other statements
-process.GlobalTag.globaltag = 'DESIGN_3X_V27::All'
-#process.GlobalTag.globaltag = 'MC_3XY_V27::All'
-#process.GlobalTag.globaltag = 'START3X_V27::All'
+process.GlobalTag.globaltag = 'DESIGN_36_V10::All'
+#process.GlobalTag.globaltag = 'MC_36Y_V10::All'
+#process.GlobalTag.globaltag = 'START36_V10::All'
 
-## ALIGNMENT CONSTANTS & APE (set to zero)
-import CalibTracker.Configuration.Common.PoolDBESSource_cfi
-myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
-    connect = 'frontier://FrontierProd/CMS_COND_31X_FROM21X', # or your sqlite file
-    toGet = cms.VPSet(
-      cms.PSet(
-        record = cms.string('TrackerAlignmentRcd'),
-        tag = cms.string('TrackerIdealGeometry210_mc') # your tag
-        )
-      )
-    )
-es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
-
-## APE (set to zero)
-myTrackerAlignmentErr = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
-    connect = cms.string('frontier://FrontierProd/CMS_COND_31X_FROM21X'),
-    toGet = cms.VPSet(
-      cms.PSet(
-        record = cms.string('TrackerAlignmentErrorRcd'),
-        tag = cms.string('TrackerIdealGeometryErrors210_mc')
-      )
-    )
-)
-es_prefer_trackerAlignmentErr = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentErr")
+# Set seed numbers for random engine
+process.load("ApeEstimator.ApeEstimator.randomEngineNumbers_cff")
 
 
 
