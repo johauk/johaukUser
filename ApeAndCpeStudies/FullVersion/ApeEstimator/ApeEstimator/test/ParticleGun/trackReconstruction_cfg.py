@@ -13,7 +13,7 @@ process = cms.Process('RECO')
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.categories.append('SiStripQuality')
 process.MessageLogger.cerr.threshold = 'INFO'
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 10
 
 
 
@@ -35,7 +35,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load('Configuration.EventContent.EventContent_cff')
 
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.1 $'),
+    version = cms.untracked.string('$Revision: 1.2 $'),
     annotation = cms.untracked.string('step2 nevts:100'),
     name = cms.untracked.string('PyReleaseValidation')
 )
@@ -105,6 +105,14 @@ es_prefer_trackerAlignmentErr = cms.ESPrefer("PoolDBESSource","myTrackerAlignmen
 
 
 
+# Filter used to drop events where not exactly one track is reconstructed (from CommonTools/CandUtils)
+
+process.minOneTrackFilter = cms.EDFilter("TrackCountFilter",
+    src = cms.InputTag("generalTracks"),
+    minNumber = cms.uint32(1),
+    #filter = cms.bool(True),
+)
+
 
 
 # Path and EndPath definitions
@@ -113,7 +121,7 @@ process.raw2digi_step = cms.Path(process.RawToDigi)
 ## --- trial: reduce to track reco only ---
 #process.reconstruction_step = cms.Path(process.reconstruction)
 #process.reconstruction_step = cms.Path(process.trackerlocalreco * (process.offlineBeamSpot + process.recopixelvertexing * process.ckftracks_woBH) * process.logErrorHarvester)
-process.reconstruction_step = cms.Path(process.trackerlocalreco * (process.offlineBeamSpot + process.recopixelvertexing * process.ckftracks) * process.logErrorHarvester)
+process.reconstruction_step = cms.Path(process.trackerlocalreco * (process.offlineBeamSpot + process.recopixelvertexing * process.ckftracks) * process.minOneTrackFilter * process.logErrorHarvester)
 process.endjob_step = cms.Path(process.endOfProcess)
 process.out_step = cms.EndPath(process.output)
 
