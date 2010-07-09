@@ -35,7 +35,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load('Configuration.EventContent.EventContent_cff')
 
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.177 $'),
+    version = cms.untracked.string('$Revision: 1.1 $'),
     annotation = cms.untracked.string('step2 nevts:100'),
     name = cms.untracked.string('PyReleaseValidation')
 )
@@ -74,9 +74,9 @@ process.output.outputCommands.extend(process.ReconstructionEventContent.outputCo
 
 
 # Other statements
-process.GlobalTag.globaltag = 'DESIGN_3X_V27::All'
-#process.GlobalTag.globaltag = 'MC_3XY_V27::All'
-#process.GlobalTag.globaltag = 'START3X_V27::All'
+process.GlobalTag.globaltag = 'DESIGN_36_V10::All'
+#process.GlobalTag.globaltag = 'MC_36Y_V10::All'
+#process.GlobalTag.globaltag = 'START36_V10::All'
 
 ## ALIGNMENT CONSTANTS & APE (set to zero)
 import CalibTracker.Configuration.Common.PoolDBESSource_cfi
