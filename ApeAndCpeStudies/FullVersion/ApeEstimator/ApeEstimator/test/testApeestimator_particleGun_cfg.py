@@ -88,7 +88,11 @@ process.load("ApeEstimator.ApeEstimator.TrackRefitter_38T_cff")
 #process.GlobalTag.globaltag = 'CRAFT09_R_V4::All'
 #process.GlobalTag.globaltag = 'CRAFT09_R_V9::All'
 ## --- Monte Carlo for MinBias 7 TeV ---
-process.GlobalTag.globaltag = 'START3X_V26::All'
+#process.GlobalTag.globaltag = 'START3X_V26::All'
+## --- Monte Carlo for Particle Gun ---
+#process.GlobalTag.globaltag = 'DESIGN_36_V10::All'
+process.GlobalTag.globaltag = 'MC_36Y_V10::All'
+#process.GlobalTag.globaltag = 'START36_V10::All'
 ## --- Run 132440-132478, First Reprocessing --- (beamspot corrected)
 #process.GlobalTag.globaltag = 'GR_R_35X_V6::All'
 ## --- Run 133029-133158, Processing ---
