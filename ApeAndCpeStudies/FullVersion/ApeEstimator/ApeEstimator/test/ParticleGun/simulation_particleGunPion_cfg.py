@@ -11,7 +11,7 @@ process = cms.Process('RAW')
 ## add message logger
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'INFO'
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 10
 
 
 
@@ -39,12 +39,12 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load('Configuration.EventContent.EventContent_cff')
 
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.1 $'),
+    version = cms.untracked.string('$Revision: 1.2 $'),
     annotation = cms.untracked.string('MinBias_7TeV.cfi nevts:10'),
     name = cms.untracked.string('PyReleaseValidation')
 )
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10)
+    input = cms.untracked.int32(11)
 )
 process.options = cms.untracked.PSet(
 
@@ -56,7 +56,8 @@ process.source = cms.Source("EmptySource")
 process.output = cms.OutputModule("PoolOutputModule",
     splitLevel = cms.untracked.int32(0),
     outputCommands = process.RAWSIMEventContent.outputCommands,
-    fileName = cms.untracked.string('file:raw.root'),
+    #fileName = cms.untracked.string('file:raw.root'),
+    fileName = cms.untracked.string('rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RAW/raw.root'),
     dataset = cms.untracked.PSet(
         dataTier = cms.untracked.string('GEN-SIM-RAW'),
         filterName = cms.untracked.string('')
@@ -76,7 +77,7 @@ process.GlobalTag.globaltag = 'DESIGN_36_V10::All'
 #process.GlobalTag.globaltag = 'START36_V10::All'
 
 # Set seed numbers for random engine
-process.load("ApeEstimator.ApeEstimator.randomEngineNumbers_cff")
+#process.load("ApeEstimator.ApeEstimator.randomEngineNumbers_cff")
 
 
 
