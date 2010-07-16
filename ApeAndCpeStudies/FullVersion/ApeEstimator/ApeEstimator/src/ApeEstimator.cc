@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.6 2010/04/26 13:25:12 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.7 2010/06/16 15:32:40 hauk Exp $
 //
 //
 
@@ -671,10 +671,10 @@ ApeEstimator::bookSectorHistsForApeCalculation(){
     (*iSec).second.RmsX            = resDir.make<TH1F>("h_rmsX","residual rms RMS(r_{x}/#sigma_{x});#sigma_{x}  [cm];RMS(r_{x}/#sigma_{x})",vBinX.size()-1,&(vBinX[0]));
     (*iSec).second.FitMeanX1       = resDir.make<TH1F>("h_fitMeanX1","fitted residual mean #mu_{x};#sigma_{x}  [cm];#mu_{x}",vBinX.size()-1,&(vBinX[0]));
     (*iSec).second.ResidualWidthX1 = resDir.make<TH1F>("h_residualWidthX1","residual width #Delta_{x};#sigma_{x}  [cm];#Delta_{x}",vBinX.size()-1,&(vBinX[0]));
-    (*iSec).second.ApeX1           = resDir.make<TH1F>("h_apeX1","alignment precision APE_{x};#sigma_{x}  [cm];APE_{x}",vBinX.size()-1,&(vBinX[0]));
+    (*iSec).second.CorrectionX1    = resDir.make<TH1F>("h_correctionX1","correction to APE_{x};#sigma_{x}  [cm];#DeltaAPE_{x}",vBinX.size()-1,&(vBinX[0]));
     (*iSec).second.FitMeanX2       = resDir.make<TH1F>("h_fitMeanX2","fitted residual mean #mu_{x};#sigma_{x}  [cm];#mu_{x}",vBinX.size()-1,&(vBinX[0]));
     (*iSec).second.ResidualWidthX2 = resDir.make<TH1F>("h_residualWidthX2","residual width #Delta_{x};#sigma_{x}  [cm];#Delta_{x}",vBinX.size()-1,&(vBinX[0]));
-    (*iSec).second.ApeX2           = resDir.make<TH1F>("h_apeX2","alignment precision APE_{x};#sigma_{x}  [cm];APE_{x}",vBinX.size()-1,&(vBinX[0]));
+    (*iSec).second.CorrectionX2    = resDir.make<TH1F>("h_correctionX2","correciton to APE_{x};#sigma_{x}  [cm];#DeltaAPE_{x}",vBinX.size()-1,&(vBinX[0]));
   }
 }
 
@@ -1459,6 +1459,37 @@ ApeEstimator::fillHistsForApeCalculation(const TrackStruct& trackStruct){
 
 void
 ApeEstimator::calculateAPE(){
+   // Set up root file for iterations on APE value
+   const std::string iterationFileName(parameterSet_.getParameter<std::string>("IterationFile"));
+   TFile* iterationFile = new TFile(iterationFileName.c_str(),"UPDATE");
+   
+   
+   // Set up TTree for iterative APE values on first pass (first iteration) or read from file (further iterations)
+   TTree* iterationTree(0);
+   iterationFile->GetObject("iterTree;1",iterationTree);
+   
+   bool firstIter(false);
+   if(!iterationTree){
+     firstIter = true;
+     iterationTree = new TTree("iterTree","Tree for APE values of all iterations");
+   }
+   
+   double a_apeSector[16589];
+   for(size_t i_sector = 1; i_sector <= mTkSector_.size(); ++i_sector){
+     a_apeSector[i_sector] = 11;
+     std::stringstream ss_sector, ss_sectorSuffixed;
+     ss_sector << "Ape_Sector_" << i_sector;
+     if(firstIter){     
+       ss_sectorSuffixed << ss_sector.str() << "/D";
+       iterationTree->Branch(ss_sector.str().c_str(), &a_apeSector[i_sector], ss_sectorSuffixed.str().c_str());
+     }
+     else{
+       iterationTree->SetBranchAddress(ss_sector.str().c_str(), &a_apeSector[i_sector]);
+       iterationTree->GetEntry(iterationTree->GetEntries()-1);
+     }
+   }
+   
+   
    // Set up text file for writing out APE values per module
    ofstream apeOutputFile;
    const std::string apeOutputFileName(parameterSet_.getParameter<std::string>("ApeOutputFile"));
@@ -1472,22 +1503,20 @@ ApeEstimator::calculateAPE(){
      return;
    }
    
-   const double apeScaling(parameterSet_.getParameter<double>("apeScaling"));
+   
+   // Loop over sectors for calculating APE
+   const double correctionScaling(parameterSet_.getParameter<double>("correctionScaling"));
    const double sigmaFactorFit(parameterSet_.getParameter<double>("sigmaFactorFit"));
    for(std::map<unsigned int,TrackerSectorStruct>::iterator iSec = mTkSector_.begin(); iSec != mTkSector_.end(); ++iSec){
-     std::vector<std::pair<double,double> > vEntriesAndApePerBin;
      
+     std::vector<std::pair<double,double> > vEntriesAndCorrectionX2PerBin;
+     
+     // Loop over residual error bins to calculate APE for every bin
      for(std::map<unsigned int, std::map<std::string,TH1*> >::const_iterator iErrBins = (*iSec).second.mBinnedHists.begin();
          iErrBins != (*iSec).second.mBinnedHists.end(); ++iErrBins){
        std::map<std::string,TH1*> mHists = (*iErrBins).second;
        
        double entries = mHists["sigmaX"]->GetEntries();
-       
-//       if(entries<0.1){  // There are no entries outside histo range (over-, underflow) possible
-//         edm::LogWarning("CalculateAPE")<<"\nNo valid entry in histogram \"sigmaX\" in error bin "<<(*iErrBins).first<<" of sector "<<(*iSec).first<<", APE is not calculated\n";
-	 //continue;
-//       }
-       
        double meanSigmaX = mHists["sigmaX"]->GetMean();
        
        // Fitting Parameters
@@ -1498,69 +1527,56 @@ ApeEstimator::calculateAPE(){
 	      rms      = mHists["norResX"]->GetRMS(),
 	      maximum  = mHists["norResX"]->GetBinContent(mHists["norResX"]->GetMaximumBin());
        
-       //if(integral<0.1){  // There might be all entries outside histo range
-       //  edm::LogWarning("CalculateAPE")<<"\nNo valid entry in histogram \"norResX\" in error bin "<<(*iErrBins).first<<" of sector "<<(*iSec).first<<", APE is not calculated\n";
-       //  continue;
-       //}
-       
-       
-       
-//       std::cout<<"Test0a\t"<<entries<<"\t"<<integral<<"\n";
        
        // First Gaus Fit
-//       if(integral<2)continue;
-       TF1 func1("mygaus", "gaus", xMin, xMax);
-       func1.SetParameters(maximum, mean, rms);
+       TF1 func_1("mygaus", "gaus", xMin, xMax);
+       func_1.SetParameters(maximum, mean, rms);
        TString fitOpt("ILERQ"); //TString fitOpt("IMR"); ("IRLL"); ("IRQ");
        Int_t fitResult(0);
        if(integral>100.){
-         if(mHists["norResX"]->Fit(&func1, fitOpt)){
-           edm::LogWarning("CalculateAPE")<<"Fit1 did not work: "<<mHists["norResX"]->Fit(&func1, fitOpt);
+         if(mHists["norResX"]->Fit(&func_1, fitOpt)){
+           edm::LogWarning("CalculateAPE")<<"Fit1 did not work: "<<mHists["norResX"]->Fit(&func_1, fitOpt);
            continue;
          }
-         fitResult = mHists["norResX"]->Fit(&func1, fitOpt);
+         fitResult = mHists["norResX"]->Fit(&func_1, fitOpt);
          //std::cout<<"FitResult1\t"<<fitResult<<"\n";
        }
+       Double_t mean_1  = func_1.GetParameter(1);
+       Double_t sigma_1 = func_1.GetParameter(2);
        
        
-       
-       Double_t mean1  = func1.GetParameter(1);
-       Double_t sigma1 = func1.GetParameter(2);
-       
-       TF1 func2("mygaus2","gaus",mean1 - sigmaFactorFit * TMath::Abs(sigma1),mean1 + sigmaFactorFit * TMath::Abs(sigma1));
-       func2.SetParameters(func1.GetParameter(0),mean1,sigma1);
+       // Second gaus fit
+       TF1 func_2("mygaus2","gaus",mean_1 - sigmaFactorFit * TMath::Abs(sigma_1),mean_1 + sigmaFactorFit * TMath::Abs(sigma_1));
+       func_2.SetParameters(func_1.GetParameter(0),mean_1,sigma_1);
        if(integral>100.){
-         if(mHists["norResX"]->Fit(&func2, fitOpt)){
-           edm::LogWarning("CalculateAPE")<<"Fit2 did not work: "<<mHists["norResX"]->Fit(&func2, fitOpt);
+         if(mHists["norResX"]->Fit(&func_2, fitOpt)){
+           edm::LogWarning("CalculateAPE")<<"Fit2 did not work: "<<mHists["norResX"]->Fit(&func_2, fitOpt);
 	   continue;
          }
-         fitResult = mHists["norResX"]->Fit(&func2, fitOpt);
+         fitResult = mHists["norResX"]->Fit(&func_2, fitOpt);
        }
+       Double_t mean_2  = func_2.GetParameter(1);
+       Double_t sigma_2 = func_2.GetParameter(2);
+       //std::cout<<"\n\tTest "<<integral<<" "<<mean<<" "<<rms<<" "<<mean_1<<" "<<sigma_1<<" "<<mean_2<<" "<<sigma_2<<"\n";
        
-       Double_t mean2  = func2.GetParameter(1);
-       Double_t sigma2 = func2.GetParameter(2);
-//       std::cout<<"\n\tTest "<<integral<<" "<<mean<<" "<<rms<<" "<<mean1<<" "<<sigma1<<" "<<mean2<<" "<<sigma2<<"\n";
+       
+       // Fill histograms
+       double fitMean_1(mean_1), fitMean_2(mean_2);
+       double residualWidth_1(sigma_1), residualWidth_2(sigma_2);
+       
+       double correctionX2_1(-0.0010), correctionX2_2(-0.0010);
+       correctionX2_1 = meanSigmaX*meanSigmaX*(residualWidth_1*residualWidth_1 -1.);
+       correctionX2_2 = meanSigmaX*meanSigmaX*(residualWidth_2*residualWidth_2 -1.);
        
        
-       double fitMean1(mean1), fitMean2(mean2);
-       double residualWidth1(sigma1), residualWidth2(sigma2);
-       
-       double ape1(-0.0010), ape2(-0.0010);
-       if(residualWidth1 >= 1.)
-         ape1 = meanSigmaX*std::sqrt(residualWidth1*residualWidth1 -1.);
-       else
-         ape1 = -meanSigmaX*std::sqrt(-residualWidth1*residualWidth1 +1.);
-       if(residualWidth2 >= 1.)
-         ape2 = meanSigmaX*std::sqrt(residualWidth2*residualWidth2 -1.);
-       else
-         ape2 = -meanSigmaX*std::sqrt(-residualWidth2*residualWidth2 +1.);
-       if(isnan(ape1))ape1 = -0.0010;
-       if(isnan(ape2))ape2 = -0.0010;
-       
+       double correctionX_1 = correctionX2_1>=0. ? std::sqrt(correctionX2_1) : -std::sqrt(-correctionX2_1);
+       double correctionX_2 = correctionX2_2>=0. ? std::sqrt(correctionX2_2) : -std::sqrt(-correctionX2_2);
+       if(isnan(correctionX_1))correctionX_1 = -0.0010;
+       if(isnan(correctionX_2))correctionX_2 = -0.0010;
        
        if(entries<100.){mean     = 0.; rms  = -0.0010;
-                        fitMean1 = 0.; ape1 = residualWidth1 = -0.0010;
-			fitMean2 = 0.; ape2 = residualWidth2 = -0.0010;}
+                        fitMean_1 = 0.; correctionX_1 = residualWidth_1 = -0.0010;
+			fitMean_2 = 0.; correctionX_2 = residualWidth_2 = -0.0010;}
        
        (*iSec).second.Entries       ->SetBinContent((*iErrBins).first,integral);
        (*iSec).second.MeanX         ->SetBinContent((*iErrBins).first,mean);
@@ -1568,41 +1584,47 @@ ApeEstimator::calculateAPE(){
        
        //std::cout<<"\n\nSector, Bin "<<(*iSec).first<<"\t"<<(*iErrBins).first;
        //std::cout<<"\nEntries, MeanError, ResWidth, APE \t"<<entries<<"\t"<<meanSigmaX<<"\t"<<residualWidth<<"\t"<<ape<<"\n";
-       (*iSec).second.FitMeanX1      ->SetBinContent((*iErrBins).first,fitMean1);
-       (*iSec).second.ResidualWidthX1->SetBinContent((*iErrBins).first,residualWidth1);
-       (*iSec).second.ApeX1          ->SetBinContent((*iErrBins).first,ape1);
+       (*iSec).second.FitMeanX1      ->SetBinContent((*iErrBins).first,fitMean_1);
+       (*iSec).second.ResidualWidthX1->SetBinContent((*iErrBins).first,residualWidth_1);
+       (*iSec).second.CorrectionX1   ->SetBinContent((*iErrBins).first,correctionX_1);
        
-       (*iSec).second.FitMeanX2      ->SetBinContent((*iErrBins).first,fitMean2);
-       (*iSec).second.ResidualWidthX2->SetBinContent((*iErrBins).first,residualWidth2);
-       (*iSec).second.ApeX2          ->SetBinContent((*iErrBins).first,ape2);
+       (*iSec).second.FitMeanX2      ->SetBinContent((*iErrBins).first,fitMean_2);
+       (*iSec).second.ResidualWidthX2->SetBinContent((*iErrBins).first,residualWidth_2);
+       (*iSec).second.CorrectionX2   ->SetBinContent((*iErrBins).first,correctionX_2);
        
+       
+       // Use result for bin only when entries>100
        if(entries<100.)continue;
-       std::pair<double,double> entriesAndApePerBin(entries,ape2);
-       vEntriesAndApePerBin.push_back(entriesAndApePerBin);
+       std::pair<double,double> entriesAndCorrectionX2PerBin(entries,correctionX2_2);
+       vEntriesAndCorrectionX2PerBin.push_back(entriesAndCorrectionX2PerBin);
      }
      
+     
+     // Calculate squared correction for sector
+     if(vEntriesAndCorrectionX2PerBin.size() == 0){
+       edm::LogError("CalculateAPE")<<"NO error interval of sector "<<(*iSec).first<<" has a valid APE calculated,\n...so cannot set APE";
+       continue;
+     }
      
      // Question: how to calculate APE from different bins, mean value from all, weighted by entries ???
-     double apeX(-1.);
+     double correctionX2(999.);
      unsigned int interval(1), regardedInterval(1);
      std::vector<std::pair<double,double> >::const_iterator iApeBins;
-     for(iApeBins = vEntriesAndApePerBin.begin(); iApeBins != vEntriesAndApePerBin.end(); ++iApeBins, ++interval){
-       if((*iApeBins).second < 0.){
-         edm::LogInfo("CalculateAPE")<<"Error interval "<<interval<<" has no valid APE calculated and is not regarded";
-	 continue;
-       }
-       if(regardedInterval==1)apeX = (*iApeBins).second;
-       else apeX += (*iApeBins).second;
+     for(iApeBins = vEntriesAndCorrectionX2PerBin.begin(); iApeBins != vEntriesAndCorrectionX2PerBin.end(); ++iApeBins, ++interval){
+       if(regardedInterval==1)correctionX2 = (*iApeBins).second;
+       else correctionX2 += (*iApeBins).second;
        ++regardedInterval;
      }
-     apeX = apeX/static_cast<double>(regardedInterval);
+     correctionX2 = correctionX2/static_cast<double>(regardedInterval-1);
      
-     // scale APE with value given in cfg
-     apeX = apeX*apeScaling;
-     
-     
+     // scale APE Correction with value given in cfg
+     correctionX2 = correctionX2*correctionScaling*correctionScaling;
      
      
+     
+     
+     
+/*     
      // testing weighting of APE bins, also with negative values
      double entriesW(0.), entriesWNeg(0.);
      double testApeW2(-1.), testApeWNeg2(-1.);
@@ -1619,23 +1641,33 @@ ApeEstimator::calculateAPE(){
      }
      double testApeWNeg(testApeWNeg2 >= 0. ? std::sqrt(testApeWNeg2/entriesWNeg) : -std::sqrt(-testApeWNeg2/entriesWNeg));
      std::cout<<"\tWeighted APEs for sector "<<(*iSec).first<<": \t"<<std::sqrt(testApeW2/entriesW)<<" \t"<<testApeWNeg<<"\n";
+*/     
      
      
+     // Calculate updated squared APE of current iteration
+     double apeX2(999.);
+     // old APE value from last iteration
+     if(firstIter)apeX2 = 0.;
+     else apeX2 = a_apeSector[(*iSec).first];
+     // new APE value
+     if(apeX2 + correctionX2 < 0.) correctionX2 = -apeX2;
+     apeX2 = apeX2 + correctionX2;
+     if(apeX2<0.)edm::LogError("CalculateAPE")<<"\n\n\tBad APE, but why???\n\n\n";
+     a_apeSector[(*iSec).first] = apeX2;
      
-     
-     if(vEntriesAndApePerBin.size() != 0)(*iSec).second.apeX = apeX;
-     else{
-       edm::LogError("CalculateAPE")<<"NO error interval of sector "<<(*iSec).first<<" has a valid APE calculated,\n...so cannot set APE";
-       continue;
-     }
      
      // Set the calculated APE spherical for all modules of the sector
+     const double apeX(std::sqrt(apeX2));
      std::vector<unsigned int>::const_iterator iRawId;
      for(iRawId = (*iSec).second.vRawId.begin(); iRawId != (*iSec).second.vRawId.end(); ++iRawId){
        apeOutputFile<<*iRawId<<" "<<std::fixed<<std::setprecision(5)<<apeX<<" "<<apeX<<" "<<apeX<<"\n";
      }
    }
    apeOutputFile.close();
+   
+   iterationTree->Fill();
+   iterationTree->Write("iterTree", TObject::kOverwrite);
+   iterationFile->Close();
 }
 
 
