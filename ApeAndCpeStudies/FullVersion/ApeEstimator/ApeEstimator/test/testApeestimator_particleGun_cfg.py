@@ -74,6 +74,12 @@ process.load("ApeEstimator.ApeEstimator.samples.ParticleGunPion_mc_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.MinBias_run132440_134987_RMay06_358p3_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.MinBias_run132440_134987_RMay06_358p3_ApeSkim_cff")
 
+#process.source.duplicateCheckMode = cms.untracked.string("noDuplicateCheck")
+#process.source.duplicateCheckMode = cms.untracked.string("checkEachFile")
+process.source.duplicateCheckMode = cms.untracked.string("checkEachRealDataFile")
+#process.source.duplicateCheckMode = cms.untracked.string("checkAllFilesOpened")   # default value
+
+
 
 
 ##
@@ -145,7 +151,8 @@ process.ApeEstimator1 = ApeEstimatorCosmics.clone(
     Sectors = SubdetSectors,
     analyzerMode = False,
     sigmaFactorFit = 2.5,
-    apeScaling = 0.5,
+    correctionScaling = 0.5,
+    IterationFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/iterationApe_particleGun.root',
     ApeOutputFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/apeOutput_particleGun.txt',
 )
 process.ApeEstimator1.HitSelector.width = []
@@ -184,7 +191,7 @@ process.p = cms.Path(
     #process.TriggerSelectionSequenceForMC*     ## omit trigger selection for particle gun
     #process.RefitterSequence
     process.RefitterHighPuritySequence
-    *(process.ApeEstimator1 + process.ApeEstimator2 + process.ApeEstimator3)
+    *(process.ApeEstimator1)# + process.ApeEstimator2 + process.ApeEstimator3)
 )
 
 
