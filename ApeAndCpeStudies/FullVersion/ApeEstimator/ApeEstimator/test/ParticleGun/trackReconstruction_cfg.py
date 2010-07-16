@@ -35,7 +35,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load('Configuration.EventContent.EventContent_cff')
 
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.2 $'),
+    version = cms.untracked.string('$Revision: 1.3 $'),
     annotation = cms.untracked.string('step2 nevts:100'),
     name = cms.untracked.string('PyReleaseValidation')
 )
@@ -47,7 +47,11 @@ process.options = cms.untracked.PSet(
 )
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('file:raw.root')
+    fileNames = cms.untracked.vstring('file:raw.root'),
+    duplicateCheckMode = cms.untracked.string("noDuplicateCheck"),
+    #duplicateCheckMode = cms.untracked.string("checkEachFile"),
+    #duplicateCheckMode = cms.untracked.string("checkEachRealDataFile"),
+    #duplicateCheckMode = cms.untracked.string("checkAllFilesOpened"),   # default value
 )
 
 
@@ -55,6 +59,7 @@ process.source = cms.Source("PoolSource",
 # Output definition
 process.output = cms.OutputModule("PoolOutputModule",
     splitLevel = cms.untracked.int32(0),
+    #overrideInputFileSplitLevels = cms.untracked.bool(True),
     outputCommands = process.RECOSIMEventContent.outputCommands,
     fileName = cms.untracked.string('file:reco.root'),
     dataset = cms.untracked.PSet(
@@ -112,6 +117,10 @@ process.minOneTrackFilter = cms.EDFilter("TrackCountFilter",
     minNumber = cms.uint32(1),
     #filter = cms.bool(True),
 )
+process.minTwoTrackFilter = process.minOneTrackFilter.clone(
+  minNumber = 2,
+)
+process.oneTrackFilter = cms.Sequence(process.minOneTrackFilter + ~process.minTwoTrackFilter)
 
 
 
@@ -121,7 +130,7 @@ process.raw2digi_step = cms.Path(process.RawToDigi)
 ## --- trial: reduce to track reco only ---
 #process.reconstruction_step = cms.Path(process.reconstruction)
 #process.reconstruction_step = cms.Path(process.trackerlocalreco * (process.offlineBeamSpot + process.recopixelvertexing * process.ckftracks_woBH) * process.logErrorHarvester)
-process.reconstruction_step = cms.Path(process.trackerlocalreco * (process.offlineBeamSpot + process.recopixelvertexing * process.ckftracks) * process.minOneTrackFilter * process.logErrorHarvester)
+process.reconstruction_step = cms.Path(process.trackerlocalreco * (process.offlineBeamSpot + process.recopixelvertexing * process.ckftracks) * process.oneTrackFilter * process.logErrorHarvester)
 process.endjob_step = cms.Path(process.endOfProcess)
 process.out_step = cms.EndPath(process.output)
 
