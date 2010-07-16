@@ -17,7 +17,7 @@ ApeEstimatorCosmics = ApeEstimator.clone(
   #Sectors = TIBTOBQuarters2DSeparation,
   Sectors = TIBTOBPitchAnd2DSeparation,
   sigmaFactorFit = 2.5,
-  apeScaling = 0.5,
+  correctionScaling = 0.5,
   tjTkAssociationMapTag = "TrackRefitterHighPurityForApeEstimator",
 )
 #ApeEstimatorCosmics.HitSelector.width = [1,3]
