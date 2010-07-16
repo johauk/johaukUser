@@ -54,7 +54,7 @@ ApeEstimator = cms.EDAnalyzer('ApeEstimator',
     
     
     
-    #Switch on Analyzer mode with full set of overview plots
+    #Tool 1: Switch on Analyzer mode with full set of overview plots
     analyzerMode = cms.bool(True),
     
     #Vary Histo's ranges for Overview Plots (for analyzer mode)
@@ -65,7 +65,7 @@ ApeEstimator = cms.EDAnalyzer('ApeEstimator',
     
     
     
-    #Switch on calculation of APE values
+    #Tool 2: Switch on calculation of APE values
     calculateApe = cms.bool(True),
     
      #Define intervals in residual error for calculation of APE (one estimation per interval), (for APE calculation)
@@ -74,10 +74,13 @@ ApeEstimator = cms.EDAnalyzer('ApeEstimator',
     #Sigma factor for second gauss fit (+-2.5 sigma1 around mean1 of first fit), (for APE calculation)
     sigmaFactorFit = cms.double(2.5),
     
-    #Multiplicative APE scaling factor (to prevent overestimation, since estimation is iterative process), (for APE calculation)
-    apeScaling = cms.double(1.),
+    #Multiplicative APE correction scaling factor (to prevent overestimation, since estimation is iterative process), (for APE calculation)
+    correctionScaling = cms.double(1.),
     
-    #File name for text file where calculated APE values are written to (for APE calculation)
+    #File name for root file used for iterations where calculated squared APE values are written to (for APE calculation)
+    IterationFile = cms.string(os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/iterationApe.root'),
+    
+    #File name for text file where calculated APE values are written to, used for DBobject creation (for APE calculation)
     ApeOutputFile = cms.string(os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/apeOutput.txt'),
     
 )
