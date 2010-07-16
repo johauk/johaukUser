@@ -431,8 +431,8 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h_residualWidthX1",false);
       this->drawHistToPad("h_residualWidthX2",false);
       this->drawHistToPad("h_entries");
-      this->drawHistToPad("h_apeX1",false);
-      this->drawHistToPad("h_apeX2",false);
+      this->drawHistToPad("h_correctionX1",false);
+      this->drawHistToPad("h_correctionX2",false);
       }
     }
     else sectorBool = false;

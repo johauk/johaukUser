@@ -32,13 +32,12 @@ class TrackerSectorStruct{
   
   TrackerSectorStruct(): directory_(0),
                          norResXMax_(999.), sigmaXHitMax_(999.), sigmaXMax_(999.),
-			 apeX(-1.F),
+			 //apeX(-1.F),
 			 ResX(0), NorResX(0), XHit(0), XTrk(0),
 			 SigmaX2(0), ProbX(0),
 			 WidthVsPhiSensX(0), WidthVsWidthProjected(0), WidthDiffVsMaxStrip(0), WidthDiffVsSigmaXHit(0),
 			 PWidthVsPhiSensX(0), PWidthVsWidthProjected(0), PWidthDiffVsMaxStrip(0), PWidthDiffVsSigmaXHit(0)
 			 {}
-  
   
   
   
@@ -72,7 +71,7 @@ class TrackerSectorStruct{
   
   std::vector<unsigned int> vRawId;
   
-  float apeX;
+  
   
   TH1 *ResX, *NorResX, *XHit, *XTrk,
       *SigmaX2, *ProbX;
@@ -87,8 +86,8 @@ class TrackerSectorStruct{
   
   
   //for presenting results
-  TH1 *Entries, *MeanX, *RmsX, *FitMeanX1, *ResidualWidthX1, *ApeX1,
-      *FitMeanX2, *ResidualWidthX2, *ApeX2;
+  TH1 *Entries, *MeanX, *RmsX, *FitMeanX1, *ResidualWidthX1, *CorrectionX1,
+      *FitMeanX2, *ResidualWidthX2, *CorrectionX2;
   
 };
 
