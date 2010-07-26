@@ -34,7 +34,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000 ## really show only ever
 ## Handle huge number of Files
 ##
 process.options = cms.untracked.PSet(
-    #wantSummary = cms.untracked.bool(True),
+    wantSummary = cms.untracked.bool(True),
     Rethrow = cms.untracked.vstring("ProductNotFound") # make this exception fatal
     #, fileMode  =  cms.untracked.string('FULLMERGE') # any file order (default): caches all lumi/run products (memory!)
     #, fileMode  =  cms.untracked.string('MERGE') # needs files sorted in run and within run in lumi sections (hard to achieve)
@@ -65,6 +65,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
 #process.load("ApeEstimator.ApeEstimator.samples.MinBias_mc_356_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.MinBias_mc_356_ApeSkim_cff")
 process.load("ApeEstimator.ApeEstimator.samples.ParticleGunPion_mc_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunAntiPion_mc_cff")
 ## --- Run 132440-132478, First Reprocessing --- (beamspot corrected)
 #process.load("ApeEstimator.ApeEstimator.samples.MinBias_run132440_132478_R_356_cff")
 ## --- Run 133029-133158, Processing ---
@@ -96,8 +97,8 @@ process.load("ApeEstimator.ApeEstimator.TrackRefitter_38T_cff")
 ## --- Monte Carlo for MinBias 7 TeV ---
 #process.GlobalTag.globaltag = 'START3X_V26::All'
 ## --- Monte Carlo for Particle Gun ---
-#process.GlobalTag.globaltag = 'DESIGN_36_V10::All'
-process.GlobalTag.globaltag = 'MC_36Y_V10::All'
+process.GlobalTag.globaltag = 'DESIGN_36_V10::All'
+#process.GlobalTag.globaltag = 'MC_36Y_V10::All'
 #process.GlobalTag.globaltag = 'START36_V10::All'
 ## --- Run 132440-132478, First Reprocessing --- (beamspot corrected)
 #process.GlobalTag.globaltag = 'GR_R_35X_V6::All'
@@ -112,7 +113,8 @@ process.StripCPEgeometricESProducer.APVpeakmode = False
 process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
 #process.TTRHBuilderGeometricAndTemplate.PixelCPE = 'PixelCPEGeneric'
 #process.TrackRefitterForApeEstimator.src = 'ALCARECOTkAlCosmicsCTF0T'
-process.TrackRefitterForApeEstimator.src = 'ALCARECOTkAlMinBias'
+#process.TrackRefitterForApeEstimator.src = 'ALCARECOTkAlMinBias'
+process.TrackRefitterForApeEstimator.src = 'generalTracks'
 #process.HighPuritySelector.src = 'MinBiasSkim'
 process.HighPuritySelector.src = 'generalTracks'
 
@@ -191,7 +193,7 @@ process.p = cms.Path(
     #process.TriggerSelectionSequenceForMC*     ## omit trigger selection for particle gun
     #process.RefitterSequence
     process.RefitterHighPuritySequence
-    *(process.ApeEstimator1)# + process.ApeEstimator2 + process.ApeEstimator3)
+    *(process.ApeEstimator1 + process.ApeEstimator2 + process.ApeEstimator3)
 )
 
 
