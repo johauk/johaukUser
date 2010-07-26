@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.7 2010/06/16 15:32:40 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.8 2010/07/16 14:47:02 hauk Exp $
 //
 //
 
@@ -785,7 +785,7 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
   if(parameterSet_.getParameter<bool>("applyTrackCuts")){
     trackCut_ = false;
     if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.hitsInvalid>2 ||
-       trkParams.pt<6. || trkParams.p<10. || std::fabs(trkParams.d0Beamspot)>0.2 || std::fabs(trkParams.dz)>10.)trackCut_ = true;
+       trkParams.pt<10. || trkParams.p<20. || std::fabs(trkParams.d0Beamspot)>0.2 || std::fabs(trkParams.dz)>10.)trackCut_ = true;
     //if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.pt<2. || trkParams.p<4. || std::fabs(trkParams.d0)>1. || std::fabs(trkParams.dz)>15.)trackCut_ = true;
     //if(trkParams.hitsValid<10 || trkParams.hits2D<2 || trkParams.pt<1. || std::fabs(trkParams.d0)>1. || std::fabs(trkParams.dz)>15.)trackCut_ = true;
     //if(trkParams.hitsValid<8 || trkParams.pt<1. || trkParams.p<4.)trackCut_ = true;
@@ -799,9 +799,9 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
     //                          || trkParams.pt<10.)trackCut_ = true;  //55degree
   }
   else{
-    //repeat intrinsic ALCARECO hit cuts after track refitting 
     trackCut_ = false;
-    if(trkParams.hitsValid<7 || trkParams.hits2D<2)trackCut_ = true;
+    // repeat intrinsic ALCARECO hit cuts after track refitting ?
+    //if(trkParams.hitsValid<7 || trkParams.hits2D<2)trackCut_ = true;
   }
   
   return trkParams;
