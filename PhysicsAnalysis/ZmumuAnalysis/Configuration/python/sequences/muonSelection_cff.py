@@ -4,11 +4,12 @@ import FWCore.ParameterSet.Config as cms
 from PhysicsTools.PatAlgos.selectionLayer1.muonSelector_cfi import *
 ## muon count filter
 from PhysicsTools.PatAlgos.selectionLayer1.muonCountFilter_cfi import *
-
-## jet selector
-from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
-## jet count filter
-from PhysicsTools.PatAlgos.selectionLayer1.jetCountFilter_cfi import *
+## trigger matching of muon
+from PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cfi import *
+from PhysicsTools.PatAlgos.triggerLayer1.triggerMatcher_cfi import *
+from PhysicsTools.PatAlgos.triggerLayer1.triggerEventProducer_cfi import *
+#from PhysicsTools.PatAlgos.triggerLayer1.triggerMatchEmbedder_cfi import *
+from ZmumuAnalysis.Producer.TriggerMatchedMuonProducer_cfi import *
 
 
 
@@ -22,92 +23,74 @@ from PhysicsTools.PatAlgos.selectionLayer1.jetCountFilter_cfi import *
 ## Build Collections
 ##
 
-##
-## good muon id as given in https://twiki.cern.ch/twiki/bin/viewauth/CMS/MUO4ICHEP#Muon_Definition
-##
-
-## muons in muon system range (tracker up to 2.5)
-tightMuons = selectedPatMuons.clone(
+## Common loose selection for both muons
+looseMuons = selectedPatMuons.clone(
     src = 'selectedPatMuons',
-    cut = 'abs(eta) < 2.4',
+    cut = 'isGlobalMuon' +'&'+
+          'track.hitPattern.numberOfValidTrackerHits > 10' +'&'+
+	  'abs(eta) < 2.4' +'&'+
+	  'pt > 20.',
 )
-## muons reconstructed as globalMuon AND trackerMuon: isGlobalMuon() && isTrackerMuon()
-globalTrackerMuons = selectedPatMuons.clone(
+
+## Tight selection for at least one muon
+tightMuons = selectedPatMuons.clone(
+    src = 'looseMuons',
+    cut = 'isTrackerMuon' +'&'+
+          'track.hitPattern.numberOfValidPixelHits > 0' +'&'+
+	  'numberOfMatches > 1' +'&'+
+	  'globalTrack.hitPattern.numberOfValidMuonHits > 0' +'&'+
+	  'globalTrack.normalizedChi2 < 10.' +'&'+
+	  'abs(dB) < 0.2' +'&'+
+	  'abs(eta) < 2.1',
+)
+
+## Tight muons matched to HLT object
+patTrigger.onlyStandAlone = False
+#patTrigger.triggerResults = cms.InputTag("TriggerResults::HLT")
+#patTrigger.triggerEvent = cms.InputTag("hltTriggerSummaryAOD::HLT")
+muonTriggerMatchHLTMuons = muonTriggerMatchHLTMu3.clone(
     src = 'tightMuons',
-    cut = 'isGlobalMuon & isTrackerMuon',
+    filterIdsEnum  = ['TriggerMuon'], # 'TriggerMuon' is the enum from trigger::TriggerObjectType for HLT muons
+    pathNames = ['HLT_Mu9'],
+  #  maxDPtRel = 1.0,
+  #  maxDeltaR = 0.2,
+    resolveByMatchQuality = True,
 )
-## no. of hits in pixel: track()->hitPattern().numberOfValidPixelHits() > 0
-goodPixelMuons = selectedPatMuons.clone(
-    src = 'globalTrackerMuons',
-    cut = 'track.hitPattern.numberOfValidPixelHits > 0',
+patTriggerEvent.patTriggerMatches = ["muonTriggerMatchHLTMuons"]
+
+# Not needed:
+#selectedPatMuonsTriggerMatch = cleanPatMuonsTriggerMatch.clone(
+#    src     = "tightMuons",
+#    matches = ["muonTriggerMatchHLTMuons"],
+#)
+
+tightHltMuons = TriggerMatchedMuonProducer.clone(
+    muonSource = "tightMuons",
 )
-## no. of hits in tracker: track()->hitPattern().numberOfValidTrackerHits() > 10
-goodTrackMuons = selectedPatMuons.clone(
-    src = 'goodPixelMuons',
-    #cut = 'track.hitPattern.numberOfValidTrackerHits > 10',
-    cut = 'track.hitPattern.numberOfValidStripHits > 9',
-)
-## no. of muon stations: numberOfMatches() > 1
-muonMuons = selectedPatMuons.clone(
-    src = 'goodTrackMuons',
-    cut = 'numberOfMatches > 1',
-)
-## no. of muon hits in global fit: globalTrack()->hitPattern().numberOfValidMuonHits() > 0
-goodMuonMuons = selectedPatMuons.clone(
-    src = 'muonMuons',
-    cut = 'globalTrack.hitPattern.numberOfValidMuonHits > 0',
-)
-## normalized chi2 of global fit: globalTrack()->normalizedChi2() < 10.
-goodFitMuons = selectedPatMuons.clone(
-    src = 'goodMuonMuons',
-    cut = 'globalTrack.normalizedChi2 < 10.',
-)
-## transverse impact parameter
-goodD0BeamspotMuons = selectedPatMuons.clone(
-    src = 'goodFitMuons',
-    cut = 'abs(dB) < 0.2',
-)
-goodIdMuons = goodD0BeamspotMuons.clone()
+
+
 
 
 ##
-## additional selection for Z->mumu (only partly applied) as given in https://twiki.cern.ch/twiki/bin/view/CMS/VbtfZMuMuBaselineSelection
+## Count Filters
 ##
 
-## pt cut
-hardMuons = selectedPatMuons.clone(
-    src = 'goodIdMuons',
-    cut = 'pt > 20.',
+initialMuonSelection = countPatMuons.clone(
+    src = 'selectedPatMuons',
+    minNumber = 2,
 )
-## mip signature ecal
-emCalMipMuons = selectedPatMuons.clone(
-    src = 'hardMuons',
-    cut = 'isolationR03.emVetoEt < 4.',
+looseMuonSelection = countPatMuons.clone(
+    src = 'looseMuons',
+    minNumber = 2,
 )
-## mip signature hcal
-calMipMuons = selectedPatMuons.clone(
-    src = 'emCalMipMuons',
-    cut = 'isolationR03.hadVetoEt < 6.',
+tightMuonSelection = countPatMuons.clone(
+    src = 'tightMuons',
+    minNumber = 1,
 )
-## isolation cut
-isolatedMuons = selectedPatMuons.clone(
-    src = 'calMipMuons',
-    cut = '(trackIso+caloIso)/pt < 0.3',
+tightHltMuonSelection = countPatMuons.clone(
+    src = 'tightHltMuons',
+    minNumber = 1,
 )
-goodZmumuMuons = isolatedMuons.clone()
-
-
-
-### Count Filters
-#tightMuonSelection      = countPatMuons.clone(src = 'tightMuons',     minNumber = 2)
-#globalMuonSelection     = countPatMuons.clone(src = 'globalMuons',    minNumber = 2)
-#hardMuonSelection       = countPatMuons.clone(src = 'hardMuons',      minNumber = 2)
-#goodTrackMuonSelection  = countPatMuons.clone(src = 'goodTrackMuons', minNumber = 2)
-#goodD0MuonSelection     = countPatMuons.clone(src = 'goodD0Muons',    minNumber = 2)
-#goodFitMuonSelection    = countPatMuons.clone(src = 'goodFitMuons',   minNumber = 2)
-#ecalMipMuonSelection    = countPatMuons.clone(src = 'ecalMipMuons',   minNumber = 2)
-#hcalMipMuonSelection    = countPatMuons.clone(src = 'hcalMipMuons',   minNumber = 2)
-#isolatedMuonSelection   = countPatMuons.clone(src = 'isolatedMuons',  minNumber = 2)
 
 
 
@@ -121,54 +104,33 @@ goodZmumuMuons = isolatedMuons.clone()
 ###########################################################################################
 
 
-buildGoodIdMuonCollections = cms.Sequence(
-    tightMuons*
-    globalTrackerMuons*
-    goodPixelMuons*
-    goodTrackMuons*
-    muonMuons*
-    goodMuonMuons*
-    goodFitMuons*
-    goodD0BeamspotMuons*
-    goodIdMuons
-)			       			       
 
-
-buildZmumuMuonCollections = cms.Sequence(
-    hardMuons*
-    emCalMipMuons*
-    calMipMuons*
-    isolatedMuons*
-    goodZmumuMuons
+patTriggerSequence = cms.Sequence(
+    patTrigger
+    *muonTriggerMatchHLTMuons
+    *patTriggerEvent
 )
+
+#muonTriggerMatchEmbedder = cms.Sequence(
+#    selectedPatMuonsTriggerMatch
+#)
 
 
 
 buildCollections = cms.Sequence(
-    buildGoodIdMuonCollections*
-    buildZmumuMuonCollections
+    looseMuons
+    *tightMuons
+    *patTriggerSequence
+#    *muonTriggerMatchEmbedder
+    *tightHltMuons
 )
 
 
-
-
-
-#fullLeptonicMuonMuonSelection = cms.Sequence(tightMuonSelection *
-#                                             globalMuonSelection *
-#				             hardMuonSelection *
-#				             goodTrackMuonSelection *
-#				             goodD0MuonSelection *
-#				             goodFitMuonSelection *
-#				             ecalMipMuonSelection *
-#				             hcalMipMuonSelection *
-#				             isolatedMuonSelection
-#                                            )
-
-
-
-
-
-
-
+muonSelection = cms.Sequence(
+    initialMuonSelection
+    *looseMuonSelection
+    *tightMuonSelection
+    *tightHltMuonSelection
+)
 
 
