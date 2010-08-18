@@ -62,7 +62,7 @@ process.load("ZmumuAnalysis.Filter.TriggerFilter_cfi")
 process.TriggerFilter1 =  process.TriggerFilter.clone()
 
 ## filter for muon quality, kinematics HLT object matching
-process.load("ZmumuAnalysis.Configuration.sequences.muonSelection_firstData_cff")
+process.load("ZmumuAnalysis.Configuration.sequences.muonSelection_cff")
 
 ## event analyzer
 process.load("ZmumuAnalysis.Analyzer.EventAnalyzer_cfi")
@@ -70,17 +70,21 @@ process.EventAnalyzer1 = process.EventAnalyzer.clone(
     muonSource = 'looseMuons',
 )
 process.EventAnalyzer2 = process.EventAnalyzer1.clone(
-    muonSource = 'tightMuons',
+    muonSource = 'tightHltMuons',
 )
-process.EventAnalyzer1a = process.EventAnalyzer1.clone()
-process.EventAnalyzer2a = process.EventAnalyzer2.clone()
-process.EventAnalyzer1b = process.EventAnalyzer1.clone()
-process.EventAnalyzer2b = process.EventAnalyzer2.clone()
+process.EventAnalyzer1a = process.EventAnalyzer1.clone(
+    diMuonSource = 'overlapExcludedLooseTightHltGlobalDimuons',
+    analyzeDiMuons = True,
+)
+process.EventAnalyzer2a = process.EventAnalyzer2.clone(
+    diMuonSource = 'overlapExcludedLooseTightHltGlobalDimuons',
+    analyzeDiMuons = True,
+)
 
 
 ## add dimuon collections and filter for dimuon properties (including muon isolation)
-process.load("ZmumuAnalysis.Configuration.sequences.diMuonSelection_firstData_cff")
-
+process.load("ZmumuAnalysis.Configuration.sequences.diMuonSelection_cff")
+#process.looseTightHltGlobalDimuons.decay = 'tightHltMuons@+ tightMuons@-'
 
 
 
@@ -121,11 +125,9 @@ process.p = cms.Path(
     *process.EventAnalyzer1
     *process.EventAnalyzer2
     *process.muonSelection
-#    *process.EventAnalyzer1a
-#    *process.EventAnalyzer2a
     
     *process.buildDimuonCollections
+    *process.EventAnalyzer1a
+    *process.EventAnalyzer2a    
     *process.dimuonSelection
-#    *process.EventAnalyzer1b
-#    *process.EventAnalyzer2b
 )
