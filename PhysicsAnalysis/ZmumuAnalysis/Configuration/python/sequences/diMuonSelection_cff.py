@@ -6,7 +6,6 @@ from ElectroWeakAnalysis.Skimming.dimuons_cfi import *
 from ElectroWeakAnalysis.Skimming.dimuonsFilter_cfi import *
 ## isolation selection
 from ElectroWeakAnalysis.ZMuMu.zSelection_cfi import *
-## trigger matching of muon
 
 
 
@@ -21,26 +20,50 @@ from ElectroWeakAnalysis.ZMuMu.zSelection_cfi import *
 ##
 
 
-looseTightHltGlobalDimuons = dimuons.clone(
+# Collection for ambiguity cleaning using "ZMuMuOverlapExclusionSelector"
+tightHLTGlobalDimuons = dimuons.clone(
     checkCharge = False,
     cut = 'daughter(0).isGlobalMuon = 1' +'&'+
 	  'daughter(1).isGlobalMuon = 1',
+    decay = 'tightHltMuons@+ tightHltMuons@-',
+)
+
+
+
+# Collection of interest, but with ambiguities
+looseTightHltGlobalDimuons = tightHLTGlobalDimuons.clone(
     decay = 'tightHltMuons@+ looseMuons@-',
 )
 
 
 
-
-cutValues = cms.string(
-    'mass > 20.'# +'&'+
-)
-goodDimuons = cms.EDFilter("CandViewRefSelector",
+# Build collection orthogonal to first one
+overlapExcludedLooseTightHltGlobalDimuons = cms.EDFilter("ZMuMuOverlapExclusionSelector",
     src = cms.InputTag("looseTightHltGlobalDimuons"),
-    cut = cutValues,
+    overlap = cms.InputTag("tightHLTGlobalDimuons"),
+    filter = cms.bool(False),
 )
 
 
 
+# Merge collections without ambiguities
+selectedDimuons = cms.EDProducer("CandViewMerger",
+    src = cms.VInputTag("tightHLTGlobalDimuons","overlapExcludedLooseTightHltGlobalDimuons")
+)
+
+
+
+# Cuts on properties of Dimuon system
+goodDimuons = cms.EDFilter("CandViewRefSelector",
+    src = cms.InputTag("selectedDimuons"),
+    cut = cms.string(
+      'mass > 20.'# +'&'+
+    ),
+)
+
+
+
+# Cut on isolation of both Muons in Dimuon system
 diMuonIsolation = zSelection.clone(
   cut = '',
 )
@@ -51,6 +74,7 @@ isolatedDimuons = cms.EDFilter("ZToMuMuIsolatedIDSelector",
 )
 
 
+# Check again for HLT matching of one Muon
 # does not work, no event survives...
 atLeast1HltDimuons = cms.EDFilter("ZHLTMatchFilter",
     src = cms.InputTag("isolatedDimuons"),
@@ -66,10 +90,11 @@ atLeast1HltDimuons = cms.EDFilter("ZHLTMatchFilter",
 ## Count Filters
 ##
 
-looseTightHltGlobalDimuonSelection = dimuonsFilter.clone(
-    src = 'looseTightHltGlobalDimuons',
+selectedDimuonSelection = dimuonsFilter.clone(
+    src = 'selectedDimuons',
     minNumber = 1,
 )
+
 
 goodDimuonSelection = dimuonsFilter.clone(
     src = 'goodDimuons',
@@ -100,7 +125,10 @@ atLeast1HltDimuonSelection = dimuonsFilter.clone(
 
 
 buildDimuonCollections = cms.Sequence(
-    looseTightHltGlobalDimuons
+    tightHLTGlobalDimuons
+    *looseTightHltGlobalDimuons
+    *overlapExcludedLooseTightHltGlobalDimuons
+    *selectedDimuons
     *goodDimuons
     *isolatedDimuons
 #    *atLeast1HltDimuons
@@ -108,7 +136,7 @@ buildDimuonCollections = cms.Sequence(
 
 
 dimuonSelection = cms.Sequence(
-    looseTightHltGlobalDimuonSelection
+    selectedDimuonSelection
     *goodDimuonSelection
     *isolatedDimuonSelection
 #    *atLeast1HltDimuonSelection
