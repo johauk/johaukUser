@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu Jun  3 17:42:24 CEST 2010
-// $Id: EventAnalyzer.cc,v 1.1 2010/06/22 15:45:30 hauk Exp $
+// $Id: EventAnalyzer.cc,v 1.2 2010/07/02 15:02:41 hauk Exp $
 //
 //
 
@@ -38,6 +38,8 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
 
+#include "DataFormats/Candidate/interface/CandidateFwd.h"
+
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "CommonTools/Utils/interface/TFileDirectory.h"
@@ -46,6 +48,7 @@
 
 
 #include "TH1.h"
+#include "TH2.h"
 //
 // class declaration
 //
@@ -64,6 +67,7 @@ class EventAnalyzer : public edm::EDAnalyzer {
       // ----------member data ---------------------------
       
       const edm::ParameterSet parameterSet_;
+      const bool analyzeDiMuons_;
       
       /// no. of selected muons in event
       TH1 *MuonSize;
@@ -74,6 +78,11 @@ class EventAnalyzer : public edm::EDAnalyzer {
       /// missing Et
       TH1 *MissingEt;
       
+      /// no. of selected di-muons in event
+      TH1 *DiMuonSize;
+      
+      /// correlation of no. of selected muons and di-muons in event
+      TH2 *MuonVsDiMuonSize;
 };
 
 //
@@ -88,7 +97,8 @@ class EventAnalyzer : public edm::EDAnalyzer {
 // constructors and destructor
 //
 EventAnalyzer::EventAnalyzer(const edm::ParameterSet& iConfig):
-parameterSet_(iConfig)
+parameterSet_(iConfig),
+analyzeDiMuons_(parameterSet_.getParameter<bool>("analyzeDiMuons"))
 {
 }
 
@@ -128,7 +138,16 @@ EventAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   //float met = (mets->begin())->corSumEt();  // do not understand, what this is...
   float met = (mets->begin())->et();
   MissingEt->Fill(met);
-
+  
+  if(analyzeDiMuons_){
+    const edm::InputTag diMuonSource(parameterSet_.getParameter<edm::InputTag>("diMuonSource"));
+    edm::Handle<reco::CandidateView> diMuons;
+    iEvent.getByLabel(diMuonSource, diMuons);
+    
+    DiMuonSize->Fill(diMuons->size());
+    MuonVsDiMuonSize->Fill(muons->size(),diMuons->size());
+  }
+  
 }
 
 
@@ -146,6 +165,11 @@ EventAnalyzer::beginJob()
   MuonSize = dirEvt.make<TH1F>("h_muonSize","# selected muons;# muons;# events",10,0,10);
   JetSize = dirEvt.make<TH1F>("h_jetSize","# selected jets;# jets;# events",20,0,20);
   MissingEt =  dirEvt.make<TH1F>("h_missingEt","missing E_{t};E_{t,miss}  [GeV];# events",20,0,200);
+  
+  if(analyzeDiMuons_){
+    DiMuonSize = dirEvt.make<TH1F>("h_diMuonSize","# selected di-muons;# di-muons;# events",10,0,10);
+    MuonVsDiMuonSize = dirEvt.make<TH2F>("h2_muonVsDiMuonSize","# muons vs. # di-muons;# selected muons;# selected di-muons",10,0,10,10,0,10);
+  }
   
 }
 
