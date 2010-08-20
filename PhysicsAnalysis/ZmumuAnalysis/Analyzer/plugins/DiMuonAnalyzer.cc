@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May 20 15:47:12 CEST 2010
-// $Id: DiMuonAnalyzer.cc,v 1.1 2010/06/22 15:44:56 hauk Exp $
+// $Id: DiMuonAnalyzer.cc,v 1.2 2010/07/02 15:02:20 hauk Exp $
 //
 //
 
@@ -34,7 +34,7 @@
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 
-#include "DataFormats/Candidate/interface/LeafCandidate.h"
+#include "DataFormats/Candidate/interface/CandidateFwd.h"
 
 
 #include "FWCore/ServiceRegistry/interface/Service.h"
@@ -61,13 +61,13 @@ class DiMuonAnalyzer : public edm::EDAnalyzer {
 		    DeltaEta(0), DeltaPhi(0),
 		    DiMass(0), DiPt(0){}
 	
-        /// Properties of the two pt-leading muons
+        /// Properties of the two muons
         TH1F *EtaLow, *EtaHigh, *PtLow, *PtHigh;
 	
-	/// Differences of the two pt-leading muons
+	/// Differences of the two muons
         TH1F *DeltaEta, *DeltaPhi;
 	
-	/// Properties of reconstructed Di-Muon particle
+	/// Properties of reconstructed di-muon particle
 	TH1F *DiMass, *DiPt;
       };
 
@@ -78,7 +78,7 @@ class DiMuonAnalyzer : public edm::EDAnalyzer {
       virtual void endJob() ;
       
       void bookHists(DiMuHists&, const TFileDirectory&);
-      void fillHists(DiMuHists&, const edm::Handle<pat::MuonCollection>&);
+      void fillHists(DiMuHists&, const reco::Candidate&);
 
       // ----------member data ---------------------------
       
@@ -120,71 +120,6 @@ DiMuonAnalyzer::~DiMuonAnalyzer()
 //
 
 
-void
-DiMuonAnalyzer::fillHists(DiMuHists& hists, const edm::Handle<pat::MuonCollection>& muons){
-  // get leading muons      
-  const pat::MuonCollection::const_reference mu1 = muons->at(0);
-  const pat::MuonCollection::const_reference mu2 = muons->at(1);
-  
-  // eta and pt
-  const double etaLow = std::fabs(mu1.eta())<std::fabs(mu2.eta()) ? mu1.eta() : mu2.eta();
-  const double etaHigh = std::fabs(mu1.eta())>std::fabs(mu2.eta()) ? mu1.eta() : mu2.eta();
-  // pat-tuples already ordered in pt
-  const double ptHigh = mu1.pt();
-  const double ptLow = mu2.pt();
-  //const double ptLow = mu1.pt()<mu2.pt() ? mu1.pt() : mu2.pt();
-  //const double ptHigh = mu1.pt()>mu2.pt() ? mu1.pt() : mu2.pt();
-  
-  // eta, phi difference
-  double deltaEta = mu2.eta() - mu1.eta();
-  double deltaPhi = reco::deltaPhi(mu2.phi(),mu1.phi());
-  
-  // invariant mass
-  const reco::LeafCandidate::LorentzVector diMuVec = mu1.p4() + mu2.p4();
-  const double diMuMass = diMuVec.M();
-  const double diPt = diMuVec.pt();
-  
-  hists.EtaLow->Fill(etaLow);
-  hists.EtaHigh->Fill(etaHigh);
-  hists.PtLow->Fill(ptLow);
-  hists.PtHigh->Fill(ptHigh);
-  hists.DeltaEta->Fill(deltaEta);
-  hists.DeltaPhi->Fill(deltaPhi*180./M_PI);
-  hists.DiMass->Fill(diMuMass);
-  hists.DiPt->Fill(diPt);
-}
-
-
-
-// ------------ method called to for each event  ------------
-void
-DiMuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
-{
-  // get handle on muon collection
-  const edm::InputTag muonSource(parameterSet_.getParameter<edm::InputTag>("muonSource"));
-  edm::Handle<pat::MuonCollection> muons; 
-  iEvent.getByLabel(muonSource, muons);
-  
-  // test if muon collection contains at least two muons resp. exactly two muons
-  if(muons->size()<2 || (parameterSet_.getParameter<bool>("exactlyTwoMuons") && muons->size()!=2) )return;
-  
-  // get leading muons      
-  const pat::MuonCollection::const_reference mu1 = muons->at(0);
-  const pat::MuonCollection::const_reference mu2 = muons->at(1);
-  
-  // same or opposite charge?
-  bool isSameCharge = false;
-  if(mu1.charge()*mu2.charge()>0.) isSameCharge = true;
-  
-  if(isSameCharge){
-    this->fillHists(histsSC_, muons);
-  }
-  else{
-    this->fillHists(histsOC_, muons);
-  }
-}
-
-
 
 void
 DiMuonAnalyzer::bookHists(DiMuHists& hists, const TFileDirectory& dir){
@@ -200,6 +135,62 @@ DiMuonAnalyzer::bookHists(DiMuHists& hists, const TFileDirectory& dir){
 
 
 
+void
+DiMuonAnalyzer::fillHists(DiMuHists& hists, const reco::Candidate& diMuon){
+  const reco::Candidate* daughter1 = diMuon.daughter(0);
+  const reco::Candidate* daughter2 = diMuon.daughter(1);
+  
+  const pat::MuonCollection::const_reference mu1 = dynamic_cast<const pat::Muon&>(*daughter1->masterClone());
+  const pat::MuonCollection::const_reference mu2 = dynamic_cast<const pat::Muon&>(*daughter2->masterClone());
+  
+  // eta and pt
+  const double etaLow = std::fabs(mu1.eta())<std::fabs(mu2.eta()) ? mu1.eta() : mu2.eta();
+  const double etaHigh = std::fabs(mu1.eta())>std::fabs(mu2.eta()) ? mu1.eta() : mu2.eta();
+  const double ptLow = mu1.pt()<mu2.pt() ? mu1.pt() : mu2.pt();
+  const double ptHigh = mu1.pt()>mu2.pt() ? mu1.pt() : mu2.pt();
+  
+  // eta, phi difference
+  const double deltaEta = mu2.eta() - mu1.eta();
+  const double deltaPhi = reco::deltaPhi(mu2.phi(),mu1.phi());
+  
+  // dimuon invariant mass and pt
+  const reco::Candidate::LorentzVector diMuVec = mu1.p4() + mu2.p4();
+  const double diMass = diMuon.mass();
+  const double diPt = diMuon.pt();
+  
+  hists.EtaLow->Fill(etaLow);
+  hists.EtaHigh->Fill(etaHigh);
+  hists.PtLow->Fill(ptLow);
+  hists.PtHigh->Fill(ptHigh);
+  hists.DeltaEta->Fill(deltaEta);
+  hists.DeltaPhi->Fill(deltaPhi*180./M_PI);
+  hists.DiMass->Fill(diMass);
+  hists.DiPt->Fill(diPt);
+}
+
+
+
+// ------------ method called to for each event  ------------
+void
+DiMuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+{
+  // get handle on di-muon collection
+  const edm::InputTag diMuonSource(parameterSet_.getParameter<edm::InputTag>("diMuonSource"));
+  edm::Handle<reco::CandidateView> diMuons;
+  iEvent.getByLabel(diMuonSource, diMuons);
+  
+  reco::CandidateView::const_iterator i_cand;
+  for(i_cand = diMuons->begin(); i_cand != diMuons->end(); ++i_cand){
+    const reco::Candidate& diMuon = *i_cand;
+    if(diMuon.charge()==0){
+      this->fillHists(histsOC_, diMuon);
+    }
+    else{
+      this->fillHists(histsSC_, diMuon);
+    }
+    
+  }
+}
 
 
 
@@ -220,10 +211,14 @@ DiMuonAnalyzer::beginJob()
   this->bookHists(histsOC_,dirOC);
 }
 
+
+
 // ------------ method called once each job just after ending the event loop  ------------
 void 
 DiMuonAnalyzer::endJob() {
 }
+
+
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(DiMuonAnalyzer);
