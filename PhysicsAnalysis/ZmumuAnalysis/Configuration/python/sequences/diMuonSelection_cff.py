@@ -85,6 +85,18 @@ atLeast1HltDimuons = cms.EDFilter("ZHLTMatchFilter",
 
 
 
+# Final cuts on dimuon properties
+finalDimuons = cms.EDFilter("CandViewRefSelector",
+    src = cms.InputTag("isolatedDimuons"),
+    cut = cms.string(
+      'mass > 60.' +'&'+
+      'mass < 120.' +'&'+
+      'charge = 0'# +'&'+
+    ),
+)
+
+
+
 
 ##
 ## Count Filters
@@ -114,13 +126,19 @@ atLeast1HltDimuonSelection = dimuonsFilter.clone(
 )
 
 
+finalDimuonSelection = dimuonsFilter.clone(
+    src = 'finalDimuons',
+    minNumber = 1,
+)
+
+
+
+
 ###########################################################################################
 #
 # SEQUENCES
 #
 ###########################################################################################
-
-
 
 
 
@@ -132,7 +150,9 @@ buildDimuonCollections = cms.Sequence(
     *goodDimuons
     *isolatedDimuons
 #    *atLeast1HltDimuons
+    *finalDimuons
 )
+
 
 
 dimuonSelection = cms.Sequence(
@@ -140,6 +160,7 @@ dimuonSelection = cms.Sequence(
     *goodDimuonSelection
     *isolatedDimuonSelection
 #    *atLeast1HltDimuonSelection
+    *finalDimuonSelection
 )
 
 
