@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Fri Feb 26 16:48:04 CET 2010
-// $Id$
+// $Id: GeneratorZmumuAnalyzer.cc,v 1.1 2010/06/22 15:46:08 hauk Exp $
 //
 //
 
@@ -35,7 +35,7 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
-#include "DataFormats/Candidate/interface/LeafCandidate.h"
+#include "DataFormats/Candidate/interface/CandidateFwd.h"
 
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
@@ -84,7 +84,10 @@ GeneratorZmumuAnalyzer::GeneratorZmumuAnalyzer(const edm::ParameterSet& iConfig)
 parSet_(iConfig), inputTag_(parSet_.getParameter<edm::InputTag>("src")),
 massZMin_(parSet_.getParameter<double>("massZMin")),
 massZMax_(parSet_.getParameter<double>("massZMax")),
-absEtaMuMax_(parSet_.getParameter<double>("absEtaMuMax"))
+absEtaMuMax_(parSet_.getParameter<double>("absEtaMuMax")),
+EtaLow(0), EtaHigh(0), PtLow(0), PtHigh(0),
+EtaZ(0), PtZ(0),
+MassZ(0)
 {
 }
 
@@ -112,7 +115,7 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     double etaMinus(-999.), ptMinus(-999.);
     double etaPlus(-999.), ptPlus(-999.);
     double etaZ(-999.), ptZ(-999.);
-    reco::LeafCandidate::LorentzVector lorVecMinus, lorVecPlus;
+    reco::Candidate::LorentzVector lorVecMinus, lorVecPlus;
     // select Z0 gauge bosons
     // take care about status: decaying Z0 (status=3) has 3 daughters, third is Z0 itself as decayed Z0 (status=2)
     // Question: is the status numbering convention only valid for Pythia
@@ -143,7 +146,7 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     }
     
     if(!isZmumu)continue;
-    reco::LeafCandidate::LorentzVector diMuVec = lorVecMinus + lorVecPlus;
+    reco::Candidate::LorentzVector diMuVec = lorVecMinus + lorVecPlus;
     double diMuMass = diMuVec.M();
     if(diMuMass<massZMin_ || diMuMass>massZMax_)continue;
     const double etaLow = std::fabs(etaMinus)<std::fabs(etaPlus) ? etaMinus : etaPlus;

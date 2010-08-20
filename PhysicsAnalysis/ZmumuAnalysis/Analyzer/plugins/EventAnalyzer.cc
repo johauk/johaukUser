@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu Jun  3 17:42:24 CEST 2010
-// $Id: EventAnalyzer.cc,v 1.2 2010/07/02 15:02:41 hauk Exp $
+// $Id: EventAnalyzer.cc,v 1.3 2010/08/18 15:43:48 hauk Exp $
 //
 //
 
@@ -98,7 +98,9 @@ class EventAnalyzer : public edm::EDAnalyzer {
 //
 EventAnalyzer::EventAnalyzer(const edm::ParameterSet& iConfig):
 parameterSet_(iConfig),
-analyzeDiMuons_(parameterSet_.getParameter<bool>("analyzeDiMuons"))
+analyzeDiMuons_(parameterSet_.getParameter<bool>("analyzeDiMuons")),
+MuonSize(0), JetSize(0), MissingEt(0), DiMuonSize(0),
+MuonVsDiMuonSize(0)
 {
 }
 

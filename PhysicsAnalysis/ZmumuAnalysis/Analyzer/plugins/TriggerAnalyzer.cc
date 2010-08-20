@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Tue Jun  8 11:21:18 CEST 2010
-// $Id: TriggerAnalyzer.cc,v 1.1 2010/06/22 15:46:28 hauk Exp $
+// $Id: TriggerAnalyzer.cc,v 1.2 2010/07/02 15:44:18 hauk Exp $
 //
 //
 
@@ -78,7 +78,7 @@ class TriggerAnalyzer : public edm::EDAnalyzer {
       TH1 *TrigSelPassed;
       
       /// Shows correlations between selected triggers
-      TH1 *Correlations;
+      TH2 *Correlations;
       
 };
 
@@ -95,7 +95,9 @@ class TriggerAnalyzer : public edm::EDAnalyzer {
 //
 TriggerAnalyzer::TriggerAnalyzer(const edm::ParameterSet& iConfig):
 parameterSet_(iConfig), hltPaths_(parameterSet_.getParameter<std::vector<std::string> >("hltPaths")),
-n_events_(0)
+n_events_(0),
+TrigsFired(0), TrigSelPassed(0),
+Correlations(0)
 {
 }
 
