@@ -1,0 +1,37 @@
+export PYTHONHOME=/afs/cern.ch/cms/sw/slc5_ia32_gcc434/external/python/2.6.4-cms
+
+
+
+bsub -J reco1 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_Pion1_cfg.py
+bsub -J reco2 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_Pion2_cfg.py
+bsub -J reco3 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_Pion3_cfg.py
+bsub -J reco4 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_Pion4_cfg.py
+bsub -J reco5 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_Pion5_cfg.py
+bsub -J reco6 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_Pion6_cfg.py
+bsub -J reco7 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_Pion7_cfg.py
+bsub -J reco8 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_Pion8_cfg.py
+bsub -J reco9 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_Pion9_cfg.py
+bsub -J reco10 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_Pion10_cfg.py
+
+
+
+bsub -J recoA1 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_AntiPion1_cfg.py
+bsub -J recoA2 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_AntiPion2_cfg.py
+bsub -J recoA3 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_AntiPion3_cfg.py
+bsub -J recoA4 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_AntiPion4_cfg.py
+bsub -J recoA5 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_AntiPion5_cfg.py
+bsub -J recoA6 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_AntiPion6_cfg.py
+bsub -J recoA7 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_AntiPion7_cfg.py
+bsub -J recoA8 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_AntiPion8_cfg.py
+bsub -J recoA9 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_AntiPion9_cfg.py
+bsub -J recoA10 -q 2nd cmsRun /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/ParticleGun/Template/trackReconstruction_AntiPion10_cfg.py
+
+
+
+
+
+
+
+
+
+
