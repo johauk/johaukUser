@@ -188,6 +188,11 @@ process.TFileService = cms.Service("TFileService",
 
 
 
+## Use correct Beamspot for simulated Vertex smearing of ParticleGun
+process.load("ApeEstimator.ApeEstimator.BeamspotForParticleGun_cff")
+
+
+
 process.p = cms.Path(
     #process.TriggerSelectionSequence*
     #process.TriggerSelectionSequenceForMC*     ## omit trigger selection for particle gun

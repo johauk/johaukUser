@@ -35,7 +35,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load('Configuration.EventContent.EventContent_cff')
 
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.3 $'),
+    version = cms.untracked.string('$Revision: 1.4 $'),
     annotation = cms.untracked.string('step2 nevts:100'),
     name = cms.untracked.string('PyReleaseValidation')
 )
@@ -82,6 +82,10 @@ process.output.outputCommands.extend(process.ReconstructionEventContent.outputCo
 process.GlobalTag.globaltag = 'DESIGN_36_V10::All'
 #process.GlobalTag.globaltag = 'MC_36Y_V10::All'
 #process.GlobalTag.globaltag = 'START36_V10::All'
+# Use correct Beamspot for simulated Vertex smearing of ParticleGun
+process.load("ApeEstimator.ApeEstimator.BeamspotForParticleGun_cff")
+
+
 
 ## ALIGNMENT CONSTANTS & APE (set to zero)
 import CalibTracker.Configuration.Common.PoolDBESSource_cfi
@@ -111,7 +115,6 @@ es_prefer_trackerAlignmentErr = cms.ESPrefer("PoolDBESSource","myTrackerAlignmen
 
 
 # Filter used to drop events where not exactly one track is reconstructed (from CommonTools/CandUtils)
-
 process.minOneTrackFilter = cms.EDFilter("TrackCountFilter",
     src = cms.InputTag("generalTracks"),
     minNumber = cms.uint32(1),
