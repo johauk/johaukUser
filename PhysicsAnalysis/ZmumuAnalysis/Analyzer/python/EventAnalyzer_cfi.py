@@ -11,5 +11,5 @@ EventAnalyzer = cms.EDAnalyzer('EventAnalyzer',
     # switch to add plots for di-muons (only possible if dimuon collection exists already)
     analyzeDiMuons = cms.bool(False),
     # di-muon collection (not used when switch analyzeDiMuons is set to False)
-    diMuonSource = cms.InputTag("dimuons"),
+    diMuonSource = cms.InputTag("selectedDimuons"),
 )
