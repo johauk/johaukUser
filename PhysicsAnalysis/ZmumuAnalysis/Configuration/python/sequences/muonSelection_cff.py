@@ -6,7 +6,7 @@ from PhysicsTools.PatAlgos.selectionLayer1.muonSelector_cfi import *
 from PhysicsTools.PatAlgos.selectionLayer1.muonCountFilter_cfi import *
 ## trigger matching of muon
 from PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cfi import *
-from PhysicsTools.PatAlgos.triggerLayer1.triggerMatcher_cfi import *
+#from PhysicsTools.PatAlgos.triggerLayer1.triggerMatcher_cfi import *
 from PhysicsTools.PatAlgos.triggerLayer1.triggerEventProducer_cfi import *
 #from PhysicsTools.PatAlgos.triggerLayer1.triggerMatchEmbedder_cfi import *
 from ZmumuAnalysis.Producer.TriggerMatchedMuonProducer_cfi import *
@@ -32,6 +32,8 @@ looseMuons = selectedPatMuons.clone(
 	  'pt > 20.',
 )
 
+
+
 ## Tight selection for at least one muon
 tightMuons = selectedPatMuons.clone(
     src = 'looseMuons',
@@ -40,32 +42,61 @@ tightMuons = selectedPatMuons.clone(
 	  'numberOfMatches > 1' +'&'+
 	  'globalTrack.hitPattern.numberOfValidMuonHits > 0' +'&'+
 	  'globalTrack.normalizedChi2 < 10.' +'&'+
-	  'abs(dB) < 0.2' +'&'+
-	  'abs(eta) < 2.1',
+	  'abs(dB) < 0.2',
 )
 
-## Tight muons matched to HLT object
-patTrigger.onlyStandAlone = False
-#patTrigger.triggerResults = cms.InputTag("TriggerResults::HLT")
-#patTrigger.triggerEvent = cms.InputTag("hltTriggerSummaryAOD::HLT")
-muonTriggerMatchHLTMuons = muonTriggerMatchHLTMu3.clone(
-    src = 'tightMuons',
-    filterIdsEnum  = ['TriggerMuon'], # 'TriggerMuon' is the enum from trigger::TriggerObjectType for HLT muons
-    pathNames = ['HLT_Mu9'],
-  #  maxDPtRel = 1.0,
-  #  maxDeltaR = 0.2,
-    resolveByMatchQuality = True,
-)
-patTriggerEvent.patTriggerMatches = ["muonTriggerMatchHLTMuons"]
 
-# Not needed:
-#selectedPatMuonsTriggerMatch = cleanPatMuonsTriggerMatch.clone(
+
+## Muons matched to HLT object (same collection w/o reduction, only information of HLT matching added)
+patTrigger.triggerResults = cms.InputTag("TriggerResults::HLT")
+patTrigger.triggerEvent = cms.InputTag("hltTriggerSummaryAOD::HLT")
+looseMuonTriggerMatchHltMuons = cms.EDProducer("PATTriggerMatcherDRDPtLessByR",
+    src     = cms.InputTag("looseMuons"),
+    matched = cms.InputTag("patTrigger"),
+    andOr          = cms.bool( False ),
+    filterIdsEnum  = cms.vstring('TriggerMuon'), # 'TriggerMuon' is the enum from trigger::TriggerObjectType for HLT muons
+    filterIds      = cms.vint32(0),
+    filterLabels   = cms.vstring('*'),
+    pathNames      = cms.vstring('HLT_Mu9'),
+    collectionTags = cms.vstring('*'),
+    maxDPtRel = cms.double(1.0),
+    maxDeltaR = cms.double(0.2),
+    resolveAmbiguities    = cms.bool(True),
+    resolveByMatchQuality = cms.bool(False)
+)
+tightMuonTriggerMatchHltMuons = looseMuonTriggerMatchHltMuons.clone(
+    src = "tightMuons",
+)
+patTriggerEvent.patTriggerMatches = ["looseMuonTriggerMatchHltMuons","tightMuonTriggerMatchHltMuons"]
+looseMuonsTriggerMatch = cms.EDProducer("PATTriggerMatchMuonEmbedder",
+    src     = cms.InputTag("looseMuons"),
+    matches = cms.VInputTag("looseMuonTriggerMatchHltMuons")
+)
+#tightMuonsTriggerMatch = looseMuonsTriggerMatch.clone(
 #    src     = "tightMuons",
-#    matches = ["muonTriggerMatchHLTMuons"],
+#    matches = ["tightMuonTriggerMatchHltMuons"],
 #)
 
+
+
+## Tight muons matched to HLT object (collection containing only matched muons)
+#patTrigger.onlyStandAlone = False
 tightHltMuons = TriggerMatchedMuonProducer.clone(
     muonSource = "tightMuons",
+    matches = "tightMuonTriggerMatchHltMuons",
+)
+
+
+
+tightHltMuonTriggerMatchHltMuons = looseMuonTriggerMatchHltMuons.clone(
+    src = "tightHltMuons",
+)
+patTriggerEvent2 = patTriggerEvent.clone(
+    patTriggerMatches = ["tightHltMuonTriggerMatchHltMuons"],
+)
+tightHltMuonsTriggerMatch = looseMuonsTriggerMatch.clone(
+    src     = "tightHltMuons",
+    matches = ["tightHltMuonTriggerMatchHltMuons"],
 )
 
 
@@ -95,8 +126,6 @@ tightHltMuonSelection = countPatMuons.clone(
 
 
 
-
-
 ###########################################################################################
 #
 # SEQUENCES
@@ -104,26 +133,38 @@ tightHltMuonSelection = countPatMuons.clone(
 ###########################################################################################
 
 
-
 patTriggerSequence = cms.Sequence(
-    patTrigger
-    *muonTriggerMatchHLTMuons
-    *patTriggerEvent
+    patTrigger*
+    looseMuonTriggerMatchHltMuons*
+    tightMuonTriggerMatchHltMuons*
+    patTriggerEvent
 )
 
-#muonTriggerMatchEmbedder = cms.Sequence(
-#    selectedPatMuonsTriggerMatch
-#)
+
+
+muonTriggerMatchEmbedder = cms.Sequence(
+    looseMuonsTriggerMatch
+    #*tightMuonsTriggerMatch
+)
+
+
+tightHltMuonTriggerSequenceAndTriggerMatchEmbedder = cms.Sequence(
+    tightHltMuons
+    *tightHltMuonTriggerMatchHltMuons
+    *patTriggerEvent2
+    *tightHltMuonsTriggerMatch
+)
 
 
 
-buildCollections = cms.Sequence(
+buildMuonCollections = cms.Sequence(
     looseMuons
     *tightMuons
     *patTriggerSequence
-#    *muonTriggerMatchEmbedder
-    *tightHltMuons
+    *muonTriggerMatchEmbedder
+    *tightHltMuonTriggerSequenceAndTriggerMatchEmbedder
 )
+
 
 
 muonSelection = cms.Sequence(
@@ -132,5 +173,6 @@ muonSelection = cms.Sequence(
     *tightMuonSelection
     *tightHltMuonSelection
 )
+
 
 

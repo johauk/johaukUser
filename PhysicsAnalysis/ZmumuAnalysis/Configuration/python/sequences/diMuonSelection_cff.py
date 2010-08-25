@@ -19,20 +19,23 @@ from ElectroWeakAnalysis.ZMuMu.zSelection_cfi import *
 ## Build Collections
 ##
 
-
 # Collection for ambiguity cleaning using "ZMuMuOverlapExclusionSelector"
-tightHLTGlobalDimuons = dimuons.clone(
+tightHltGlobalDimuons = dimuons.clone(
     checkCharge = False,
     cut = 'daughter(0).isGlobalMuon = 1' +'&'+
 	  'daughter(1).isGlobalMuon = 1',
-    decay = 'tightHltMuons@+ tightHltMuons@-',
+    #decay = 'tightHltMuons@+ tightHltMuons@-',
+    #decay = 'tightMuonsTriggerMatch@+ tightMuonsTriggerMatch@-',
+    decay = 'tightHltMuonsTriggerMatch@+ tightHltMuonsTriggerMatch@-',
 )
 
 
 
 # Collection of interest, but with ambiguities
-looseTightHltGlobalDimuons = tightHLTGlobalDimuons.clone(
-    decay = 'tightHltMuons@+ looseMuons@-',
+looseTightHltGlobalDimuons = tightHltGlobalDimuons.clone(
+    #decay = 'tightHltMuons@+ looseMuons@-',
+    #decay = 'tightMuonsTriggerMatch@+ looseMuonsTriggerMatch@-',
+    decay = 'tightHltMuonsTriggerMatch@+ looseMuonsTriggerMatch@-',
 )
 
 
@@ -40,7 +43,7 @@ looseTightHltGlobalDimuons = tightHLTGlobalDimuons.clone(
 # Build collection orthogonal to first one
 overlapExcludedLooseTightHltGlobalDimuons = cms.EDFilter("ZMuMuOverlapExclusionSelector",
     src = cms.InputTag("looseTightHltGlobalDimuons"),
-    overlap = cms.InputTag("tightHLTGlobalDimuons"),
+    overlap = cms.InputTag("tightHltGlobalDimuons"),
     filter = cms.bool(False),
 )
 
@@ -48,7 +51,7 @@ overlapExcludedLooseTightHltGlobalDimuons = cms.EDFilter("ZMuMuOverlapExclusionS
 
 # Merge collections without ambiguities
 selectedDimuons = cms.EDProducer("CandViewMerger",
-    src = cms.VInputTag("tightHLTGlobalDimuons","overlapExcludedLooseTightHltGlobalDimuons")
+    src = cms.VInputTag("tightHltGlobalDimuons","overlapExcludedLooseTightHltGlobalDimuons")
 )
 
 
@@ -57,7 +60,7 @@ selectedDimuons = cms.EDProducer("CandViewMerger",
 goodDimuons = cms.EDFilter("CandViewRefSelector",
     src = cms.InputTag("selectedDimuons"),
     cut = cms.string(
-      'mass > 20.'# +'&'+
+      'abs(daughter(0).eta)<2.1 || abs(daughter(1).eta)<2.1'# +'&'+
     ),
 )
 
@@ -74,11 +77,14 @@ isolatedDimuons = cms.EDFilter("ZToMuMuIsolatedIDSelector",
 )
 
 
-# Check again for HLT matching of one Muon
-# does not work, no event survives...
+
+# Check for HLT matching of at least one of both Muons
 atLeast1HltDimuons = cms.EDFilter("ZHLTMatchFilter",
     src = cms.InputTag("isolatedDimuons"),
     condition =cms.string("atLeastOneMatched"),
+    #condition =cms.string("bothMatched"),
+    #condition =cms.string("firstMatched"),  # implicates that 2nd is not a global muon!!!
+    #condition =cms.string("exactlyOneMatched"),
     hltPath = cms.string("HLT_Mu9"),
     filter = cms.bool(False) 
 )
@@ -90,8 +96,8 @@ finalDimuons = cms.EDFilter("CandViewRefSelector",
     src = cms.InputTag("isolatedDimuons"),
     cut = cms.string(
       'mass > 60.' +'&'+
-      'mass < 120.' +'&'+
-      'charge = 0'# +'&'+
+      'mass < 120.'# +'&'+
+      #'charge = 0'# +'&'+
     ),
 )
 
@@ -143,13 +149,13 @@ finalDimuonSelection = dimuonsFilter.clone(
 
 
 buildDimuonCollections = cms.Sequence(
-    tightHLTGlobalDimuons
+    tightHltGlobalDimuons
     *looseTightHltGlobalDimuons
     *overlapExcludedLooseTightHltGlobalDimuons
     *selectedDimuons
     *goodDimuons
     *isolatedDimuons
-#    *atLeast1HltDimuons
+    *atLeast1HltDimuons
     *finalDimuons
 )
 
@@ -159,7 +165,7 @@ dimuonSelection = cms.Sequence(
     selectedDimuonSelection
     *goodDimuonSelection
     *isolatedDimuonSelection
-#    *atLeast1HltDimuonSelection
+    *atLeast1HltDimuonSelection
     *finalDimuonSelection
 )
 
