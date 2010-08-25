@@ -14,7 +14,7 @@ process.MessageLogger.suppressWarning = cms.untracked.vstring("decaySubset")
 
 ## define maximal number of events to loop over
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1001)
+    input = cms.untracked.int32(10001)
 )
 
 
@@ -49,37 +49,18 @@ process.TFileService = cms.Service("TFileService",
 )
 
 #******************************************************************************************
-#   Modules
+#   Filter & Producer Modules
 #******************************************************************************************
 
-## add event weight information
-#process.load("TopAnalysis.TopUtils.EventWeightPlain_cfi") 
-
-## analyze and filter trigger
-process.load("ZmumuAnalysis.Analyzer.TriggerAnalyzer_cfi")
-process.TriggerAnalyzer1 =  process.TriggerAnalyzer.clone()
+## filter trigger
 process.load("ZmumuAnalysis.Filter.TriggerFilter_cfi")
 process.TriggerFilter1 =  process.TriggerFilter.clone()
+
+
 
 ## filter for muon quality, kinematics HLT object matching
 process.load("ZmumuAnalysis.Configuration.sequences.muonSelection_cff")
 
-## event analyzer
-process.load("ZmumuAnalysis.Analyzer.EventAnalyzer_cfi")
-process.EventAnalyzer1 = process.EventAnalyzer.clone(
-    muonSource = 'looseMuons',
-)
-process.EventAnalyzer2 = process.EventAnalyzer1.clone(
-    muonSource = 'tightHltMuons',
-)
-process.EventAnalyzer1a = process.EventAnalyzer1.clone(
-    diMuonSource = 'overlapExcludedLooseTightHltGlobalDimuons',
-    analyzeDiMuons = True,
-)
-process.EventAnalyzer2a = process.EventAnalyzer2.clone(
-    diMuonSource = 'overlapExcludedLooseTightHltGlobalDimuons',
-    analyzeDiMuons = True,
-)
 
 
 ## add dimuon collections and filter for dimuon properties (including muon isolation)
@@ -88,24 +69,60 @@ process.load("ZmumuAnalysis.Configuration.sequences.diMuonSelection_cff")
 
 
 
-#process.load("ElectroWeakAnalysis.Skimming.zMuMuSubskimOutputModule_cfi")
-#process.load("ElectroWeakAnalysis.Skimming.zMuMu_SubskimPathsWithMCTruth_cff")
-#from ElectroWeakAnalysis.ZMuMu.ZMuMuCategoriesSequences_cff import *
-#process.load("ElectroWeakAnalysis.ZMuMu.ZMuMuCategoriesVtxed_cff")
+#******************************************************************************************
+#   Analyzer Modules
+#******************************************************************************************
 
-#process.load("ElectroWeakAnalysis.Skimming.dimuonsHLTFilter_cfi")
-#process.load("ElectroWeakAnalysis.Skimming.patCandidatesForZMuMuSubskim_cff")
-#process.dimuonsHLTFilter.TriggerResultsTag = cms.InputTag("TriggerResults","","REDIGI36X")
-#process.patTrigger.processName = "REDIGI36X"
-#process.patTriggerEvent.processName = "REDIGI36X"
-#process.patTrigger.triggerResults = cms.InputTag( "TriggerResults::REDIGI36X" )
-#process.patTrigger.triggerEvent = cms.InputTag( "hltTriggerSummaryAOD::REDIGI36X" )
+## trigger analyzer
+process.load("ZmumuAnalysis.Analyzer.TriggerAnalyzer_cfi")
+process.TriggerAnalyzer1 =  process.TriggerAnalyzer.clone()
+
+
+
+## event analyzer
+process.load("ZmumuAnalysis.Analyzer.EventAnalyzer_cfi")
+process.EventAnalyzer1 = process.EventAnalyzer.clone(
+    muonSource = 'looseMuons',
+)
+process.EventAnalyzer2 = process.EventAnalyzer1.clone(
+    analyzeDiMuons = True,
+)
+process.EventAnalyzer3 = process.EventAnalyzer2.clone(
+    diMuonSource = "finalDimuons",
+)
+
+
+
+## muon analizer
+process.load("ZmumuAnalysis.Analyzer.MuonAnalyzer_cfi")
+process.MuonAnalyzer1 = process.MuonAnalyzer.clone(
+)
+process.MuonAnalyzer2 = process.MuonAnalyzer1.clone(
+    muonSource = 'looseMuons',
+)
+
+
+
+## di-muon analyzer
+process.load("ZmumuAnalysis.Analyzer.DiMuonAnalyzer_cfi")
+process.DiMuonAnalyzer1 = process.DiMuonAnalyzer.clone(
+)
+process.DiMuonAnalyzer2 = process.DiMuonAnalyzer1.clone(
+    diMuonSource = "finalDimuons",
+)
+
+
 
 
 
 #******************************************************************************************
-#   Analysis Path
+#  Special trigger matching
 #******************************************************************************************
+
+## needed only if muon collection should be built with "TriggerMatchedMuonProducer":
+## containing only muons matched to HLT
+## allows eg. selection of events w/ at least one matched muon
+
 
 process.load("PhysicsTools.PatAlgos.patSequences_cff")
 process.out = cms.OutputModule("PoolOutputModule",
@@ -118,16 +135,27 @@ del process.out
 del process.outpath
 
 
+
+
+#******************************************************************************************
+#   Analysis Path
+#******************************************************************************************
+
+
+
 process.p = cms.Path(
     process.TriggerAnalyzer1
     *process.TriggerFilter1
-    *process.buildCollections
+    *process.MuonAnalyzer1
+    *process.buildMuonCollections
     *process.EventAnalyzer1
-    *process.EventAnalyzer2
     *process.muonSelection
+    *process.MuonAnalyzer2
     
     *process.buildDimuonCollections
-    *process.EventAnalyzer1a
-    *process.EventAnalyzer2a    
+    *process.EventAnalyzer2
+    *process.DiMuonAnalyzer1
     *process.dimuonSelection
+    *process.EventAnalyzer3
+    *process.DiMuonAnalyzer2
 )

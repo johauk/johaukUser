@@ -12,6 +12,7 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000 ## really show only every 1000th
 
 
+
 process.options = cms.untracked.PSet(
     #wantSummary = cms.untracked.bool(True),
     Rethrow = cms.untracked.vstring("ProductNotFound"), # make this exception fatal
@@ -43,10 +44,11 @@ process.selectedDimuons = dimuons.clone(
 )
 
 
+
 ## Analyzer under test
 process.load("ZmumuAnalysis.Analyzer.DiMuonAnalyzer_cfi")
 process.DiMuonAnalyzer1 = process.DiMuonAnalyzer.clone(
-    #src = 'selectedPatMuons',
+    #src = 'selectedDimuons',
 )
 
 
