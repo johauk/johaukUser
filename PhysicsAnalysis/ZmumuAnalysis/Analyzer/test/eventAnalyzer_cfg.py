@@ -33,10 +33,26 @@ process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 
 
 
+## di-muon candidate producer
+from ElectroWeakAnalysis.Skimming.dimuons_cfi import *
+process.selectedDimuons = dimuons.clone(
+    checkCharge = False,
+    cut = 'daughter(0).isGlobalMuon = 1' +'&'+
+          'daughter(1).isGlobalMuon = 1' +'&'+
+          'mass > 0',
+    decay = 'selectedPatMuons@+ selectedPatMuons@-',
+)
+
+
+
 ## Analyzer under test
 process.load("ZmumuAnalysis.Analyzer.EventAnalyzer_cfi")
 process.EventAnalyzer1 = process.EventAnalyzer.clone(
     #src = 'selectedPatMuons',
+)
+process.EventAnalyzer2 = process.EventAnalyzer1.clone(
+    analyzeDiMuons = True,
+    #diMuonSource = "selectedDimuons",
 )
 
 
@@ -52,4 +68,6 @@ process.TFileService = cms.Service("TFileService",
 ## Path
 process.p = cms.Path(
     process.EventAnalyzer1
+    *process.selectedDimuons
+    *process.EventAnalyzer2
 )
