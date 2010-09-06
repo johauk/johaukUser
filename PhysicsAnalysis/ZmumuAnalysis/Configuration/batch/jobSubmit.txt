@@ -11,6 +11,9 @@ qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Con
 qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/batch/mc/wmunu.sh
 qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/batch/mc/zmumu.sh
 qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/batch/mc/ztautau.sh
+qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/batch/mc/ww.sh
+qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/batch/mc/wz.sh
+qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/batch/mc/zz.sh
 
 
 
