@@ -36,17 +36,6 @@ process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 ## Analyzer under test
 process.load("ZmumuAnalysis.Analyzer.GeneratorZmumuAnalyzer_cfi")
 process.GeneratorZmumuAnalyzer1 = process.GeneratorZmumuAnalyzer.clone()
-process.GeneratorZmumuAnalyzer2 = process.GeneratorZmumuAnalyzer1.clone(
-    massZMin = 70.,
-    massZMax = 110.,
-)
-process.GeneratorZmumuAnalyzer3 = process.GeneratorZmumuAnalyzer2.clone(
-    massZMin = 80.,
-    massZMax = 100.,
-)
-process.GeneratorZmumuAnalyzer4 = process.GeneratorZmumuAnalyzer3.clone(
-    absEtaMuMax = 2.5,
-)
 
 
 
@@ -62,7 +51,4 @@ process.TFileService = cms.Service("TFileService",
 ## Path
 process.p = cms.Path(
     process.GeneratorZmumuAnalyzer1
-    +process.GeneratorZmumuAnalyzer2
-    +process.GeneratorZmumuAnalyzer3
-    +process.GeneratorZmumuAnalyzer4
 )

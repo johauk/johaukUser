@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Fri Feb 26 16:48:04 CET 2010
-// $Id: GeneratorZmumuAnalyzer.cc,v 1.1 2010/06/22 15:46:08 hauk Exp $
+// $Id: GeneratorZmumuAnalyzer.cc,v 1.2 2010/08/20 11:51:09 hauk Exp $
 //
 //
 
@@ -59,10 +59,6 @@ class GeneratorZmumuAnalyzer : public edm::EDAnalyzer {
 
       // ----------member data ---------------------------
       const edm::ParameterSet parSet_;
-      const edm::InputTag inputTag_;
-      const double massZMin_;
-      const double massZMax_;
-      const double absEtaMuMax_;
       
       TH1 *EtaLow, *EtaHigh, *PtLow, *PtHigh,
           *EtaZ, *PtZ,
@@ -81,10 +77,7 @@ class GeneratorZmumuAnalyzer : public edm::EDAnalyzer {
 // constructors and destructor
 //
 GeneratorZmumuAnalyzer::GeneratorZmumuAnalyzer(const edm::ParameterSet& iConfig):
-parSet_(iConfig), inputTag_(parSet_.getParameter<edm::InputTag>("src")),
-massZMin_(parSet_.getParameter<double>("massZMin")),
-massZMax_(parSet_.getParameter<double>("massZMax")),
-absEtaMuMax_(parSet_.getParameter<double>("absEtaMuMax")),
+parSet_(iConfig),
 EtaLow(0), EtaHigh(0), PtLow(0), PtHigh(0),
 EtaZ(0), PtZ(0),
 MassZ(0)
@@ -105,8 +98,9 @@ GeneratorZmumuAnalyzer::~GeneratorZmumuAnalyzer()
 void
 GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   
+   const edm::InputTag inputTag(parSet_.getParameter<edm::InputTag>("src"));
   edm::Handle<reco::GenParticleCollection> genParticles;
-  iEvent.getByLabel(inputTag_, genParticles);
+  iEvent.getByLabel(inputTag, genParticles);
   
 //  std::cout<<"\tSize: "<<genParticles->size()<<"\n";
   
@@ -148,12 +142,10 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     if(!isZmumu)continue;
     reco::Candidate::LorentzVector diMuVec = lorVecMinus + lorVecPlus;
     double diMuMass = diMuVec.M();
-    if(diMuMass<massZMin_ || diMuMass>massZMax_)continue;
     const double etaLow = std::fabs(etaMinus)<std::fabs(etaPlus) ? etaMinus : etaPlus;
     const double etaHigh = std::fabs(etaMinus)>std::fabs(etaPlus) ? etaMinus : etaPlus;
     const double ptLow = ptMinus<ptPlus ? ptMinus : ptPlus;
     const double ptHigh = ptMinus>ptPlus ? ptMinus : ptPlus;
-    if(std::fabs(etaHigh)>absEtaMuMax_)continue;
     
     EtaLow->Fill(etaLow);
     EtaHigh->Fill(etaHigh);
