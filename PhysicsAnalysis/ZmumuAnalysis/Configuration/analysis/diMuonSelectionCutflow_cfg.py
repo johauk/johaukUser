@@ -2,7 +2,7 @@ import os
 
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process("FullCutflow")
+process = cms.Process("DiMuonSelectionCutflow")
 
 ## add message logger
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -29,7 +29,14 @@ process.options = cms.untracked.PSet(
 
 
 ## sources
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.Zmumu_Pat_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.inclusiveMu15_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopS_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopTW_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopT_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.ttbar_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.wmunu_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.zmumu_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.ztautau_spring10_cff")
 process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 
 
