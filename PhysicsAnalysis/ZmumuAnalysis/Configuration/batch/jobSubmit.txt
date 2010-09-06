@@ -22,3 +22,7 @@ qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Con
 
 
 
+
+
+
+qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/batch/mc/generatorZmumu.sh
