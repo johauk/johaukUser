@@ -1,0 +1,21 @@
+# First paragraph are files from Holger: due to bad event content, trigger matching not working correctly at present
+
+qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/batch/mc/inclusiveMu15.sh
+qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/batch/mc/singleTopS.sh
+qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/batch/mc/singleTopT.sh
+qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/batch/mc/singleTopTW.sh
+
+
+
+qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/batch/mc/ttbar.sh
+qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/batch/mc/wmunu.sh
+qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/batch/mc/zmumu.sh
+qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/batch/mc/ztautau.sh
+
+
+
+qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/batch/data/ichepAnalysis_PromptReco.sh
+qsub /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/batch/data/ichepAnalysis_ReReco.sh
+
+
+
