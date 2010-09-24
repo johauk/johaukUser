@@ -5,6 +5,13 @@ from ApeEstimator.ApeEstimator.SectorBuilder_cfi import *
 
 
 
+
+###======================================================================================================================================================================
+###======================================================================================================================================================================
+
+
+
+
 # One Sector for each Subdetector (means only one for e.g. both endcaps)
 SubdetSectors = cms.VPSet(
   cms.PSet(
@@ -37,6 +44,12 @@ SubdetSectors = cms.VPSet(
 
 
 
+###======================================================================================================================================================================
+###======================================================================================================================================================================
+
+
+
+
 # Only TID and TEC (means only one for e.g. both endcaps)
 TIDTEC = cms.VPSet(
   cms.PSet(
@@ -53,6 +66,12 @@ TIDTEC = cms.VPSet(
 
 
 
+###======================================================================================================================================================================
+###======================================================================================================================================================================
+
+
+
+
 # Only TIB and TOB
 TIBTOB = cms.VPSet(
   cms.PSet(
@@ -65,6 +84,12 @@ TIBTOB = cms.VPSet(
   )),
 )
 
+
+
+
+
+###======================================================================================================================================================================
+###======================================================================================================================================================================
 
 
 
@@ -121,6 +146,12 @@ TIBTOBQuarters = cms.VPSet(
 
 
 
+###======================================================================================================================================================================
+###======================================================================================================================================================================
+
+
+
+
 # Only TIB and TOB + Separation of pitches + Separation of 1D and 2D layers
 TIBTOBPitchAnd2DSeparation = cms.VPSet(
   
@@ -154,6 +185,12 @@ TIBTOBPitchAnd2DSeparation = cms.VPSet(
   )),
 )
 
+
+
+
+
+###======================================================================================================================================================================
+###======================================================================================================================================================================
 
 
 
@@ -265,6 +302,283 @@ TIBTOBQuarters2DSeparation = cms.VPSet(
     posPhi = [-3.5,-2.3562,2.3562,3.5]   # [135,-135] degree
   )),
 )
+
+
+
+
+
+###======================================================================================================================================================================
+###======================================================================================================================================================================
+
+
+
+
+# Only TIB and TOB, Separation of layers (also rphi and stereo layers separated) and orientations
+TIBTOBLayerAndOrientationSeparation = cms.VPSet(
+  
+  # TIB layer 1, pointing outwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [3],
+    isRPhi = [1],
+    wDirection = [1],
+  )),
+  
+  # TIB layer 1, pointing outwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [3],
+    isRPhi = [2],
+    wDirection = [1],
+  )),
+  
+  # TIB layer 1, pointing inwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [3],
+    isRPhi = [1],
+    wDirection = [-1],
+  )),
+  
+  # TIB layer 1, pointing inwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [3],
+    isRPhi = [2],
+    wDirection = [-1],
+  )),
+  
+  
+  # TIB layer 2, pointing outwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [3],
+    isRPhi = [1],
+    wDirection = [1],
+  )),
+  
+  # TIB layer 2, pointing outwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [3],
+    isRPhi = [2],
+    wDirection = [1],
+  )),
+  
+  # TIB layer 2, pointing inwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [3],
+    isRPhi = [1],
+    wDirection = [-1],
+  )),
+  
+  # TIB layer 2, pointing inwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [3],
+    isRPhi = [2],
+    wDirection = [-1],
+  )),
+  
+
+  # TIB layer 3, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [3],
+    wDirection = [1],
+  )),
+
+  # TIB layer 3, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [3],
+    wDirection = [-1],
+  )),
+
+
+  # TIB layer 4, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [3],
+    wDirection = [1],
+  )),
+
+  # TIB layer 4, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [3],
+    wDirection = [-1],
+  )),
+
+
+
+
+
+  
+  # TOB layer 1, pointing outwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [5],
+    isRPhi = [1],
+    wDirection = [1],
+  )),
+  
+  # TOB layer 1, pointing outwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [5],
+    isRPhi = [2],
+    wDirection = [1],
+  )),
+  
+  # TOB layer 1, pointing inwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [5],
+    isRPhi = [1],
+    wDirection = [-1],
+  )),
+
+  # TOB layer 1, pointing inwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    layer = [1],
+    subdetId = [5],
+    isRPhi = [2],
+    wDirection = [-1],
+  )),
+
+
+  # TOB layer 2, pointing outwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [5],
+    isRPhi = [1],
+    wDirection = [1],
+  )),
+  
+  # TOB layer 2, pointing outwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [5],
+    isRPhi = [2],
+    wDirection = [1],
+  )),
+  
+  # TOB layer 2, pointing inwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [5],
+    isRPhi = [1],
+    wDirection = [-1],
+  )),
+  
+  # TOB layer 2, pointing inwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    layer = [2],
+    subdetId = [5],
+    isRPhi = [2],
+    wDirection = [-1],
+  )),
+
+
+  # TOB layer 3, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [5],
+    wDirection = [1],
+  )),
+
+  # TOB layer 3, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [3],
+    subdetId = [5],
+    wDirection = [-1],
+  )),
+
+
+  # TOB layer 4, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [5],
+    wDirection = [1],
+  )),
+
+  # TOB layer 4, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [4],
+    subdetId = [5],
+    wDirection = [-1],
+  )),
+
+
+  # TOB layer 5, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [5],
+    subdetId = [5],
+    wDirection = [1],
+  )),
+
+  # TOB layer 5, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [5],
+    subdetId = [5],
+    wDirection = [-1],
+  )),
+
+
+  # TOB layer 6, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [6],
+    subdetId = [5],
+    wDirection = [1],
+  )),
+
+  # TOB layer 6, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    layer = [6],
+    subdetId = [5],
+    wDirection = [-1],
+  )),
+
+
+)
+
+
+
+
+
+###======================================================================================================================================================================
+###======================================================================================================================================================================
+
 
 
 
@@ -883,9 +1197,6 @@ TIBTOBQuartersLayerAndOrientationSeparation = cms.VPSet(
     wDirection = [-1],
     posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
   )),
-
-
-
 
 
 )
