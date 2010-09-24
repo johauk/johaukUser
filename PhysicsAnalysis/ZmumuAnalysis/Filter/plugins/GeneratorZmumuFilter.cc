@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Wed Sep  1 15:49:35 CEST 2010
-// $Id$
+// $Id: GeneratorZmumuFilter.cc,v 1.1 2010/09/06 10:07:27 hauk Exp $
 //
 //
 
@@ -161,7 +161,10 @@ GeneratorZmumuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   edm::Handle<reco::GenParticleCollection> genParticles;
   iEvent.getByLabel(inputTag, genParticles);
   
-  // Take care: when analysing events with more than one Z, not all have to be Z->mumu
+  // all variable names are like in Z->mumu case, but act universally on Z->xx
+  const std::vector<int> zDecayMode(parameterSet_.getParameter<std::vector<int> >("zDecayMode"));
+  
+  // Take care: when analysing events with more than one Z, not all have to be Z->xx with specified x
   bool zmumuFilter(false);
   
   bool diMuDeltaEtaFilter(false);
@@ -187,19 +190,21 @@ GeneratorZmumuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     for(size_t iDaughter = 0; iDaughter < iGenPart->numberOfDaughters(); ++iDaughter){
       const reco::GenParticle* daughter(dynamic_cast<const reco::GenParticle*>(iGenPart->daughter(iDaughter)));
       // select mu-
-      if(daughter->pdgId()==13){
-        lorVecMinus = daughter->p4();
-        etaMinus = daughter->eta();
-	phiMinus = daughter->phi();
-        ptMinus = daughter->pt();
-        isZmumu = true;
-      }
-      // select mu+
-      else if(daughter->pdgId()==-13){
-        lorVecPlus = daughter->p4();
-        etaPlus = daughter->eta();
-	phiPlus = daughter->phi();
-        ptPlus = daughter->pt();
+      for(std::vector<int>::const_iterator i_zDecayMode = zDecayMode.begin();i_zDecayMode != zDecayMode.end(); ++i_zDecayMode){
+        if(daughter->pdgId() == (*i_zDecayMode)){
+          lorVecMinus = daughter->p4();
+          etaMinus = daughter->eta();
+	  phiMinus = daughter->phi();
+          ptMinus = daughter->pt();
+          isZmumu = true;
+        }
+        // select mu+
+        else if(daughter->pdgId() == -(*i_zDecayMode)){
+          lorVecPlus = daughter->p4();
+          etaPlus = daughter->eta();
+	  phiPlus = daughter->phi();
+          ptPlus = daughter->pt();
+        }
       }
     }
     if(!isZmumu)continue;
