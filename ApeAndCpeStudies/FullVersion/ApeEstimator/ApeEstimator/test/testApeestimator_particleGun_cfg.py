@@ -44,7 +44,7 @@ process.options = cms.untracked.PSet(
 
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10001) )
 
 #process.source.inputCommands = cms.untracked.vstring('keep *', 'drop *_MEtoEDMConverter_*_*') # hack to get rid of the memory consumption problem in 2_2_X and beond
 
@@ -66,6 +66,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
 #process.load("ApeEstimator.ApeEstimator.samples.MinBias_mc_356_ApeSkim_cff")
 process.load("ApeEstimator.ApeEstimator.samples.ParticleGunPion_mc_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunAntiPion_mc_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunBothPion_mc_cff")
 ## --- Run 132440-132478, First Reprocessing --- (beamspot corrected)
 #process.load("ApeEstimator.ApeEstimator.samples.MinBias_run132440_132478_R_356_cff")
 ## --- Run 133029-133158, Processing ---
@@ -132,6 +133,17 @@ process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cf
     )
 )
 process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+#process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+#    connect = cms.string('sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/misalignments/AlignmentsTob20.db'),
+#    toGet = cms.VPSet(
+#      cms.PSet(
+#        record = cms.string('TrackerAlignmentRcd'),
+#        tag = cms.string('TrackerScenario')
+#      )
+#    )
+#)
+#process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+
 
 
 
@@ -152,10 +164,12 @@ process.ApeEstimator1 = ApeEstimatorCosmics.clone(
     applyTrackCuts = False,
     Sectors = SubdetSectors,
     analyzerMode = False,
+    #setBaseline = True,
     sigmaFactorFit = 2.5,
-    correctionScaling = 0.5,
-    IterationFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/iterationApe_particleGun.root',
-    ApeOutputFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/apeOutput_particleGun.txt',
+    correctionScaling = 1.0,
+    BaselineFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/test_baselineApe_particleGun.root',
+    IterationFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/test_iterationApe_particleGun.root',
+    ApeOutputFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/test_apeOutput_particleGun.txt',
 )
 process.ApeEstimator1.HitSelector.width = []
 process.ApeEstimator1.HitSelector.widthProj = []
