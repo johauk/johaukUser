@@ -14,7 +14,7 @@ process.MessageLogger.suppressWarning = cms.untracked.vstring("decaySubset")
 
 ## define maximal number of events to loop over
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10001)
+    input = cms.untracked.int32(1001)
 )
 
 
@@ -29,6 +29,8 @@ process.options = cms.untracked.PSet(
 
 
 ## sources
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.Jun14ReReco_MuonPreselection_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.May27ReReco_MuonPreselection_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.inclusiveMu15_spring10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopS_spring10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopTW_spring10_cff")
@@ -37,15 +39,19 @@ process.options = cms.untracked.PSet(
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.wmunu_spring10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.zmumu_spring10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.ztautau_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.ww_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.wz_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.zz_spring10_cff")
 process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 
 
 
 ## needed for access to trigger menu
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-process.GlobalTag.globaltag = cms.string('START36_V9::All')
-#process.load("Configuration.StandardSequences.Geometry_cff")
-#process.load("Configuration.StandardSequences.MagneticField_cff")
+# data
+process.GlobalTag.globaltag = cms.string('GR_R_36X_V12::All')
+# mc
+#process.GlobalTag.globaltag = cms.string('START36_V10::All')
 
 
 
@@ -60,12 +66,12 @@ process.TFileService = cms.Service("TFileService",
 #******************************************************************************************
 
 ## filter trigger
-process.load("ZmumuAnalysis.Filter.TriggerFilter_cfi")
-process.TriggerFilter1 =  process.TriggerFilter.clone()
+process.load("ZmumuAnalysis.Configuration.filters.TriggerFilter_cff")
+process.triggerFilter1 = process.AllLowestUnprescaledTriggerFilter.clone()
 
 
 
-## filter for muon quality, kinematics HLT object matching
+## filter for muon quality, kinematics and HLT object matching
 process.load("ZmumuAnalysis.Configuration.sequences.muonSelection_cff")
 
 
@@ -123,28 +129,6 @@ process.DiMuonAnalyzer2 = process.DiMuonAnalyzer1.clone(
 
 
 #******************************************************************************************
-#  Special trigger matching
-#******************************************************************************************
-
-## needed only if muon collection should be built with "TriggerMatchedMuonProducer":
-## containing only muons matched to HLT
-## allows eg. selection of events w/ at least one matched muon
-
-
-process.load("PhysicsTools.PatAlgos.patSequences_cff")
-process.out = cms.OutputModule("PoolOutputModule",
-    outputCommands = cms.untracked.vstring('keep *'),
-)
-process.outpath = cms.EndPath(process.out)
-from PhysicsTools.PatAlgos.tools.trigTools import switchOnTrigger
-switchOnTrigger(process)
-del process.out
-del process.outpath
-
-
-
-
-#******************************************************************************************
 #   Analysis Path
 #******************************************************************************************
 
@@ -152,7 +136,8 @@ del process.outpath
 
 process.p = cms.Path(
     process.TriggerAnalyzer1
-    *process.TriggerFilter1
+    *process.triggerFilter1
+    
     *process.MuonAnalyzer1
     *process.buildMuonCollections
     *process.EventAnalyzer1
