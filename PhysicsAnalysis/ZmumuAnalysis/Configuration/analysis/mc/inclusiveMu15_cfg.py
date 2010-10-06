@@ -2,13 +2,13 @@ import os
 
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process("FullCutflow")
+process = cms.Process("DiMuonSelectionCutflow")
 
 ## add message logger
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'INFO'
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
-process.MessageLogger.suppressWarning = cms.untracked.vstring("decaySubset")
+process.MessageLogger.suppressWarning = cms.untracked.vstring("decaySubset") 
 
 
 
@@ -35,9 +35,10 @@ process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.inclusiveM
 
 ## needed for access to trigger menu
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-process.GlobalTag.globaltag = cms.string('START36_V9::All')
-#process.load("Configuration.StandardSequences.Geometry_cff")
-#process.load("Configuration.StandardSequences.MagneticField_cff")
+# data
+#process.GlobalTag.globaltag = cms.string('GR_R_36X_V12::All')
+# mc
+process.GlobalTag.globaltag = cms.string('START36_V10::All')
 
 
 
@@ -52,12 +53,12 @@ process.TFileService = cms.Service("TFileService",
 #******************************************************************************************
 
 ## filter trigger
-process.load("ZmumuAnalysis.Filter.TriggerFilter_cfi")
-process.TriggerFilter1 =  process.TriggerFilter.clone()
+process.load("ZmumuAnalysis.Configuration.filters.TriggerFilter_cff")
+process.triggerFilter1 = process.AllLowestUnprescaledTriggerFilter.clone()
 
 
 
-## filter for muon quality, kinematics HLT object matching
+## filter for muon quality, kinematics and HLT object matching
 process.load("ZmumuAnalysis.Configuration.sequences.muonSelection_cff")
 
 
@@ -115,55 +116,15 @@ process.DiMuonAnalyzer2 = process.DiMuonAnalyzer1.clone(
 
 
 #******************************************************************************************
-#  Special trigger matching
-#******************************************************************************************
-
-## needed only if muon collection should be built with "TriggerMatchedMuonProducer":
-## containing only muons matched to HLT
-## allows eg. selection of events w/ at least one matched muon
-
-
-process.load("PhysicsTools.PatAlgos.patSequences_cff")
-process.out = cms.OutputModule("PoolOutputModule",
-    outputCommands = cms.untracked.vstring('keep *'),
-)
-process.outpath = cms.EndPath(process.out)
-from PhysicsTools.PatAlgos.tools.trigTools import switchOnTrigger
-switchOnTrigger(process)
-del process.out
-del process.outpath
-
-
-
-#******************************************************************************************
-#   Inconsistent naming sceme for inclusiveMu15 sample: selectedPatMuons -> cleanPatMuons
-#******************************************************************************************
-
-
-from PhysicsTools.PatAlgos.selectionLayer1.muonSelector_cfi import *
-process.selectedPatMuons = selectedPatMuons.clone(
-    src = 'cleanPatMuons',
-    cut = '',
-)
-from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
-process.selectedPatJets = selectedPatJets.clone(
-    src = 'cleanPatJets',
-    cut = '',
-)
-
-
-#******************************************************************************************
 #   Analysis Path
 #******************************************************************************************
 
 
 
 process.p = cms.Path(
-    process.selectedPatMuons*
-    process.selectedPatJets*
-    
     process.TriggerAnalyzer1
-    *process.TriggerFilter1
+    *process.triggerFilter1
+    
     *process.MuonAnalyzer1
     *process.buildMuonCollections
     *process.EventAnalyzer1
