@@ -14,7 +14,7 @@ process.MessageLogger.suppressWarning = cms.untracked.vstring("decaySubset")
 
 ## define maximal number of events to loop over
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10001)
+    input = cms.untracked.int32(1001)
 )
 
 
@@ -38,14 +38,6 @@ process.options = cms.untracked.PSet(
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.zmumu_spring10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.ztautau_spring10_cff")
 process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
-
-
-
-## needed for access to trigger menu
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-process.GlobalTag.globaltag = cms.string('START36_V9::All')
-#process.load("Configuration.StandardSequences.Geometry_cff")
-#process.load("Configuration.StandardSequences.MagneticField_cff")
 
 
 
