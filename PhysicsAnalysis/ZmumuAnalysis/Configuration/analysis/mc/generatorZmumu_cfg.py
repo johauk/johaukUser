@@ -4,11 +4,12 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("GeneratorZmumuCutflow")
 
+
+
 ## add message logger
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'INFO'
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
-process.MessageLogger.suppressWarning = cms.untracked.vstring("decaySubset") 
 
 
 
@@ -22,22 +23,12 @@ process.maxEvents = cms.untracked.PSet(
 ## configure process options
 process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(True),
-    #SkipEvent = cms.untracked.vstring('ProductNotFound'),
-    #Rethrow = cms.untracked.vstring("ProductNotFound"), # make this exception fatal (now default?)
 )
 
 
 
 ## sources
 process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.zmumu_spring10_cff")
-
-
-
-## needed for access to trigger menu
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-process.GlobalTag.globaltag = cms.string('START36_V9::All')
-#process.load("Configuration.StandardSequences.Geometry_cff")
-#process.load("Configuration.StandardSequences.MagneticField_cff")
 
 
 
