@@ -11,7 +11,7 @@ from ElectroWeakAnalysis.ZMuMu.zSelection_cfi import *
 
 ###########################################################################################
 #
-# MUON SELECTION
+# DI-MUON SELECTION
 #
 ###########################################################################################
 
@@ -60,6 +60,7 @@ selectedDimuons = cms.EDProducer("CandViewMerger",
 goodDimuons = cms.EDFilter("CandViewRefSelector",
     src = cms.InputTag("selectedDimuons"),
     cut = cms.string(
+      'mass > 20.' +'&'+
       'abs(daughter(0).eta)<2.1 || abs(daughter(1).eta)<2.1'# +'&'+
     ),
 )
@@ -140,6 +141,22 @@ finalDimuonSelection = dimuonsFilter.clone(
 
 
 
+
+###########################################################################################
+#
+# FINAL TRIGGER FILTER
+#
+###########################################################################################
+
+
+
+import ZmumuAnalysis.Configuration.filters.TriggerFilter_cff
+
+finalTriggerFilter = ZmumuAnalysis.Configuration.filters.TriggerFilter_cff.FinalTriggerFilter.clone()
+
+
+
+
 ###########################################################################################
 #
 # SEQUENCES
@@ -164,6 +181,7 @@ buildDimuonCollections = cms.Sequence(
 dimuonSelection = cms.Sequence(
     selectedDimuonSelection
     *goodDimuonSelection
+    *finalTriggerFilter
     *isolatedDimuonSelection
     *atLeast1HltDimuonSelection
     *finalDimuonSelection
