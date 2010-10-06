@@ -42,14 +42,15 @@ tightMuons = selectedPatMuons.clone(
 	  'numberOfMatches > 1' +'&'+
 	  'globalTrack.hitPattern.numberOfValidMuonHits > 0' +'&'+
 	  'globalTrack.normalizedChi2 < 10.' +'&'+
+	  'abs(eta) < 2.1' +'&'+
 	  'abs(dB) < 0.2',
 )
 
 
 
 ## Muons matched to HLT object (same collection w/o reduction, only information of HLT matching added)
-patTrigger.triggerResults = cms.InputTag("TriggerResults::HLT")
-patTrigger.triggerEvent = cms.InputTag("hltTriggerSummaryAOD::HLT")
+#patTrigger.triggerResults = cms.InputTag("TriggerResults::HLT")
+#patTrigger.triggerEvent = cms.InputTag("hltTriggerSummaryAOD::HLT")
 looseMuonTriggerMatchHltMuons = cms.EDProducer("PATTriggerMatcherDRDPtLessByR",
     src     = cms.InputTag("looseMuons"),
     matched = cms.InputTag("patTrigger"),
@@ -106,9 +107,14 @@ tightHltMuonsTriggerMatch = looseMuonsTriggerMatch.clone(
 ## Count Filters
 ##
 
-initialMuonSelection = countPatMuons.clone(
+
+oneInitialMuonSelection = countPatMuons.clone(
     src = 'selectedPatMuons',
-    minNumber = 2,
+    minNumber = 1,
+)
+oneLooseMuonSelection = countPatMuons.clone(
+    src = 'looseMuons',
+    minNumber = 1,
 )
 looseMuonSelection = countPatMuons.clone(
     src = 'looseMuons',
@@ -168,7 +174,8 @@ buildMuonCollections = cms.Sequence(
 
 
 muonSelection = cms.Sequence(
-    initialMuonSelection
+    oneInitialMuonSelection
+    *oneLooseMuonSelection
     *looseMuonSelection
     *tightMuonSelection
     *tightHltMuonSelection
