@@ -1,3 +1,13 @@
+Execute Job with local copy:
+
+bsub -J test -q cmscaf1nh -R "rusage[pool=3000]" bash /afs/cern.ch/user/h/hauk/cms/CMSSW_3_6_1_patch4/src/ApeEstimator/ApeEstimator/test/batchSubmit.bash
+
+
+
+
+
+
+
 DBS search string for data MinBias:
 
 find dataset where dataset like /MinimumBias/Commissioning10*TkAlMinBias* and dataset.tier = ALCARECO and dataset.status like VALID*
