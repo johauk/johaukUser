@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# input files to submit to batch queue
-INPUTBASE="raw"
+# input files to submit to batch queue (comment out next line to avoid unwanted deletion)
+#INPUTBASE="raw"
 INPUTSUFFIX=".root"
 
 # initial seed
