@@ -22,7 +22,7 @@ struct TrackStruct{
 		 probX(-999.F){}
     
     HitState hitState;
-    std::vector<unsigned int> sectors;
+    std::vector<unsigned int> v_sector;
     // cluster parameters
     bool isModuleUsable;
     unsigned int width, charge, maxStrip, maxStripInv, maxCharge, maxIndex;
@@ -54,7 +54,7 @@ struct TrackStruct{
   };
   
   TrackParameterStruct trkParams;
-  std::vector<HitParameterStruct> vHitParams;
+  std::vector<HitParameterStruct> v_hitParams;
 };
 
 #endif

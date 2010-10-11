@@ -66,10 +66,10 @@ class TrackerSectorStruct{
   
   TFileDirectory *directory_;
   double norResXMax_, sigmaXHitMax_, sigmaXMax_;
-  std::map<std::string,CorrelationHists> mCorrelationHists;
+  std::map<std::string,CorrelationHists> m_correlationHists;
   
   
-  std::vector<unsigned int> vRawId;
+  std::vector<unsigned int> v_rawId;
   
   
   
@@ -78,11 +78,11 @@ class TrackerSectorStruct{
   TH2 *WidthVsPhiSensX, *WidthVsWidthProjected, *WidthDiffVsMaxStrip, *WidthDiffVsSigmaXHit;
   TProfile *PWidthVsPhiSensX, *PWidthVsWidthProjected, *PWidthDiffVsMaxStrip, *PWidthDiffVsSigmaXHit;
   
-  std::map<std::string,std::vector<TH1*> > mSigmaX;
+  std::map<std::string,std::vector<TH1*> > m_sigmaX;
   
   
   //for every bin in sigmaX the needful histos to calculate the APE
-  std::map<unsigned int, std::map<std::string,TH1*> > mBinnedHists;
+  std::map<unsigned int, std::map<std::string,TH1*> > m_binnedHists;
   
   
   //for presenting results
