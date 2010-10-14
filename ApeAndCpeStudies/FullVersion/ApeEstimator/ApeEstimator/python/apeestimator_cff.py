@@ -1,11 +1,11 @@
 import FWCore.ParameterSet.Config as cms
 
 
-from ApeEstimator.ApeEstimator.apeestimator_cfi import *
+from ApeEstimator.ApeEstimator.ApeEstimator_cfi import *
 from ApeEstimator.ApeEstimator.SectorBuilder_cff import *
 
 
-ApeEstimatorCosmics = ApeEstimator.clone(
+ApeEstimator = ApeEstimatorTemplate.clone(
   maxTracksPerEvent = 0,
   #applyTrackCuts = False,
   minGoodHitsPerTrack = 1,
@@ -16,19 +16,17 @@ ApeEstimatorCosmics = ApeEstimator.clone(
   #Sectors = TIBTOBQuarters,
   #Sectors = TIBTOBQuarters2DSeparation,
   Sectors = TIBTOBPitchAnd2DSeparation,
-  sigmaFactorFit = 2.5,
-  correctionScaling = 0.5,
   tjTkAssociationMapTag = "TrackRefitterHighPurityForApeEstimator",
 )
-#ApeEstimatorCosmics.HitSelector.width = [1,3]
-ApeEstimatorCosmics.HitSelector.widthDiff = [-3.,1.]
-#ApeEstimatorCosmics.HitSelector.edgeStrips = [2,800]   # exclude first (and so also last) strip
-ApeEstimatorCosmics.HitSelector.sOverN = [15.,20000.]
+#ApeEstimator.HitSelector.width = [1,3]
+ApeEstimator.HitSelector.widthDiff = [-3.,1.]
+#ApeEstimator.HitSelector.edgeStrips = [2,800]   # exclude first (and so also last) strip
+ApeEstimator.HitSelector.sOverN = [15.,20000.]
 
-#ApeEstimatorCosmics.HitSelector.phiSensX = [-1.0472,1.0472]  # [-60,60] degree
-#ApeEstimatorCosmics.HitSelector.phiSensY = [-1.0472,1.0472]  # [-60,60] degree
+#ApeEstimator.HitSelector.phiSensX = [-1.0472,1.0472]  # [-60,60] degree
+#ApeEstimator.HitSelector.phiSensY = [-1.0472,1.0472]  # [-60,60] degree
 
 
-#ApeEstimatorCosmics.HitSelector.errXHit = cms.vdouble(0.,0.0060)  # 60um, to exclude very large clusters
+#ApeEstimator.HitSelector.errXHit = cms.vdouble(0.,0.0060)  # 60um, to exclude very large clusters
 
 
