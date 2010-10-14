@@ -2,22 +2,27 @@
 #define ApeEstimator_ApeEstimator_TrackerSectorStruct_h
 
 
-//#include "vector"
+#include <vector>
+#include <map>
 #include "TH1F.h"
 #include "TH2F.h"
 #include "TProfile.h"
 #include "TString.h"
-//#include "TFileDirectory.h"
+#include "CommonTools/Utils/interface/TFileDirectory.h"
 
-#include "EventVariables.h"
+#include "ApeEstimator/ApeEstimator/interface/EventVariables.h"
 
-class TH1;
-class TH2;
+
+#include "TH1.h"
+#include "TH2.h"
+#include "TTree.h"
+//class TH1;
+//class TH2;
 //class TH1F;
 //class TH2F;
 //class TProfile;
 //class TString;
-class TFileDirectory;
+//class TFileDirectory;
 
 
 
@@ -30,14 +35,9 @@ class TFileDirectory;
 class TrackerSectorStruct{
   public:
   
-  TrackerSectorStruct(): directory_(0),
-                         norResXMax_(999.), sigmaXHitMax_(999.), sigmaXMax_(999.),
-			 //apeX(-1.F),
-			 ResX(0), NorResX(0), XHit(0), XTrk(0),
-			 SigmaX2(0), ProbX(0),
-			 WidthVsPhiSensX(0), WidthVsWidthProjected(0), WidthDiffVsMaxStrip(0), WidthDiffVsSigmaXHit(0),
-			 PWidthVsPhiSensX(0), PWidthVsWidthProjected(0), PWidthDiffVsMaxStrip(0), PWidthDiffVsSigmaXHit(0)
-			 {}
+  inline TrackerSectorStruct();
+  
+  inline ~TrackerSectorStruct();
   
   
   
@@ -46,9 +46,9 @@ class TrackerSectorStruct{
                        NorResXVsVar(0), ProbXVsVar(0),
 	               SigmaXHitVsVar(0), SigmaXTrkVsVar(0), SigmaXVsVar(0),
 		       PNorResXVsVar(0), PProbXVsVar(0),
-		       PSigmaXHitVsVar(0), PSigmaXTrkVsVar(0), PSigmaXVsVar(0){}
+		       PSigmaXHitVsVar(0), PSigmaXTrkVsVar(0), PSigmaXVsVar(0){};
     
-    void fillCorrHists(const TrackStruct::HitParameterStruct& hitParameterStruct, double variable);
+    inline void fillCorrHists(const TrackStruct::HitParameterStruct& hitParameterStruct, double variable);
     
     TH1F *Variable;
     TH2F *NorResXVsVar, *ProbXVsVar,
@@ -58,11 +58,13 @@ class TrackerSectorStruct{
   };
   
   
-  void setCorrHistParams(TFileDirectory*, double, double, double);
-  CorrelationHists bookCorrHists(TString, TString, TString, TString, int, int, double, double, std::string ="nphtr");
+  inline void setCorrHistParams(TFileDirectory*, double, double, double);
+  inline CorrelationHists bookCorrHists(TString, TString, TString, TString, int, int, double, double, std::string ="nphtr");
   /// same, but without booking 1D histo 
-  CorrelationHists bookCorrHists(TString ,TString ,TString, int, double, double, std::string ="nphtr");
-  //void fillCorrHists(double, const TrackStruct::HitParameterStruct&, CorrelationHists&);
+  inline CorrelationHists bookCorrHists(TString ,TString ,TString, int, double, double, std::string ="nphtr");
+  
+  
+  
   
   TFileDirectory *directory_;
   double norResXMax_, sigmaXHitMax_, sigmaXMax_;
@@ -70,7 +72,6 @@ class TrackerSectorStruct{
   
   
   std::vector<unsigned int> v_rawId;
-  
   
   
   TH1 *ResX, *NorResX, *XHit, *XTrk,
@@ -86,7 +87,9 @@ class TrackerSectorStruct{
   
   
   //for presenting results
-  TH1 *Entries, *MeanX, *RmsX, *FitMeanX1, *ResidualWidthX1, *CorrectionX1,
+  TTree *RawId;
+  TH1 *Entries;
+  TH1 *MeanX, *RmsX, *FitMeanX1, *ResidualWidthX1, *CorrectionX1,
       *FitMeanX2, *ResidualWidthX2, *CorrectionX2;
   
 };
@@ -94,6 +97,25 @@ class TrackerSectorStruct{
 
 
 
+
+
+
+
+
+TrackerSectorStruct::TrackerSectorStruct(): directory_(0),
+                         norResXMax_(999.), sigmaXHitMax_(999.), sigmaXMax_(999.),
+			 ResX(0), NorResX(0), XHit(0), XTrk(0),
+			 SigmaX2(0), ProbX(0),
+			 WidthVsPhiSensX(0), WidthVsWidthProjected(0), WidthDiffVsMaxStrip(0), WidthDiffVsSigmaXHit(0),
+			 PWidthVsPhiSensX(0), PWidthVsWidthProjected(0), PWidthDiffVsMaxStrip(0), PWidthDiffVsSigmaXHit(0),
+			 RawId(0),
+			 Entries(0),
+			 MeanX(0), RmsX(0), FitMeanX1(0), ResidualWidthX1(0), CorrectionX1(0),
+			 FitMeanX2(0), ResidualWidthX2(0), CorrectionX2(0){}
+
+
+
+TrackerSectorStruct::~TrackerSectorStruct(){}
 
 
 
@@ -150,6 +172,7 @@ TrackerSectorStruct::bookCorrHists(TString varName,TString varTitle,TString labe
 }
 
 
+
 TrackerSectorStruct::CorrelationHists
 TrackerSectorStruct::bookCorrHists(TString varName,TString labelX,TString unitX,int nBinX,double minBinX,double maxBinX,std::string options){
   
@@ -190,6 +213,8 @@ TrackerSectorStruct::bookCorrHists(TString varName,TString labelX,TString unitX,
   return correlationHists;
 }
 
+
+
 void
 TrackerSectorStruct::CorrelationHists::fillCorrHists(const TrackStruct::HitParameterStruct& hitParameterStruct, double variable){
   
@@ -218,35 +243,8 @@ TrackerSectorStruct::CorrelationHists::fillCorrHists(const TrackStruct::HitParam
   
 }
 
-/*
-void
-TrackerSectorStruct::fillCorrHists(double variable, const TrackStruct::HitParameterStruct& hitParameterStruct, CorrelationHists& corrHists){
-  
-  if(corrHists.Variable){corrHists.Variable->Fill(variable);}
-  
-  if(corrHists.NorResXVsVar){
-    corrHists.NorResXVsVar->Fill(variable,hitParameterStruct.norResX);
-    corrHists.PNorResXVsVar->Fill(variable,hitParameterStruct.norResX);
-  }
-  if(corrHists.ProbXVsVar){
-    corrHists.ProbXVsVar->Fill(variable,hitParameterStruct.probX);
-    corrHists.PProbXVsVar->Fill(variable,hitParameterStruct.probX);
-  }
-  if(corrHists.SigmaXHitVsVar){
-    corrHists.SigmaXHitVsVar->Fill(variable,hitParameterStruct.errXHit);
-    corrHists.PSigmaXHitVsVar->Fill(variable,hitParameterStruct.errXHit);
-  }
-  if(corrHists.SigmaXTrkVsVar){
-    corrHists.SigmaXTrkVsVar->Fill(variable,hitParameterStruct.errXTrk);
-    corrHists.PSigmaXTrkVsVar->Fill(variable,hitParameterStruct.errXTrk);
-  }
-  if(corrHists.SigmaXVsVar){
-    corrHists.SigmaXVsVar->Fill(variable,hitParameterStruct.errX);
-    corrHists.PSigmaXVsVar->Fill(variable,hitParameterStruct.errX);
-  }
-  
-}
-*/
+
+
 
 
 #endif
