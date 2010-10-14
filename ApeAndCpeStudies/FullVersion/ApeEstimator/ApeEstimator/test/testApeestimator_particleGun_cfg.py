@@ -64,7 +64,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10001) )
 ## --- Monte Carlo ---
 #process.load("ApeEstimator.ApeEstimator.samples.MinBias_mc_356_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.MinBias_mc_356_ApeSkim_cff")
-process.load("ApeEstimator.ApeEstimator.samples.ParticleGunPion_mc_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunPion_mc_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunAntiPion_mc_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunBothPion_mc_cff")
 ## --- Run 132440-132478, First Reprocessing --- (beamspot corrected)
@@ -75,6 +75,30 @@ process.load("ApeEstimator.ApeEstimator.samples.ParticleGunPion_mc_cff")
 ## --- Run 132440-134987, First Reprocessing ---
 #process.load("ApeEstimator.ApeEstimator.samples.MinBias_run132440_134987_RMay06_358p3_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.MinBias_run132440_134987_RMay06_358p3_ApeSkim_cff")
+readFiles = cms.untracked.vstring()
+process.source = cms.Source ("PoolSource",
+    inputCommands = cms.untracked.vstring('keep *', 'drop *_MEtoEDMConverter_*_*'),
+    fileNames = readFiles
+)
+readFiles.extend( [
+#    'rfio:////castor/cern.ch/cms/store/mc/Spring10/MinBias/ALCARECO/START3X_V26_S09_TkAlMinBias-v1/0005/F813AAFC-A54D-DF11-B953-003048678BB8.root',
+    'file:/tmp/hauk/reco1.root',
+#    'file:/tmp/hauk/reco2.root',
+#    'file:/tmp/hauk/reco3.root',
+#    'file:/tmp/hauk/reco4.root',
+#    'file:reco.root',
+#    'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RECO/reco1.root',
+#    'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RECO/reco2.root',
+#    'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RECO/reco3.root',
+#    'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RECO/reco4.root',
+#    'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RECO/reco5.root',
+#    'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RECO/reco6.root',
+#    'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RECO/reco7.root',
+#    'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RECO/reco8.root',
+#    'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RECO/reco9.root',
+#    'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RECO/reco10.root',
+] );
+
 
 #process.source.duplicateCheckMode = cms.untracked.string("noDuplicateCheck")
 #process.source.duplicateCheckMode = cms.untracked.string("checkEachFile")
@@ -157,19 +181,15 @@ process.load("ApeEstimator.ApeEstimator.TriggerSelection_cff")
 ##
 ## ApeEstimator
 ##
-from ApeEstimator.ApeEstimator.apeestimator_cff import *
-process.ApeEstimator1 = ApeEstimatorCosmics.clone(
+from ApeEstimator.ApeEstimator.ApeEstimator_cff import *
+process.ApeEstimator1 = ApeEstimator.clone(
     tjTkAssociationMapTag = "TrackRefitterHighPurityForApeEstimator",
     maxTracksPerEvent = 0,
     applyTrackCuts = False,
     Sectors = SubdetSectors,
+    #Sectors = TIBTOBLayerAndOrientationSeparation,
     analyzerMode = False,
     #setBaseline = True,
-    sigmaFactorFit = 2.5,
-    correctionScaling = 1.0,
-    BaselineFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/test_baselineApe_particleGun.root',
-    IterationFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/test_iterationApe_particleGun.root',
-    ApeOutputFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/test_apeOutput_particleGun.txt',
 )
 process.ApeEstimator1.HitSelector.width = []
 process.ApeEstimator1.HitSelector.widthProj = []
