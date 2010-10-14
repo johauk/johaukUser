@@ -37,7 +37,7 @@
 
 
 <use name=root>
-<flags EDM_PLUGIN=1>
+#<flags EDM_PLUGIN=1>
 <export>
-   <lib name=ApeEstimatorApeEstimator>
+   #<lib name=ApeEstimatorApeEstimator>
 </export>
