@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Fri Feb 26 16:48:04 CET 2010
-// $Id: GeneratorZmumuAnalyzer.cc,v 1.2 2010/08/20 11:51:09 hauk Exp $
+// $Id: GeneratorZmumuAnalyzer.cc,v 1.3 2010/09/06 15:41:46 hauk Exp $
 //
 //
 
@@ -29,6 +29,8 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
@@ -56,13 +58,16 @@ class GeneratorZmumuAnalyzer : public edm::EDAnalyzer {
       virtual void beginJob() ;
       virtual void analyze(const edm::Event&, const edm::EventSetup&);
       virtual void endJob() ;
+      
+      enum Flavour{down=1, up=2, strange=3, charm=4, bottom=5, unknown=6};
 
       // ----------member data ---------------------------
-      const edm::ParameterSet parSet_;
+      const edm::ParameterSet parameterSet_;
       
       TH1 *EtaLow, *EtaHigh, *PtLow, *PtHigh,
           *EtaZ, *PtZ,
-	  *MassZ;
+	  *MassZ,
+	  *QuarkOrigin;
 };
 
 //
@@ -77,7 +82,7 @@ class GeneratorZmumuAnalyzer : public edm::EDAnalyzer {
 // constructors and destructor
 //
 GeneratorZmumuAnalyzer::GeneratorZmumuAnalyzer(const edm::ParameterSet& iConfig):
-parSet_(iConfig),
+parameterSet_(iConfig),
 EtaLow(0), EtaHigh(0), PtLow(0), PtHigh(0),
 EtaZ(0), PtZ(0),
 MassZ(0)
@@ -98,11 +103,12 @@ GeneratorZmumuAnalyzer::~GeneratorZmumuAnalyzer()
 void
 GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   
-   const edm::InputTag inputTag(parSet_.getParameter<edm::InputTag>("src"));
+   const edm::InputTag inputTag(parameterSet_.getParameter<edm::InputTag>("src"));
   edm::Handle<reco::GenParticleCollection> genParticles;
   iEvent.getByLabel(inputTag, genParticles);
   
-//  std::cout<<"\tSize: "<<genParticles->size()<<"\n";
+  // all variable names are like in Z->mumu case, but act universally on Z->xx
+  const std::vector<int> zDecayMode(parameterSet_.getParameter<std::vector<int> >("zDecayMode"));
   
   for(reco::GenParticleCollection::const_iterator iGenPart = genParticles->begin(); iGenPart != genParticles->end(); ++iGenPart) {
     bool isZmumu(false);
@@ -114,28 +120,30 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     // take care about status: decaying Z0 (status=3) has 3 daughters, third is Z0 itself as decayed Z0 (status=2)
     // Question: is the status numbering convention only valid for Pythia
     if(iGenPart->pdgId()!=23 || iGenPart->status()!=3) continue;
-//    std::cout<<"\tGot ya - no. of daughters: "<<iGenPart->numberOfDaughters()<<"   - status: "<<iGenPart->status()<<"\n";
+    //std::cout<<"\tGot ya - no. of daughters: "<<iGenPart->numberOfDaughters()<<"   - status: "<<iGenPart->status()<<"\n";
     etaZ = iGenPart->eta();
     ptZ = iGenPart->pt();
     for(size_t iDaughter = 0; iDaughter < iGenPart->numberOfDaughters(); ++iDaughter){
       const reco::GenParticle* daughter(dynamic_cast<const reco::GenParticle*>(iGenPart->daughter(iDaughter)));
-//      std::cout<<"\tDaughter no. "<<iDaughter<<" has ID "<<daughter->pdgId()<<" and Status "<<daughter->status()<<"\n";
+      //std::cout<<"\tDaughter no. "<<iDaughter<<" has ID "<<daughter->pdgId()<<" and Status "<<daughter->status()<<"\n";
       // select mu-
-      if(daughter->pdgId()==13){
-        lorVecMinus = daughter->p4();
-        etaMinus = daughter->eta();
-        ptMinus = daughter->pt();
-//        std::cout<<"Four vector(Px,Py,Pz,E):\t"<<lorVecMinus.Px()<<"\t"<<lorVecMinus.Py()<<"\t"<<lorVecMinus.Pz()<<"\t"<<lorVecMinus.E()<<"\n";
-//        std::cout<<"Eta, Phi, Pt:\t"<<etaMinus<<"\t"<<(daughter->phi())*180./M_PI<<"\t"<<ptMinus<<"\n";
-        isZmumu = true;
-      }
-      // select mu+
-      else if(daughter->pdgId()==-13){
-        lorVecPlus = daughter->p4();
-        etaPlus = daughter->eta();
-        ptPlus = daughter->pt();
-//        std::cout<<"Four vector(Px,Py,Pz,E):\t"<<lorVecPlus.Px()<<"\t"<<lorVecPlus.Py()<<"\t"<<lorVecPlus.Pz()<<"\t"<<lorVecPlus.E()<<"\n";
-//        std::cout<<"Eta, Phi, Pt:\t"<<etaPlus<<"\t"<<(daughter->phi())*180./M_PI<<"\t"<<ptPlus<<"\n";
+      for(std::vector<int>::const_iterator i_zDecayMode = zDecayMode.begin();i_zDecayMode != zDecayMode.end(); ++i_zDecayMode){
+        if(daughter->pdgId() == (*i_zDecayMode)){
+          lorVecMinus = daughter->p4();
+          etaMinus = daughter->eta();
+          ptMinus = daughter->pt();
+          //std::cout<<"Four vector(Px,Py,Pz,E):\t"<<lorVecMinus.Px()<<"\t"<<lorVecMinus.Py()<<"\t"<<lorVecMinus.Pz()<<"\t"<<lorVecMinus.E()<<"\n";
+          //std::cout<<"Eta, Phi, Pt:\t"<<etaMinus<<"\t"<<(daughter->phi())*180./M_PI<<"\t"<<ptMinus<<"\n";
+          isZmumu = true;
+        }
+        // select mu+
+        else if(daughter->pdgId() == -(*i_zDecayMode)){
+          lorVecPlus = daughter->p4();
+          etaPlus = daughter->eta();
+          ptPlus = daughter->pt();
+          //std::cout<<"Four vector(Px,Py,Pz,E):\t"<<lorVecPlus.Px()<<"\t"<<lorVecPlus.Py()<<"\t"<<lorVecPlus.Pz()<<"\t"<<lorVecPlus.E()<<"\n";
+          //std::cout<<"Eta, Phi, Pt:\t"<<etaPlus<<"\t"<<(daughter->phi())*180./M_PI<<"\t"<<ptPlus<<"\n";
+        }
       }
     }
     
@@ -154,6 +162,38 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     EtaZ->Fill(etaZ);
     PtZ->Fill(ptZ);
     MassZ->Fill(diMuMass);
+    
+    
+    //check flavour of mother quarks qqbar->Z
+    //std::cout<<"\tNo. of mothers: "<<iGenPart->numberOfMothers()<<"\n";
+    if(iGenPart->numberOfMothers()!=2)edm::LogError("Generator Behaviour")<<"Strange origin of Z, not built from two particles, but "<<iGenPart->numberOfMothers();
+    const int motherPdgId(std::fabs(iGenPart->mother()->pdgId()));  // by default first one, so mother(0) is taken
+    Flavour flavour(unknown);
+    if(motherPdgId == 1)flavour = down;
+    else if (motherPdgId == 2)flavour = up;
+    else if (motherPdgId == 3)flavour = strange;
+    else if (motherPdgId == 4)flavour = charm;
+    else if (motherPdgId == 5)flavour = bottom;
+    if(motherPdgId >= 1 && motherPdgId <= 5)flavour = Flavour(motherPdgId);
+    if(flavour==unknown)edm::LogError("Generator Behaviour")<<"Strange origin of Z, made of particles of type (PdgId): "<<motherPdgId;
+    for(size_t iMother = 0; iMother < iGenPart->numberOfMothers(); ++iMother){
+      const reco::GenParticle* motherQuark(dynamic_cast<const reco::GenParticle*>(iGenPart->mother(iMother)));
+      //std::cout<<"\tMother quark no. "<<iMother<<" has ID "<<motherQuark->pdgId()<<" and Status "<<motherQuark->status()<<"\n";
+      //std::cout<<"\tNo. of mother gluons: "<<motherQuark->numberOfMothers()<<"\n";
+      if(motherQuark->numberOfMothers()!=1)edm::LogError("Generator Behaviour")<<"Strange origin of mother quark, not built from single quark, but "<<motherQuark->numberOfMothers();
+      const reco::GenParticle* gluon(dynamic_cast<const reco::GenParticle*>(motherQuark->mother()));
+      if(gluon->pdgId()!=21 && std::fabs(gluon->pdgId())>2){
+	std::cout<<"\tMother gluon (of quark with ID "<<motherQuark->pdgId()<<") has ID "<<gluon->pdgId()<<" and Status "<<gluon->status()<<"\n";
+        std::cout<<"\t\tHas "<<gluon->numberOfDaughters()<<" daughters and "<<gluon->numberOfMothers()<<" mothers, first one with ID "<<gluon->mother()->pdgId()<<"\n";
+	for(size_t iDaughter2 = 0; iDaughter2 < gluon->numberOfDaughters(); ++iDaughter2){
+	  if(gluon->daughter(iDaughter2)->status()!=2){
+	    std::cout<<"\t\tDaughter "<<iDaughter2<<" has ID "<<gluon->daughter(iDaughter2)->pdgId()<<" and Status "<<gluon->daughter(iDaughter2)->status()<<"\n";
+	  }
+	}
+      }
+    }
+    
+    QuarkOrigin->Fill(flavour-1);
   }
 }
 
@@ -172,6 +212,17 @@ GeneratorZmumuAnalyzer::beginJob(){
   EtaZ = dirZ.make<TH1F>("h_etaZ","#eta of generated Z;#eta;# Z",200,-10,10);
   PtZ = dirZ.make<TH1F>("h_ptZ","p_{t} of generated Z;p_{t}  [GeV];# Z",200,0,200);
   MassZ = dirZ.make<TH1F>("h_massZ","invariant mass of muon pair;m_{#mu#mu} [GeV];# muon pairs",200,0,200);
+  QuarkOrigin = dirZ.make<TH1F>("h_quarkOrigin","quark origin;;#Z",6,0,6);
+  QuarkOrigin->GetXaxis()->SetBinLabel(1,"d");
+  QuarkOrigin->GetXaxis()->SetBinLabel(2,"u");
+  QuarkOrigin->GetXaxis()->SetBinLabel(3,"s");
+  QuarkOrigin->GetXaxis()->SetBinLabel(4,"c");
+  QuarkOrigin->GetXaxis()->SetBinLabel(5,"b");
+  QuarkOrigin->GetXaxis()->SetBinLabel(6,"XXX");
+  
+  TFileDirectory dirQuark = fileService->mkdir("QuarkOrigin");
+  
+  
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
