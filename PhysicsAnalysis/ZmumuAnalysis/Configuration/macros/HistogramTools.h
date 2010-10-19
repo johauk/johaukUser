@@ -40,7 +40,11 @@ public:
   void SetPlotLine(TH1* hist, Color_t color, Width_t width, Style_t style=1);
   void SetMinimumZero(TH1* hist[], size_t n = defaultNumberOfFiles);
   void SetTitle(TH1* hist[], const char* title, size_t n = defaultNumberOfFiles);
-    
+  
+  
+  double GetMaximumValue(THStack*, const TH1F*)const;
+  
+  
   // this methods refer to the currently used files only
   void FillLegend(TLegend* leg, TH1F* hist[], Option_t* opt);
   void SetPlotFilling(TH1F* hist[], size_t n = defaultNumberOfFiles);   
@@ -279,7 +283,7 @@ void HistogramTools::SetDefaultStyle()
   stackColors[9] = new TColor(1009, 0.50, 0.00, 1.00,"bgWZ" );
   stackColors[10] = new TColor(1010, 0.00, 0.00, 0.50,"bgZZ" );
   stackColors[11] = new TColor(1011, 1.00, 0.00, 0.00,"bgQCD");
-  
+    
   return;    
 }
 
@@ -347,6 +351,16 @@ void HistogramTools::SetTitle(TH1* hist[], const char* title, size_t n)
   }
   return;
 }
+
+
+
+double HistogramTools::GetMaximumValue(THStack* stack, const TH1F* hist)const{
+  double yMax1(stack->GetMaximum());
+  double yMax2(hist->GetMaximum());
+  return (yMax1>yMax2 ? yMax1 : yMax2);
+}
+
+
 
 
 
