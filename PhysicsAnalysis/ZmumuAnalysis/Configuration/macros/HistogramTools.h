@@ -12,6 +12,8 @@
 #include "TColor.h"
 #include "TStyle.h"
 
+#include "TCanvas.h"
+
 // default style for plots
 
 class HistogramTools{
@@ -27,6 +29,7 @@ public:
 //  void DrawHistArray(TH1* hist[], size_t n, Option_t* opt = ""); 
   void FillStack(THStack* stck, TH1F* hist[], size_t n = defaultNumberOfFiles); 
   void GetHistArray(TFile* files[], const TString path, const TString name, TH1F* hist[], size_t n = defaultNumberOfFiles);
+  void GetHistArraySameFile(TFile* file, TString* a_baseString[], const TString& name, TH1F* hist[], size_t n = defaultNumberOfPlugins)const;
   TH1F GetHistSum(TH1F* hist[], size_t n = defaultNumberOfFiles);
   void Normalize(TH1* hist, Double_t norm);  
   void Normalize(TH1* hist[], Double_t norm, size_t n = defaultNumberOfFiles);
@@ -45,8 +48,10 @@ public:
   double GetMaximumValue(THStack*, const TH1F*)const;
   
   
+  
   // this methods refer to the currently used files only
   void FillLegend(TLegend* leg, TH1F* hist[], Option_t* opt);
+  void FillLegendGenerator(TLegend* leg, TH1F* hist[], Option_t* opt);
   void SetPlotFilling(TH1F* hist[], size_t n = defaultNumberOfFiles);   
   void SetPlotLines(TH1F* hist[], size_t n = defaultNumberOfFiles);
   void SetWeights(TH1F* hist[], Double_t, size_t n = defaultNumberOfFiles); 
@@ -54,6 +59,7 @@ public:
   
   TColor* stackColors[12];
   static const size_t defaultNumberOfFiles = 12;
+  static const size_t defaultNumberOfPlugins = 3 +1; // do not use array [0] for stacking plugins, no data reference is given
 };
 
 
@@ -150,12 +156,30 @@ void HistogramTools::DrawHistArray(TH1* hist[], size_t n, Option_t* opt)
 */
 
 
-void HistogramTools::FillStack(THStack* stck, TH1F* hist[], size_t n)
+void HistogramTools::FillStack(THStack* stack, TH1F* hist[], size_t n)
 {
+  bool firstHist(true);
+  TString title(""), xTitle(""), yTitle("");
   for(size_t j=n-1; j!=0; --j){  //filling is in reverse order  
     if(!hist[j]) continue;
-    stck->Add(hist[j]);
+    stack->Add(hist[j]);
+    if(firstHist){
+      title = hist[j]->GetTitle();
+      xTitle = hist[j]->GetXaxis()->GetTitle();
+      yTitle = hist[j]->GetYaxis()->GetTitle();
+      //stack->SetTitle(hist[j]->GetTitle());
+      //std::cout<<"\n\tBLALAB "<<hist[j]->GetXaxis()->GetTitle()<<"\n";
+      //stack->GetXaxis()->SetTitle(hist[j]->GetXaxis()->GetTitle());
+    }
+    firstHist = false;
   }
+  // Workaround needed to set axis titles for THStack: only possible after command Draw()
+  TCanvas* tmpCanvas = new TCanvas("tmpCanvas");
+  stack->Draw();
+  stack->SetTitle(title);
+  stack->GetXaxis()->SetTitle(xTitle);
+  stack->GetYaxis()->SetTitle(yTitle);
+  delete tmpCanvas;
   return;
 }
 
@@ -164,8 +188,24 @@ void HistogramTools::FillStack(THStack* stck, TH1F* hist[], size_t n)
 void HistogramTools::GetHistArray(TFile* files[], const TString path, const TString name, TH1F* hist[], size_t n)
 {
   for(size_t i=0; i<n; ++i){
-    if(!files[i]) continue;
+    if(!files[i]){
+      hist[i] = 0;
+      continue;
+    }
     files[i]->GetObject(path.Copy().Append(name).Append(";1"), hist[i]); 
+  }
+  return;
+}
+
+
+void HistogramTools::GetHistArraySameFile(TFile* file, TString* a_baseString[], const TString& name, TH1F* hist[], size_t n)const{
+  for(size_t i=0; i<n; ++i){
+    if(!a_baseString[i]){
+      hist[i] = 0;
+      continue;
+    }
+    const TString fullName(a_baseString[i]->Copy().Append(name).Append(";1"));
+    file->GetObject(fullName, hist[i]);
   }
   return;
 }
@@ -371,7 +411,7 @@ double HistogramTools::GetMaximumValue(THStack* stack, const TH1F* hist)const{
 void HistogramTools::FillLegend(TLegend* leg, TH1F* hist[], Option_t* opt)
 {
   leg->Clear();
-  leg->SetFillColor(0);  
+  leg->SetFillColor(0);
   
   if(hist[0]  && hist[0]->GetEntries()>0)  leg->AddEntry(hist[0],  "data","le");
   if(hist[1]  && hist[1]->GetEntries()>0)  leg->AddEntry(hist[1],  "Z #rightarrow #mu#mu", opt);
@@ -386,8 +426,21 @@ void HistogramTools::FillLegend(TLegend* leg, TH1F* hist[], Option_t* opt)
   if(hist[10] && hist[10]->GetEntries()>0) leg->AddEntry(hist[10], "t#bar{t}", opt);
   if(hist[11] && hist[11]->GetEntries()>0) leg->AddEntry(hist[11], "QCD", opt);
   
-  return;      
+  return;
 }
+
+
+void HistogramTools::FillLegendGenerator(TLegend* leg, TH1F* hist[], Option_t* opt){
+  leg->Clear();
+  leg->SetFillColor(0);
+  
+  if(hist[1]  && hist[1]->GetEntries()>0)  leg->AddEntry(hist[1], "uds", opt);
+  if(hist[2]  && hist[2]->GetEntries()>0)  leg->AddEntry(hist[2], "c", opt);
+  if(hist[3]  && hist[3]->GetEntries()>0)  leg->AddEntry(hist[3], "b", opt);
+  
+  return;
+}
+
 
 
 void HistogramTools::SetPlotFilling(TH1F* hist[], size_t n)
