@@ -1,7 +1,7 @@
 // root -l
 // .L DimuonPlots.C++
-// DimuonPlots("")  // empty to define pluginName and plotName completely by hand
-// DimuonPlots("bla")  // name to define pluginName and plotName via an appended suffix "bla"
+// DimuonPlots()        // empty to define pluginName and plotName completely by hand
+// DimuonPlots("bla")   // name to define pluginName and plotName via an appended suffix "bla"
 
 
 #include "TString.h"
@@ -32,36 +32,37 @@ void DimuonPlots(TString pluginSuffix = ""){
   
   
   // Specify all input files
-  TFile* files[nFiles];
-  files[0]=new TFile(inpath->Copy().Append("data/ichep_all.root"));
-  files[1]=new TFile(inpath->Copy().Append("mc/zmumu.root"));
-  files[2]=new TFile(inpath->Copy().Append("mc/zz.root"));
-  files[3]=new TFile(inpath->Copy().Append("mc/wz.root"));
-  files[4]=new TFile(inpath->Copy().Append("mc/ww.root"));
-  files[5]=new TFile(inpath->Copy().Append("mc/wmunu.root"));
-  files[6]=new TFile(inpath->Copy().Append("mc/ztautau.root"));
-  files[7]=new TFile(inpath->Copy().Append("mc/singleTopT.root"));
-  files[8]=new TFile(inpath->Copy().Append("mc/singleTopTW.root"));
-  files[9]=new TFile(inpath->Copy().Append("mc/singleTopS.root"));
-  files[10]=new TFile(inpath->Copy().Append("mc/ttbar.root"));
-  files[11]=new TFile(inpath->Copy().Append("mc/inclusiveMu15.root"));
+  TFile* a_file[nFiles];
+  for(size_t iFile=0; iFile<nFiles; ++iFile) a_file[iFile]=0;
+  a_file[0]=new TFile(inpath->Copy().Append("data/ichep_all.root"));
+  a_file[1]=new TFile(inpath->Copy().Append("mc/zmumu.root"));
+  a_file[2]=new TFile(inpath->Copy().Append("mc/zz.root"));
+  a_file[3]=new TFile(inpath->Copy().Append("mc/wz.root"));
+  a_file[4]=new TFile(inpath->Copy().Append("mc/ww.root"));
+  a_file[5]=new TFile(inpath->Copy().Append("mc/wmunu.root"));
+  a_file[6]=new TFile(inpath->Copy().Append("mc/ztautau.root"));
+  a_file[7]=new TFile(inpath->Copy().Append("mc/singleTopT.root"));
+  a_file[8]=new TFile(inpath->Copy().Append("mc/singleTopTW.root"));
+  a_file[9]=new TFile(inpath->Copy().Append("mc/singleTopS.root"));
+  a_file[10]=new TFile(inpath->Copy().Append("mc/ttbar.root"));
+  a_file[11]=new TFile(inpath->Copy().Append("mc/inclusiveMu15.root"));
   
   //Specify plugin name
-  TString* pluginName1;
-  pluginName1 = new TString("DiMuonAnalyzer");
+  TString* pluginName;
+  pluginName = new TString("DiMuonAnalyzer");
   
-  TString* pluginFolder1;
-  pluginFolder1 = new TString("OppositeCharge");
+  TString* pluginFolder;
+  pluginFolder = new TString("OppositeCharge");
   
   
   //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   // Do not touch this area
   
-  pluginName1->Append(pluginSuffix);
-  if(!pluginName1->IsNull())pluginName1->Append("/");
+  pluginName->Append(pluginSuffix);
+  if(!pluginName->IsNull())pluginName->Append("/");
   
-  if(!pluginFolder1->IsNull())pluginFolder1->Append("/");
+  if(!pluginFolder->IsNull())pluginFolder->Append("/");
   
   HistogramTools tools;
   tools.SetDefaultStyle();
@@ -71,6 +72,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   TLegend* legend1; 
    
   TH1F* a_hist1[nFiles];
+  for(size_t iFile=0; iFile<nFiles; ++iFile) a_hist1[iFile]=0;
   
   THStack* stack1;
   
@@ -94,7 +96,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   // Change only style here
   
   canvas1 = new TCanvas("plot", "plot", 800, 800);
-  tools.GetHistArray(files, pluginName1->Copy().Append(*pluginFolder1), *histName1, a_hist1);
+  tools.GetHistArray(a_file, pluginName->Copy().Append(*pluginFolder), *histName1, a_hist1);
   tools.SetPlotFilling(a_hist1);
   tools.SetWeights(a_hist1, dataLumi);
   stack1 = new THStack("stack","stack");
@@ -119,6 +121,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   delete histName1;
   delete plotName1;
   legend1->Delete();
+  stack1->Delete();
   for(size_t iFile=0; iFile<nFiles; ++iFile){
     if(a_hist1[iFile])a_hist1[iFile]->Delete();
   }
@@ -143,7 +146,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   // Change only style here
   
   canvas1 = new TCanvas("plot", "plot", 800, 800);
-  tools.GetHistArray(files, pluginName1->Copy().Append(*pluginFolder1), *histName1, a_hist1);
+  tools.GetHistArray(a_file, pluginName->Copy().Append(*pluginFolder), *histName1, a_hist1);
   tools.SetPlotFilling(a_hist1);
   tools.SetWeights(a_hist1, dataLumi);
   stack1 = new THStack("stack","stack");
@@ -168,6 +171,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   delete histName1;
   delete plotName1;
   legend1->Delete();
+  stack1->Delete();
   for(size_t iFile=0; iFile<nFiles; ++iFile){
     if(a_hist1[iFile])a_hist1[iFile]->Delete();
   }
@@ -191,7 +195,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   // Change only style here
   
   canvas1 = new TCanvas("plot", "plot", 800, 800);
-  tools.GetHistArray(files, pluginName1->Copy().Append(*pluginFolder1), *histName1, a_hist1);
+  tools.GetHistArray(a_file, pluginName->Copy().Append(*pluginFolder), *histName1, a_hist1);
   tools.SetPlotFilling(a_hist1);
   tools.SetWeights(a_hist1, dataLumi);
   stack1 = new THStack("stack","stack");
@@ -216,6 +220,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   delete histName1;
   delete plotName1;
   legend1->Delete();
+  stack1->Delete();
   for(size_t iFile=0; iFile<nFiles; ++iFile){
     if(a_hist1[iFile])a_hist1[iFile]->Delete();
   }
@@ -240,7 +245,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   // Change only style here
   
   canvas1 = new TCanvas("plot", "plot", 800, 800);
-  tools.GetHistArray(files, pluginName1->Copy().Append(*pluginFolder1), *histName1, a_hist1);
+  tools.GetHistArray(a_file, pluginName->Copy().Append(*pluginFolder), *histName1, a_hist1);
   tools.SetPlotFilling(a_hist1);
   tools.SetWeights(a_hist1, dataLumi);
   stack1 = new THStack("stack","stack");
@@ -265,6 +270,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   delete histName1;
   delete plotName1;
   legend1->Delete();
+  stack1->Delete();
   for(size_t iFile=0; iFile<nFiles; ++iFile){
     if(a_hist1[iFile])a_hist1[iFile]->Delete();
   }
@@ -289,7 +295,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   // Change only style here
   
   canvas1 = new TCanvas("plot", "plot", 800, 800);
-  tools.GetHistArray(files, pluginName1->Copy().Append(*pluginFolder1), *histName1, a_hist1);
+  tools.GetHistArray(a_file, pluginName->Copy().Append(*pluginFolder), *histName1, a_hist1);
   tools.SetPlotFilling(a_hist1);
   tools.SetWeights(a_hist1, dataLumi);
   stack1 = new THStack("stack","stack");
@@ -314,6 +320,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   delete histName1;
   delete plotName1;
   legend1->Delete();
+  stack1->Delete();
   for(size_t iFile=0; iFile<nFiles; ++iFile){
     if(a_hist1[iFile])a_hist1[iFile]->Delete();
   }
@@ -338,7 +345,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   // Change only style here
   
   canvas1 = new TCanvas("plot", "plot", 800, 800);
-  tools.GetHistArray(files, pluginName1->Copy().Append(*pluginFolder1), *histName1, a_hist1);
+  tools.GetHistArray(a_file, pluginName->Copy().Append(*pluginFolder), *histName1, a_hist1);
   tools.SetPlotFilling(a_hist1);
   tools.SetWeights(a_hist1, dataLumi);
   stack1 = new THStack("stack","stack");
@@ -363,6 +370,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   delete histName1;
   delete plotName1;
   legend1->Delete();
+  stack1->Delete();
   for(size_t iFile=0; iFile<nFiles; ++iFile){
     if(a_hist1[iFile])a_hist1[iFile]->Delete();
   }
@@ -388,7 +396,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   // Change only style here
   
   canvas1 = new TCanvas("plot", "plot", 800, 800);
-  tools.GetHistArray(files, pluginName1->Copy().Append(*pluginFolder1), *histName1, a_hist1);
+  tools.GetHistArray(a_file, pluginName->Copy().Append(*pluginFolder), *histName1, a_hist1);
   tools.SetPlotFilling(a_hist1);
   tools.SetWeights(a_hist1, dataLumi);
   stack1 = new THStack("stack","stack");
@@ -413,6 +421,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   delete histName1;
   delete plotName1;
   legend1->Delete();
+  stack1->Delete();
   for(size_t iFile=0; iFile<nFiles; ++iFile){
     if(a_hist1[iFile])a_hist1[iFile]->Delete();
   }
@@ -438,7 +447,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   // Change only style here
   
   canvas1 = new TCanvas("plot", "plot", 800, 800);
-  tools.GetHistArray(files, pluginName1->Copy().Append(*pluginFolder1), *histName1, a_hist1);
+  tools.GetHistArray(a_file, pluginName->Copy().Append(*pluginFolder), *histName1, a_hist1);
   tools.SetPlotFilling(a_hist1);
   tools.SetWeights(a_hist1, dataLumi);
   stack1 = new THStack("stack","stack");
@@ -463,6 +472,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   delete histName1;
   delete plotName1;
   legend1->Delete();
+  stack1->Delete();
   for(size_t iFile=0; iFile<nFiles; ++iFile){
     if(a_hist1[iFile])a_hist1[iFile]->Delete();
   }
@@ -481,10 +491,15 @@ void DimuonPlots(TString pluginSuffix = ""){
   
   // again, no changes here
   
-  delete pluginName1;
+  delete pluginFolder;
+  delete pluginName;
   
   for(size_t iFile=0; iFile<nFiles; ++iFile){
-    if(files[iFile])files[iFile]->Close();
+    if(a_file[iFile])a_file[iFile]->Close();
   }
+  
+  delete inpath;
+  delete outpath;
+  delete outform;
   
 }
