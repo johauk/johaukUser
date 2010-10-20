@@ -8,13 +8,12 @@ process = cms.Process("FullCutflow")
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'INFO'
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
-process.MessageLogger.suppressWarning = cms.untracked.vstring("decaySubset") 
 
 
 
 ## define maximal number of events to loop over
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1001)
+    input = cms.untracked.int32(10001)
 )
 
 
@@ -22,155 +21,146 @@ process.maxEvents = cms.untracked.PSet(
 ## configure process options
 process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(True),
-    #SkipEvent = cms.untracked.vstring('ProductNotFound'),
-    #Rethrow = cms.untracked.vstring("ProductNotFound"), # make this exception fatal (now default?)
 )
 
 
 
 ## sources
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.Zmumu_Pat_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.Jun14ReReco_MuonPreselection_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.May27ReReco_MuonPreselection_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.inclusiveMu15_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopS_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopTW_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopT_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.ttbar_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.wmunu_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.zmumu_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.ztautau_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.ww_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.wz_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.zz_spring10_cff")
 process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
-#process.source = cms.Source("PoolSource",
-#    fileNames = cms.untracked.vstring(
-#      '/store/user/dammann/36X/Spring10/Zmumu/PATtuple_v6_35_1.root',
-#    )
-#    #vorselektierte samples unter /pnfs/desy.de/cms/tier2/store/user/dammann/
-#)
 
 
 
+## needed for access to trigger menu
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+# data
+process.GlobalTag.globaltag = cms.string('GR_R_36X_V12::All')
+# mc
+#process.GlobalTag.globaltag = cms.string('START36_V10::All')
 
 
-### define which collections and correction you want to be used
-#muonCollection = cms.InputTag("isolatedMuons")
-#jetCollection  = cms.InputTag("tightJets")
-#jetCorrection  = cms.string("part")
-#correctedMETs  = cms.InputTag("layer1METsAK5")
 
 ## register TFileService
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string(os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/fullCutflow.root'),
+    fileName = cms.string(os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/fullSelection.root'),
     closeFileFast = cms.untracked.bool(True)
 )
 
 #******************************************************************************************
-#   Modules
+#   Filter & Producer Modules
 #******************************************************************************************
 
-## add event weight information
-#process.load("TopAnalysis.TopUtils.EventWeightPlain_cfi") 
+## filter trigger
+process.load("ZmumuAnalysis.Configuration.filters.TriggerFilter_cff")
+process.triggerFilter1 = process.AllLowestUnprescaledTriggerFilter.clone()
 
-## analyze and filter trigger
-process.load("ZmumuAnalysis.Analyzer.TriggerAnalyzer_cfi")
-process.TriggerAnalyzer1 =  process.TriggerAnalyzer.clone()
-process.load("ZmumuAnalysis.Filter.TriggerFilter_cfi")
-process.TriggerFilter1 =  process.TriggerFilter.clone()
 
-### filter for muon and jet kinematics, muon iso and quality				     
+
+## filter for muon quality, kinematics and HLT object matching
 process.load("ZmumuAnalysis.Configuration.sequences.muonSelection_cff")
 
-### event analyzer
+
+
+## add dimuon collections and filter for dimuon properties (including muon isolation)
+process.load("ZmumuAnalysis.Configuration.sequences.diMuonSelection_cff")
+
+
+
+## clean and filter for jets
+process.load("ZmumuAnalysis.Configuration.sequences.jetSelection_cff")
+
+
+
+
+#******************************************************************************************
+#   Analyzer Modules
+#******************************************************************************************
+
+## trigger analyzer
+process.load("ZmumuAnalysis.Analyzer.TriggerAnalyzer_cfi")
+process.TriggerAnalyzer1 =  process.TriggerAnalyzer.clone()
+
+
+
+## event analyzer
 process.load("ZmumuAnalysis.Analyzer.EventAnalyzer_cfi")
 process.EventAnalyzer1 = process.EventAnalyzer.clone(
-    muonSource = 'goodIdMuons',
+    muonSource = 'looseMuons',
 )
 process.EventAnalyzer2 = process.EventAnalyzer1.clone(
-    muonSource = 'goodZmumuMuons',
+    analyzeDiMuons = True,
+)
+process.EventAnalyzer3 = process.EventAnalyzer2.clone(
+    diMuonSource = "finalDimuons",
+)
+process.EventAnalyzer4 = process.EventAnalyzer3.clone(
+    jetSource = 'finalJets',
+)
+process.EventAnalyzer5 = process.EventAnalyzer4.clone(
+    jetSource = 'bTcheJets',
 )
 
-### filter for dimuon mass				     
-#process.load("TopAnalysis.TopFilter.filters.DiMuonMassFilter_cfi")
-#process.filterDiMuonMass.muons = muonCollection
 
-### jet analyzer
-#from MyAnalysis.JetAnalysis.JetFlavorAnalyzer_cfi import *
-#process.analyzeJets0      = analyzeJets.clone()
-#process.analyzeJets1      = analyzeJets.clone()
-#process.analyzeJets1.jets = jetCollection
-#process.analyzeJets2      = analyzeJets.clone()
-#process.analyzeJets2.jets = jetCollection
-#process.analyzeJets3      = analyzeJets.clone()
-#process.analyzeJets3.jets = jetCollection
-#process.analyzeJets4      = analyzeJets.clone()
-#process.analyzeJets4.jets = jetCollection
 
-### muon analyzer
-#from MyAnalysis.MuonAnalysis.MyMuonAnalyzer_cfi import *
-#process.analyzeMuons0         = analyzeMuons.clone()
-#process.analyzeMuons1         = analyzeMuons.clone()
-#process.analyzeMuons1.muons   = muonCollection
+## muon analizer
+process.load("ZmumuAnalysis.Analyzer.MuonAnalyzer_cfi")
+process.MuonAnalyzer1 = process.MuonAnalyzer.clone(
+)
+process.MuonAnalyzer2 = process.MuonAnalyzer1.clone(
+    muonSource = 'looseMuons',
+)
 
-## dimuon analyzer
-#from TopAnalysis.TopAnalyzer.DimuonAnalyzer_cfi import *
-#process.analyzeMuonPair0       = analyzeMuonPair.clone() 
-#process.analyzeMuonPair1       = analyzeMuonPair.clone() 
-#process.analyzeMuonPair1.muons = muonCollection 
 
-### std sequence to produce the ttGenEvt
-#process.load("TopQuarkAnalysis.TopEventProducers.sequences.ttGenEvent_cff")
 
-### std sequence to produce the ttFullLepEvent
-#process.load("TopQuarkAnalysis.TopEventProducers.sequences.ttFullLepEvtBuilder_cff")
-#process.kinSolutionTtFullLepEventHypothesis.muons              = muonCollection
-#process.kinSolutionTtFullLepEventHypothesis.jets               = jetCollection
-#process.kinSolutionTtFullLepEventHypothesis.jetCorrectionLevel = jetCorrection
-##process.kinSolutionTtFullLepEventHypothesis.mets               = correctedMET
-#
-#process.ttFullLepHypKinSolution.muons              = muonCollection
-#process.ttFullLepHypKinSolution.jets               = jetCollection
-#process.ttFullLepHypKinSolution.jetCorrectionLevel = jetCorrection
-##process.ttFullLepHypKinSolution.mets               = correctedMET
-#
-#process.ttFullLepHypGenMatch.muons              = muonCollection
-#process.ttFullLepHypGenMatch.jets               = jetCollection
-#process.ttFullLepHypGenMatch.jetCorrectionLevel = jetCorrection
-##process.ttFullLepHypGenMatch.mets               = correctedMET
+## di-muon analyzer
+process.load("ZmumuAnalysis.Analyzer.DiMuonAnalyzer_cfi")
+process.DiMuonAnalyzer1 = process.DiMuonAnalyzer.clone(
+)
+process.DiMuonAnalyzer2 = process.DiMuonAnalyzer1.clone(
+    diMuonSource = "finalDimuons",
+)
 
-### filter reconstructed events
-#process.load("TopAnalysis.TopFilter.filters.FullLepHypothesesFilter_cfi")
-#process.filterFullLepHypothesis.jets  = jetCollection
 
-### analyze hypotheses
-#from TopAnalysis.TopAnalyzer.FullLepHypothesesAnalyzer_cff import *
-#process.analyzeKinSolution1 = analyzeKinSolution.clone()
-#process.analyzeGenMatch1    = analyzeGenMatch.clone()
-#process.analyzeKinSolution2 = analyzeKinSolution.clone()
-#process.analyzeGenMatch2    = analyzeGenMatch.clone()
+
+
 
 #******************************************************************************************
 #   Analysis Path
 #******************************************************************************************
 
+
+
 process.p = cms.Path(
-    process.TriggerAnalyzer1*
-    process.TriggerFilter1*
-    process.buildCollections*
-    process.EventAnalyzer1*
-    process.EventAnalyzer2
+    process.TriggerAnalyzer1
+    *process.triggerFilter1
+    
+    *process.MuonAnalyzer1
+    *process.buildMuonCollections
+    *process.EventAnalyzer1
+    *process.muonSelection
+    *process.MuonAnalyzer2
+    
+    *process.buildDimuonCollections
+    *process.EventAnalyzer2
+    *process.DiMuonAnalyzer1
+    *process.dimuonSelection
+    *process.EventAnalyzer3
+    *process.DiMuonAnalyzer2
+    
+    *process.buildJetCollections
+    *process.EventAnalyzer4
+    *process.EventAnalyzer5
+    *process.jetSelection
 )
-
-
-#process.p = cms.Path(process.eventWeight *
-#                     process.analyzeTrigger *
-#		     process.filterTrigger *      # all muon triggers
-#		     process.buildCollections *   # 
-		     #process.analyzeMuons0 *     # takes selectedLayer1Muons as input		     
-#		     process.analyzeMuonPair0 #*   # takes selectedLayer1Muons as input
-		     #process.analyzeJets0 *	  # takes selectedLayer1Jets as input		     
-                     #process.analyzeJets1 *
-#                     process.fullLeptonicMuonMuonSelection *   # select hard, isolated, good quality muons (>=2) & hard, tight jets (>=2)
-		     #process.analyzeMuons1 *		     		     		                          
-#                     process.analyzeMuonPair1 #*
-		     #process.analyzeJets2 *		     		    
-#		     process.filterDiMuonMass *
-#		     process.makeGenEvt *
-#                     process.makeTtFullLepEvent *		     
-         	     #process.analyzeJets3 *
-#		     process.analyzeKinSolution1 *
-#		     process.analyzeGenMatch1 *
-#		     process.filterFullLepHypothesis * #Can be used for invariant mass cuts and b-tag cut 
-		     #process.analyzeJets4 *
-#		     process.analyzeKinSolution2 *
-#		     process.analyzeGenMatch2 
-#                    )
