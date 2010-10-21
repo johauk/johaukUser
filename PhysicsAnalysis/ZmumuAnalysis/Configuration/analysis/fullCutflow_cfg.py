@@ -134,6 +134,17 @@ process.DiMuonAnalyzer2 = process.DiMuonAnalyzer1.clone(
 
 
 
+## jet analyzer
+process.load("ZmumuAnalysis.Analyzer.JetAnalyzer_cfi")
+process.JetAnalyzer1 = process.JetAnalyzer.clone(
+    jetSource = 'finalJets',
+)
+process.JetAnalyzer2 = process.JetAnalyzer1.clone(
+    #jetSource = 'finalJets',
+)
+
+
+
 
 
 #******************************************************************************************
@@ -162,5 +173,7 @@ process.p = cms.Path(
     *process.buildJetCollections
     *process.EventAnalyzer4
     *process.EventAnalyzer5
+    *process.JetAnalyzer1
     *process.jetSelection
+    *process.JetAnalyzer2
 )
