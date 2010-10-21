@@ -8,13 +8,12 @@ process = cms.Process("GeneratorZmumuCutflow")
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'INFO'
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
-process.MessageLogger.suppressWarning = cms.untracked.vstring("decaySubset") 
 
 
 
 ## define maximal number of events to loop over
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1001)
+    input = cms.untracked.int32(10001)
 )
 
 
@@ -22,8 +21,6 @@ process.maxEvents = cms.untracked.PSet(
 ## configure process options
 process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(True),
-    #SkipEvent = cms.untracked.vstring('ProductNotFound'),
-    #Rethrow = cms.untracked.vstring("ProductNotFound"), # make this exception fatal (now default?)
 )
 
 
@@ -55,6 +52,10 @@ process.TFileService = cms.Service("TFileService",
 
 ## filter for Zmumu plus mass range
 process.load("ZmumuAnalysis.Configuration.filters.GeneratorZmumuFilter_cff")
+
+process.GeneratorZmumuUdsFilter1 = process.GeneratorZmumuUdsFilter.clone()
+process.GeneratorZmumuCFilter1 = process.GeneratorZmumuCFilter.clone()
+process.GeneratorZmumuBFilter1 = process.GeneratorZmumuBFilter.clone()
 process.GeneratorZmumuDiMuMassFilter1 = process.GeneratorZmumuDiMuMassFilter.clone()
 process.GeneratorZmumuEtaFilter1 = process.GeneratorZmumuEtaFilter.clone()
 process.GeneratorZmumuPtFilter1 = process.GeneratorZmumuPtFilter.clone()
@@ -67,27 +68,65 @@ process.GeneratorZmumuPtFilter1 = process.GeneratorZmumuPtFilter.clone()
 
 ## generator level muon and di-muon analyzer
 process.load("ZmumuAnalysis.Analyzer.GeneratorZmumuAnalyzer_cfi")
-process.GeneratorZmumuAnalyzer1 =  process.GeneratorZmumuAnalyzer.clone()
-process.GeneratorZmumuAnalyzer2 =  process.GeneratorZmumuAnalyzer1.clone()
-process.GeneratorZmumuAnalyzer3 =  process.GeneratorZmumuAnalyzer2.clone()
-process.GeneratorZmumuAnalyzer4 =  process.GeneratorZmumuAnalyzer3.clone()
-
-
+process.GeneratorZmumuAnalyzer0 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerUds1 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerUds2 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerUds3 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerUds4 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerC1 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerC2 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerC3 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerC4 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerB1 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerB2 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerB3 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerB4 =  process.GeneratorZmumuAnalyzer.clone()
 
 
 
 #******************************************************************************************
-#   Analysis Path
+#   Analysis Paths
 #******************************************************************************************
 
 
 
-process.p = cms.Path(
-    process.GeneratorZmumuAnalyzer1
+process.UdsFlavourSelection = cms.Path(
+    process.GeneratorZmumuAnalyzer0
+    *process.GeneratorZmumuUdsFilter1
+    *process.GeneratorZmumuAnalyzerUds1
     *process.GeneratorZmumuDiMuMassFilter1
-    *process.GeneratorZmumuAnalyzer2
+    *process.GeneratorZmumuAnalyzerUds2
     *process.GeneratorZmumuEtaFilter1
-    *process.GeneratorZmumuAnalyzer3
+    *process.GeneratorZmumuAnalyzerUds3
     *process.GeneratorZmumuPtFilter1
-    *process.GeneratorZmumuAnalyzer4
+    *process.GeneratorZmumuAnalyzerUds4
 )
+
+
+
+process.CFlavourSelection = cms.Path(
+    process.GeneratorZmumuAnalyzer0
+    *process.GeneratorZmumuCFilter1
+    *process.GeneratorZmumuAnalyzerC1
+    *process.GeneratorZmumuDiMuMassFilter1
+    *process.GeneratorZmumuAnalyzerC2
+    *process.GeneratorZmumuEtaFilter1
+    *process.GeneratorZmumuAnalyzerC3
+    *process.GeneratorZmumuPtFilter1
+    *process.GeneratorZmumuAnalyzerC4
+)
+
+
+
+process.BFlavourSelection = cms.Path(
+    process.GeneratorZmumuAnalyzer0
+    *process.GeneratorZmumuBFilter1
+    *process.GeneratorZmumuAnalyzerB1
+    *process.GeneratorZmumuDiMuMassFilter1
+    *process.GeneratorZmumuAnalyzerB2
+    *process.GeneratorZmumuEtaFilter1
+    *process.GeneratorZmumuAnalyzerB3
+    *process.GeneratorZmumuPtFilter1
+    *process.GeneratorZmumuAnalyzerB4
+)
+
