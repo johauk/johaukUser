@@ -36,6 +36,15 @@ process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 
 ## Filter under test
 process.load("ZmumuAnalysis.Filter.GeneratorZmumuFilter_cfi")
+process.GeneratorZmumuFilterUdscb = process.GeneratorZmumuFilter.clone(
+    zQuarkOrigin = [1,2,3,4,5],
+)
+process.GeneratorZmumuFilterUdsc = process.GeneratorZmumuFilter.clone(
+    zQuarkOrigin = [1,2,3,4],
+)
+process.GeneratorZmumuFilterUds = process.GeneratorZmumuFilter.clone(
+    zQuarkOrigin = [1,2,3],
+)
 process.GeneratorZmumuFilter1 = process.GeneratorZmumuFilter.clone(
     #src = 'genParticles',
     diMuMassIntervals = [60.,120.],
@@ -51,7 +60,10 @@ process.GeneratorZmumuFilter3 = process.GeneratorZmumuFilter.clone(
 
 ## Path
 process.p = cms.Path(
-    process.GeneratorZmumuFilter1
+    process.GeneratorZmumuFilterUdscb
+    *process.GeneratorZmumuFilterUdsc
+    *process.GeneratorZmumuFilterUds
+    *process.GeneratorZmumuFilter1
     *process.GeneratorZmumuFilter2
     *process.GeneratorZmumuFilter3
 )

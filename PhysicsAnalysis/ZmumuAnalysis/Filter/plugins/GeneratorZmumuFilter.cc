@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Wed Sep  1 15:49:35 CEST 2010
-// $Id: GeneratorZmumuFilter.cc,v 1.1 2010/09/06 10:07:27 hauk Exp $
+// $Id: GeneratorZmumuFilter.cc,v 1.2 2010/09/24 14:56:53 hauk Exp $
 //
 //
 
@@ -57,6 +57,9 @@ class GeneratorZmumuFilter : public edm::EDFilter {
       
       const void checkFilter(const std::string&, const std::vector<double>&)const;
       const bool filterInterval(const double, const std::vector<double>&)const;
+      const bool filterQuarkOrigin(const reco::GenParticle& genPart, const std::vector<int>&)const;
+      
+      enum Flavour{down=1, up=2, strange=3, charm=4, bottom=5, unknown=6};
       
       // ----------member data ---------------------------
       
@@ -153,6 +156,28 @@ GeneratorZmumuFilter::filterInterval(const double variable, const std::vector<do
 
 
 
+const bool
+GeneratorZmumuFilter::filterQuarkOrigin(const reco::GenParticle& genPart, const std::vector<int>& v_zQuarkOrigin)const{
+  if(v_zQuarkOrigin.size()==0)return true;
+  if(genPart.numberOfMothers()!=2)edm::LogError("Generator Behaviour")<<"Strange origin of Z, not built from two particles, but "<<genPart.numberOfMothers();
+  if(genPart.mother(0)->pdgId() != -genPart.mother(1)->pdgId())edm::LogError("Generator Behaviour")<<"Strange origin of Z, built from "<<genPart.mother(0)->pdgId()<<", "<<genPart.mother(1)->pdgId();
+  const int motherPdgId(std::fabs(genPart.mother()->pdgId()));  // by default first one, so mother(0) is taken
+  Flavour flavour(unknown);
+  if(motherPdgId == 1)flavour = down;
+  else if (motherPdgId == 2)flavour = up;
+  else if (motherPdgId == 3)flavour = strange;
+  else if (motherPdgId == 4)flavour = charm;
+  else if (motherPdgId == 5)flavour = bottom;
+  if(motherPdgId >= 1 && motherPdgId <= 5)flavour = Flavour(motherPdgId);
+  if(flavour==unknown)edm::LogError("Generator Behaviour")<<"Strange origin of Z, made of particles of type (PdgId): "<<motherPdgId;
+  
+  for(std::vector<int>::const_iterator i_zQuarkOrigin = v_zQuarkOrigin.begin(); i_zQuarkOrigin != v_zQuarkOrigin.end(); ++i_zQuarkOrigin){
+    if(flavour==Flavour(*i_zQuarkOrigin))return true;
+  }
+  return false;
+}
+
+
 // ------------ method called on each new Event  ------------
 bool
 GeneratorZmumuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
@@ -162,35 +187,43 @@ GeneratorZmumuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByLabel(inputTag, genParticles);
   
   // all variable names are like in Z->mumu case, but act universally on Z->xx
-  const std::vector<int> zDecayMode(parameterSet_.getParameter<std::vector<int> >("zDecayMode"));
+  const std::vector<int> v_zDecayMode(parameterSet_.getParameter<std::vector<int> >("zDecayMode"));
   
   // Take care: when analysing events with more than one Z, not all have to be Z->xx with specified x
   bool zmumuFilter(false);
   
-  bool diMuDeltaEtaFilter(false);
-  bool diMuDeltaPhiFilter(false);
-  bool diMuPtFilter(false);
-  bool diMuMassFilter(false);
+  bool allOtherFilters(false);
   
-  bool etaFilter(false);
-  bool ptFilter(false);
+  const std::vector<int> v_zQuarkOrigin(parameterSet_.getParameter<std::vector<int> >("zQuarkOrigin"));
   
-  for(reco::GenParticleCollection::const_iterator iGenPart = genParticles->begin(); iGenPart != genParticles->end(); ++iGenPart){
+  
+  for(reco::GenParticleCollection::const_iterator i_genPart = genParticles->begin(); i_genPart != genParticles->end(); ++i_genPart){
     bool isZmumu(false);
+    
+    bool quarkOriginFilter(false);
+  
+    bool diMuDeltaEtaFilter(false);
+    bool diMuDeltaPhiFilter(false);
+    bool diMuPtFilter(false);
+    bool diMuMassFilter(false);
+  
+    bool etaFilter(false);
+    bool ptFilter(false);
+    
     double etaMinus(-999.), etaPlus(-999.);
     double phiMinus(-999.), phiPlus(-999.);
     double ptMinus(-999.), ptPlus(-999.);
     double etaZ(-999.), ptZ(-999.);
     reco::Candidate::LorentzVector lorVecMinus, lorVecPlus;
-    if(iGenPart->pdgId()!=23 || iGenPart->status()!=3) continue;
+    if(i_genPart->pdgId()!=23 || i_genPart->status()!=3) continue;
     
-    etaZ = iGenPart->eta();
-    ptZ = iGenPart->pt();
+    etaZ = i_genPart->eta();
+    ptZ = i_genPart->pt();
     
-    for(size_t iDaughter = 0; iDaughter < iGenPart->numberOfDaughters(); ++iDaughter){
-      const reco::GenParticle* daughter(dynamic_cast<const reco::GenParticle*>(iGenPart->daughter(iDaughter)));
+    for(size_t iDaughter = 0; iDaughter < i_genPart->numberOfDaughters(); ++iDaughter){
+      const reco::GenParticle* daughter(dynamic_cast<const reco::GenParticle*>(i_genPart->daughter(iDaughter)));
       // select mu-
-      for(std::vector<int>::const_iterator i_zDecayMode = zDecayMode.begin();i_zDecayMode != zDecayMode.end(); ++i_zDecayMode){
+      for(std::vector<int>::const_iterator i_zDecayMode = v_zDecayMode.begin();i_zDecayMode != v_zDecayMode.end(); ++i_zDecayMode){
         if(daughter->pdgId() == (*i_zDecayMode)){
           lorVecMinus = daughter->p4();
           etaMinus = daughter->eta();
@@ -210,6 +243,12 @@ GeneratorZmumuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     if(!isZmumu)continue;
     else zmumuFilter = true;
     
+    
+    //check flavour of mother quarks qqbar->Z
+    quarkOriginFilter = this->filterQuarkOrigin(*i_genPart, v_zQuarkOrigin);
+    if(!quarkOriginFilter)continue;
+    
+    
     const reco::Candidate::LorentzVector diMuVec = lorVecMinus + lorVecPlus;
     const double diMuMass = diMuVec.M();
     const double diMuPt = diMuVec.pt();
@@ -227,13 +266,18 @@ GeneratorZmumuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     if(this->filterInterval(etaMinus, v_etaIntervals_) && this->filterInterval(etaPlus, v_etaIntervals_))etaFilter = true;
     if(this->filterInterval(ptMinus, v_ptIntervals_) && this->filterInterval(ptPlus, v_ptIntervals_))ptFilter = true;
+    
+    
+    if(!diMuDeltaEtaFilter || !diMuDeltaPhiFilter ||
+       !diMuPtFilter || !diMuMassFilter ||
+       !etaFilter || !ptFilter)continue;
+    
+    allOtherFilters = true;
   }
   // Is at least one Z->mumu present?
   if(!zmumuFilter)return false;
   // Does it fulfil all other requirements?
-  if(!diMuDeltaEtaFilter || !diMuDeltaPhiFilter ||
-     !diMuPtFilter || !diMuMassFilter ||
-     !etaFilter || !ptFilter)return false;
+  if(!allOtherFilters)return false;
   
   // All filters fulfilled...
   return true;
