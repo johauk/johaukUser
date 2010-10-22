@@ -39,7 +39,7 @@ process.TriggerAnalyzer1 = process.TriggerAnalyzer.clone(
 process.TriggerAnalyzer2 = process.TriggerAnalyzer1.clone(
     hltPaths = [
       'HLT_DoubleMu3',
-      'HLT_L2Mu11',
+      'HLT_Mu9',
     ],
 )
 
