@@ -17,8 +17,8 @@
 
 #include "HistogramTools.h"
 
-const TString* inpath  = new TString("/afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/hists/");
-const TString* outpath = new TString("/afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/macros/plots/Dimuon_");
+const TString* inpath  = new TString("$CMSSW_BASE/src/ZmumuAnalysis/Configuration/hists/");
+const TString* outpath = new TString("$CMSSW_BASE/src/ZmumuAnalysis/Configuration/macros/plots/Dimuon_");
 const TString* outform = new TString(".png");
 //const TString* outform = new TString(".eps");
 // number of files used

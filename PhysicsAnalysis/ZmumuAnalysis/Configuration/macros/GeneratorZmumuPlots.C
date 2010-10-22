@@ -18,8 +18,8 @@
 
 #include "HistogramTools.h"
 
-const TString* inpath  = new TString("/afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/hists/");
-const TString* outpath = new TString("/afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/macros/plots/Generator_");
+const TString* inpath  = new TString("$CMSSW_BASE/src/ZmumuAnalysis/Configuration/hists/");
+const TString* outpath = new TString("$CMSSW_BASE/src/ZmumuAnalysis/Configuration/macros/plots/Generator_");
 //const TString* outform = new TString(".png");
 const TString* outform = new TString(".eps");
 
@@ -32,7 +32,7 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   // Specify all input files
   TFile* file;
   //file = new TFile(inpath->Copy().Append("mc/generatorZmumu.root"));
-  file = new TFile(inpath->Copy().Append("generatorZmumuSelection2.root"));
+  file = new TFile(inpath->Copy().Append("generatorZmumuSelection.root"));
   
   //Specify plugin name
   TString* pluginName;
