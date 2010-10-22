@@ -14,7 +14,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Wed Oct 20 16:37:05 CEST 2010
-// $Id$
+// $Id: JetAnalyzer.cc,v 1.1 2010/10/21 15:24:43 hauk Exp $
 //
 //
 
@@ -142,20 +142,20 @@ JetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     // b-tag jet properties
     //std::cout<<"\tTrackCounting "<<i_jet->bDiscriminator("trackCountingHighEffBJetTags")<<" "<<i_jet->tagInfo("trackCountingHighEffBJetTags")<<"\n";
-    //if(i_jet->hasTagInfo("trackCountingHighEffBJetTags")){  // not yet implemented
+    //if(i_jet->hasTagInfo("trackCountingHighEffBJetTags")){  // not yet implemented in CMSSW_3_8_4
     //if(i_jet->tagInfo("trackCountingHighEffBJetTags")!=0){  // use this line instead, but gives always zero...
       bDiscriminatorTche = i_jet->bDiscriminator("trackCountingHighEffBJetTags");
       BDiscriminatorTche->Fill(bDiscriminatorTche);
     //}
     //std::cout<<"\tSecondaryVertex "<<i_jet->bDiscriminator("simpleSecondaryVertexHighEffBJetTags")<<" "<<i_jet->tagInfo("simpleSecondaryVertexHighEffBJetTags")<<"\n";
-    //if(i_jet->hasTagInfo("simpleSecondaryVertexHighEffBJetTags")){  // not yet implemented
+    //if(i_jet->hasTagInfo("simpleSecondaryVertexHighEffBJetTags")){  // not yet implemented in CMSSW_3_8_4
     //if(i_jet->tagInfo("simpleSecondaryVertexHighEffBJetTags")!=0){  // use this line instead, but gives always zero...
       bDiscriminatorSvhe = i_jet->bDiscriminator("simpleSecondaryVertexHighEffBJetTags");
       BDiscriminatorSvhe->Fill(bDiscriminatorSvhe);
     //}
     
     // jet-algorithm specific properties
-    if(i_jet->isPFJet()){// || i_jet->isJPTJet()){  // isJPTJet() not yet implemented in CMSSW_3_6_X
+    if(i_jet->isPFJet() || i_jet->isJPTJet()){
       chargedMultiplicity = i_jet->chargedMultiplicity();
       chargedHadronEnergyFraction = i_jet->chargedHadronEnergyFraction();
       neutralHadronEnergyFraction = i_jet->neutralHadronEnergyFraction();
