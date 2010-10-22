@@ -60,8 +60,7 @@ selectedDimuons = cms.EDProducer("CandViewMerger",
 goodDimuons = cms.EDFilter("CandViewRefSelector",
     src = cms.InputTag("selectedDimuons"),
     cut = cms.string(
-      'mass > 20.' +'&'+
-      'abs(daughter(0).eta)<2.1 || abs(daughter(1).eta)<2.1'# +'&'+
+      'mass > 20.'
     ),
 )
 
@@ -126,7 +125,7 @@ isolatedDimuonSelection = dimuonsFilter.clone(
     minNumber = 1,
 )
 
-# does not work, no event survives...
+
 atLeast1HltDimuonSelection = dimuonsFilter.clone(
     src = 'atLeast1HltDimuons',
     minNumber = 1,
