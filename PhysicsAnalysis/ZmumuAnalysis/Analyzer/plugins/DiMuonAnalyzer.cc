@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May 20 15:47:12 CEST 2010
-// $Id: DiMuonAnalyzer.cc,v 1.2 2010/07/02 15:02:20 hauk Exp $
+// $Id: DiMuonAnalyzer.cc,v 1.3 2010/08/20 11:50:13 hauk Exp $
 //
 //
 
@@ -57,9 +57,13 @@ class DiMuonAnalyzer : public edm::EDAnalyzer {
       ~DiMuonAnalyzer();
       
       struct DiMuHists{
-        DiMuHists():EtaLow(0), EtaHigh(0), PtLow(0), PtHigh(0),
+        DiMuHists():NDimuon(0),
+	            EtaLow(0), EtaHigh(0), PtLow(0), PtHigh(0),
 		    DeltaEta(0), DeltaPhi(0),
 		    DiMass(0), DiPt(0){}
+	
+	/// Number of dimuons
+        TH1* NDimuon;
 	
         /// Properties of the two muons
         TH1F *EtaLow, *EtaHigh, *PtLow, *PtHigh;
@@ -123,6 +127,7 @@ DiMuonAnalyzer::~DiMuonAnalyzer()
 
 void
 DiMuonAnalyzer::bookHists(DiMuHists& hists, const TFileDirectory& dir){
+  hists.NDimuon = dir.make<TH1F>("h_nDimuon","# dimuons;# dimuons; # events",20,0,20);
   hists.EtaLow = dir.make<TH1F>("h_etaLow","muon with lower absolute value of #eta;#eta;# muons",200,-10,10);
   hists.EtaHigh = dir.make<TH1F>("h_etaHigh","muon w/ higher absolute value of #eta;#eta;# muons",200,-10,10);
   hists.PtLow = dir.make<TH1F>("h_ptLow","muon w/ lower p_{t};p_{t}  [GeV];# muons",200,0,200);
@@ -179,17 +184,23 @@ DiMuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   edm::Handle<reco::CandidateView> diMuons;
   iEvent.getByLabel(diMuonSource, diMuons);
   
+  // Event properties
+  unsigned int nDimuonOC(0), nDimuonSC(0);
+  
   reco::CandidateView::const_iterator i_cand;
   for(i_cand = diMuons->begin(); i_cand != diMuons->end(); ++i_cand){
     const reco::Candidate& diMuon = *i_cand;
     if(diMuon.charge()==0){
       this->fillHists(histsOC_, diMuon);
+      ++nDimuonOC;
     }
     else{
       this->fillHists(histsSC_, diMuon);
+      ++nDimuonSC;
     }
-    
   }
+  histsOC_.NDimuon->Fill(nDimuonOC);
+  histsSC_.NDimuon->Fill(nDimuonSC);
 }
 
 
@@ -199,10 +210,6 @@ void
 DiMuonAnalyzer::beginJob()
 {
   edm::Service<TFileService> fileService;
-  if(!fileService){
-    throw edm::Exception( edm::errors::Configuration,
-                          "TFileService is not registered in cfg file" );
-  }
   
   TFileDirectory dirSC = fileService->mkdir("SameCharge");
   this->bookHists(histsSC_,dirSC);

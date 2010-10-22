@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu Aug 19 17:46:32 CEST 2010
-// $Id$
+// $Id: MuonAnalyzer.cc,v 1.1 2010/08/20 11:47:04 hauk Exp $
 //
 //
 
@@ -61,6 +61,8 @@ class MuonAnalyzer : public edm::EDAnalyzer {
 
       const edm::ParameterSet parameterSet_;
       
+      TH1* NMuon;
+      
       TH1* IsGlobal;
       TH1* IsTracker;
       TH1* NumberOfValidTrackerHits;
@@ -71,8 +73,6 @@ class MuonAnalyzer : public edm::EDAnalyzer {
       TH1* Eta;
       TH1* Pt;
       TH1* D0Beamspot;
-      TH1* HltMatched;
-      
       
 };
 
@@ -89,13 +89,13 @@ class MuonAnalyzer : public edm::EDAnalyzer {
 //
 MuonAnalyzer::MuonAnalyzer(const edm::ParameterSet& iConfig):
 parameterSet_(iConfig),
+NMuon(0),
 IsGlobal(0), IsTracker(0),
 NumberOfValidTrackerHits(0), NumberOfValidPixelHits(0),
 NumberOfMatches(0),
 NumberOfValidMuonHits(0),
 NormalizedChi2(0),
-Eta(0), Pt(0), D0Beamspot(0),
-HltMatched(0)
+Eta(0), Pt(0), D0Beamspot(0)
 {
 }
 
@@ -118,13 +118,19 @@ MuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   edm::Handle<pat::MuonCollection> muons;
   iEvent.getByLabel(muonSource, muons);
   
+  // Event properties
+  unsigned int nMuon(999);
+  nMuon = muons->size();
+  NMuon->Fill(nMuon);
+  
+  // Muon properties
+  // All values taken from global muon, except for TrackerMuon: numberOfValidTrackerHits, numberOfValidPixelHits
   bool isGlobal(false), isTracker(false);
   unsigned int numberOfValidTrackerHits(999), numberOfValidPixelHits(999);
   unsigned int numberOfMatches(999);
   unsigned int numberOfValidMuonHits(999);
   double normalizedChi2(9999.);
   double eta(-999.), pt(-999.), d0Beamspot(-999.);
-  //bool hltMatched(false);
   
   pat::MuonCollection::const_iterator i_muon;
   for(i_muon = muons->begin(); i_muon != muons->end(); ++i_muon){
@@ -142,7 +148,6 @@ MuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     eta = i_muon->eta();
     pt = i_muon->pt();
     d0Beamspot = i_muon->dB();
-    //hltMatched = i_muon->
     
     IsGlobal->Fill(isGlobal);
     IsTracker->Fill(isTracker);
@@ -158,7 +163,6 @@ MuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     Eta->Fill(eta);
     Pt->Fill(pt);
     D0Beamspot->Fill(d0Beamspot);
-    //HltMatched->Fill(hltMatched);
     
   }
 }
@@ -169,24 +173,21 @@ void
 MuonAnalyzer::beginJob()
 {
   edm::Service<TFileService> fileService;
-  if(!fileService){
-    throw edm::Exception( edm::errors::Configuration,
-                          "TFileService is not registered in cfg file\n" );
-  }
 
-  TFileDirectory dirMuon = fileService->mkdir("MuonProperties");
+  TFileDirectory dirEvent = fileService->mkdir("EventProperties");
+  NMuon = dirEvent.make<TH1F>("h_nMuon","# muons;# muons; # events",20,0,20);
   
+  TFileDirectory dirMuon = fileService->mkdir("MuonProperties");
   IsGlobal = dirMuon.make<TH1F>("h_isGlobal","global muons;is global;# muons",2,0,2);
   IsTracker = dirMuon.make<TH1F>("h_isTracker","tracker muons;is tracker;# muons",2,0,2);
-  NumberOfValidTrackerHits = dirMuon.make<TH1F>("h_noTrackerHits","no. of hits (tracker fit) [tracker];# hits  [tracker];# muons",40,0,40);
-  NumberOfValidPixelHits = dirMuon.make<TH1F>("h_noPixelHits","no. of hits (tracker fit) [pixel];# hits  [pixel];# muons",10,0,10);
-  NumberOfMatches = dirMuon.make<TH1F>("h_noMatches","no. of matches [muon];#  matches  [muon];# muons",10,0,10);
-  NumberOfValidMuonHits = dirMuon.make<TH1F>("h_noMuonHitsGlobal","no. of hits (global fit) [muon];# hits  [muon];# muons",50,0,50);
-  NormalizedChi2 = dirMuon.make<TH1F>("h_chi2","normalized #chi^{2} (global fit);#chi^{2}/ndof;# muons",50,0,100);
+  NumberOfValidTrackerHits = dirMuon.make<TH1F>("h_nTrackerHits","# hits (tracker fit) [tracker];# hits  [tracker];# muons",40,0,40);
+  NumberOfValidPixelHits = dirMuon.make<TH1F>("h_nPixelHits","# hits (tracker fit) [pixel];# hits  [pixel];# muons",10,0,10);
+  NumberOfMatches = dirMuon.make<TH1F>("h_nMatches","# matches [muon];#  matches  [muon];# muons",10,0,10);
+  NumberOfValidMuonHits = dirMuon.make<TH1F>("h_nMuonHitsGlobal","# hits (global fit) [muon];# hits  [muon];# muons",50,0,50);
+  NormalizedChi2 = dirMuon.make<TH1F>("h_chi2","normalized #chi^{2};#chi^{2}/ndof;# muons",50,0,100);
   Eta = dirMuon.make<TH1F>("h_eta","pseudorapidity #eta;#eta;# muons",60,-3,3);
   Pt = dirMuon.make<TH1F>("h_pt","transverse momentum p_{t};p_{t};# muons",100,0,200);
   D0Beamspot = dirMuon.make<TH1F>("h_d0Beamspot","closest approach d_{0} wrt. beamspot;d_{0, BS}  [cm];# muons",100,-1,1);
-  HltMatched = dirMuon.make<TH1F>("h_hltMatched","HLT matched muons;hlt matched;# muons",2,0,2);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
