@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Wed Sep  1 15:49:35 CEST 2010
-// $Id: GeneratorZmumuFilter.cc,v 1.2 2010/09/24 14:56:53 hauk Exp $
+// $Id: GeneratorZmumuFilter.cc,v 1.3 2010/10/21 15:37:38 hauk Exp $
 //
 //
 
@@ -261,15 +261,15 @@ GeneratorZmumuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     if(this->filterInterval(diMuDeltaEta, v_diMuDeltaEtaIntervals_))diMuDeltaEtaFilter = true;
     if(this->filterInterval(diMuDeltaPhi, v_diMuDeltaPhiIntervals_))diMuDeltaPhiFilter = true;
-    if(this->filterInterval(diMuMass, v_diMuMassIntervals_))diMuPtFilter = true;
-    if(this->filterInterval(diMuPt, v_diMuPtIntervals_))diMuMassFilter = true;
+    if(this->filterInterval(diMuMass, v_diMuMassIntervals_))diMuMassFilter = true;
+    if(this->filterInterval(diMuPt, v_diMuPtIntervals_))diMuPtFilter = true;
     
     if(this->filterInterval(etaMinus, v_etaIntervals_) && this->filterInterval(etaPlus, v_etaIntervals_))etaFilter = true;
     if(this->filterInterval(ptMinus, v_ptIntervals_) && this->filterInterval(ptPlus, v_ptIntervals_))ptFilter = true;
     
     
     if(!diMuDeltaEtaFilter || !diMuDeltaPhiFilter ||
-       !diMuPtFilter || !diMuMassFilter ||
+       !diMuMassFilter || !diMuPtFilter ||
        !etaFilter || !ptFilter)continue;
     
     allOtherFilters = true;
