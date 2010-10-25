@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,6 2-039,+41227673512,
 //         Created:  Mon Oct 11 13:44:03 CEST 2010
-// $Id$
+// $Id: ApeEstimatorSummary.cc,v 1.1 2010/10/14 15:21:03 hauk Exp $
 //
 //
 
@@ -190,6 +190,12 @@ ApeEstimatorSummary::getTrackerSectorStructs(){
 	rawIdTree->SetBranchAddress("RawId", &rawId);
 	for(Int_t entry=0; entry<rawIdTree->GetEntries(); ++entry){
 	  rawIdTree->GetEntry(entry);
+	  // command "hadd" adds entries in TTree, so rawId are existing as often as number of files are added
+	  bool alreadyAdded(false);
+	  for(std::vector<unsigned int>::const_iterator i_rawId = tkSector.v_rawId.begin(); i_rawId != tkSector.v_rawId.end(); ++i_rawId){
+	    if(rawId==*i_rawId)alreadyAdded = true;
+	  }
+	  if(alreadyAdded)break;
 	  tkSector.v_rawId.push_back(rawId);
 	}
       }
@@ -368,6 +374,9 @@ ApeEstimatorSummary::calculateApe(){
        
        double entries = mHists["sigmaX"]->GetEntries();
        double meanSigmaX = mHists["sigmaX"]->GetMean();
+       //double meanSigmaX = (*i_sector).second.Entries->GetBinCenter((*i_errBins).first);
+       //std::cout<<"\n\tMean1 "<<meanSigmaX<<"\n";
+       //std::cout<<"\n\tMean2 "<<(*i_sector).second.Entries->GetBinCenter((*i_errBins).first)<<"\n";
        
        // Fitting Parameters
        double xMin     = mHists["norResX"]->GetXaxis()->GetXmin(),
@@ -414,7 +423,7 @@ ApeEstimatorSummary::calculateApe(){
        double fitMean_1(mean_1), fitMean_2(mean_2);
        double residualWidth_1(sigma_1), residualWidth_2(sigma_2);
        
-       double baselineWidthX2(a_baselineSector[(*i_sector).first]*a_baselineSector[(*i_sector).first]);
+       double baselineWidthX2(a_baselineSector[(*i_sector).first]);
        double correctionX2_1(-0.0010), correctionX2_2(-0.0010);
        correctionX2_1 = meanSigmaX*meanSigmaX*(residualWidth_1*residualWidth_1 -baselineWidthX2);
        correctionX2_2 = meanSigmaX*meanSigmaX*(residualWidth_2*residualWidth_2 -baselineWidthX2);
@@ -446,13 +455,13 @@ ApeEstimatorSummary::calculateApe(){
        
        // Use result for bin only when entries>1000
        if(entries<1000.)continue;
-       // Fill correction^2 for APE calculation, BUT fill residual width for setBaseline mode
-       std::pair<double,double> entriesAndCorrectionX2PerBin(entries, setBaseline ? residualWidth_2 : correctionX2_2);
+       // Fill correction^2 for APE calculation, BUT fill residualWidth^2 for setBaseline mode
+       std::pair<double,double> entriesAndCorrectionX2PerBin(entries, setBaseline ? residualWidth_2*residualWidth_2 : correctionX2_2);
        v_entriesAndCorrectionX2PerBin.push_back(entriesAndCorrectionX2PerBin);
      }
      
      
-     // Calculate squared correction for sector (or baselineWidth in setBaseline mode)
+     // Calculate squared correction for sector (or squared baselineWidth in setBaseline mode)
      if(v_entriesAndCorrectionX2PerBin.size() == 0){
        edm::LogError("CalculateAPE")<<"NO error interval of sector "<<(*i_sector).first<<" has a valid APE calculated,\n...so cannot set APE";
        continue;
@@ -476,6 +485,7 @@ ApeEstimatorSummary::calculateApe(){
      
      if(!setBaseline){
        // scale APE Correction with value given in cfg
+       edm::LogInfo("CalculateAPE")<<"Unscaled correction for sector "<<(*i_sector).first<<" is "<<(correctionX2>0 ? +1 : -1)*std::sqrt(std::fabs(correctionX2));
        correctionX2 = correctionX2*correctionScaling*correctionScaling;
      
        // Calculate updated squared APE of current iteration
