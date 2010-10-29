@@ -13,7 +13,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 ## define maximal number of events to loop over
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10001)
+    input = cms.untracked.int32(1001)
 )
 
 
@@ -26,8 +26,8 @@ process.options = cms.untracked.PSet(
 
 
 ## sources
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.Jun14ReReco_MuonPreselection_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.May27ReReco_MuonPreselection_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.Run2010A_Sep17ReReco_v2_Oct22_cff")
+process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.Run2010B_PromptReco_v2_Oct22_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.inclusiveMu15_spring10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopS_spring10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopTW_spring10_cff")
@@ -39,16 +39,16 @@ process.options = cms.untracked.PSet(
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.ww_spring10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.wz_spring10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.zz_spring10_cff")
-process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 
 
 
 ## needed for access to trigger menu
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 # data
-process.GlobalTag.globaltag = cms.string('GR_R_36X_V12::All')
+process.GlobalTag.globaltag = cms.string('GR_R_38X_V13::All')
 # mc
-#process.GlobalTag.globaltag = cms.string('START36_V10::All')
+#process.GlobalTag.globaltag = cms.string('START38_V12::All')
 
 
 
@@ -64,7 +64,8 @@ process.TFileService = cms.Service("TFileService",
 
 ## filter trigger
 process.load("ZmumuAnalysis.Configuration.filters.TriggerFilter_cff")
-process.triggerFilter1 = process.AllLowestUnprescaledTriggerFilter.clone()
+#process.triggerFilter1 = process.TriggerFilterMu9.clone()
+process.triggerFilter1 = process.TriggerFilterMu9_11_15.clone()
 
 
 
