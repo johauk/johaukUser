@@ -143,21 +143,6 @@ finalDimuonSelection = dimuonsFilter.clone(
 
 ###########################################################################################
 #
-# FINAL TRIGGER FILTER
-#
-###########################################################################################
-
-
-
-import ZmumuAnalysis.Configuration.filters.TriggerFilter_cff
-
-finalTriggerFilter = ZmumuAnalysis.Configuration.filters.TriggerFilter_cff.FinalTriggerFilter.clone()
-
-
-
-
-###########################################################################################
-#
 # SEQUENCES
 #
 ###########################################################################################
@@ -180,7 +165,6 @@ buildDimuonCollections = cms.Sequence(
 dimuonSelection = cms.Sequence(
     selectedDimuonSelection
     *goodDimuonSelection
-    *finalTriggerFilter
     *isolatedDimuonSelection
     *atLeast1HltDimuonSelection
     *finalDimuonSelection
