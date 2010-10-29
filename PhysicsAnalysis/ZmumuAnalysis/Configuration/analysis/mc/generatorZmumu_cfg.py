@@ -46,6 +46,9 @@ process.TFileService = cms.Service("TFileService",
 
 ## filter for Zmumu plus mass range
 process.load("ZmumuAnalysis.Configuration.filters.GeneratorZmumuFilter_cff")
+process.GeneratorZmumuUdsFilter1 = process.GeneratorZmumuUdsFilter.clone()
+process.GeneratorZmumuCFilter1 = process.GeneratorZmumuCFilter.clone()
+process.GeneratorZmumuBFilter1 = process.GeneratorZmumuBFilter.clone()
 process.GeneratorZmumuDiMuMassFilter1 = process.GeneratorZmumuDiMuMassFilter.clone()
 process.GeneratorZmumuEtaFilter1 = process.GeneratorZmumuEtaFilter.clone()
 process.GeneratorZmumuPtFilter1 = process.GeneratorZmumuPtFilter.clone()
@@ -58,27 +61,69 @@ process.GeneratorZmumuPtFilter1 = process.GeneratorZmumuPtFilter.clone()
 
 ## generator level muon and di-muon analyzer
 process.load("ZmumuAnalysis.Analyzer.GeneratorZmumuAnalyzer_cfi")
-process.GeneratorZmumuAnalyzer1 =  process.GeneratorZmumuAnalyzer.clone()
-process.GeneratorZmumuAnalyzer2 =  process.GeneratorZmumuAnalyzer1.clone()
-process.GeneratorZmumuAnalyzer3 =  process.GeneratorZmumuAnalyzer2.clone()
-process.GeneratorZmumuAnalyzer4 =  process.GeneratorZmumuAnalyzer3.clone()
-
-
+process.GeneratorZmumuAnalyzer0 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerUds1 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerUds2 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerUds3 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerUds4 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerC1 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerC2 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerC3 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerC4 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerB1 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerB2 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerB3 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerB4 =  process.GeneratorZmumuAnalyzer.clone()
 
 
 
 #******************************************************************************************
-#   Analysis Path
+#   Analysis Paths
 #******************************************************************************************
 
 
 
-process.p = cms.Path(
-    process.GeneratorZmumuAnalyzer1
-    *process.GeneratorZmumuDiMuMassFilter1
-    *process.GeneratorZmumuAnalyzer2
-    *process.GeneratorZmumuEtaFilter1
-    *process.GeneratorZmumuAnalyzer3
-    *process.GeneratorZmumuPtFilter1
-    *process.GeneratorZmumuAnalyzer4
+process.NoSelection = cms.Path(
+    process.GeneratorZmumuAnalyzer0
 )
+
+
+
+process.UdsFlavourSelection = cms.Path(
+    process.GeneratorZmumuUdsFilter1
+    *process.GeneratorZmumuAnalyzerUds1
+    *process.GeneratorZmumuDiMuMassFilter1
+    *process.GeneratorZmumuAnalyzerUds2
+    *process.GeneratorZmumuEtaFilter1
+    *process.GeneratorZmumuAnalyzerUds3
+    *process.GeneratorZmumuPtFilter1
+    *process.GeneratorZmumuAnalyzerUds4
+)
+
+
+
+process.CFlavourSelection = cms.Path(
+    process.GeneratorZmumuCFilter1
+    *process.GeneratorZmumuAnalyzerC1
+    *process.GeneratorZmumuDiMuMassFilter1
+    *process.GeneratorZmumuAnalyzerC2
+    *process.GeneratorZmumuEtaFilter1
+    *process.GeneratorZmumuAnalyzerC3
+    *process.GeneratorZmumuPtFilter1
+    *process.GeneratorZmumuAnalyzerC4
+)
+
+
+
+process.BFlavourSelection = cms.Path(
+    process.GeneratorZmumuBFilter1
+    *process.GeneratorZmumuAnalyzerB1
+    *process.GeneratorZmumuDiMuMassFilter1
+    *process.GeneratorZmumuAnalyzerB2
+    *process.GeneratorZmumuEtaFilter1
+    *process.GeneratorZmumuAnalyzerB3
+    *process.GeneratorZmumuPtFilter1
+    *process.GeneratorZmumuAnalyzerB4
+)
+
+
