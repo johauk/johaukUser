@@ -4,6 +4,8 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("GeneratorZmumuCutflow")
 
+
+
 ## add message logger
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'INFO'
@@ -13,7 +15,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 ## define maximal number of events to loop over
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10001)
+    input = cms.untracked.int32(1001)
 )
 
 
@@ -26,14 +28,10 @@ process.options = cms.untracked.PSet(
 
 
 ## sources
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.inclusiveMu15_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopS_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopTW_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopT_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.ttbar_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.wmunu_spring10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.zmumu_spring10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.ztautau_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.wz_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.zz_spring10_cff")
 process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 
 
@@ -52,7 +50,6 @@ process.TFileService = cms.Service("TFileService",
 
 ## filter for Zmumu plus mass range
 process.load("ZmumuAnalysis.Configuration.filters.GeneratorZmumuFilter_cff")
-
 process.GeneratorZmumuUdsFilter1 = process.GeneratorZmumuUdsFilter.clone()
 process.GeneratorZmumuCFilter1 = process.GeneratorZmumuCFilter.clone()
 process.GeneratorZmumuBFilter1 = process.GeneratorZmumuBFilter.clone()
@@ -90,9 +87,14 @@ process.GeneratorZmumuAnalyzerB4 =  process.GeneratorZmumuAnalyzer.clone()
 
 
 
-process.UdsFlavourSelection = cms.Path(
+process.NoSelection = cms.Path(
     process.GeneratorZmumuAnalyzer0
-    *process.GeneratorZmumuUdsFilter1
+)
+
+
+
+process.UdsFlavourSelection = cms.Path(
+    process.GeneratorZmumuUdsFilter1
     *process.GeneratorZmumuAnalyzerUds1
     *process.GeneratorZmumuDiMuMassFilter1
     *process.GeneratorZmumuAnalyzerUds2
@@ -105,8 +107,7 @@ process.UdsFlavourSelection = cms.Path(
 
 
 process.CFlavourSelection = cms.Path(
-    process.GeneratorZmumuAnalyzer0
-    *process.GeneratorZmumuCFilter1
+    process.GeneratorZmumuCFilter1
     *process.GeneratorZmumuAnalyzerC1
     *process.GeneratorZmumuDiMuMassFilter1
     *process.GeneratorZmumuAnalyzerC2
@@ -119,8 +120,7 @@ process.CFlavourSelection = cms.Path(
 
 
 process.BFlavourSelection = cms.Path(
-    process.GeneratorZmumuAnalyzer0
-    *process.GeneratorZmumuBFilter1
+    process.GeneratorZmumuBFilter1
     *process.GeneratorZmumuAnalyzerB1
     *process.GeneratorZmumuDiMuMassFilter1
     *process.GeneratorZmumuAnalyzerB2
@@ -129,4 +129,5 @@ process.BFlavourSelection = cms.Path(
     *process.GeneratorZmumuPtFilter1
     *process.GeneratorZmumuAnalyzerB4
 )
+
 
