@@ -35,14 +35,15 @@ process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 
 ## Analyzer under test
 process.load("ZmumuAnalysis.Analyzer.GeneratorZmumuAnalyzer_cfi")
-process.GeneratorZmumuAnalyzer1 = process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzer1 = process.GeneratorZmumuAnalyzer.clone(
+    #zDecayMode = [13],
+)
 
 
 
 ## Output File Configuration
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string(os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Analyzer/hists/test_generatorZmumuAnalyzer.root'),
-    #fileName = cms.string('genTest.root'),
     closeFileFast = cms.untracked.bool(True)
 )
 

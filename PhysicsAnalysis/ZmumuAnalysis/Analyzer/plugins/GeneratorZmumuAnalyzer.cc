@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Fri Feb 26 16:48:04 CET 2010
-// $Id: GeneratorZmumuAnalyzer.cc,v 1.4 2010/10/18 16:45:26 hauk Exp $
+// $Id: GeneratorZmumuAnalyzer.cc,v 1.5 2010/10/21 15:34:09 hauk Exp $
 //
 //
 
@@ -103,7 +103,7 @@ GeneratorZmumuAnalyzer::~GeneratorZmumuAnalyzer()
 void
 GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   
-   const edm::InputTag inputTag(parameterSet_.getParameter<edm::InputTag>("src"));
+  const edm::InputTag inputTag(parameterSet_.getParameter<edm::InputTag>("src"));
   edm::Handle<reco::GenParticleCollection> genParticles;
   iEvent.getByLabel(inputTag, genParticles);
   
@@ -118,7 +118,7 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     reco::Candidate::LorentzVector lorVecMinus, lorVecPlus;
     // select Z0 gauge bosons
     // take care about status: decaying Z0 (status=3) has 3 daughters, third is Z0 itself as decayed Z0 (status=2)
-    // Question: is the status numbering convention only valid for Pythia
+    // Question: is the status numbering convention only valid for Pythia?
     if(i_genPart->pdgId()!=23 || i_genPart->status()!=3) continue;
     //std::cout<<"\tGot ya - no. of daughters: "<<i_genPart->numberOfDaughters()<<"   - status: "<<i_genPart->status()<<"\n";
     etaZ = i_genPart->eta();
@@ -193,7 +193,6 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	//}
       //}
     }
-    
     QuarkOrigin->Fill(flavour-1);
   }
 }
@@ -220,10 +219,6 @@ GeneratorZmumuAnalyzer::beginJob(){
   QuarkOrigin->GetXaxis()->SetBinLabel(4,"c");
   QuarkOrigin->GetXaxis()->SetBinLabel(5,"b");
   QuarkOrigin->GetXaxis()->SetBinLabel(6,"XXX");
-  
-  TFileDirectory dirQuark = fileService->mkdir("QuarkOrigin");
-  
-  
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
