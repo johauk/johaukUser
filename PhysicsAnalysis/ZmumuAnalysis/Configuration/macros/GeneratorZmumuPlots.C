@@ -20,8 +20,8 @@
 
 const TString* inpath  = new TString("$CMSSW_BASE/src/ZmumuAnalysis/Configuration/hists/");
 const TString* outpath = new TString("$CMSSW_BASE/src/ZmumuAnalysis/Configuration/macros/plots/Generator_");
-//const TString* outform = new TString(".png");
-const TString* outform = new TString(".eps");
+const TString* outform = new TString(".png");
+//const TString* outform = new TString(".eps");
 
 const size_t nFlavour(3 +1); // start all arrays at [1], to use already present methods
 
@@ -31,8 +31,8 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   
   // Specify all input files
   TFile* file;
-  //file = new TFile(inpath->Copy().Append("mc/generatorZmumu.root"));
-  file = new TFile(inpath->Copy().Append("generatorZmumuSelection.root"));
+  file = new TFile(inpath->Copy().Append("mc/generatorZmumu.root"));
+  //file = new TFile(inpath->Copy().Append("generatorZmumuSelection.root"));
   
   //Specify plugin name
   TString* pluginName;
