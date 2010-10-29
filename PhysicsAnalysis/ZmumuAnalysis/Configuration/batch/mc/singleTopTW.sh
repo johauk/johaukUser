@@ -32,4 +32,4 @@
 #cd $WORKAREA
 #ini cmssw
 #cmsenv
-cmsRun /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_6_1_patch4/src/ZmumuAnalysis/Configuration/analysis/mc/singleTopTW_cfg.py
+cmsRun /afs/naf.desy.de/user/j/johauk/cms/CMSSW_3_8_4/src/ZmumuAnalysis/Configuration/analysis/mc/singleTopTW_cfg.py
