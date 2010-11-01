@@ -20,8 +20,8 @@
 
 const TString* inpath  = new TString("$CMSSW_BASE/src/ZmumuAnalysis/Configuration/hists/");
 const TString* outpath = new TString("$CMSSW_BASE/src/ZmumuAnalysis/Configuration/macros/plots/Generator_");
-const TString* outform = new TString(".png");
-//const TString* outform = new TString(".eps");
+//const TString* outform = new TString(".png");
+const TString* outform = new TString(".eps");
 
 const size_t nFlavour(3 +1); // start all arrays at [1], to use already present methods
 
@@ -85,10 +85,13 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
    
   TH1F* a_hist1[nFlavour];  // do not use array [0]
   for(size_t iFlavour=0; iFlavour<nFlavour; ++iFlavour) a_hist1[iFlavour]=0;
+  TH1F* a_hist2[nFlavour];  // For addition of histograms
+  for(size_t iFlavour=0; iFlavour<nFlavour; ++iFlavour) a_hist2[iFlavour]=0;
   
   THStack* stack1;
   
   TString* histName1;
+  TString* histName2;  // For addition of histograms
   
   TString* plotName1;
   
@@ -350,6 +353,57 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   
   
   
+  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+  
+  
+  // Next few lines are only one to change for histo (except for individual style changes)
+  
+  // Give name of input histogram
+  histName1 = new TString("SingleMu/h_etaLow");
+  // Give name of second input histogram for addition
+  histName2 = new TString("SingleMu/h_etaHigh");
+  // Give base name of output plot
+  plotName1 = new TString("mu_etaBoth");
+  // Change position & size of legend
+  legend1 = new TLegend(0.85,0.75,0.99,0.95); 
+  
+  
+  // Change only style here
+  
+  canvas1 = new TCanvas("plot", "plot", 800, 800);
+  tools.GetHistArraySameFile(file, a_baseString, *histName1, a_hist1);
+  tools.GetHistArraySameFile(file, a_baseString, *histName2, a_hist2);
+  tools.AddHistArrays(a_hist1, a_hist2);
+  tools.SetPlotFilling(a_hist1, nFlavour);
+  stack1 = new THStack("stack","stack");
+  tools.FillStack(stack1, a_hist1, nFlavour);
+  tools.FillLegendGenerator(legend1, a_hist1, "f");
+  canvas1->Clear();
+  stack1->SetTitle("pseudorapidity #eta of both muons");
+  stack1->Draw();
+  legend1->Draw("same");
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append(*outform));
+  
+  gPad->SetLogy(1);
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append("_log").Append(*outform));
+      
+  delete histName1;
+  delete histName2;
+  delete plotName1;
+  legend1->Delete();
+  stack1->Delete();
+  for(size_t iHist=0; iHist<nFlavour; ++iHist){
+    if(a_hist1[iHist])a_hist1[iHist]->Delete();
+  }
+  for(size_t iHist=0; iHist<nFlavour; ++iHist){
+    if(a_hist2[iHist])a_hist2[iHist]->Delete();
+  }
+  canvas1->Close();
+  
+  
+  
   
   //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
@@ -437,7 +491,59 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   
 
 
+    //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
+  
+  // Next few lines are only one to change for histo (except for individual style changes)
+  
+  // Give name of input histogram
+  histName1 = new TString("SingleMu/h_ptLow");
+  // Give name of second input histogram for addition
+  histName2 = new TString("SingleMu/h_ptHigh");
+  // Give base name of output plot
+  plotName1 = new TString("mu_ptBoth");
+  // Change position & size of legend
+  legend1 = new TLegend(0.85,0.75,0.99,0.95); 
+  
+  
+  // Change only style here
+  
+  canvas1 = new TCanvas("plot", "plot", 800, 800);
+  tools.GetHistArraySameFile(file, a_baseString, *histName1, a_hist1);
+  tools.GetHistArraySameFile(file, a_baseString, *histName2, a_hist2);
+  tools.AddHistArrays(a_hist1, a_hist2);
+  tools.SetPlotFilling(a_hist1, nFlavour);
+  stack1 = new THStack("stack","stack");
+  tools.FillStack(stack1, a_hist1, nFlavour);
+  tools.FillLegendGenerator(legend1, a_hist1, "f");
+  canvas1->Clear();
+  stack1->SetTitle("transverse momentum p_{t} of both muons");
+  stack1->Draw();
+  legend1->Draw("same");
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append(*outform));
+  
+  gPad->SetLogy(1);
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append("_log").Append(*outform));
+      
+  delete histName1;
+  delete histName2;
+  delete plotName1;
+  legend1->Delete();
+  stack1->Delete();
+  for(size_t iHist=0; iHist<nFlavour; ++iHist){
+    if(a_hist1[iHist])a_hist1[iHist]->Delete();
+  }
+  for(size_t iHist=0; iHist<nFlavour; ++iHist){
+    if(a_hist2[iHist])a_hist2[iHist]->Delete();
+  }
+  canvas1->Close();
+
+  
+
+
+
 
   
   
@@ -458,8 +564,9 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   
   file->Close();
   
-  delete inpath;
-  delete outpath;
-  delete outform;
+  // do not delete as long as they are defined outside function
+  //delete inpath;
+  //delete outpath;
+  //delete outform;
   
 }
