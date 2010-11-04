@@ -19,13 +19,13 @@
 
 const TString* inpath  = new TString("$CMSSW_BASE/src/ZmumuAnalysis/Configuration/hists/");
 const TString* outpath = new TString("$CMSSW_BASE/src/ZmumuAnalysis/Configuration/macros/plots/Dimuon_");
-const TString* outform = new TString(".png");
-//const TString* outform = new TString(".eps");
+//const TString* outform = new TString(".png");
+const TString* outform = new TString(".eps");
 // number of files used
 const size_t nFiles = 12;
 
 // Integrated lumi of taken data for normalising MC in pb-1
-const Double_t dataLumi(0.2112);
+const Double_t dataLumi(1500.);
 
 
 void DimuonPlots(TString pluginSuffix = ""){
@@ -180,7 +180,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   
   
   
-    //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   
   // Next few lines are only one to change for histo (except for individual style changes)
@@ -229,7 +229,8 @@ void DimuonPlots(TString pluginSuffix = ""){
   
   
   
-    //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+  
+  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   
   // Next few lines are only one to change for histo (except for individual style changes)
@@ -335,6 +336,55 @@ void DimuonPlots(TString pluginSuffix = ""){
   // Next few lines are only one to change for histo (except for individual style changes)
   
   // Give name of input histogram
+  histName1 = new TString("h_diY");
+  // Give base name of output plot
+  plotName1 = new TString("diY");
+  // Change position & size of legend
+  legend1 = new TLegend(0.65,0.55,0.99,0.95); 
+  
+  
+  // Change only style here
+  
+  canvas1 = new TCanvas("plot", "plot", 800, 800);
+  tools.GetHistArray(a_file, pluginName->Copy().Append(*pluginFolder), *histName1, a_hist1);
+  tools.SetPlotFilling(a_hist1);
+  tools.SetWeights(a_hist1, dataLumi);
+  stack1 = new THStack("stack","stack");
+  tools.FillStack(stack1, a_hist1);
+  // If you want to set maximum by hand, else use function and scale
+  // stack1->SetMaximum(30);
+  stack1->SetMaximum(tools.GetMaximumValue(stack1, a_hist1[0]) *1.2);
+  tools.FillLegend(legend1, a_hist1, "f");
+  canvas1->Clear();
+  stack1->Draw();
+  if(a_hist1[0]){ 
+    a_hist1[0]->Draw("same,e1");
+  }  
+  legend1->Draw("same");
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append(*outform));
+  
+  gPad->SetLogy(1);
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append("_log").Append(*outform));
+      
+  delete histName1;
+  delete plotName1;
+  legend1->Delete();
+  stack1->Delete();
+  for(size_t iFile=0; iFile<nFiles; ++iFile){
+    if(a_hist1[iFile])a_hist1[iFile]->Delete();
+  }
+  canvas1->Close();
+  
+  
+  
+  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+  
+  
+  // Next few lines are only one to change for histo (except for individual style changes)
+  
+  // Give name of input histogram
   histName1 = new TString("h_etaHigh");
   // Give base name of output plot
   plotName1 = new TString("etaHigh");
@@ -428,7 +478,6 @@ void DimuonPlots(TString pluginSuffix = ""){
   
   
   
-  
 
   //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
@@ -479,9 +528,8 @@ void DimuonPlots(TString pluginSuffix = ""){
   
   
   
-  
 
-    //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   
   // Next few lines are only one to change for histo (except for individual style changes)
