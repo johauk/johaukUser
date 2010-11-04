@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May 20 15:47:12 CEST 2010
-// $Id: DiMuonAnalyzer.cc,v 1.3 2010/08/20 11:50:13 hauk Exp $
+// $Id: DiMuonAnalyzer.cc,v 1.4 2010/10/22 12:20:27 hauk Exp $
 //
 //
 
@@ -72,7 +72,8 @@ class DiMuonAnalyzer : public edm::EDAnalyzer {
         TH1F *DeltaEta, *DeltaPhi;
 	
 	/// Properties of reconstructed di-muon particle
-	TH1F *DiMass, *DiPt;
+	TH1F *DiMass, *DiPt,
+	     *DiY;
       };
 
 
@@ -128,14 +129,15 @@ DiMuonAnalyzer::~DiMuonAnalyzer()
 void
 DiMuonAnalyzer::bookHists(DiMuHists& hists, const TFileDirectory& dir){
   hists.NDimuon = dir.make<TH1F>("h_nDimuon","# dimuons;# dimuons; # events",20,0,20);
-  hists.EtaLow = dir.make<TH1F>("h_etaLow","muon with lower absolute value of #eta;#eta;# muons",200,-10,10);
-  hists.EtaHigh = dir.make<TH1F>("h_etaHigh","muon w/ higher absolute value of #eta;#eta;# muons",200,-10,10);
+  hists.EtaLow = dir.make<TH1F>("h_etaLow","muon with lower absolute value of #eta;#eta;# muons",200,-4,4);
+  hists.EtaHigh = dir.make<TH1F>("h_etaHigh","muon w/ higher absolute value of #eta;#eta;# muons",200,-4,4);
   hists.PtLow = dir.make<TH1F>("h_ptLow","muon w/ lower p_{t};p_{t}  [GeV];# muons",200,0,200);
   hists.PtHigh = dir.make<TH1F>("h_ptHigh","muon w/ higher p_{t};p_{t}  [GeV];# muons",200,0,200);
   hists.DeltaEta = dir.make<TH1F>("h_deltaEta","#Delta#eta;#Delta#eta;# muon pairs",100,-5,5);
   hists.DeltaPhi = dir.make<TH1F>("h_deltaPhi","#Delta#phi;#Delta#phi;# muon pairs",200,-200,200);
   hists.DiMass = dir.make<TH1F>("h_diMass","di-muon invariant mass;m_{#mu#mu} [GeV];# muon pairs",100,0.,200.);
   hists.DiPt = dir.make<TH1F>("h_diPt","di-muon p_{t};p_{t}  [GeV];# muon pairs",200,0,200);
+  hists.DiY = dir.make<TH1F>("h_diY","di-muon rapidity y;y;# muon pairs",200,-4,4);
 }
 
 
@@ -158,10 +160,11 @@ DiMuonAnalyzer::fillHists(DiMuHists& hists, const reco::Candidate& diMuon){
   const double deltaEta = mu2.eta() - mu1.eta();
   const double deltaPhi = reco::deltaPhi(mu2.phi(),mu1.phi());
   
-  // dimuon invariant mass and pt
+  // dimuon invariant mass, pt and rapidity
   const reco::Candidate::LorentzVector diMuVec = mu1.p4() + mu2.p4();
   const double diMass = diMuon.mass();
   const double diPt = diMuon.pt();
+  const double diY = diMuon.y();
   
   hists.EtaLow->Fill(etaLow);
   hists.EtaHigh->Fill(etaHigh);
@@ -171,6 +174,7 @@ DiMuonAnalyzer::fillHists(DiMuHists& hists, const reco::Candidate& diMuon){
   hists.DeltaPhi->Fill(deltaPhi*180./M_PI);
   hists.DiMass->Fill(diMass);
   hists.DiPt->Fill(diPt);
+  hists.DiY->Fill(diY);
 }
 
 

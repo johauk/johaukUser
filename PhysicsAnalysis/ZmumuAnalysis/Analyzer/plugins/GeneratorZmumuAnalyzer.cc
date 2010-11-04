@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Fri Feb 26 16:48:04 CET 2010
-// $Id: GeneratorZmumuAnalyzer.cc,v 1.5 2010/10/21 15:34:09 hauk Exp $
+// $Id: GeneratorZmumuAnalyzer.cc,v 1.6 2010/10/29 14:08:09 hauk Exp $
 //
 //
 
@@ -65,7 +65,7 @@ class GeneratorZmumuAnalyzer : public edm::EDAnalyzer {
       const edm::ParameterSet parameterSet_;
       
       TH1 *EtaLow, *EtaHigh, *PtLow, *PtHigh,
-          *EtaZ, *PtZ,
+          *EtaZ, *YZ, *PtZ,
 	  *MassZ,
 	  *QuarkOrigin;
 };
@@ -114,7 +114,7 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     bool isZmumu(false);
     double etaMinus(-999.), ptMinus(-999.);
     double etaPlus(-999.), ptPlus(-999.);
-    double etaZ(-999.), ptZ(-999.);
+    double etaZ(-999.), yZ(-999.), ptZ(-999.);
     reco::Candidate::LorentzVector lorVecMinus, lorVecPlus;
     // select Z0 gauge bosons
     // take care about status: decaying Z0 (status=3) has 3 daughters, third is Z0 itself as decayed Z0 (status=2)
@@ -122,6 +122,7 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     if(i_genPart->pdgId()!=23 || i_genPart->status()!=3) continue;
     //std::cout<<"\tGot ya - no. of daughters: "<<i_genPart->numberOfDaughters()<<"   - status: "<<i_genPart->status()<<"\n";
     etaZ = i_genPart->eta();
+    yZ = i_genPart->y();
     ptZ = i_genPart->pt();
     for(size_t iDaughter = 0; iDaughter < i_genPart->numberOfDaughters(); ++iDaughter){
       const reco::GenParticle* daughter(dynamic_cast<const reco::GenParticle*>(i_genPart->daughter(iDaughter)));
@@ -160,6 +161,7 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     PtLow->Fill(ptLow);
     PtHigh->Fill(ptHigh);
     EtaZ->Fill(etaZ);
+    YZ->Fill(yZ);
     PtZ->Fill(ptZ);
     MassZ->Fill(diMuMass);
     
@@ -210,6 +212,7 @@ GeneratorZmumuAnalyzer::beginJob(){
   
   TFileDirectory dirZ = fileService->mkdir("GeneratedZ");
   EtaZ = dirZ.make<TH1F>("h_etaZ","#eta of generated Z;#eta;# Z",200,-10,10);
+  YZ = dirZ.make<TH1F>("h_yZ","rapidity of generated Z;y;# Z",200,-10,10);
   PtZ = dirZ.make<TH1F>("h_ptZ","p_{t} of generated Z;p_{t}  [GeV];# Z",200,0,200);
   MassZ = dirZ.make<TH1F>("h_massZ","invariant mass of muon pair;m_{#mu#mu} [GeV];# muon pairs",200,0,200);
   QuarkOrigin = dirZ.make<TH1F>("h_quarkOrigin","quark origin;;#Z",6,0,6);
