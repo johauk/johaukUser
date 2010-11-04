@@ -35,7 +35,7 @@ void GenParticleOccurencePlots(TString pluginSuffix = ""){
   file = new TFile(inpath->Copy().Append("genParticleOccurenceSelection.root"));
   
   //Specify plugin name
-  TString* pluginName;
+  TString* pluginName(0);
   pluginName = new TString("GenParticleOccurenceAnalyzer");
   
   TString* a_flavour[nFlavour];
@@ -45,7 +45,7 @@ void GenParticleOccurencePlots(TString pluginSuffix = ""){
   a_flavour[3] = new TString("B");
   
   
-  TString* pluginFolder;
+  TString* pluginFolder(0);
   pluginFolder = new TString("ParticleOccurence");
   
   
@@ -79,18 +79,18 @@ void GenParticleOccurencePlots(TString pluginSuffix = ""){
   HistogramTools tools;
   tools.SetDefaultStyle();
   
-  TCanvas* canvas1;
+  TCanvas* canvas1(0);
 
-  TLegend* legend1; 
+  TLegend* legend1(0); 
    
   TH1F* a_hist1[nFlavour];  // do not use array [0]
   for(size_t iFlavour=0; iFlavour<nFlavour; ++iFlavour) a_hist1[iFlavour]=0;
   
-  THStack* stack1;
+  THStack* stack1(0);
   
-  TString* histName1;
+  TString* histName1(0);
   
-  TString* plotName1;
+  TString* plotName1(0);
   
   //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
@@ -149,8 +149,8 @@ void GenParticleOccurencePlots(TString pluginSuffix = ""){
   
   file->Close();
   
-  delete inpath;
-  delete outpath;
-  delete outform;
+  //delete inpath;
+  //delete outpath;
+  //delete outform;
   
 }

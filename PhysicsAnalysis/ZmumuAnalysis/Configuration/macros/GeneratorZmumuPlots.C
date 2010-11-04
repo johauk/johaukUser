@@ -35,7 +35,7 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   //file = new TFile(inpath->Copy().Append("generatorZmumuSelection.root"));
   
   //Specify plugin name
-  TString* pluginName;
+  TString* pluginName(0);
   pluginName = new TString("GeneratorZmumuAnalyzer");
   
   TString* a_flavour[nFlavour];
@@ -45,7 +45,7 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   a_flavour[3] = new TString("B");
   
   
-  TString* pluginFolder;
+  TString* pluginFolder(0);
   pluginFolder = new TString("");
   
   
@@ -79,21 +79,21 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   HistogramTools tools;
   tools.SetDefaultStyle();
   
-  TCanvas* canvas1;
+  TCanvas* canvas1(0);
 
-  TLegend* legend1; 
+  TLegend* legend1(0); 
    
   TH1F* a_hist1[nFlavour];  // do not use array [0]
   for(size_t iFlavour=0; iFlavour<nFlavour; ++iFlavour) a_hist1[iFlavour]=0;
   TH1F* a_hist2[nFlavour];  // For addition of histograms
   for(size_t iFlavour=0; iFlavour<nFlavour; ++iFlavour) a_hist2[iFlavour]=0;
   
-  THStack* stack1;
+  THStack* stack1(0);
   
-  TString* histName1;
-  TString* histName2;  // For addition of histograms
+  TString* histName1(0);
+  TString* histName2(0);  // For addition of histograms
   
-  TString* plotName1;
+  TString* plotName1(0);
   
   //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
