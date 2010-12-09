@@ -14,7 +14,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Wed Oct 20 16:37:05 CEST 2010
-// $Id: JetAnalyzer.cc,v 1.1 2010/10/21 15:24:43 hauk Exp $
+// $Id: JetAnalyzer.cc,v 1.2 2010/10/22 15:25:42 hauk Exp $
 //
 //
 
@@ -184,8 +184,8 @@ JetAnalyzer::beginJob()
   TFileDirectory dirJet = fileService->mkdir("JetProperties");
   Eta = dirJet.make<TH1F>("h_eta","pseudorapidity #eta;#eta;# jets",60,-3,3);
   Pt = dirJet.make<TH1F>("h_pt","transverse momentum p_{t};p_{t};# jets",100,0,200);
-  NConstituent = dirJet.make<TH1F>("h_nConstituent","# constituents;# constituents;# jets",20,0,20);
-  BDiscriminatorTche = dirJet.make<TH1F>("h_bDiscriminatorTche","b discriminator trackCountingHighEff d;d;# jets",160,-10,30);
+  NConstituent = dirJet.make<TH1F>("h_nConstituent","# constituents;# constituents;# jets",40,0,40);
+  BDiscriminatorTche = dirJet.make<TH1F>("h_bDiscriminatorTche","b discriminator trackCountingHighEff d;d;# jets",80,-10,30);
   BDiscriminatorSvhe = dirJet.make<TH1F>("h_bDiscriminatorSvhe","b discriminator simpleSecondaryVertexHighEff d;d;# jets",60,-1,14);
   
   ChargedMultiplicity = dirJet.make<TH1F>("h_chargedMult","Charged multiplicity;# tracks;# jets",20,0,20);

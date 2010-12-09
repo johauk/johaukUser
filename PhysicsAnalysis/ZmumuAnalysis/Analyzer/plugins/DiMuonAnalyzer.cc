@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May 20 15:47:12 CEST 2010
-// $Id: DiMuonAnalyzer.cc,v 1.4 2010/10/22 12:20:27 hauk Exp $
+// $Id: DiMuonAnalyzer.cc,v 1.5 2010/11/04 13:22:25 hauk Exp $
 //
 //
 
@@ -129,15 +129,15 @@ DiMuonAnalyzer::~DiMuonAnalyzer()
 void
 DiMuonAnalyzer::bookHists(DiMuHists& hists, const TFileDirectory& dir){
   hists.NDimuon = dir.make<TH1F>("h_nDimuon","# dimuons;# dimuons; # events",20,0,20);
-  hists.EtaLow = dir.make<TH1F>("h_etaLow","muon with lower absolute value of #eta;#eta;# muons",200,-4,4);
-  hists.EtaHigh = dir.make<TH1F>("h_etaHigh","muon w/ higher absolute value of #eta;#eta;# muons",200,-4,4);
-  hists.PtLow = dir.make<TH1F>("h_ptLow","muon w/ lower p_{t};p_{t}  [GeV];# muons",200,0,200);
-  hists.PtHigh = dir.make<TH1F>("h_ptHigh","muon w/ higher p_{t};p_{t}  [GeV];# muons",200,0,200);
+  hists.EtaLow = dir.make<TH1F>("h_etaLow","muon with lower absolute value of #eta;#eta;# muons",120,-3,3);
+  hists.EtaHigh = dir.make<TH1F>("h_etaHigh","muon w/ higher absolute value of #eta;#eta;# muons",120,-3,3);
+  hists.PtLow = dir.make<TH1F>("h_ptLow","muon w/ lower p_{t};p_{t}  [GeV];# muons",100,0,200);
+  hists.PtHigh = dir.make<TH1F>("h_ptHigh","muon w/ higher p_{t};p_{t}  [GeV];# muons",100,0,200);
   hists.DeltaEta = dir.make<TH1F>("h_deltaEta","#Delta#eta;#Delta#eta;# muon pairs",100,-5,5);
-  hists.DeltaPhi = dir.make<TH1F>("h_deltaPhi","#Delta#phi;#Delta#phi;# muon pairs",200,-200,200);
+  hists.DeltaPhi = dir.make<TH1F>("h_deltaPhi","#Delta#phi;#Delta#phi;# muon pairs",100,-200,200);
   hists.DiMass = dir.make<TH1F>("h_diMass","di-muon invariant mass;m_{#mu#mu} [GeV];# muon pairs",100,0.,200.);
-  hists.DiPt = dir.make<TH1F>("h_diPt","di-muon p_{t};p_{t}  [GeV];# muon pairs",200,0,200);
-  hists.DiY = dir.make<TH1F>("h_diY","di-muon rapidity y;y;# muon pairs",200,-4,4);
+  hists.DiPt = dir.make<TH1F>("h_diPt","di-muon p_{t};p_{t}  [GeV];# muon pairs",100,0,200);
+  hists.DiY = dir.make<TH1F>("h_diY","di-muon rapidity y;y;# muon pairs",120,-3,3);
 }
 
 
