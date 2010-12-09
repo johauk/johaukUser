@@ -27,7 +27,8 @@ process.options = cms.untracked.PSet(
 
 ## sources
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.Run2010A_Sep17ReReco_v2_Oct22_cff")
-process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.Run2010B_PromptReco_v2_Oct22_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.Run2010B_PromptReco_v2_Oct29_145000_147120_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.Run2010B_PromptReco_v2_Nov05_147120_149442_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.inclusiveMu15_spring10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopS_spring10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopTW_spring10_cff")
@@ -39,7 +40,9 @@ process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.Run2010B_P
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.ww_spring10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.wz_spring10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.zz_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.zjets_madgraph_spring10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.dymumu10to20_spring10_cff")
+process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 
 
 
@@ -65,6 +68,7 @@ process.TFileService = cms.Service("TFileService",
 ## filter trigger
 process.load("ZmumuAnalysis.Configuration.filters.TriggerFilter_cff")
 #process.triggerFilter1 = process.TriggerFilterMu9.clone()
+#process.triggerFilter1 = process.TriggerFilterMu15.clone()
 process.triggerFilter1 = process.TriggerFilterMu9_11_15.clone()
 
 
@@ -84,6 +88,11 @@ process.load("ZmumuAnalysis.Configuration.sequences.jetSelection_cff")
 
 
 
+## filter for missing Et
+process.load("ZmumuAnalysis.Configuration.sequences.metSelection_cff")
+
+
+
 
 #******************************************************************************************
 #   Analyzer Modules
@@ -95,54 +104,86 @@ process.TriggerAnalyzer1 =  process.TriggerAnalyzer.clone()
 
 
 
-## event analyzer
-process.load("ZmumuAnalysis.Analyzer.EventAnalyzer_cfi")
-process.EventAnalyzer1 = process.EventAnalyzer.clone(
-    muonSource = 'looseMuons',
-)
-process.EventAnalyzer2 = process.EventAnalyzer1.clone(
-    analyzeDiMuons = True,
-)
-process.EventAnalyzer3 = process.EventAnalyzer2.clone(
-    diMuonSource = "finalDimuons",
-)
-process.EventAnalyzer4 = process.EventAnalyzer3.clone(
-    jetSource = 'finalJets',
-)
-process.EventAnalyzer5 = process.EventAnalyzer4.clone(
-    jetSource = 'bTcheJets',
-)
-
-
-
 ## muon analizer
 process.load("ZmumuAnalysis.Analyzer.MuonAnalyzer_cfi")
 process.MuonAnalyzer1 = process.MuonAnalyzer.clone(
+    muonSource = 'looseMuons',
 )
 process.MuonAnalyzer2 = process.MuonAnalyzer1.clone(
-    muonSource = 'looseMuons',
+)
+process.MuonAnalyzer6 = process.MuonAnalyzer1.clone(
+)
+process.MuonAnalyzer9 = process.MuonAnalyzer1.clone(
+)
+
+process.MuonAnalyzerSC6 = process.MuonAnalyzer6.clone(
+)
+process.MuonAnalyzerSC9 = process.MuonAnalyzer9.clone(
 )
 
 
 
 ## di-muon analyzer
 process.load("ZmumuAnalysis.Analyzer.DiMuonAnalyzer_cfi")
-process.DiMuonAnalyzer1 = process.DiMuonAnalyzer.clone(
+process.DiMuonAnalyzer3 = process.DiMuonAnalyzer.clone(
+    diMuonSource = "goodDimuons",
 )
-process.DiMuonAnalyzer2 = process.DiMuonAnalyzer1.clone(
+process.DiMuonAnalyzer4 = process.DiMuonAnalyzer.clone(
+    diMuonSource = "isolatedDimuons",
+)
+#process.DiMuonAnalyzer5 = process.DiMuonAnalyzer.clone(
+#    diMuonSource = "atLeast1HltDimuons",
+#)
+process.DiMuonAnalyzer6 = process.DiMuonAnalyzer.clone(
     diMuonSource = "finalDimuons",
+)
+process.DiMuonAnalyzer9 = process.DiMuonAnalyzer.clone(
+    diMuonSource = "finalDimuons",
+)
+
+process.DiMuonAnalyzerSC3 = process.DiMuonAnalyzer3.clone(
+    diMuonSource = "goodDimuonsSC",
+)
+process.DiMuonAnalyzerSC4 = process.DiMuonAnalyzer4.clone(
+    diMuonSource = "isolatedDimuonsSC",
+)
+#process.DiMuonAnalyzerSC5 = process.DiMuonAnalyzer5.clone(
+#    diMuonSource = "atLeast1HltDimuonsSC",
+#)
+process.DiMuonAnalyzerSC6 = process.DiMuonAnalyzer6.clone(
+    diMuonSource = "finalDimuonsSC",
+)
+process.DiMuonAnalyzerSC9 = process.DiMuonAnalyzer9.clone(
+    diMuonSource = "finalDimuonsSC",
 )
 
 
 
 ## jet analyzer
 process.load("ZmumuAnalysis.Analyzer.JetAnalyzer_cfi")
-process.JetAnalyzer1 = process.JetAnalyzer.clone(
+process.JetAnalyzer7 = process.JetAnalyzer.clone(
     jetSource = 'finalJets',
 )
-process.JetAnalyzer2 = process.JetAnalyzer1.clone(
-    #jetSource = 'finalJets',
+process.JetAnalyzer8 = process.JetAnalyzer.clone(
+    jetSource = 'bTcheJets',
 )
+process.JetAnalyzer9 = process.JetAnalyzer.clone(
+    jetSource = 'bTcheJets',
+)
+
+process.JetAnalyzerSC7 = process.JetAnalyzer.clone()
+process.JetAnalyzerSC8 = process.JetAnalyzer.clone()
+process.JetAnalyzerSC9 = process.JetAnalyzer.clone()
+
+
+## missing et analyzer
+process.load("ZmumuAnalysis.Analyzer.MetAnalyzer_cfi")
+process.MetAnalyzer9 = process.MetAnalyzer.clone(
+    metSource = 'patMETsPF',
+)
+
+
+process.MetAnalyzerSC9 = process.MetAnalyzer9.clone()
 
 
 
@@ -154,27 +195,65 @@ process.JetAnalyzer2 = process.JetAnalyzer1.clone(
 
 
 
-process.p = cms.Path(
+process.oppositeChargeAnalysis = cms.Path(
     process.TriggerAnalyzer1
     *process.triggerFilter1
     
-    *process.MuonAnalyzer1
     *process.buildMuonCollections
-    *process.EventAnalyzer1
+    *process.MuonAnalyzer1
     *process.muonSelection
     *process.MuonAnalyzer2
     
     *process.buildDimuonCollections
-    *process.EventAnalyzer2
-    *process.DiMuonAnalyzer1
+    *process.DiMuonAnalyzer3
+    *process.DiMuonAnalyzer4
+#    *process.DiMuonAnalyzer5
     *process.dimuonSelection
-    *process.EventAnalyzer3
-    *process.DiMuonAnalyzer2
+    *process.MuonAnalyzer6
+    *process.DiMuonAnalyzer6
     
     *process.buildJetCollections
-    *process.EventAnalyzer4
-    *process.EventAnalyzer5
-    *process.JetAnalyzer1
+    *process.JetAnalyzer7
+    *process.JetAnalyzer8
     *process.jetSelection
-    *process.JetAnalyzer2
+    *process.MuonAnalyzer9
+    *process.DiMuonAnalyzer9
+    *process.JetAnalyzer9
+    
+    *process.buildMetCollections
+    *process.MetAnalyzer9
+    *process.metSelection
 )
+
+
+
+process.sameChargeAnalysis = cms.Path(
+    process.triggerFilter1
+    
+    *process.buildMuonCollections
+    *process.muonSelection
+    
+    *process.buildDimuonSCCollections
+    *process.DiMuonAnalyzerSC3
+    *process.DiMuonAnalyzerSC4
+#    *process.DiMuonAnalyzerSC5
+    *process.dimuonSCSelection
+    *process.MuonAnalyzerSC6
+    *process.DiMuonAnalyzerSC6
+    
+    *process.buildJetCollections
+    *process.JetAnalyzerSC7
+    *process.JetAnalyzerSC8
+    *process.jetSelection
+    *process.MuonAnalyzerSC9
+    *process.DiMuonAnalyzerSC9
+    *process.JetAnalyzerSC9
+    
+    *process.buildMetCollections
+    *process.MetAnalyzerSC9
+    *process.metSelection
+    
+)
+
+
+
