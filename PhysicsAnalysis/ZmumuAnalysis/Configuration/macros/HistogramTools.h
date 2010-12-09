@@ -495,7 +495,7 @@ void HistogramTools::SetWeights(TH1F* hist[], Double_t dataLumi, size_t n)
       case  8 : nEvents = 466437; crossSection = 10.6; filterEfficiency = 1.; break;       
       case  9 : nEvents = 412055; crossSection = 4.21; filterEfficiency = 1.; break; 
       case 10 : nEvents = 632010; crossSection = 165.; filterEfficiency = 1.; break;       
-      case 11 : nEvents = 0; crossSection = 296900.; filterEfficiency = 0.2864; break;  // real values: crossSection*1000, filterEfficiency/1000
+      case 11 : nEvents = 4377187; crossSection = 296900.; filterEfficiency = 0.2864; break;  // real values: crossSection*1000, filterEfficiency/1000
       default: continue;      
     }
     if(i>=1 && i<n && hist[i]){
