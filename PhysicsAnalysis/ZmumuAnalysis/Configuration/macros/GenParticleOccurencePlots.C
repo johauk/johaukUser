@@ -31,7 +31,7 @@ void GenParticleOccurencePlots(TString pluginSuffix = ""){
   
   // Specify all input files
   TFile* file;
-  //file = new TFile(inpath->Copy().Append("mc/genParticleOccurence.root"));
+  //file = new TFile(inpath->Copy().Append("simulation/genParticleOccurence.root"));
   file = new TFile(inpath->Copy().Append("genParticleOccurenceSelection.root"));
   
   //Specify plugin name

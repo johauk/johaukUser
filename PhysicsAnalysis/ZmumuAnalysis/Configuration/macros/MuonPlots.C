@@ -25,7 +25,7 @@ const TString* outform = new TString(".png");
 const size_t nFiles = 12;
 
 // Integrated lumi of taken data for normalising MC in pb-1
-const Double_t dataLumi(0.2112);
+const Double_t dataLumi(21.8846);
 
 
 void MuonPlots(TString pluginSuffix = ""){
@@ -34,7 +34,7 @@ void MuonPlots(TString pluginSuffix = ""){
   // Specify all input files
   TFile* a_file[nFiles];
   for(size_t iFile=0; iFile<nFiles; ++iFile) a_file[iFile]=0;
-  a_file[0]=new TFile(inpath->Copy().Append("data/ichep_all.root"));
+  a_file[0]=new TFile(inpath->Copy().Append("data/allData.root"));
   a_file[1]=new TFile(inpath->Copy().Append("mc/zmumu.root"));
   a_file[2]=new TFile(inpath->Copy().Append("mc/zz.root"));
   a_file[3]=new TFile(inpath->Copy().Append("mc/wz.root"));

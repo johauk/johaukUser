@@ -31,7 +31,7 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   
   // Specify all input files
   TFile* file;
-  file = new TFile(inpath->Copy().Append("mc/generatorZmumu.root"));
+  file = new TFile(inpath->Copy().Append("simulation/generatorZmumu.root"));
   //file = new TFile(inpath->Copy().Append("generatorZmumuSelection.root"));
   
   //Specify plugin name
