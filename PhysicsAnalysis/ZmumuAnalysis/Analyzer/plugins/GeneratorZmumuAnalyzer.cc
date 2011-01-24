@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Fri Feb 26 16:48:04 CET 2010
-// $Id: GeneratorZmumuAnalyzer.cc,v 1.6 2010/10/29 14:08:09 hauk Exp $
+// $Id: GeneratorZmumuAnalyzer.cc,v 1.7 2010/11/04 13:22:42 hauk Exp $
 //
 //
 
@@ -169,8 +169,13 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     //check flavour of mother quarks qqbar->Z
     //std::cout<<"\tNo. of mothers: "<<i_genPart->numberOfMothers()<<"\n";
     if(i_genPart->numberOfMothers()!=2)edm::LogError("Generator Behaviour")<<"Strange origin of Z, not built from two particles, but "<<i_genPart->numberOfMothers();
-    if(i_genPart->mother(0)->pdgId() != -i_genPart->mother(1)->pdgId())edm::LogError("Generator Behaviour")<<"Strange origin of Z, built from "<<i_genPart->mother(0)->pdgId()<<", "<<i_genPart->mother(1)->pdgId();
-    const int motherPdgId(std::fabs(i_genPart->mother()->pdgId()));  // by default first one, so mother(0) is taken
+    const int motherPdgId1(i_genPart->mother()->pdgId());  // by default first one, so mother(0) is taken
+    const int motherPdgId2(i_genPart->mother(1)->pdgId());
+    // Usable with Pythia, not correct with MadGraph or Powheg
+    //if(motherPdgId1!=-motherPdgId2)edm::LogError("Generator Behaviour")<<"Strange origin of Z, built from "<<i_genPart->mother(0)->pdgId()<<", "<<i_genPart->mother(1)->pdgId();
+    // Usable with others
+    if(motherPdgId1!=-motherPdgId2 && motherPdgId1!=21 && motherPdgId2!=21 )edm::LogError("Generator Behaviour")<<"Strange origin of Z, built from "<<i_genPart->mother(0)->pdgId()<<", "<<i_genPart->mother(1)->pdgId();
+    const int motherPdgId(motherPdgId1==21 ? std::fabs(motherPdgId2) : std::fabs(motherPdgId1));
     Flavour flavour(unknown);
     if(motherPdgId == 1)flavour = down;
     else if (motherPdgId == 2)flavour = up;
