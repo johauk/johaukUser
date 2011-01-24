@@ -23,12 +23,12 @@ process.options = cms.untracked.PSet(
 
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
-
-
-
 ## Input Source
 process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
+
+
+
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
 
 
 
