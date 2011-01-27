@@ -11,13 +11,6 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 
 
-## define maximal number of events to loop over
-process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1001)
-)
-
-
-
 ## configure process options
 process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(True),
@@ -26,23 +19,33 @@ process.options = cms.untracked.PSet(
 
 
 ## sources
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.Run2010A_Sep17ReReco_v2_Oct22_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.Run2010B_PromptReco_v2_Oct29_145000_147120_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.Run2010B_PromptReco_v2_Nov05_147120_149442_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.inclusiveMu15_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopS_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopTW_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.singleTopT_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.ttbar_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.wmunu_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.zmumu_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.ztautau_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.ww_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.wz_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.zz_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.zjets_madgraph_spring10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.mc.Spring10.samples.dymumu10to20_spring10_cff")
-process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010A_Nov04ReReco_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B1_Nov04ReReco_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B2_Nov04ReReco_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.QCD_MuEnrichedPt15_pythia_F10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.TToBLNu_madgraph_F10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.TTJets_D6T_madgraph_F10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WToMuNu_pythia_F10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WToTauNu_pythia_F10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToMuMu_M10To20_pythia_F10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToMuMu_M20_pythia_F10_cff")
+# To use for Zmumu
+process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYJetsToLL_M50_madgraph_F10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToTauTau_M10To20_pythia_F10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToTauTau_M20_pythia_F10_cff")
+# To use for Ztautau
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYJetsToLL_M50_D6T_madgraph_F10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WWTo2L2Nu_pythia_F10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WZTo3LNu_pythia_F10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.ZZToAnything_pythia_F10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
+
+
+
+## define maximal number of events to loop over
+process.maxEvents = cms.untracked.PSet(
+    input = cms.untracked.int32(1001)
+)
 
 
 
@@ -51,7 +54,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 # data
 process.GlobalTag.globaltag = cms.string('GR_R_38X_V13::All')
 # mc
-#process.GlobalTag.globaltag = cms.string('START38_V12::All')
+#process.GlobalTag.globaltag = cms.string('START38_V13::All')
 
 
 
