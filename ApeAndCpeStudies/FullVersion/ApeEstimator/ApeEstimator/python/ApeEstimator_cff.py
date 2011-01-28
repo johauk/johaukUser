@@ -15,13 +15,14 @@ ApeEstimator = ApeEstimatorTemplate.clone(
   #Sectors = SubdetSectors,
   #Sectors = TIBTOBQuarters,
   #Sectors = TIBTOBQuarters2DSeparation,
-  Sectors = TIBTOBPitchAnd2DSeparation,
+  #Sectors = TIBTOBPitchAnd2DSeparation,
+  Sectors = TIBTOBLayerAndOrientationSeparation,
   tjTkAssociationMapTag = "TrackRefitterHighPurityForApeEstimator",
 )
-#ApeEstimator.HitSelector.width = [1,3]
-ApeEstimator.HitSelector.widthDiff = [-3.,1.]
+ApeEstimator.HitSelector.width = [2,3]
+ApeEstimator.HitSelector.widthDiff = [-3.,0.1]
 #ApeEstimator.HitSelector.edgeStrips = [2,800]   # exclude first (and so also last) strip
-ApeEstimator.HitSelector.sOverN = [15.,20000.]
+ApeEstimator.HitSelector.sOverN = [18.,20000.]
 
 #ApeEstimator.HitSelector.phiSensX = [-1.0472,1.0472]  # [-60,60] degree
 #ApeEstimator.HitSelector.phiSensY = [-1.0472,1.0472]  # [-60,60] degree
