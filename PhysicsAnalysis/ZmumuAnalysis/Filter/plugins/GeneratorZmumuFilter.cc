@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Wed Sep  1 15:49:35 CEST 2010
-// $Id: GeneratorZmumuFilter.cc,v 1.4 2010/10/22 12:27:53 hauk Exp $
+// $Id: GeneratorZmumuFilter.cc,v 1.5 2011/01/24 12:40:18 hauk Exp $
 //
 //
 
@@ -162,11 +162,17 @@ GeneratorZmumuFilter::filterQuarkOrigin(const reco::GenParticle& genPart, const 
   if(genPart.numberOfMothers()!=2)edm::LogError("Generator Behaviour")<<"Strange origin of Z, not built from two particles, but "<<genPart.numberOfMothers();
   const int motherPdgId1(genPart.mother()->pdgId());  // by default first one, so mother(0) is taken
   const int motherPdgId2(genPart.mother(1)->pdgId());
+  int motherPdgId(motherPdgId1==21 ? std::fabs(motherPdgId2) : std::fabs(motherPdgId1));
   // Usable with Pythia, not correct with MadGraph or Powheg
   //if(motherPdgId1!=-motherPdgId2)edm::LogError("Generator Behaviour")<<"Strange origin of Z, built from "<<i_genPart->mother(0)->pdgId()<<", "<<i_genPart->mother(1)->pdgId();
-  // Usable with others
-  if(motherPdgId1!=-motherPdgId2 && motherPdgId1!=21 && motherPdgId2!=21 )edm::LogError("Generator Behaviour")<<"Strange origin of Z, built from "<<genPart.mother(0)->pdgId()<<", "<<genPart.mother(1)->pdgId();
-  const int motherPdgId(motherPdgId1==21 ? std::fabs(motherPdgId2) : std::fabs(motherPdgId1));
+  // Usable with Powheg, but not with MadGraph
+  //if(motherPdgId1!=-motherPdgId2 && motherPdgId1!=21 && motherPdgId2!=21 )edm::LogError("Generator Behaviour")<<"Strange origin of Z, built from "<<i_genPart->mother(0)->pdgId()<<", "<<i_genPart->mother(1)->pdgId();
+  // Usable with All
+  if(motherPdgId1!=-motherPdgId2 && motherPdgId1!=21 && motherPdgId2!=21 ){
+    //edm::LogError("Generator Behaviour")<<"Strange origin of Z, built from "<<i_genPart->mother(0)->pdgId()<<", "<<i_genPart->mother(1)->pdgId();
+    motherPdgId = 0;
+  }
+    
   Flavour flavour(unknown);
   if(motherPdgId == 1)flavour = down;
   else if (motherPdgId == 2)flavour = up;
@@ -174,7 +180,9 @@ GeneratorZmumuFilter::filterQuarkOrigin(const reco::GenParticle& genPart, const 
   else if (motherPdgId == 4)flavour = charm;
   else if (motherPdgId == 5)flavour = bottom;
   if(motherPdgId >= 1 && motherPdgId <= 5)flavour = Flavour(motherPdgId);
-  if(flavour==unknown)edm::LogError("Generator Behaviour")<<"Strange origin of Z, made of particles of type (PdgId): "<<motherPdgId;
+  
+  // Not usable with MadGraph
+  //if(flavour==unknown)edm::LogError("Generator Behaviour")<<"Strange origin of Z, made of particles of type (PdgId): "<<motherPdgId;
   
   for(std::vector<int>::const_iterator i_zQuarkOrigin = v_zQuarkOrigin.begin(); i_zQuarkOrigin != v_zQuarkOrigin.end(); ++i_zQuarkOrigin){
     if(flavour==Flavour(*i_zQuarkOrigin))return true;
