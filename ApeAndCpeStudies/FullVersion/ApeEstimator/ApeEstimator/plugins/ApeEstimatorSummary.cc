@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,6 2-039,+41227673512,
 //         Created:  Mon Oct 11 13:44:03 CEST 2010
-// $Id: ApeEstimatorSummary.cc,v 1.1 2010/10/14 15:21:03 hauk Exp $
+// $Id: ApeEstimatorSummary.cc,v 1.2 2010/10/25 17:04:33 hauk Exp $
 //
 //
 
@@ -360,12 +360,23 @@ ApeEstimatorSummary::calculateApe(){
    }
    
    
+   
+   
+   
+   
    // Loop over sectors for calculating APE
    const double correctionScaling(parameterSet_.getParameter<double>("correctionScaling"));
    const double sigmaFactorFit(parameterSet_.getParameter<double>("sigmaFactorFit"));
    for(std::map<unsigned int,TrackerSectorStruct>::iterator i_sector = m_tkSector_.begin(); i_sector != m_tkSector_.end(); ++i_sector){
      
-     std::vector<std::pair<double,double> > v_entriesAndCorrectionX2PerBin;
+     // All entries of all those bins which are used for calculation
+     double usedEntries(0.);
+     // Per bin: (entries * squaredMeanError, squaredResidualWidth)
+     //std::vector<std::pair<double,double> > v_entriesAndCorrectionX2PerBin;
+     std::vector<std::pair<double,double> > v_entriesErrorX2AndResidualWidthX2PerBin;
+     
+     double baselineWidthX2(a_baselineSector[(*i_sector).first]);
+     
      
      // Loop over residual error bins to calculate APE for every bin
      for(std::map<unsigned int, std::map<std::string,TH1*> >::const_iterator i_errBins = (*i_sector).second.m_binnedHists.begin();
@@ -423,7 +434,7 @@ ApeEstimatorSummary::calculateApe(){
        double fitMean_1(mean_1), fitMean_2(mean_2);
        double residualWidth_1(sigma_1), residualWidth_2(sigma_2);
        
-       double baselineWidthX2(a_baselineSector[(*i_sector).first]);
+       //double baselineWidthX2(a_baselineSector[(*i_sector).first]);  // now taken out of this loop, is one value per sector
        double correctionX2_1(-0.0010), correctionX2_2(-0.0010);
        correctionX2_1 = meanSigmaX*meanSigmaX*(residualWidth_1*residualWidth_1 -baselineWidthX2);
        correctionX2_2 = meanSigmaX*meanSigmaX*(residualWidth_2*residualWidth_2 -baselineWidthX2);
@@ -455,12 +466,53 @@ ApeEstimatorSummary::calculateApe(){
        
        // Use result for bin only when entries>1000
        if(entries<1000.)continue;
+       
+       
+       usedEntries += entries;
+       std::pair<double,double> entriesErrorX2AndResidualWidthX2PerBin(entries*meanSigmaX*meanSigmaX, residualWidth_2*residualWidth_2);
+       v_entriesErrorX2AndResidualWidthX2PerBin.push_back(entriesErrorX2AndResidualWidthX2PerBin);
+       
+       
        // Fill correction^2 for APE calculation, BUT fill residualWidth^2 for setBaseline mode
-       std::pair<double,double> entriesAndCorrectionX2PerBin(entries, setBaseline ? residualWidth_2*residualWidth_2 : correctionX2_2);
-       v_entriesAndCorrectionX2PerBin.push_back(entriesAndCorrectionX2PerBin);
+       //std::pair<double,double> entriesAndCorrectionX2PerBin(entries, setBaseline ? residualWidth_2*residualWidth_2 : correctionX2_2);
+       //v_entriesAndCorrectionX2PerBin.push_back(entriesAndCorrectionX2PerBin);
      }
      
      
+     
+     
+     
+     
+     if(v_entriesErrorX2AndResidualWidthX2PerBin.size() == 0){
+       edm::LogError("CalculateAPE")<<"NO error interval of sector "<<(*i_sector).first<<" has a valid APE calculated,\n...so cannot set APE";
+       continue;
+     }
+     
+      double correctionX2(999.);
+      if(!setBaseline){
+       // Calculate mean weighted by entries per bin
+       bool firstInterval(true);
+       for(std::vector<std::pair<double,double> >::const_iterator i_apeBins = v_entriesErrorX2AndResidualWidthX2PerBin.begin(); i_apeBins != v_entriesErrorX2AndResidualWidthX2PerBin.end(); ++i_apeBins){
+         if(firstInterval){
+           correctionX2 = (*i_apeBins).first * ((*i_apeBins).second  - baselineWidthX2);
+	   firstInterval = false;
+         }
+         else correctionX2 += (*i_apeBins).first * ((*i_apeBins).second  - baselineWidthX2);
+       }
+       correctionX2 = correctionX2/usedEntries;
+     }
+     else{
+       double numerator(0.), denominator(0.);
+       for(std::vector<std::pair<double,double> >::const_iterator i_apeBins = v_entriesErrorX2AndResidualWidthX2PerBin.begin(); i_apeBins != v_entriesErrorX2AndResidualWidthX2PerBin.end(); ++i_apeBins){
+         numerator += (*i_apeBins).first * (*i_apeBins).second;
+	 denominator+= (*i_apeBins).first;
+       }
+       correctionX2 = numerator/denominator;
+     }
+     
+     
+     
+/*     
      // Calculate squared correction for sector (or squared baselineWidth in setBaseline mode)
      if(v_entriesAndCorrectionX2PerBin.size() == 0){
        edm::LogError("CalculateAPE")<<"NO error interval of sector "<<(*i_sector).first<<" has a valid APE calculated,\n...so cannot set APE";
@@ -480,7 +532,7 @@ ApeEstimatorSummary::calculateApe(){
        entriesSum += (*i_apeBins).first;
      }
      correctionX2 = correctionX2/entriesSum;
-     
+*/     
      
      
      if(!setBaseline){
