@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.11 2010/10/11 11:21:47 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.1 2010/10/14 15:20:23 hauk Exp $
 //
 //
 
@@ -878,20 +878,20 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
   hitParams.xHit = lPHit.x();
   hitParams.xTrk = lPTrk.x();
   
-  // use APE also for the hit error, while APE is automatically included in tsos error (method taken from Jula)
+  // use APE also for the hit error, while APE is automatically included in tsos error
   AlgebraicROOTObject<2>::SymMatrix mat = asSMatrix<2>(hit.parametersError());
   LocalError errHitAPE = LocalError( mat(0,0),mat(0,1),mat(1,1) ),
-             errHit = hit.localPositionError(),
+             errHitWoApe = hit.localPositionError(),
 	     errTrk = tsos.localError().positionError();
   
   
-  if(errHit.xx()<0. || errHit.yy()<0. || errHitAPE.xx()<0. || errHitAPE.yy()<0. || errTrk.xx()<0. || errTrk.yy()<0.){
+  if(errHitWoApe.xx()<0. || errHitWoApe.yy()<0. || errHitAPE.xx()<0. || errHitAPE.yy()<0. || errTrk.xx()<0. || errTrk.yy()<0.){
     hitParams.hitState = TrackStruct::negativeError;
     ++counter1;
     edm::LogError("Negative error Value")<<"@SUB=ApeEstimator::fillHitVariables"
                                          <<"One of the squared error methods gives negative result"
-                                         <<"\n\tSubdetector\terrHit.xx()\terrHit.yy()\terrHitAPE.xx()\terrHitAPE.yy()\terrTrk.xx()\terrTrk.yy()"
-                                         <<"\n\t"<<m_tkTreeVar_[rawId].subdetId<<"\t\t"<<errHit.xx()<<"\t"<<errHit.yy()
+                                         <<"\n\tSubdetector\terrHitWoApe.xx()\terrHitWoApe.yy()\terrHitAPE.xx()\terrHitAPE.yy()\terrTrk.xx()\terrTrk.yy()"
+                                         <<"\n\t"<<m_tkTreeVar_[rawId].subdetId<<"\t\t"<<errHitWoApe.xx()<<"\t"<<errHitWoApe.yy()
 					 <<errHitAPE.xx()<<"\t"<<errHitAPE.yy()<<"\t"<<errTrk.xx()<<"\t"<<errTrk.yy();
     return hitParams;
   }
@@ -904,6 +904,12 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
   hitParams.errXTrk = sqrt(errTrk.xx());
   hitParams.errX2   = errX2;
   hitParams.errX    = sqrt(errX2);
+  
+  float errX2WoApe(999.F), errY2WoApe(999.F);
+  errX2WoApe = errHitWoApe.xx()+errTrk.xx();
+  errY2WoApe = errHitWoApe.yy()+errTrk.yy();
+  hitParams.errXHitWoApe = sqrt(errHitWoApe.xx());
+  hitParams.errXWoApe = sqrt(errX2WoApe);
   
   
   align::LocalVector res = lPTrk - lPHit;
@@ -944,7 +950,7 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
                                            <<"One of the squared error methods gives negative result"
                                            <<"\n\tmeasHitErr.uu()\tmeasHitErr.vv()\tmeasTrkErr.uu()\tmeasTrkErr.vv()"
 	                                   <<"\n\t"<<measHitErr.uu()<<"\t"<<measHitErr.vv()<<"\t"<<measTrkErr.uu()<<"\t"<<measTrkErr.vv()
-					   <<"\n\nOriginalValues: "<<lPHit.x()<<" "<<lPHit.y()<<"\n"<<lPTrk.x()<<" "<<lPTrk.y()<<"\n"<<errHit.xx()<<" "<<errHit.yy()<<"\n"
+					   <<"\n\nOriginalValues: "<<lPHit.x()<<" "<<lPHit.y()<<"\n"<<lPTrk.x()<<" "<<lPTrk.y()<<"\n"<<errHitWoApe.xx()<<" "<<errHitWoApe.yy()<<"\n"
 					   <<errHitAPE.xx()<<" "<<errHitAPE.yy()<<"\n"<<"Subdet: "<<m_tkTreeVar_[rawId].subdetId
 					   <<"Width: "<<hitParams.width;
       hitParams.hitState = TrackStruct::negativeError;
@@ -1449,11 +1455,15 @@ ApeEstimator::fillHistsForApeCalculation(const TrackStruct& trackStruct){
       
       for(std::map<unsigned int,std::pair<double,double> >::const_iterator i_errBins = m_resErrBins_.begin();
           i_errBins != m_resErrBins_.end(); ++i_errBins){
-	if((*i_hit).errX < (*i_errBins).second.first || (*i_hit).errX >= (*i_errBins).second.second){
+	// Separate the bins for residual resolution w/o APE, to be consistent within iterations where APE will change (have same hit always in same bin)
+	// So also fill this value in the histogram sigmaX
+	// But of course use the normalized residual regarding the APE to have its influence in its width
+	if((*i_hit).errXWoApe < (*i_errBins).second.first || (*i_hit).errXWoApe >= (*i_errBins).second.second){
 	  continue;
 	}
-	(*i_sector).second.m_binnedHists[(*i_errBins).first]["sigmaX"] ->Fill((*i_hit).errX);
+	(*i_sector).second.m_binnedHists[(*i_errBins).first]["sigmaX"] ->Fill((*i_hit).errXWoApe);
 	(*i_sector).second.m_binnedHists[(*i_errBins).first]["norResX"]->Fill((*i_hit).norResX);
+	break;
       }
       
     }
