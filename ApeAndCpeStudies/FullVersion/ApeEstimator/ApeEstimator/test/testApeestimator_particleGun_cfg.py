@@ -44,7 +44,7 @@ process.options = cms.untracked.PSet(
 
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10001) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
 
 #process.source.inputCommands = cms.untracked.vstring('keep *', 'drop *_MEtoEDMConverter_*_*') # hack to get rid of the memory consumption problem in 2_2_X and beond
 
@@ -82,12 +82,12 @@ process.source = cms.Source ("PoolSource",
 )
 readFiles.extend( [
 #    'rfio:////castor/cern.ch/cms/store/mc/Spring10/MinBias/ALCARECO/START3X_V26_S09_TkAlMinBias-v1/0005/F813AAFC-A54D-DF11-B953-003048678BB8.root',
-    'file:/tmp/hauk/reco1.root',
+#    'file:/tmp/hauk/reco1.root',
 #    'file:/tmp/hauk/reco2.root',
 #    'file:/tmp/hauk/reco3.root',
 #    'file:/tmp/hauk/reco4.root',
 #    'file:reco.root',
-#    'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RECO/reco1.root',
+    'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RECO/reco1.root',
 #    'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RECO/reco2.root',
 #    'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RECO/reco3.root',
 #    'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RECO/reco4.root',
@@ -145,28 +145,55 @@ process.HighPuritySelector.src = 'generalTracks'
 
 
 
-## Choose Alignment (w/o touching APE)
+##
+## Alignment and APE
+##
 import CalibTracker.Configuration.Common.PoolDBESSource_cfi
+## Choose Alignment (w/o touching APE)
 process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
     connect = 'frontier://FrontierProd/CMS_COND_31X_FROM21X', # or your sqlite file
-    toGet = cms.VPSet(
+    toGet = [
       cms.PSet(
         record = cms.string('TrackerAlignmentRcd'),
         tag = cms.string('TrackerIdealGeometry210_mc') # 'TrackerAlignment_2009_v2_offline'
       )
-    )
+    ],
 )
 process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
 #process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
-#    connect = cms.string('sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/misalignments/AlignmentsTob20.db'),
-#    toGet = cms.VPSet(
+#    connect = 'sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/misalignments/AlignmentsTob20.db',
+#    toGet = [
 #      cms.PSet(
 #        record = cms.string('TrackerAlignmentRcd'),
 #        tag = cms.string('TrackerScenario')
 #      )
-#    )
+#    ],
 #)
 #process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+
+## APE (set to zero)
+process.myTrackerAlignmentErr = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+    connect = 'frontier://FrontierProd/CMS_COND_31X_FROM21X',
+    toGet = [
+      cms.PSet(
+        record = cms.string('TrackerAlignmentErrorRcd'),
+        tag = cms.string('TrackerIdealGeometryErrors210_mc')
+      )
+    ],
+)
+process.es_prefer_trackerAlignmentErr = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentErr")
+### APE (as estimated with ApeEstimator)
+#process.myTrackerAlignmentErr = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+#    connect = 'sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/apeObjects/apeIter0.db',
+#    toGet = [
+#      cms.PSet(
+#        record = cms.string('TrackerAlignmentErrorRcd'),
+#        tag = cms.string('AlignmentErrors')
+#      )
+#    ],
+#)
+#process.es_prefer_trackerAlignmentErr = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentErr")
+
 
 
 
@@ -186,8 +213,8 @@ process.ApeEstimator1 = ApeEstimator.clone(
     tjTkAssociationMapTag = "TrackRefitterHighPurityForApeEstimator",
     maxTracksPerEvent = 0,
     applyTrackCuts = False,
-    Sectors = SubdetSectors,
-    #Sectors = TIBTOBLayerAndOrientationSeparation,
+    #Sectors = SubdetSectors,
+    Sectors = TIBTOBLayerAndOrientationSeparation,
     analyzerMode = False,
     #setBaseline = True,
 )
