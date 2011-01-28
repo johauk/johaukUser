@@ -12,49 +12,6 @@ from Configuration.StandardSequences.FrontierConditions_GlobalTag_cff import *
 
 
 
-## ALIGNMENT CONSTANTS & APE (set to zero)
-#from CalibTracker.Configuration.Common.PoolDBESSource_cfi import *
-import CalibTracker.Configuration.Common.PoolDBESSource_cfi
-
-#myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
-#    connect = 'frontier://FrontierProd/CMS_COND_31X_FROM21X', # or your sqlite file
-#    toGet = cms.VPSet(
-#      cms.PSet(
-#        record = cms.string('TrackerAlignmentRcd'),
-#        tag = cms.string('TrackerIdealGeometry210_mc') # your tag
-#        )
-#      )
-#    )
-#es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
-
-## APE (set to zero)
-myTrackerAlignmentErr = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
-    connect = cms.string('frontier://FrontierProd/CMS_COND_31X_FROM21X'),
-    toGet = cms.VPSet(
-      cms.PSet(
-        record = cms.string('TrackerAlignmentErrorRcd'),
-        tag = cms.string('TrackerIdealGeometryErrors210_mc')
-      )
-    )
-)
-es_prefer_trackerAlignmentErr = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentErr")
-
-### APE (as estimated with ApeEstimator)
-#myTrackerAlignmentErr = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
-#    connect = cms.string('sqlite_file:/afs/cern.ch/user/h/hauk/cms/CMSSW_3_3_6_patch6/src/Alignment/CommonAlignmentAlgorithm/MyLocalApe.db'),
-#    toGet = cms.VPSet(
-#      cms.PSet(
-#        record = cms.string('TrackerAlignmentErrorRcd'),
-#        tag = cms.string('AlignmentErrors')
-#      )
-#    )
-#)
-#es_prefer_trackerAlignmentErr = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentErr")
-
-
-
-
-
 ## MAGNETIC FIELD
 #from Configuration.StandardSequences.MagneticField_0T_cff import *
 from Configuration.StandardSequences.MagneticField_cff import *
