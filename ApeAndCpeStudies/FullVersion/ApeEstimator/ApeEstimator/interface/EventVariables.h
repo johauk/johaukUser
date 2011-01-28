@@ -18,6 +18,7 @@ struct TrackStruct{
 		 projWidth(-999.F),
 		 resX(-999.F), norResX(-999.F), xHit(-999.F), xTrk(-999.F),
                  errXHit(-999.F), errXTrk(-999.F), errX(-999.F), errX2(-999.F),
+		 errXHitWoApe(-999.F), errXWoApe(-999.F),
                  phiSens(-999.F), phiSensX(-999.F), phiSensY(-999.F),
 		 probX(-999.F){}
     
@@ -32,6 +33,7 @@ struct TrackStruct{
     // trackFit results
     float resX, norResX, xHit, xTrk,
           errXHit, errXTrk, errX, errX2,
+	  errXHitWoApe, errXWoApe,
           phiSens, phiSensX, phiSensY,
 	  probX;
   };
