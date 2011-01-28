@@ -36,6 +36,9 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
 
 ## Filter under test
 process.load("ZmumuAnalysis.Filter.GeneratorZmumuFilter_cfi")
+process.GeneratorZmumuFilter = process.GeneratorZmumuFilter.clone(
+    #zDecayMode = [13],
+)
 process.GeneratorZmumuFilterUdscb = process.GeneratorZmumuFilter.clone(
     zQuarkOrigin = [1,2,3,4,5],
 )
@@ -45,14 +48,14 @@ process.GeneratorZmumuFilterUdsc = process.GeneratorZmumuFilter.clone(
 process.GeneratorZmumuFilterUds = process.GeneratorZmumuFilter.clone(
     zQuarkOrigin = [1,2,3],
 )
-process.GeneratorZmumuFilter1 = process.GeneratorZmumuFilter.clone(
+process.GeneratorZmumuDiMuMassFilter = process.GeneratorZmumuFilter.clone(
     #src = 'genParticles',
     diMuMassIntervals = [60.,120.],
 )
-process.GeneratorZmumuFilter2 = process.GeneratorZmumuFilter.clone(
+process.GeneratorZmumuMuEtaFilter = process.GeneratorZmumuFilter.clone(
     etaIntervals = [-2.4,2.4],
 )
-process.GeneratorZmumuFilter3 = process.GeneratorZmumuFilter.clone(
+process.GeneratorZmumuMuPtFilter = process.GeneratorZmumuFilter.clone(
     ptIntervals = [20.,99999.],
 )
 
@@ -60,10 +63,11 @@ process.GeneratorZmumuFilter3 = process.GeneratorZmumuFilter.clone(
 
 ## Path
 process.p = cms.Path(
-    process.GeneratorZmumuFilterUdscb
+    process.GeneratorZmumuFilter
+    *process.GeneratorZmumuFilterUdscb
     *process.GeneratorZmumuFilterUdsc
     *process.GeneratorZmumuFilterUds
-    *process.GeneratorZmumuFilter1
-    *process.GeneratorZmumuFilter2
-    *process.GeneratorZmumuFilter3
+    *process.GeneratorZmumuDiMuMassFilter
+    *process.GeneratorZmumuMuEtaFilter
+    *process.GeneratorZmumuMuPtFilter
 )
