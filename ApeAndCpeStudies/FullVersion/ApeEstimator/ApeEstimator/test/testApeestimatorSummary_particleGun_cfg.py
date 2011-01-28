@@ -52,6 +52,9 @@ process.source = cms.Source("EmptySource")
 ##
 from ApeEstimator.ApeEstimator.ApeEstimatorSummary_cfi import *
 process.ApeEstimatorSummary1 = ApeEstimatorSummary.clone(
+    #setBaseline = True,
+    sigmaFactorFit = 2.5,
+    correctionScaling = 1.,
     InputFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/test_particleGun.root',
     ResultsFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/test_particleGun_resultsFile.root',
     BaselineFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/test_particleGun_baselineApe.root',
