@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Fri Feb 26 16:48:04 CET 2010
-// $Id: GeneratorZmumuAnalyzer.cc,v 1.7 2010/11/04 13:22:42 hauk Exp $
+// $Id: GeneratorZmumuAnalyzer.cc,v 1.8 2011/01/24 11:16:13 hauk Exp $
 //
 //
 
@@ -110,17 +110,21 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   // all variable names are like in Z->mumu case, but act universally on Z->xx
   const std::vector<int> v_zDecayMode(parameterSet_.getParameter<std::vector<int> >("zDecayMode"));
   
+  
+  //std::cout<<"\tNumber of particles in event: "<<genParticles->size()<<"\n";
   for(reco::GenParticleCollection::const_iterator i_genPart = genParticles->begin(); i_genPart != genParticles->end(); ++i_genPart) {
     bool isZmumu(false);
     double etaMinus(-999.), ptMinus(-999.);
     double etaPlus(-999.), ptPlus(-999.);
     double etaZ(-999.), yZ(-999.), ptZ(-999.);
     reco::Candidate::LorentzVector lorVecMinus, lorVecPlus;
+    //std::cout<<"\tParticle with ID: "<<i_genPart->pdgId()<<" and status "<<i_genPart->status()<<"\n";
     // select Z0 gauge bosons
     // take care about status: decaying Z0 (status=3) has 3 daughters, third is Z0 itself as decayed Z0 (status=2)
     // Question: is the status numbering convention only valid for Pythia?
     if(i_genPart->pdgId()!=23 || i_genPart->status()!=3) continue;
-    //std::cout<<"\tGot ya - no. of daughters: "<<i_genPart->numberOfDaughters()<<"   - status: "<<i_genPart->status()<<"\n";
+    //std::cout<<"\tNumber of Z daughters: "<<i_genPart->numberOfDaughters()<<"\n";
+    if(i_genPart->numberOfDaughters()!=3)edm::LogError("Generator Behaviour")<<"Strange decay of Z, not exactly 3 daughters, but: "<<i_genPart->numberOfDaughters()<<"\n";
     etaZ = i_genPart->eta();
     yZ = i_genPart->y();
     ptZ = i_genPart->pt();
@@ -156,26 +160,23 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     const double ptLow = ptMinus<ptPlus ? ptMinus : ptPlus;
     const double ptHigh = ptMinus>ptPlus ? ptMinus : ptPlus;
     
-    EtaLow->Fill(etaLow);
-    EtaHigh->Fill(etaHigh);
-    PtLow->Fill(ptLow);
-    PtHigh->Fill(ptHigh);
-    EtaZ->Fill(etaZ);
-    YZ->Fill(yZ);
-    PtZ->Fill(ptZ);
-    MassZ->Fill(diMuMass);
-    
     
     //check flavour of mother quarks qqbar->Z
     //std::cout<<"\tNo. of mothers: "<<i_genPart->numberOfMothers()<<"\n";
     if(i_genPart->numberOfMothers()!=2)edm::LogError("Generator Behaviour")<<"Strange origin of Z, not built from two particles, but "<<i_genPart->numberOfMothers();
     const int motherPdgId1(i_genPart->mother()->pdgId());  // by default first one, so mother(0) is taken
     const int motherPdgId2(i_genPart->mother(1)->pdgId());
+    int motherPdgId(motherPdgId1==21 ? std::fabs(motherPdgId2) : std::fabs(motherPdgId1));
     // Usable with Pythia, not correct with MadGraph or Powheg
     //if(motherPdgId1!=-motherPdgId2)edm::LogError("Generator Behaviour")<<"Strange origin of Z, built from "<<i_genPart->mother(0)->pdgId()<<", "<<i_genPart->mother(1)->pdgId();
-    // Usable with others
-    if(motherPdgId1!=-motherPdgId2 && motherPdgId1!=21 && motherPdgId2!=21 )edm::LogError("Generator Behaviour")<<"Strange origin of Z, built from "<<i_genPart->mother(0)->pdgId()<<", "<<i_genPart->mother(1)->pdgId();
-    const int motherPdgId(motherPdgId1==21 ? std::fabs(motherPdgId2) : std::fabs(motherPdgId1));
+    // Usable with Powheg, but not with MadGraph
+    //if(motherPdgId1!=-motherPdgId2 && motherPdgId1!=21 && motherPdgId2!=21 )edm::LogError("Generator Behaviour")<<"Strange origin of Z, built from "<<i_genPart->mother(0)->pdgId()<<", "<<i_genPart->mother(1)->pdgId();
+    // Usable with All
+    if(motherPdgId1!=-motherPdgId2 && motherPdgId1!=21 && motherPdgId2!=21 ){
+      //edm::LogError("Generator Behaviour")<<"Strange origin of Z, built from "<<i_genPart->mother(0)->pdgId()<<", "<<i_genPart->mother(1)->pdgId();
+      motherPdgId = 0;
+    }
+    
     Flavour flavour(unknown);
     if(motherPdgId == 1)flavour = down;
     else if (motherPdgId == 2)flavour = up;
@@ -183,12 +184,19 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     else if (motherPdgId == 4)flavour = charm;
     else if (motherPdgId == 5)flavour = bottom;
     if(motherPdgId >= 1 && motherPdgId <= 5)flavour = Flavour(motherPdgId);
-    if(flavour==unknown)edm::LogError("Generator Behaviour")<<"Strange origin of Z, made of particles of type (PdgId): "<<motherPdgId;
+    
+    // Not usable with MadGraph
+    //if(flavour==unknown)edm::LogError("Generator Behaviour")<<"Strange origin of Z, made of particles of type (PdgId): "<<motherPdgId;
+    
     for(size_t iMother = 0; iMother < i_genPart->numberOfMothers(); ++iMother){
       const reco::GenParticle* motherQuark(dynamic_cast<const reco::GenParticle*>(i_genPart->mother(iMother)));
       //std::cout<<"\tMother quark no. "<<iMother<<" has ID "<<motherQuark->pdgId()<<" and Status "<<motherQuark->status()<<"\n";
-      //std::cout<<"\tNo. of mother gluons: "<<motherQuark->numberOfMothers()<<"\n";
-      if(motherQuark->numberOfMothers()!=1)edm::LogError("Generator Behaviour")<<"Strange origin of mother quark, not built from single gluon, but "<<motherQuark->numberOfMothers();
+      //std::cout<<"\tNo. of mothers: "<<motherQuark->numberOfMothers()<<", first has ID: "<<motherQuark->mother()->pdgId()<<", status "<<motherQuark->mother()->status()<<"\n";
+      //std::cout<<"\tNo. of daughters: "<<motherQuark->numberOfDaughters()<<", first has ID: "<<motherQuark->daughter(0)->pdgId()<<", status "<<motherQuark->daughter(0)->status()<<"\n";
+      //for(size_t iDaughter = 1; iDaughter < motherQuark->numberOfDaughters(); ++iDaughter){
+        //std::cout<<"\tDaughter no. "<<iDaughter<<" has ID "<<motherQuark->daughter(iDaughter)->pdgId()<<", status "<<motherQuark->daughter(iDaughter)->status()<<"\n";
+      //}
+      if(motherQuark->numberOfMothers()!=1)edm::LogError("Generator Behaviour")<<"Strange origin of mother quark, not built from single parton, but "<<motherQuark->numberOfMothers();
       //const reco::GenParticle* gluon(dynamic_cast<const reco::GenParticle*>(motherQuark->mother()));
       //if(gluon->pdgId()!=21){ // && std::fabs(gluon->pdgId())>2){
 	//std::cout<<"\tMother gluon (of quark with ID "<<motherQuark->pdgId()<<") has ID "<<gluon->pdgId()<<" and Status "<<gluon->status()<<"\n";
@@ -200,6 +208,16 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	//}
       //}
     }
+    
+    EtaLow->Fill(etaLow);
+    EtaHigh->Fill(etaHigh);
+    PtLow->Fill(ptLow);
+    PtHigh->Fill(ptHigh);
+    EtaZ->Fill(etaZ);
+    YZ->Fill(yZ);
+    PtZ->Fill(ptZ);
+    MassZ->Fill(diMuMass);
+    
     QuarkOrigin->Fill(flavour-1);
   }
 }
