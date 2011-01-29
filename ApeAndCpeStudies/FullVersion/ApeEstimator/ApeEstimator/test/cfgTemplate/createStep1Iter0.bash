@@ -1,5 +1,8 @@
 #!/bin/bash
 
+
+
+
 ## input template file to configure
 TEMPLATEFILE1="antiPionTemplateFullOverview_cfg.py"
 ## composition of output file name for configured files
@@ -23,10 +26,6 @@ alignmentErrorRcd="TrackerIdealGeometryErrors210_mc"
 
 
 
-
-
-
-
 helpFile1="help1.txt"
 cat $TEMPLATEFILE1 |sed "s/_THE_MAXEVENT_/${maxevent}/g" > $helpFile1
 helpFile2="help2.txt"
@@ -41,6 +40,7 @@ cat $helpFile4 |sed "s/_THE_ALIGNMENT_ERROR_RCD_/${alignmentErrorRcd}/g" > $help
 
 
 
+
 ## Same for batch file
 BATCH_TEMPLATEFILE1="batchSubmitAntiPionTemplate.bash"
 BATCH_OUTPUTBASE1="../batch/workingArea/batchSubmitAntiPion"
@@ -50,24 +50,23 @@ BATCH_OUTPUTSUFFIX=".bash"
 
 
 
-
 ## increment counter
-declare -i counter=1
+declare -i counter1=1
 
-# number of files to create (maximum value of counter!!!)
-while [ $counter -le 10 ]
+## number of files to create (maximum value of counter!!!)
+while [ $counter1 -le 10 ]
 do
 
-  theFilename="${OUTPUTBASE1}${counter}${OUTPUTSUFFIX}"
-  #cat $TEMPLATEFILE |sed "s/_THE_MAXEVENT_/${maxevent}/g" > $helpFile1
-  cat $helpFile5 |sed "s/_THE_NUMBER_/${counter}/g" > $theFilename
+  theFilename="${OUTPUTBASE1}${counter1}${OUTPUTSUFFIX}"
+  #cat $TEMPLATEFILE1 |sed "s/_THE_MAXEVENT_/${maxevent}/g" > $helpFile1
+  cat $helpFile5 |sed "s/_THE_NUMBER_/${counter1}/g" > $theFilename
   
   
-  theBatchFilename="${BATCH_OUTPUTBASE1}${counter}${BATCH_OUTPUTSUFFIX}"
-  cat $BATCH_TEMPLATEFILE1 |sed "s/_THE_NUMBER_/${counter}/g" > $theBatchFilename
+  theBatchFilename="${BATCH_OUTPUTBASE1}${counter1}${BATCH_OUTPUTSUFFIX}"
+  cat $BATCH_TEMPLATEFILE1 |sed "s/_THE_NUMBER_/${counter1}/g" > $theBatchFilename
   
   
-  counter=$counter+1
+  counter1=$counter1+1
 
 done
 
@@ -79,17 +78,22 @@ rm $helpFile5
 
 
 
+
+
+
+
+
+
 ####################################################################
 
 ## Now the same for pions
+
+
 
 ## input template file to configure
 TEMPLATEFILE2="pionTemplateFullOverview_cfg.py"
 ## composition of output file name for configured files
 OUTPUTBASE2="workingArea/pion_"
-
-
-
 
 
 
@@ -107,6 +111,7 @@ cat $helpFile4 |sed "s/_THE_ALIGNMENT_ERROR_RCD_/${alignmentErrorRcd}/g" > $help
 
 
 
+
 ## Same for batch file
 BATCH_TEMPLATEFILE2="batchSubmitPionTemplate.bash"
 BATCH_OUTPUTBASE2="../batch/workingArea/batchSubmitPion"
@@ -115,11 +120,10 @@ BATCH_OUTPUTBASE2="../batch/workingArea/batchSubmitPion"
 
 
 
-
-# increment counter
+## increment counter
 declare -i counter2=1
 
-# number of files to create (maximum value of counter!!!)
+## number of files to create (maximum value of counter!!!)
 while [ $counter2 -le 10 ]
 do
 
@@ -140,4 +144,5 @@ rm $helpFile2
 rm $helpFile3
 rm $helpFile4
 rm $helpFile5
+
 
