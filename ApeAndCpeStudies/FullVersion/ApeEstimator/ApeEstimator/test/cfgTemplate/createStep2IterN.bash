@@ -1,8 +1,11 @@
 #!/bin/bash
 
 
-## give number of iteration --- This is the only thing to change...
-declare -i nIter=11
+
+
+
+## give number of iteration (start with 0 in first step) --- This is the only thing to change...
+declare -i nIter=0
 
 
 
@@ -47,14 +50,22 @@ cat $TEMPLATEFILE2 |sed "s/_THE_ITERATION_/${nIter}/g" > $theFilename
 
 
 #######################################################
-## Add root files from step1 and copy needed iteration file from previous step
-
+## Create final output directory per iteration
 
 
 ROOTFILEBASE="$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/workingArea"
 
-
 mkdir ${ROOTFILEBASE}/iter${nIter}
+
+
+
+
+
+
+
+#######################################################
+## Copy needed iteration file from previous step (contains squared APE values from all previous steps)
+
 
 ## This line does not work for nIter=0, but does not stop the workflow, so does not matter
 if [ "$nIter" -ne "0" ]
@@ -64,6 +75,20 @@ then
 fi
 
 
+
+
+
+
+#######################################################
+## Add root files from step1 and delete them, kepp only summed file
+
+
+
 hadd ${ROOTFILEBASE}/iter${nIter}/allData.root ${ROOTFILEBASE}/*.root
 
 rm ${ROOTFILEBASE}/*.root
+
+
+
+
+
