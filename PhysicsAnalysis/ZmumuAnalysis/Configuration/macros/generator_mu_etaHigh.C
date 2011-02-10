@@ -107,7 +107,7 @@ TLine *line1, *line2, *line3, *line4;
   //hist1->GetXaxis()->SetNoExponent();
   hist1->SetLineWidth(2);
   
-  hist1->GetXaxis()->SetRangeUser(-8.5,8.4);
+  hist1->GetXaxis()->SetRangeUser(-8.0,7.9);
   
   Double_t scaleFactor1(1.);
   Double_t scaleFactor2(1.);
