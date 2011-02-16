@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Fri Feb 26 16:48:04 CET 2010
-// $Id: GeneratorZmumuAnalyzer.cc,v 1.8 2011/01/24 11:16:13 hauk Exp $
+// $Id: GeneratorZmumuAnalyzer.cc,v 1.9 2011/01/28 13:33:04 hauk Exp $
 //
 //
 
@@ -43,6 +43,7 @@
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "CommonTools/Utils/interface/TFileDirectory.h"
 #include "TH1.h"
+#include "TH2.h"
 
 //
 // class declaration
@@ -64,10 +65,12 @@ class GeneratorZmumuAnalyzer : public edm::EDAnalyzer {
       // ----------member data ---------------------------
       const edm::ParameterSet parameterSet_;
       
-      TH1 *EtaLow, *EtaHigh, *PtLow, *PtHigh,
-          *EtaZ, *YZ, *PtZ,
-	  *MassZ,
-	  *QuarkOrigin;
+      TH1 *MuEtaLow, *MuEtaHigh, *MuPtLow, *MuPtHigh,
+	  *DiMuEta, *DiMuPt, *DiMuMass,
+	  *ZEta, *ZY, *ZPt, *ZMass,
+	  *DiffY, *DiffPt, *DiffMass,
+	  *ZQuarkOrigin;
+      TH2 *ZMassVsDiMuMass;
 };
 
 //
@@ -83,9 +86,12 @@ class GeneratorZmumuAnalyzer : public edm::EDAnalyzer {
 //
 GeneratorZmumuAnalyzer::GeneratorZmumuAnalyzer(const edm::ParameterSet& iConfig):
 parameterSet_(iConfig),
-EtaLow(0), EtaHigh(0), PtLow(0), PtHigh(0),
-EtaZ(0), PtZ(0),
-MassZ(0)
+MuEtaLow(0), MuEtaHigh(0), MuPtLow(0), MuPtHigh(0),
+DiMuEta(0), DiMuPt(0), DiMuMass(0),
+ZEta(0), ZY(0), ZPt(0), ZMass(0),
+DiffY(0), DiffPt(0), DiffMass(0),
+ZQuarkOrigin(0),
+ZMassVsDiMuMass(0)
 {
 }
 
@@ -116,7 +122,7 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     bool isZmumu(false);
     double etaMinus(-999.), ptMinus(-999.);
     double etaPlus(-999.), ptPlus(-999.);
-    double etaZ(-999.), yZ(-999.), ptZ(-999.);
+    double zEta(-999.), zY(-999.), zPt(-999.), zMass(-999.);
     reco::Candidate::LorentzVector lorVecMinus, lorVecPlus;
     //std::cout<<"\tParticle with ID: "<<i_genPart->pdgId()<<" and status "<<i_genPart->status()<<"\n";
     // select Z0 gauge bosons
@@ -125,9 +131,10 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     if(i_genPart->pdgId()!=23 || i_genPart->status()!=3) continue;
     //std::cout<<"\tNumber of Z daughters: "<<i_genPart->numberOfDaughters()<<"\n";
     if(i_genPart->numberOfDaughters()!=3)edm::LogError("Generator Behaviour")<<"Strange decay of Z, not exactly 3 daughters, but: "<<i_genPart->numberOfDaughters()<<"\n";
-    etaZ = i_genPart->eta();
-    yZ = i_genPart->y();
-    ptZ = i_genPart->pt();
+    zEta = i_genPart->eta();
+    zY = i_genPart->y();
+    zPt = i_genPart->pt();
+    zMass = i_genPart->mass();
     for(size_t iDaughter = 0; iDaughter < i_genPart->numberOfDaughters(); ++iDaughter){
       const reco::GenParticle* daughter(dynamic_cast<const reco::GenParticle*>(i_genPart->daughter(iDaughter)));
       //std::cout<<"\tDaughter no. "<<iDaughter<<" has ID "<<daughter->pdgId()<<" and Status "<<daughter->status()<<"\n";
@@ -154,6 +161,8 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     
     if(!isZmumu)continue;
     reco::Candidate::LorentzVector diMuVec = lorVecMinus + lorVecPlus;
+    const double diMuEta = diMuVec.eta();
+    const double diMuPt = diMuVec.pt();
     double diMuMass = diMuVec.M();
     const double etaLow = std::fabs(etaMinus)<std::fabs(etaPlus) ? etaMinus : etaPlus;
     const double etaHigh = std::fabs(etaMinus)>std::fabs(etaPlus) ? etaMinus : etaPlus;
@@ -209,16 +218,28 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
       //}
     }
     
-    EtaLow->Fill(etaLow);
-    EtaHigh->Fill(etaHigh);
-    PtLow->Fill(ptLow);
-    PtHigh->Fill(ptHigh);
-    EtaZ->Fill(etaZ);
-    YZ->Fill(yZ);
-    PtZ->Fill(ptZ);
-    MassZ->Fill(diMuMass);
+    MuEtaLow->Fill(etaLow);
+    MuEtaHigh->Fill(etaHigh);
+    MuPtLow->Fill(ptLow);
+    MuPtHigh->Fill(ptHigh);
     
-    QuarkOrigin->Fill(flavour-1);
+    DiMuEta->Fill(diMuEta);
+    DiMuPt->Fill(diMuPt);
+    DiMuMass->Fill(diMuMass);
+    
+    ZEta->Fill(zEta);
+    ZY->Fill(zY);
+    ZPt->Fill(zPt);
+    ZMass->Fill(zMass);
+    
+    ZQuarkOrigin->Fill(flavour-1);
+    
+    
+    DiffY->Fill(zEta-diMuEta);
+    DiffPt->Fill(zPt-diMuPt);
+    DiffMass->Fill(zMass-diMuMass);
+    
+    ZMassVsDiMuMass->Fill(diMuMass,zMass);
   }
 }
 
@@ -227,24 +248,36 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 void 
 GeneratorZmumuAnalyzer::beginJob(){
   edm::Service<TFileService> fileService;
-  TFileDirectory dirSingle = fileService->mkdir("SingleMu");
-  EtaLow = dirSingle.make<TH1F>("h_etaLow","muon with lower absolute value of #eta;#eta;# muons",200,-10,10);
-  EtaHigh = dirSingle.make<TH1F>("h_etaHigh","muon w/ higher absolute value of #eta;#eta;# muons",200,-10,10);
-  PtLow = dirSingle.make<TH1F>("h_ptLow","muon w/ lower p_{t};p_{t}  [GeV];# muons",200,0,200);
-  PtHigh = dirSingle.make<TH1F>("h_ptHigh","muon w/ higher p_{t};p_{t}  [GeV];# muons",200,0,200);
+  TFileDirectory dirSingleMu = fileService->mkdir("SingleMu");
+  MuEtaLow = dirSingleMu.make<TH1F>("h_muEtaLow","muon with lower absolute value of #eta;#eta;# muons",200,-10,10);
+  MuEtaHigh = dirSingleMu.make<TH1F>("h_muEtaHigh","muon with higher absolute value of #eta;#eta;# muons",200,-10,10);
+  MuPtLow = dirSingleMu.make<TH1F>("h_muPtLow","muon with lower p_{t};p_{t}  [GeV];# muons",200,0,200);
+  MuPtHigh = dirSingleMu.make<TH1F>("h_muPtHigh","muon with higher p_{t};p_{t}  [GeV];# muons",200,0,200);
+  
+  TFileDirectory dirDiMu = fileService->mkdir("DiMu");
+  DiMuEta = dirDiMu.make<TH1F>("h_diMuEta","Pseudorapidity of combined muon pair;#eta;# muon pairs",200,-10,10);
+  DiMuPt = dirDiMu.make<TH1F>("h_diMuPt","p_{t} of combined muon pair;p_{t}  [GeV];# muon pairs",200,0,200);
+  DiMuMass = dirDiMu.make<TH1F>("h_diMuMass","invariant mass of muon pair;m_{#mu#mu}  [GeV];# muon pairs",200,0,200);
   
   TFileDirectory dirZ = fileService->mkdir("GeneratedZ");
-  EtaZ = dirZ.make<TH1F>("h_etaZ","#eta of generated Z;#eta;# Z",200,-10,10);
-  YZ = dirZ.make<TH1F>("h_yZ","rapidity of generated Z;y;# Z",200,-10,10);
-  PtZ = dirZ.make<TH1F>("h_ptZ","p_{t} of generated Z;p_{t}  [GeV];# Z",200,0,200);
-  MassZ = dirZ.make<TH1F>("h_massZ","invariant mass of muon pair;m_{#mu#mu} [GeV];# muon pairs",200,0,200);
-  QuarkOrigin = dirZ.make<TH1F>("h_quarkOrigin","quark origin;;#Z",6,0,6);
-  QuarkOrigin->GetXaxis()->SetBinLabel(1,"d");
-  QuarkOrigin->GetXaxis()->SetBinLabel(2,"u");
-  QuarkOrigin->GetXaxis()->SetBinLabel(3,"s");
-  QuarkOrigin->GetXaxis()->SetBinLabel(4,"c");
-  QuarkOrigin->GetXaxis()->SetBinLabel(5,"b");
-  QuarkOrigin->GetXaxis()->SetBinLabel(6,"XXX");
+  ZEta = dirZ.make<TH1F>("h_zEta","#eta of generated Z;#eta;# Z",200,-10,10);
+  ZY = dirZ.make<TH1F>("h_zY","rapidity of generated Z;y;# Z",200,-10,10);
+  ZPt = dirZ.make<TH1F>("h_zPt","p_{t} of generated Z;p_{t}  [GeV];# Z",200,0,200);
+  ZMass = dirZ.make<TH1F>("h_zMass","invariant mass of Z;m_{Z} [GeV];# Z",200,0,200);
+  ZQuarkOrigin = dirZ.make<TH1F>("h_zQuarkOrigin","quark origin of Z;;#Z",6,0,6);
+  ZQuarkOrigin->GetXaxis()->SetBinLabel(1,"d");
+  ZQuarkOrigin->GetXaxis()->SetBinLabel(2,"u");
+  ZQuarkOrigin->GetXaxis()->SetBinLabel(3,"s");
+  ZQuarkOrigin->GetXaxis()->SetBinLabel(4,"c");
+  ZQuarkOrigin->GetXaxis()->SetBinLabel(5,"b");
+  ZQuarkOrigin->GetXaxis()->SetBinLabel(6,"XXX");
+  
+  TFileDirectory dirDiff = fileService->mkdir("Difference");
+  DiffY = dirDiff.make<TH1F>("h_diffEta","Difference of #eta for Z and dimuon;#eta_{Z}-#eta_{#mu#mu};# Z",100,-2,2);
+  DiffPt = dirDiff.make<TH1F>("h_diffPt","Difference of p_{t} for Z and dimuon;p_{t,Z}-p_{t,#mu#mu}  [GeV];# Z",100,-50,50);
+  DiffMass = dirDiff.make<TH1F>("h_diffMass","Difference of mass for Z and dimuon;m_{Z}-m_{#mu#mu}  [GeV];# Z",100,-50,50);
+  
+  ZMassVsDiMuMass = dirDiff.make<TH2F>("h2_zMassVsDiMuMass","m_{Z} vs. m_{#mu#mu};m_{#mu#mu} [GeV];m_{Z} [GeV]",100,0,200,100,0,200);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
