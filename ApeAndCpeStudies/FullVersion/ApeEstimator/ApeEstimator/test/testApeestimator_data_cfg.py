@@ -3,28 +3,33 @@ import os
 import FWCore.ParameterSet.Config as cms
 
 
-process = cms.Process("Demo")
 
+process = cms.Process("Data")
+
+
+
+##
+## Message Logger
+##
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.categories.append('SectorBuilder')
 process.MessageLogger.categories.append('ResidualErrorBinning')
 process.MessageLogger.categories.append('HitSelector')
 process.MessageLogger.categories.append('CalculateAPE')
 process.MessageLogger.categories.append('ApeEstimator')
-process.MessageLogger.categories.append('')
 #process.MessageLogger.categories.append('TrackRefitter')
 process.MessageLogger.categories.append('AlignmentTrackSelector')
-process.MessageLogger.cerr.INFO = cms.untracked.VPSet(
-    default = cms.untracked.PSet( limit = cms.untracked.int32(0)  ),
-    SectorBuilder = cms.untracked.PSet( limit = cms.untracked.int32(-1) ),
-    HitSelector = cms.untracked.PSet( limit = cms.untracked.int32(-1) ),
-    CalculateAPE = cms.untracked.PSet( limit = cms.untracked.int32(-1) ),
-    ApeEstimator = cms.untracked.PSet( limit = cms.untracked.int32(-1) ),
-    AlignmentTrackSelector = cms.untracked.PSet( limit = cms.untracked.int32(-1) ),
-)
+process.MessageLogger.cerr.INFO.limit = 0
+process.MessageLogger.cerr.default.limit = 0
+process.MessageLogger.cerr.SectorBuilder = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+process.MessageLogger.cerr.HitSelector = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+process.MessageLogger.cerr.CalculateAPE = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+process.MessageLogger.cerr.ApeEstimator = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+process.MessageLogger.cerr.AlignmentTrackSelector = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+
 #process.MessageLogger.cout = cms.untracked.PSet(INFO = cms.untracked.PSet(
-    #reportEvery = cms.untracked.int32(100)  # every 100th only
-    #limit = cms.untracked.int32(10)        # or limit to 10 printouts...
+#    reportEvery = cms.untracked.int32(100),  # every 100th only
+#    limit = cms.untracked.int32(10),         # or limit to 10 printouts...
 #))
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000 ## really show only every 1000th
 
@@ -34,7 +39,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000 ## really show only ever
 ## Handle huge number of Files
 ##
 process.options = cms.untracked.PSet(
-    #wantSummary = cms.untracked.bool(True),
+    wantSummary = cms.untracked.bool(True),
     Rethrow = cms.untracked.vstring("ProductNotFound") # make this exception fatal
     #, fileMode  =  cms.untracked.string('FULLMERGE') # any file order (default): caches all lumi/run products (memory!)
     #, fileMode  =  cms.untracked.string('MERGE') # needs files sorted in run and within run in lumi sections (hard to achieve)
@@ -44,34 +49,48 @@ process.options = cms.untracked.PSet(
 
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
+##
+## Input Files (Collisions '10, 7 TeV)
+##
+## --- Particle Gun ---
+#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunPion_mc_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunAntiPion_mc_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunBothPion_mc_cff")
+## --- Monte Carlo ---
+## --- Run XXX-YYY, End of Year Reprocessing ---
+#process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMinBias_Run2010A_Dec22ReReco_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMinBias_Run2010B_Dec22ReReco_cff")
+process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010A_Dec22ReReco_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010B_Dec22ReReco_cff")
+#readFiles = cms.untracked.vstring()
+#process.source = cms.Source ("PoolSource",
+#    inputCommands = cms.untracked.vstring('keep *', 'drop *_MEtoEDMConverter_*_*'),
+#    fileNames = readFiles
+#)
+#readFiles.extend( [
+#    '/store/data/Run2010B/Mu/ALCARECO/TkAlMuonIsolated-Dec22ReReco_v1/0047/3CBB82EC-CB13-E011-AEAD-90E6BA442F41.root',
+#    'file:/tmp/hauk/reco1.root',
+#    'file:reco.root',
+#    'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RECO/reco1.root',
+#] );
 
+
+
+##
+## Number of Events (should be after input file)
+##
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
 #process.source.inputCommands = cms.untracked.vstring('keep *', 'drop *_MEtoEDMConverter_*_*') # hack to get rid of the memory consumption problem in 2_2_X and beond
 
 
 
-
 ##
-## Input Files (CRAFT '09)
+## Check run and event numbers only for real data
 ##
-## --- Monte Carlo ---
-#process.load("ApeEstimator.ApeEstimator.samples.CRAFT_mc_31X_cff")
-## --- First Reprocessing ---
-#process.load("ApeEstimator.ApeEstimator.samples.run109011_109624_FirstRepro_cff")
-##
-## Input Files (Collisions '10, MinBias 7 TeV)
-##
-## --- Monte Carlo ---
-#process.load("ApeEstimator.ApeEstimator.samples.MinBias_mc_356_cff")
-#process.load("ApeEstimator.ApeEstimator.samples.MinBias_mc_356_ApeSkim_cff")
-## --- Run 132440-132478, First Reprocessing --- (beamspot corrected)
-#process.load("ApeEstimator.ApeEstimator.samples.MinBias_run132440_132478_R_356_cff")
-## --- Run 133029-133158, Processing ---
-#process.load("ApeEstimator.ApeEstimator.samples.MinBias_run133029_133158_P_356_cff")
-#process.load("ApeEstimator.ApeEstimator.samples.MinBias_run133029_133158_P_356_ApeSkim_cff")
-## --- Run 132440-134987, First Reprocessing ---
-#process.load("ApeEstimator.ApeEstimator.samples.MinBias_run132440_134987_RMay06_358p3_cff")
-process.load("ApeEstimator.ApeEstimator.samples.MinBias_run132440_134987_RMay06_358p3_ApeSkim_cff")
+#process.source.duplicateCheckMode = cms.untracked.string("noDuplicateCheck")
+#process.source.duplicateCheckMode = cms.untracked.string("checkEachFile")
+process.source.duplicateCheckMode = cms.untracked.string("checkEachRealDataFile")
+#process.source.duplicateCheckMode = cms.untracked.string("checkAllFilesOpened")   # default value
 
 
 
@@ -79,45 +98,71 @@ process.load("ApeEstimator.ApeEstimator.samples.MinBias_run132440_134987_RMay06_
 ## Whole Refitter Sequence
 ##
 process.load("ApeEstimator.ApeEstimator.TrackRefitter_38T_cff")
-## --- Monte Carlo for CRAFT '09 ---
-#process.GlobalTag.globaltag = 'DESIGN_3X_V8B::All'    # peak mode
-#process.GlobalTag.globaltag = 'MC_3XY_V9B::All'    # same, but bad channels are masked
-#process.GlobalTag.globaltag = 'DESIGN_3X_V26::All'
-## --- CRAFT '09, First Reprocessing ---
-#process.GlobalTag.globaltag = 'CRAFT09_R_V4::All'
-#process.GlobalTag.globaltag = 'CRAFT09_R_V9::All'
-## --- Monte Carlo for MinBias 7 TeV ---
-#process.GlobalTag.globaltag = 'START3X_V26::All'
-## --- Run 132440-132478, First Reprocessing --- (beamspot corrected)
-#process.GlobalTag.globaltag = 'GR_R_35X_V6::All'
-## --- Run 133029-133158, Processing ---
-#process.GlobalTag.globaltag = 'GR10_P_V4::All'
-## --- Run 132440-134987, First Reprocessing ---
-process.GlobalTag.globaltag = 'GR_R_35X_V8B::All'
+## --- Monte Carlo for Particle Gun ---
+#process.GlobalTag.globaltag = 'DESIGN_39_V7::All'
+#process.GlobalTag.globaltag = 'MC_39Y_V7::All'
+#process.GlobalTag.globaltag = 'START39_V8::All'
+## --- Run XXX-YYY, End of Jear Reprocessing ---
+process.GlobalTag.globaltag = 'FT_R_39X_V4A::All'
+
 ## --- Further information (Monte Carlo and Data) ---
-process.StripCPEgeometricESProducer.APVpeakmode = False
-process.OutOfTime.TOBlateBP = 0.071  # do not use in MC
-process.OutOfTime.TIBlateBP=0.036
 process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
 #process.TTRHBuilderGeometricAndTemplate.PixelCPE = 'PixelCPEGeneric'
-#process.TrackRefitterForApeEstimator.src = 'ALCARECOTkAlCosmicsCTF0T'
-process.TrackRefitterForApeEstimator.src = 'ALCARECOTkAlMinBias'
-process.HighPuritySelector.src = 'MinBiasSkim'
+#process.HighPuritySelector.src = 'MinBiasSkim'
+#process.HighPuritySelector.src = 'generalTracks'
+process.HighPuritySelector.src = 'ALCARECOTkAlMuonIsolated'
+#process.HighPuritySelector.src = 'ALCARECOTkAlMinBias'
 
 
 
+##
+## Alignment and APE
+##
+import CalibTracker.Configuration.Common.PoolDBESSource_cfi
 ## Choose Alignment (w/o touching APE)
-#import CalibTracker.Configuration.Common.PoolDBESSource_cfi
 #process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
 #    connect = 'frontier://FrontierProd/CMS_COND_31X_FROM21X', # or your sqlite file
-#    toGet = cms.VPSet(
+#    toGet = [
 #      cms.PSet(
 #        record = cms.string('TrackerAlignmentRcd'),
 #        tag = cms.string('TrackerIdealGeometry210_mc') # 'TrackerAlignment_2009_v2_offline'
 #      )
-#    )
+#    ],
 #)
 #process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+#process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+#    connect = 'sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/misalignments/AlignmentsTob20.db',
+#    toGet = [
+#      cms.PSet(
+#        record = cms.string('TrackerAlignmentRcd'),
+#        tag = cms.string('TrackerScenario')
+#      )
+#    ],
+#)
+#process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+
+## APE (set to zero)
+process.myTrackerAlignmentErr = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+    connect = 'frontier://FrontierProd/CMS_COND_31X_FROM21X',
+    toGet = [
+      cms.PSet(
+        record = cms.string('TrackerAlignmentErrorRcd'),
+        tag = cms.string('TrackerIdealGeometryErrors210_mc')
+      )
+    ],
+)
+process.es_prefer_trackerAlignmentErr = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentErr")
+### APE (as estimated with ApeEstimator)
+#process.myTrackerAlignmentErr = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+#    connect = 'sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/apeObjects/apeIter0.db',
+#    toGet = [
+#      cms.PSet(
+#        record = cms.string('TrackerAlignmentErrorRcd'),
+#        tag = cms.string('AlignmentErrors')
+#      )
+#    ],
+#)
+#process.es_prefer_trackerAlignmentErr = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentErr")
 
 
 
@@ -129,18 +174,23 @@ process.load("ApeEstimator.ApeEstimator.TriggerSelection_cff")
 
 
 ##
+## Beamspot (Use correct Beamspot for simulated Vertex smearing of ParticleGun)
+##
+#process.load("ApeEstimator.ApeEstimator.BeamspotForParticleGun_cff")
+
+
+
+##
 ## ApeEstimator
 ##
-from ApeEstimator.ApeEstimator.apeestimator_cff import *
-process.ApeEstimator1 = ApeEstimatorCosmics.clone(
+from ApeEstimator.ApeEstimator.ApeEstimator_cff import *
+process.ApeEstimator1 = ApeEstimator.clone(
     tjTkAssociationMapTag = "TrackRefitterHighPurityForApeEstimator",
     maxTracksPerEvent = 0,
     applyTrackCuts = False,
-    Sectors = SubdetSectors,
+    #Sectors = SubdetSectors,
+    Sectors = TIBTOBLayerAndOrientationSeparation,
     analyzerMode = False,
-    sigmaFactorFit = 2.5,
-    apeScaling = 0.5,
-    ApeOutputFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/apeOutput_data.txt',
 )
 process.ApeEstimator1.HitSelector.width = []
 process.ApeEstimator1.HitSelector.widthProj = []
@@ -150,7 +200,6 @@ process.ApeEstimator1.HitSelector.sOverN = []
 process.ApeEstimator1.HitSelector.probX = []
 process.ApeEstimator1.HitSelector.phiSensX = []
 process.ApeEstimator1.HitSelector.phiSensY = []
-
 
 
 process.ApeEstimator2 = process.ApeEstimator1.clone(
@@ -175,10 +224,11 @@ process.TFileService = cms.Service("TFileService",
 
 process.p = cms.Path(
     process.TriggerSelectionSequence*
-    #process.TriggerSelectionSequenceForMC*
-    #process.RefitterSequence
     process.RefitterHighPuritySequence
-    *(process.ApeEstimator1 + process.ApeEstimator2 + process.ApeEstimator3)
+    *(process.ApeEstimator1
+     +process.ApeEstimator2
+     +process.ApeEstimator3
+    )
 )
 
 

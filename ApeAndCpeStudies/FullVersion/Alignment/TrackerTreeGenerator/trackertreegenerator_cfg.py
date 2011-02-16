@@ -10,10 +10,12 @@ process = cms.Process("TrackerTreeGeneration")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'INFO'
 process.MessageLogger.categories.append('TrackerTreeGenerator')
-process.MessageLogger.cerr.INFO = cms.untracked.VPSet(
-    default = cms.untracked.PSet( limit = cms.untracked.int32(0)  ),
-    TrackerTreeGenerator = cms.untracked.PSet( limit = cms.untracked.int32(-1) )
-)
+process.MessageLogger.cerr.INFO.limit = 0
+process.MessageLogger.cerr.default.limit = 0
+process.MessageLogger.cerr.TrackerTreeGenerator = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+
+
+
 #process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 

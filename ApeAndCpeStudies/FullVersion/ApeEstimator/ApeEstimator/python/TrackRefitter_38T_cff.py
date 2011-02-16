@@ -25,7 +25,7 @@ from RecoVertex.BeamSpotProducer.BeamSpot_cfi import *
 
 ## CPE (combine StripCPEgeometric with standard-PixelCPE)
 from RecoLocalTracker.SiStripRecHitConverter.StripCPEgeometric_cfi import *
-StripCPEgeometricESProducer.APVpeakmode = True
+#StripCPEgeometricESProducer.APVpeakmode = True # not included anymore, coupling constants for crosstalk and outOfTime parameters taken from conditions
 TTRHBuilderGeometricAndTemplate = cms.ESProducer("TkTransientTrackingRecHitBuilderESProducer",
     #StripCPE = cms.string('StripCPEfromTrackAngle'), # cms.string('StripCPEgeometric'),
     StripCPE = cms.string('StripCPEgeometric'),

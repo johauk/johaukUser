@@ -14,17 +14,17 @@ process.MessageLogger.categories.append('ApeEstimator')
 process.MessageLogger.categories.append('')
 #process.MessageLogger.categories.append('TrackRefitter')
 process.MessageLogger.categories.append('AlignmentTrackSelector')
-process.MessageLogger.cerr.INFO = cms.untracked.VPSet(
-    default = cms.untracked.PSet( limit = cms.untracked.int32(0)  ),
-    SectorBuilder = cms.untracked.PSet( limit = cms.untracked.int32(-1) ),
-    HitSelector = cms.untracked.PSet( limit = cms.untracked.int32(-1) ),
-    CalculateAPE = cms.untracked.PSet( limit = cms.untracked.int32(-1) ),
-    ApeEstimator = cms.untracked.PSet( limit = cms.untracked.int32(-1) ),
-    AlignmentTrackSelector = cms.untracked.PSet( limit = cms.untracked.int32(-1) ),
-)
+process.MessageLogger.cerr.INFO.limit = 0
+process.MessageLogger.cerr.default.limit = 0
+process.MessageLogger.cerr.SectorBuilder = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+process.MessageLogger.cerr.HitSelector = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+process.MessageLogger.cerr.CalculateAPE = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+process.MessageLogger.cerr.ApeEstimator = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+process.MessageLogger.cerr.AlignmentTrackSelector = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+
 #process.MessageLogger.cout = cms.untracked.PSet(INFO = cms.untracked.PSet(
-    #reportEvery = cms.untracked.int32(100)  # every 100th only
-    #limit = cms.untracked.int32(10)        # or limit to 10 printouts...
+#    reportEvery = cms.untracked.int32(100),  # every 100th only
+#    limit = cms.untracked.int32(10),         # or limit to 10 printouts...
 #))
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000 ## really show only every 1000th
 
@@ -95,7 +95,6 @@ process.GlobalTag.globaltag = 'START3X_V26::All'
 ## --- Run 132440-134987, First Reprocessing ---
 #process.GlobalTag.globaltag = 'GR_R_35X_V8B::All'
 ## --- Further information (Monte Carlo and Data) ---
-process.StripCPEgeometricESProducer.APVpeakmode = False
 #process.OutOfTime.TOBlateBP = 0.071  # do not use in MC
 #process.OutOfTime.TIBlateBP=0.036
 process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
@@ -131,16 +130,14 @@ process.load("ApeEstimator.ApeEstimator.TriggerSelection_cff")
 ##
 ## ApeEstimator
 ##
-from ApeEstimator.ApeEstimator.apeestimator_cff import *
-process.ApeEstimator1 = ApeEstimatorCosmics.clone(
+from ApeEstimator.ApeEstimator.ApeEstimator_cff import *
+process.ApeEstimator1 = ApeEstimator.clone(
     tjTkAssociationMapTag = "TrackRefitterHighPurityForApeEstimator",
     maxTracksPerEvent = 0,
     applyTrackCuts = False,
-    Sectors = SubdetSectors,
+    #Sectors = SubdetSectors,
+    Sectors = TIBTOBLayerAndOrientationSeparation,
     analyzerMode = False,
-    sigmaFactorFit = 2.5,
-    apeScaling = 0.5,
-    ApeOutputFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/apeOutput_ideal.txt',
 )
 process.ApeEstimator1.HitSelector.width = []
 process.ApeEstimator1.HitSelector.widthProj = []
@@ -150,7 +147,6 @@ process.ApeEstimator1.HitSelector.sOverN = []
 process.ApeEstimator1.HitSelector.probX = []
 process.ApeEstimator1.HitSelector.phiSensX = []
 process.ApeEstimator1.HitSelector.phiSensY = []
-
 
 
 process.ApeEstimator2 = process.ApeEstimator1.clone(
