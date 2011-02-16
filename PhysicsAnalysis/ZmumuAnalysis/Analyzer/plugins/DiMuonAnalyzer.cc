@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May 20 15:47:12 CEST 2010
-// $Id: DiMuonAnalyzer.cc,v 1.5 2010/11/04 13:22:25 hauk Exp $
+// $Id: DiMuonAnalyzer.cc,v 1.6 2010/12/09 16:11:04 hauk Exp $
 //
 //
 
@@ -135,7 +135,7 @@ DiMuonAnalyzer::bookHists(DiMuHists& hists, const TFileDirectory& dir){
   hists.PtHigh = dir.make<TH1F>("h_ptHigh","muon w/ higher p_{t};p_{t}  [GeV];# muons",100,0,200);
   hists.DeltaEta = dir.make<TH1F>("h_deltaEta","#Delta#eta;#Delta#eta;# muon pairs",100,-5,5);
   hists.DeltaPhi = dir.make<TH1F>("h_deltaPhi","#Delta#phi;#Delta#phi;# muon pairs",100,-200,200);
-  hists.DiMass = dir.make<TH1F>("h_diMass","di-muon invariant mass;m_{#mu#mu} [GeV];# muon pairs",100,0.,200.);
+  hists.DiMass = dir.make<TH1F>("h_diMass","di-muon invariant mass;M_{#mu#mu} [GeV];# muon pairs",100,0.,200.);
   hists.DiPt = dir.make<TH1F>("h_diPt","di-muon p_{t};p_{t}  [GeV];# muon pairs",100,0,200);
   hists.DiY = dir.make<TH1F>("h_diY","di-muon rapidity y;y;# muon pairs",120,-3,3);
 }
