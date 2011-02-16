@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Wed Sep  1 15:49:35 CEST 2010
-// $Id: GeneratorZmumuFilter.cc,v 1.5 2011/01/24 12:40:18 hauk Exp $
+// $Id: GeneratorZmumuFilter.cc,v 1.6 2011/01/28 13:33:27 hauk Exp $
 //
 //
 
@@ -65,13 +65,17 @@ class GeneratorZmumuFilter : public edm::EDFilter {
       
       const edm::ParameterSet parameterSet_;
       
+      const std::vector<double> v_zMassIntervals_;
+      
       const std::vector<double> v_diMuDeltaEtaIntervals_;
       const std::vector<double> v_diMuDeltaPhiIntervals_;
       const std::vector<double> v_diMuMassIntervals_;
       const std::vector<double> v_diMuPtIntervals_;
       
-      const std::vector<double> v_etaIntervals_;
-      const std::vector<double> v_ptIntervals_;
+      const std::vector<double> v_muEtaLowIntervals_;
+      const std::vector<double> v_muEtaHighIntervals_;
+      const std::vector<double> v_muPtLowIntervals_;
+      const std::vector<double> v_muPtHighIntervals_;
 };
 
 //
@@ -87,12 +91,15 @@ class GeneratorZmumuFilter : public edm::EDFilter {
 //
 GeneratorZmumuFilter::GeneratorZmumuFilter(const edm::ParameterSet& iConfig):
 parameterSet_(iConfig),
+v_zMassIntervals_(parameterSet_.getParameter<std::vector<double> >("zMassIntervals")),
 v_diMuDeltaEtaIntervals_(parameterSet_.getParameter<std::vector<double> >("diMuDeltaEtaIntervals")),
 v_diMuDeltaPhiIntervals_(parameterSet_.getParameter<std::vector<double> >("diMuDeltaPhiIntervals")),
 v_diMuMassIntervals_(parameterSet_.getParameter<std::vector<double> >("diMuMassIntervals")),
 v_diMuPtIntervals_(parameterSet_.getParameter<std::vector<double> >("diMuPtIntervals")),
-v_etaIntervals_(parameterSet_.getParameter<std::vector<double> >("etaIntervals")),
-v_ptIntervals_(parameterSet_.getParameter<std::vector<double> >("ptIntervals"))
+v_muEtaLowIntervals_(parameterSet_.getParameter<std::vector<double> >("muEtaLowIntervals")),
+v_muEtaHighIntervals_(parameterSet_.getParameter<std::vector<double> >("muEtaHighIntervals")),
+v_muPtLowIntervals_(parameterSet_.getParameter<std::vector<double> >("muPtLowIntervals")),
+v_muPtHighIntervals_(parameterSet_.getParameter<std::vector<double> >("muPtHighIntervals"))
 {
 }
 
@@ -109,7 +116,7 @@ const void
 GeneratorZmumuFilter::checkFilter(const std::string& name, const std::vector<double>& v_interval)const{
   // No selection, so intervals are fine
   if(v_interval.size()==0){
-    edm::LogInfo("GeneratorZmumuFilter")<<"No selection for "<<name;
+    //edm::LogInfo("GeneratorZmumuFilter")<<"No selection for "<<name;
     return;
   }
   
@@ -214,24 +221,31 @@ GeneratorZmumuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     bool isZmumu(false);
     
     bool quarkOriginFilter(false);
-  
+    
+    bool zMassFilter(false);
+    
     bool diMuDeltaEtaFilter(false);
     bool diMuDeltaPhiFilter(false);
     bool diMuPtFilter(false);
     bool diMuMassFilter(false);
   
-    bool etaFilter(false);
-    bool ptFilter(false);
+    bool muEtaLowFilter(false);
+    bool muEtaHighFilter(false);
+    bool muPtLowFilter(false);
+    bool muPtHighFilter(false);
     
     double etaMinus(-999.), etaPlus(-999.);
     double phiMinus(-999.), phiPlus(-999.);
     double ptMinus(-999.), ptPlus(-999.);
-    double etaZ(-999.), ptZ(-999.);
+    //double zEta(-999.), zY(-999.), zPt(-999.);
+    double zMass(-999.);
     reco::Candidate::LorentzVector lorVecMinus, lorVecPlus;
     if(i_genPart->pdgId()!=23 || i_genPart->status()!=3) continue;
     
-    etaZ = i_genPart->eta();
-    ptZ = i_genPart->pt();
+    //zEta = i_genPart->eta();
+    //zY = i_genPart->y();
+    //zPt = i_genPart->pt();
+    zMass = i_genPart->mass();
     
     for(size_t iDaughter = 0; iDaughter < i_genPart->numberOfDaughters(); ++iDaughter){
       const reco::GenParticle* daughter(dynamic_cast<const reco::GenParticle*>(i_genPart->daughter(iDaughter)));
@@ -265,25 +279,31 @@ GeneratorZmumuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     const reco::Candidate::LorentzVector diMuVec = lorVecMinus + lorVecPlus;
     const double diMuMass = diMuVec.M();
     const double diMuPt = diMuVec.pt();
-    //const double etaLow = std::fabs(etaMinus)<std::fabs(etaPlus) ? etaMinus : etaPlus;
-    //const double etaHigh = std::fabs(etaMinus)>std::fabs(etaPlus) ? etaMinus : etaPlus;
-    //const double ptLow = ptMinus<ptPlus ? ptMinus : ptPlus;
-    //const double ptHigh = ptMinus>ptPlus ? ptMinus : ptPlus;
     const double diMuDeltaEta = etaPlus - etaMinus;
     const double diMuDeltaPhi = reco::deltaPhi(phiPlus,phiMinus);
+    
+    const double muEtaLow = std::fabs(etaMinus)<std::fabs(etaPlus) ? etaMinus : etaPlus;
+    const double muEtaHigh = std::fabs(etaMinus)>std::fabs(etaPlus) ? etaMinus : etaPlus;
+    const double muPtLow = ptMinus<ptPlus ? ptMinus : ptPlus;
+    const double muPtHigh = ptMinus>ptPlus ? ptMinus : ptPlus;
+    
+    if(this->filterInterval(zMass, v_zMassIntervals_))zMassFilter = true;
     
     if(this->filterInterval(diMuDeltaEta, v_diMuDeltaEtaIntervals_))diMuDeltaEtaFilter = true;
     if(this->filterInterval(diMuDeltaPhi, v_diMuDeltaPhiIntervals_))diMuDeltaPhiFilter = true;
     if(this->filterInterval(diMuMass, v_diMuMassIntervals_))diMuMassFilter = true;
     if(this->filterInterval(diMuPt, v_diMuPtIntervals_))diMuPtFilter = true;
     
-    if(this->filterInterval(etaMinus, v_etaIntervals_) && this->filterInterval(etaPlus, v_etaIntervals_))etaFilter = true;
-    if(this->filterInterval(ptMinus, v_ptIntervals_) && this->filterInterval(ptPlus, v_ptIntervals_))ptFilter = true;
+    if(this->filterInterval(muEtaLow, v_muEtaLowIntervals_))muEtaLowFilter = true;
+    if(this->filterInterval(muEtaHigh, v_muEtaHighIntervals_))muEtaHighFilter = true;
+    if(this->filterInterval(muPtLow, v_muPtLowIntervals_))muPtLowFilter = true;
+    if(this->filterInterval(muPtHigh, v_muPtHighIntervals_))muPtHighFilter = true;
     
-    
-    if(!diMuDeltaEtaFilter || !diMuDeltaPhiFilter ||
+    if(!zMassFilter ||
+       !diMuDeltaEtaFilter || !diMuDeltaPhiFilter ||
        !diMuMassFilter || !diMuPtFilter ||
-       !etaFilter || !ptFilter)continue;
+       !muEtaLowFilter || !muEtaHighFilter ||
+       !muPtLowFilter || !muPtHighFilter)continue;
     
     allOtherFilters = true;
   }
@@ -303,12 +323,15 @@ void
 GeneratorZmumuFilter::beginJob()
 {
   // check validity of all filter intervals taken from cfg
+  this->checkFilter("zMass", v_zMassIntervals_);
   this->checkFilter("diMuDeltaEta", v_diMuDeltaEtaIntervals_);
   this->checkFilter("diMuDeltaPhi", v_diMuDeltaPhiIntervals_);
   this->checkFilter("diMuMass", v_diMuMassIntervals_);
   this->checkFilter("diMuPt", v_diMuPtIntervals_);
-  this->checkFilter("muEta", v_etaIntervals_);
-  this->checkFilter("muPt", v_ptIntervals_);
+  this->checkFilter("muEtaLow", v_muEtaLowIntervals_);
+  this->checkFilter("muEtaHigh", v_muEtaHighIntervals_);
+  this->checkFilter("muPtLow", v_muPtLowIntervals_);
+  this->checkFilter("muPtHigh", v_muPtHighIntervals_);
 }
 
 

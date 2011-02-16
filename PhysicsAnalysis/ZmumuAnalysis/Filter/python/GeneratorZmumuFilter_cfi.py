@@ -15,17 +15,28 @@ GeneratorZmumuFilter = cms.EDFilter('GeneratorZmumuFilter',
     # filter on quark origin of qqbar->Z (down=1, up=2, strange=3, charm=4, bottom=5)
     zQuarkOrigin = cms.vint32(),
     
-    ## Cut on Z/dimuon properties
+    
+    ## Cut on Z properties
+    # filter on invariant mass (use intervals w/ even no. of elements, do not filter if empty)
+    zMassIntervals = cms.vdouble(),
+    
+    ## Cut on dimuon properties
     # filter on eta difference
     diMuDeltaEtaIntervals = cms.vdouble(),
     # filter on phi difference
     diMuDeltaPhiIntervals = cms.vdouble(),
-    # filter on invariant mass (use intervals w/ even no. of elements, do not filter if empty)
+    # filter on invariant mass
     diMuMassIntervals = cms.vdouble(),
-    # filter for Z pt (use intervals w/ even no. of elements, do not filter if empty)
+    # filter on pt
     diMuPtIntervals = cms.vdouble(),
     
     ## Cut on muon properties
-    etaIntervals = cms.vdouble(),
-    ptIntervals = cms.vdouble(),
+    # filter on eta for muon with lower absolute value of eta
+    muEtaLowIntervals = cms.vdouble(),
+    # filter on eta for muon with higher absolute value of eta
+    muEtaHighIntervals = cms.vdouble(),
+    # filter on pt for muon with lower absolute value of pt
+    muPtLowIntervals = cms.vdouble(),
+    # filter on pt for muon with higher absolute value of pt
+    muPtHighIntervals = cms.vdouble(),
 )

@@ -48,15 +48,22 @@ process.GeneratorZmumuFilterUdsc = process.GeneratorZmumuFilter.clone(
 process.GeneratorZmumuFilterUds = process.GeneratorZmumuFilter.clone(
     zQuarkOrigin = [1,2,3],
 )
+process.GeneratorZmumuZMassFilter = process.GeneratorZmumuFilter.clone(
+    #src = 'genParticles',
+    zMassIntervals = [60.,120.],
+)
 process.GeneratorZmumuDiMuMassFilter = process.GeneratorZmumuFilter.clone(
     #src = 'genParticles',
     diMuMassIntervals = [60.,120.],
 )
-process.GeneratorZmumuMuEtaFilter = process.GeneratorZmumuFilter.clone(
-    etaIntervals = [-2.4,2.4],
+process.GeneratorZmumuMuEtaHighFilter = process.GeneratorZmumuFilter.clone(
+    muEtaHighIntervals = [-2.4,2.4],
 )
-process.GeneratorZmumuMuPtFilter = process.GeneratorZmumuFilter.clone(
-    ptIntervals = [20.,99999.],
+process.GeneratorZmumuMuEtaLowFilter = process.GeneratorZmumuFilter.clone(
+    muEtaLowIntervals = [-2.1,2.1],
+)
+process.GeneratorZmumuMuPtLowFilter = process.GeneratorZmumuFilter.clone(
+    muPtLowIntervals = [20.,99999.],
 )
 
 
@@ -67,7 +74,9 @@ process.p = cms.Path(
     *process.GeneratorZmumuFilterUdscb
     *process.GeneratorZmumuFilterUdsc
     *process.GeneratorZmumuFilterUds
+    *process.GeneratorZmumuZMassFilter
     *process.GeneratorZmumuDiMuMassFilter
-    *process.GeneratorZmumuMuEtaFilter
-    *process.GeneratorZmumuMuPtFilter
+    *process.GeneratorZmumuMuEtaHighFilter
+    *process.GeneratorZmumuMuEtaLowFilter
+    *process.GeneratorZmumuMuPtLowFilter
 )
