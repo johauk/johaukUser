@@ -40,11 +40,10 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000 ## really show only ever
 ##
 process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(True),
-    Rethrow = cms.untracked.vstring("ProductNotFound") # make this exception fatal
-    #, fileMode  =  cms.untracked.string('FULLMERGE') # any file order (default): caches all lumi/run products (memory!)
-    #, fileMode  =  cms.untracked.string('MERGE') # needs files sorted in run and within run in lumi sections (hard to achieve)
-    #, fileMode  =  cms.untracked.string('FULLLUMIMERGE') # needs files sorted in run, caches lumi
-    , fileMode  =  cms.untracked.string('NOMERGE') #  no ordering needed, but calls endRun/beginRun etc. at file boundaries
+    #fileMode  =  cms.untracked.string('FULLMERGE'),  # any file order (default): caches all lumi/run products (memory!)
+    #fileMode  =  cms.untracked.string('MERGE'),  # needs files sorted in run and within run in lumi sections (hard to achieve)
+    #fileMode  =  cms.untracked.string('FULLLUMIMERGE'),  # needs files sorted in run, caches lumi
+    #fileMode  =  cms.untracked.string('NOMERGE'),  # no ordering needed, but calls endRun/beginRun etc. at file boundaries
 )
 
 
@@ -85,7 +84,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
 
 
 ##
-## Check run and event numbers only for real data
+## Check run and event numbers for Dublicates --- only for real data
 ##
 #process.source.duplicateCheckMode = cms.untracked.string("noDuplicateCheck")
 #process.source.duplicateCheckMode = cms.untracked.string("checkEachFile")
@@ -214,7 +213,9 @@ process.ApeEstimator3 = process.ApeEstimator2.clone(
 
 
 
+##
 ## Output File Configuration
+##
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string(os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/test_data.root'),
     closeFileFast = cms.untracked.bool(True)
@@ -222,6 +223,9 @@ process.TFileService = cms.Service("TFileService",
 
 
 
+##
+## Path
+##
 process.p = cms.Path(
     process.TriggerSelectionSequence*
     process.RefitterHighPuritySequence
