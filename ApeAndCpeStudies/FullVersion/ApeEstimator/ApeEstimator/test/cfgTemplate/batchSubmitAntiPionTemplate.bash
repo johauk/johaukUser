@@ -8,4 +8,4 @@ export STAGE_SVCCLASS=cmscafuser
 rfcp /castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunAntiPion/RECO/reco_THE_NUMBER_.root reco.root
 
 
-cmsRun $CMSSW_BASE/src/ApeEstimator/ApeEstimator/test/cfgTemplate/workingArea/antiPion__THE_NUMBER__cfg.py
+cmsRun $CMSSW_BASE/src/ApeEstimator/ApeEstimator/test/batch/workingArea/antiPion__THE_NUMBER__cfg.py

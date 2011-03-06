@@ -61,7 +61,7 @@ process.ApeEstimatorSummary1 = ApeEstimatorSummary.clone(
     sigmaFactorFit = 2.5,
     correctionScaling = 0.6,
     # keep the same for all jobs
-    BaselineFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/Design/iter0/bothPion1_10_baselineApe.root',
+    BaselineFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/Design/baseline/allData_baselineApe.root',
     # keep the first one on misaligned geometry for iterations on same geometry (or better use copy of it)
     IterationFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/workingArea/iter_THE_ITERATION_/allData_iterationApe.root',
     # change iteration number for these

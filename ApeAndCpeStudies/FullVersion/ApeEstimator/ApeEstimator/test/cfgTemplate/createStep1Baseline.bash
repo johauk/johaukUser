@@ -6,13 +6,15 @@
 ## input template file to configure
 TEMPLATEFILE1="antiPionTemplateFullOverview_cfg.py"
 ## composition of output file name for configured files
-OUTPUTBASE1="workingArea/antiPion_"
+OUTPUTBASE1="../batch/workingArea/antiPion_"
 OUTPUTSUFFIX="_cfg.py"
 
 
 
 ## number of events
 declare -i maxevent=-1
+
+
 
 ## alignment connect string and tag of record (use escape characters for /)
 alignmentRcdConnect="frontier:\/\/FrontierProd\/CMS_COND_31X_FROM21X"
@@ -91,7 +93,7 @@ rm $helpFile5
 ## input template file to configure
 TEMPLATEFILE2="pionTemplateFullOverview_cfg.py"
 ## composition of output file name for configured files
-OUTPUTBASE2="workingArea/pion_"
+OUTPUTBASE2="../batch/workingArea/pion_"
 
 
 

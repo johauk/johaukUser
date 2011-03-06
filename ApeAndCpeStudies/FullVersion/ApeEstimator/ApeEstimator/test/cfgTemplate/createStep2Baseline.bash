@@ -11,7 +11,7 @@
 ## Config for summary step
 
 
-cp summaryBaseline_cfg.py workingArea/summary_cfg.py
+cp summaryBaseline_cfg.py ../batch/workingArea/summary_cfg.py
 
 
 

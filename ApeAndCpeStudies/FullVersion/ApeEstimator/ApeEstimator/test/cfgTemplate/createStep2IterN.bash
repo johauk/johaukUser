@@ -18,7 +18,7 @@ declare -i nIter=1
 ## input template file to configure
 TEMPLATEFILE1="summaryTemplate_cfg.py"
 ## composition of output file name for configured files
-OUTPUTBASE1="workingArea/summary"
+OUTPUTBASE1="../batch/workingArea/summary"
 OUTPUTSUFFIX="_cfg.py"
 
 theFilename="${OUTPUTBASE1}${OUTPUTSUFFIX}"
@@ -37,7 +37,7 @@ cat $TEMPLATEFILE1 |sed "s/_THE_ITERATION_/${nIter}/g" > $theFilename
 ## input template file to configure
 TEMPLATEFILE2="apeLocalSettingTemplate_cfg.py"
 ## composition of output file name for configured files
-OUTPUTBASE2="workingArea/apeLocalSetting"
+OUTPUTBASE2="../batch/workingArea/apeLocalSetting"
 OUTPUTSUFFIX="_cfg.py"
 
 theFilename="${OUTPUTBASE2}${OUTPUTSUFFIX}"
