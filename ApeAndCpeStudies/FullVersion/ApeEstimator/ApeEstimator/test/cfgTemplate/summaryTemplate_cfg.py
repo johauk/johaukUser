@@ -3,28 +3,33 @@ import os
 import FWCore.ParameterSet.Config as cms
 
 
+
 process = cms.Process("Demo")
 
+
+
+##
+## Message Logger
+##
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.categories.append('SectorBuilder')
 process.MessageLogger.categories.append('ResidualErrorBinning')
 process.MessageLogger.categories.append('HitSelector')
 process.MessageLogger.categories.append('CalculateAPE')
-process.MessageLogger.categories.append('ApeEstimatorSummary')
-process.MessageLogger.categories.append('')
+process.MessageLogger.categories.append('ApeEstimator')
 #process.MessageLogger.categories.append('TrackRefitter')
 process.MessageLogger.categories.append('AlignmentTrackSelector')
-process.MessageLogger.cerr.INFO = cms.untracked.VPSet(
-    default = cms.untracked.PSet( limit = cms.untracked.int32(0)  ),
-    SectorBuilder = cms.untracked.PSet( limit = cms.untracked.int32(-1) ),
-    HitSelector = cms.untracked.PSet( limit = cms.untracked.int32(-1) ),
-    CalculateAPE = cms.untracked.PSet( limit = cms.untracked.int32(-1) ),
-    ApeEstimator = cms.untracked.PSet( limit = cms.untracked.int32(-1) ),
-    AlignmentTrackSelector = cms.untracked.PSet( limit = cms.untracked.int32(-1) ),
-)
+process.MessageLogger.cerr.INFO.limit = 0
+process.MessageLogger.cerr.default.limit = 0
+process.MessageLogger.cerr.SectorBuilder = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+process.MessageLogger.cerr.HitSelector = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+process.MessageLogger.cerr.CalculateAPE = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+process.MessageLogger.cerr.ApeEstimator = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+process.MessageLogger.cerr.AlignmentTrackSelector = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+
 #process.MessageLogger.cout = cms.untracked.PSet(INFO = cms.untracked.PSet(
-    #reportEvery = cms.untracked.int32(100)  # every 100th only
-    #limit = cms.untracked.int32(10)        # or limit to 10 printouts...
+#    reportEvery = cms.untracked.int32(100),  # every 100th only
+#    limit = cms.untracked.int32(10),         # or limit to 10 printouts...
 #))
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000 ## really show only every 1000th
 

@@ -1,8 +1,8 @@
 #!/bin/bash
 
 
-## give number of iteration --- This is the only thing to change...
-declare -i nIter=9
+## give number of iteration (start with 1) --- This is the only thing to change...
+declare -i nIter=1
 
 
 

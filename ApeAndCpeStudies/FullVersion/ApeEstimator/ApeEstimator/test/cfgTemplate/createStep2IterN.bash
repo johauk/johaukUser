@@ -5,7 +5,7 @@
 
 
 ## give number of iteration (start with 0 in first step) --- This is the only thing to change...
-declare -i nIter=0
+declare -i nIter=1
 
 
 
