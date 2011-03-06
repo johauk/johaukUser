@@ -66,15 +66,8 @@ TrackRefitterHighPurityForApeEstimator = TrackRefitterForApeEstimator.clone(
 
 
 ## FILTER for high purity tracks
-import Alignment.CommonAlignmentProducer.AlignmentTrackSelector_cfi
-HighPuritySelector = Alignment.CommonAlignmentProducer.AlignmentTrackSelector_cfi.AlignmentTrackSelector.clone(
-    applyBasicCuts = True,
-    filter = True,
-    src = 'ALCARECOTkAlMinBias',
-    etaMin = -999.,
-    etaMax = 999.,
-    trackQualities = ["highPurity"],
-)
+import ApeEstimator.ApeEstimator.AlignmentTrackSelector_cff
+HighPuritySelector = ApeEstimator.ApeEstimator.AlignmentTrackSelector_cff.HighPuritySelector
 
 
 

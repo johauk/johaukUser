@@ -47,15 +47,15 @@ import FWCore.ParameterSet.Config as cms
 
 
 ## Filter for PhysicsDeclared (Stable Beams?)
-from HLTrigger.special.hltPhysicsDeclared_cfi import *
-hltPhysicsDeclared.L1GtReadoutRecordTag = 'gtDigis'
+#from HLTrigger.special.hltPhysicsDeclared_cfi import *
+#hltPhysicsDeclared.L1GtReadoutRecordTag = 'gtDigis'
 
 
 
 ## SEQUENCE
 TriggerSelectionSequence = cms.Sequence(
     #L1T1*
-    hltPhysicsDeclared
+    #hltPhysicsDeclared
     #*primaryVertexFilter1
     #*primaryVertexFilter2
     #*beamScrapFilter
