@@ -13,6 +13,11 @@ OUTPUTSUFFIX="_cfg.py"
 
 
 
+## name of input files
+INPUTBASE1="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk\/mc\/ParticleGunAntiPion\/RECO\/reco"
+
+
+
 ## number of input files
 declare -i nFiles1=10
 
@@ -66,14 +71,16 @@ cat $helpFile6 |sed "s/_THE_MODULES_/${apeEstimatorModules}/g" > $helpFile7
 
 ## Same for batch file
 
-BATCH_TEMPLATEFILE1="${DATASETNAME1}BatchSubmitTemplate.bash"
+BATCH_TEMPLATEFILE="batchSubmitTemplate.bash"
 BATCH_OUTPUTBASE1="../batch/workingArea/${DATASETNAME1}BatchSubmit"
 BATCH_OUTPUTSUFFIX=".bash"
 
 
 
 helpFileB1="helpB1.txt"
-cat $BATCH_TEMPLATEFILE1 |sed "s/_THE_NAME_/${DATASETNAME1}/g" > $helpFileB1
+cat $BATCH_TEMPLATEFILE |sed "s/_THE_NAME_/${DATASETNAME1}/g" > $helpFileB1
+helpFileB2="helpB2.txt"
+cat $helpFileB1 |sed "s/_THE_INPUTBASE_/${INPUTBASE1}/g" > $helpFileB2
 
 
 
@@ -91,7 +98,7 @@ do
   
   
   theBatchFilename="${BATCH_OUTPUTBASE1}${counter1}${BATCH_OUTPUTSUFFIX}"
-  cat $helpFileB1 |sed "s/_THE_NUMBER_/${counter1}/g" > $theBatchFilename
+  cat $helpFileB2 |sed "s/_THE_NUMBER_/${counter1}/g" > $theBatchFilename
   
   
   counter1=$counter1+1
@@ -106,6 +113,7 @@ rm $helpFile5
 rm $helpFile6
 rm $helpFile7
 rm $helpFileB1
+rm $helpFileB2
 
 
 
@@ -124,6 +132,11 @@ rm $helpFileB1
 DATASETNAME2="pion"
 ## composition of output file name for configured files
 OUTPUTBASE2="${OUTPUTDIR}${DATASETNAME2}_"
+
+
+
+## name of input files
+INPUTBASE2="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk\/mc\/ParticleGunPion\/RECO\/reco"
 
 
 
@@ -153,13 +166,14 @@ cat $helpFile6 |sed "s/_THE_MODULES_/${apeEstimatorModules}/g" > $helpFile7
 
 ## Same for batch file
 
-BATCH_TEMPLATEFILE2="${DATASETNAME2}BatchSubmitTemplate.bash"
 BATCH_OUTPUTBASE2="../batch/workingArea/${DATASETNAME2}BatchSubmit"
 
 
 
 helpFileB1="helpB1.txt"
-cat $BATCH_TEMPLATEFILE2 |sed "s/_THE_NAME_/${DATASETNAME2}/g" > $helpFileB1
+cat $BATCH_TEMPLATEFILE |sed "s/_THE_NAME_/${DATASETNAME2}/g" > $helpFileB1
+helpFileB2="helpB2.txt"
+cat $helpFileB1 |sed "s/_THE_INPUTBASE_/${INPUTBASE2}/g" > $helpFileB2
 
 
 
@@ -177,7 +191,7 @@ do
   
   
   theBatchFilename="${BATCH_OUTPUTBASE2}${counter2}${BATCH_OUTPUTSUFFIX}"
-  cat $helpFileB1 |sed "s/_THE_NUMBER_/${counter2}/g" > $theBatchFilename
+  cat $helpFileB2 |sed "s/_THE_NUMBER_/${counter2}/g" > $theBatchFilename
   
   
   counter2=$counter2+1
@@ -192,5 +206,6 @@ rm $helpFile5
 rm $helpFile6
 rm $helpFile7
 rm $helpFileB1
+rm $helpFileB2
 
 
