@@ -47,6 +47,8 @@ helpFile4="help4.txt"
 cat $helpFile3 |sed "s/_THE_ALIGNMENT_ERROR_RCD_CONNECT_/${alignmentErrorRcdConnect}/g" > $helpFile4
 helpFile5="help5.txt"
 cat $helpFile4 |sed "s/_THE_ALIGNMENT_ERROR_RCD_/${alignmentErrorRcd}/g" > $helpFile5
+helpFile6="help6.txt"
+cat $helpFile5 |sed "s/_THE_NAME_/${DATASETNAME1}/g" > $helpFile6
 
 
 
@@ -60,8 +62,8 @@ BATCH_OUTPUTSUFFIX=".bash"
 
 
 
-helpFile6="help6.txt"
-cat $BATCH_TEMPLATEFILE1 |sed "s/_THE_NAME_/${DATASETNAME1}/g" > $helpFile6
+helpFileB1="helpB1.txt"
+cat $BATCH_TEMPLATEFILE1 |sed "s/_THE_NAME_/${DATASETNAME1}/g" > $helpFileB1
 
 
 
@@ -76,12 +78,12 @@ do
 
   theFilename="${OUTPUTBASE1}${counter1}${OUTPUTSUFFIX}"
   #cat $TEMPLATEFILE1 |sed "s/_THE_MAXEVENT_/${maxevent}/g" > $helpFile1
-  cat $helpFile5 |sed "s/_THE_NUMBER_/${counter1}/g" > $theFilename
+  cat $helpFile6 |sed "s/_THE_NUMBER_/${counter1}/g" > $theFilename
   
   
   theBatchFilename="${BATCH_OUTPUTBASE1}${counter1}${BATCH_OUTPUTSUFFIX}"
   #cat $BATCH_TEMPLATEFILE1 |sed "s/_THE_NUMBER_/${counter1}/g" > $theBatchFilename
-  cat $helpFile6 |sed "s/_THE_NUMBER_/${counter1}/g" > $theBatchFilename
+  cat $helpFileB1 |sed "s/_THE_NUMBER_/${counter1}/g" > $theBatchFilename
   
   
   counter1=$counter1+1
@@ -94,6 +96,7 @@ rm $helpFile3
 rm $helpFile4
 rm $helpFile5
 rm $helpFile6
+rm $helpFileB1
 
 
 
@@ -127,6 +130,8 @@ helpFile4="help4.txt"
 cat $helpFile3 |sed "s/_THE_ALIGNMENT_ERROR_RCD_CONNECT_/${alignmentErrorRcdConnect}/g" > $helpFile4
 helpFile5="help5.txt"
 cat $helpFile4 |sed "s/_THE_ALIGNMENT_ERROR_RCD_/${alignmentErrorRcd}/g" > $helpFile5
+helpFile6="help6.txt"
+cat $helpFile5 |sed "s/_THE_NAME_/${DATASETNAME2}/g" > $helpFile6
 
 
 
@@ -139,8 +144,8 @@ BATCH_OUTPUTBASE2="../batch/workingArea/${DATASETNAME2}BatchSubmit"
 
 
 
-helpFile6="help6.txt"
-cat $BATCH_TEMPLATEFILE2 |sed "s/_THE_NAME_/${DATASETNAME2}/g" > $helpFile6
+helpFileB1="helpB1.txt"
+cat $BATCH_TEMPLATEFILE2 |sed "s/_THE_NAME_/${DATASETNAME2}/g" > $helpFileB1
 
 
 
@@ -154,12 +159,12 @@ while [ $counter2 -le 10 ]
 do
 
   theFilename="${OUTPUTBASE2}${counter2}${OUTPUTSUFFIX}"
-  cat $helpFile5 |sed "s/_THE_NUMBER_/${counter2}/g" > $theFilename
+  cat $helpFile6 |sed "s/_THE_NUMBER_/${counter2}/g" > $theFilename
   
   
   theBatchFilename="${BATCH_OUTPUTBASE2}${counter2}${BATCH_OUTPUTSUFFIX}"
   #cat $BATCH_TEMPLATEFILE2 |sed "s/_THE_NUMBER_/${counter2}/g" > $theBatchFilename
-  cat $helpFile6 |sed "s/_THE_NUMBER_/${counter2}/g" > $theBatchFilename
+  cat $helpFileB1 |sed "s/_THE_NUMBER_/${counter2}/g" > $theBatchFilename
   
   
   counter2=$counter2+1
@@ -172,5 +177,6 @@ rm $helpFile3
 rm $helpFile4
 rm $helpFile5
 rm $helpFile6
+rm $helpFileB1
 
 

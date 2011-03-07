@@ -163,7 +163,7 @@ process.ApeEstimator3 = process.ApeEstimator2.clone(
 ## Output File Configuration
 ##
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string(os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/workingArea/antiPion_THE_NUMBER_.root'),
+    fileName = cms.string(os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/workingArea/_THE_NAME__THE_NUMBER_.root'),
     closeFileFast = cms.untracked.bool(True)
 )
 
@@ -176,6 +176,7 @@ process.p = cms.Path(
     #process.TriggerSelectionSequence*       # omit trigger selection for particle gun
     process.RefitterHighPuritySequence
     *process.ApeEstimator1
+    #*(process.ApeEstimator1 + process.ApeEstimator2)# + process.ApeEstimator3)
 )
 
 
