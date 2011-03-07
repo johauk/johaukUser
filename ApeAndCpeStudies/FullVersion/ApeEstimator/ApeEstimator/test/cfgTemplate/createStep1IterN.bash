@@ -9,7 +9,7 @@ declare -i nIter=1
 ## identification name of dataset --- This is the only thing to change for different datasets
 DATASETNAME1="antiPion"
 ## input template file to configure
-TEMPLATEFILE1="${DATASETNAME1}Template_cfg.py"
+TEMPLATEFILE="cfgTemplate_cfg.py"
 ## composition of output file name for configured files
 OUTPUTDIR="../batch/workingArea/"
 OUTPUTBASE1="${OUTPUTDIR}${DATASETNAME1}_"
@@ -38,7 +38,7 @@ alignmentErrorRcd="AlignmentErrors"
 
 
 helpFile1="help1.txt"
-cat $TEMPLATEFILE1 |sed "s/_THE_MAXEVENT_/${maxevent}/g" > $helpFile1
+cat $TEMPLATEFILE |sed "s/_THE_MAXEVENT_/${maxevent}/g" > $helpFile1
 helpFile2="help2.txt"
 cat $helpFile1 |sed "s/_THE_ALIGNMENT_RCD_CONNECT_/${alignmentRcdConnect}/g" > $helpFile2
 helpFile3="help3.txt"
@@ -77,12 +77,10 @@ while [ $counter1 -le 10 ]
 do
 
   theFilename="${OUTPUTBASE1}${counter1}${OUTPUTSUFFIX}"
-  #cat $TEMPLATEFILE1 |sed "s/_THE_MAXEVENT_/${maxevent}/g" > $helpFile1
   cat $helpFile6 |sed "s/_THE_NUMBER_/${counter1}/g" > $theFilename
   
   
   theBatchFilename="${BATCH_OUTPUTBASE1}${counter1}${BATCH_OUTPUTSUFFIX}"
-  #cat $BATCH_TEMPLATEFILE1 |sed "s/_THE_NUMBER_/${counter1}/g" > $theBatchFilename
   cat $helpFileB1 |sed "s/_THE_NUMBER_/${counter1}/g" > $theBatchFilename
   
   
@@ -113,15 +111,13 @@ rm $helpFileB1
 
 ## identification name of dataset --- This is the only thing to change for different datasets
 DATASETNAME2="pion"
-## input template file to configure
-TEMPLATEFILE2="${DATASETNAME2}Template_cfg.py"
 ## composition of output file name for configured files
 OUTPUTBASE2="${OUTPUTDIR}${DATASETNAME2}_"
 
 
 
 helpFile1="help1.txt"
-cat $TEMPLATEFILE2 |sed "s/_THE_MAXEVENT_/${maxevent}/g" > $helpFile1
+cat $TEMPLATEFILE |sed "s/_THE_MAXEVENT_/${maxevent}/g" > $helpFile1
 helpFile2="help2.txt"
 cat $helpFile1 |sed "s/_THE_ALIGNMENT_RCD_CONNECT_/${alignmentRcdConnect}/g" > $helpFile2
 helpFile3="help3.txt"
@@ -163,7 +159,6 @@ do
   
   
   theBatchFilename="${BATCH_OUTPUTBASE2}${counter2}${BATCH_OUTPUTSUFFIX}"
-  #cat $BATCH_TEMPLATEFILE2 |sed "s/_THE_NUMBER_/${counter2}/g" > $theBatchFilename
   cat $helpFileB1 |sed "s/_THE_NUMBER_/${counter2}/g" > $theBatchFilename
   
   
