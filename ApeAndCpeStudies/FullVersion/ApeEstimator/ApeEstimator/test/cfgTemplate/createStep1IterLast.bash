@@ -1,15 +1,18 @@
 #!/bin/bash
 
 
-## give number of iteration (start with 1) --- This is the only thing to change...
+## give number of iteration (start with 1) --- This is the only thing to change per iteration...
 declare -i nIter=11
 
 
 
+## identification name of dataset --- This is the only thing to change for different datasets
+DATASETNAME1="antiPion"
 ## input template file to configure
-TEMPLATEFILE1="antiPionTemplateFullOverview_cfg.py"
+TEMPLATEFILE1="${DATASETNAME1}TemplateFullOverview_cfg.py"
 ## composition of output file name for configured files
-OUTPUTBASE1="../batch/workingArea/antiPion_"
+OUTPUTDIR="../batch/workingArea/"
+OUTPUTBASE1="${OUTPUTDIR}${DATASETNAME1}_"
 OUTPUTSUFFIX="_cfg.py"
 
 
@@ -50,9 +53,15 @@ cat $helpFile4 |sed "s/_THE_ALIGNMENT_ERROR_RCD_/${alignmentErrorRcd}/g" > $help
 
 
 ## Same for batch file
-BATCH_TEMPLATEFILE1="batchSubmitAntiPionTemplate.bash"
-BATCH_OUTPUTBASE1="../batch/workingArea/batchSubmitAntiPion"
+
+BATCH_TEMPLATEFILE1="${DATASETNAME1}BatchSubmitTemplate.bash"
+BATCH_OUTPUTBASE1="../batch/workingArea/${DATASETNAME1}BatchSubmit"
 BATCH_OUTPUTSUFFIX=".bash"
+
+
+
+helpFile6="help6.txt"
+cat $BATCH_TEMPLATEFILE1 |sed "s/_THE_NAME_/${DATASETNAME1}/g" > $helpFile6
 
 
 
@@ -71,7 +80,8 @@ do
   
   
   theBatchFilename="${BATCH_OUTPUTBASE1}${counter1}${BATCH_OUTPUTSUFFIX}"
-  cat $BATCH_TEMPLATEFILE1 |sed "s/_THE_NUMBER_/${counter1}/g" > $theBatchFilename
+  #cat $BATCH_TEMPLATEFILE1 |sed "s/_THE_NUMBER_/${counter1}/g" > $theBatchFilename
+  cat $helpFile6 |sed "s/_THE_NUMBER_/${counter1}/g" > $theBatchFilename
   
   
   counter1=$counter1+1
@@ -83,7 +93,7 @@ rm $helpFile2
 rm $helpFile3
 rm $helpFile4
 rm $helpFile5
-
+rm $helpFile6
 
 
 
@@ -98,10 +108,12 @@ rm $helpFile5
 
 
 
+## identification name of dataset --- This is the only thing to change for different datasets
+DATASETNAME2="pion"
 ## input template file to configure
-TEMPLATEFILE2="pionTemplateFullOverview_cfg.py"
+TEMPLATEFILE2="${DATASETNAME2}TemplateFullOverview_cfg.py"
 ## composition of output file name for configured files
-OUTPUTBASE2="../batch/workingArea/pion_"
+OUTPUTBASE2="${OUTPUTDIR}${DATASETNAME2}_"
 
 
 
@@ -121,8 +133,14 @@ cat $helpFile4 |sed "s/_THE_ALIGNMENT_ERROR_RCD_/${alignmentErrorRcd}/g" > $help
 
 
 ## Same for batch file
-BATCH_TEMPLATEFILE2="batchSubmitPionTemplate.bash"
-BATCH_OUTPUTBASE2="../batch/workingArea/batchSubmitPion"
+
+BATCH_TEMPLATEFILE2="${DATASETNAME2}BatchSubmitTemplate.bash"
+BATCH_OUTPUTBASE2="../batch/workingArea/${DATASETNAME2}BatchSubmit"
+
+
+
+helpFile6="help6.txt"
+cat $BATCH_TEMPLATEFILE2 |sed "s/_THE_NAME_/${DATASETNAME2}/g" > $helpFile6
 
 
 
@@ -140,7 +158,8 @@ do
   
   
   theBatchFilename="${BATCH_OUTPUTBASE2}${counter2}${BATCH_OUTPUTSUFFIX}"
-  cat $BATCH_TEMPLATEFILE2 |sed "s/_THE_NUMBER_/${counter2}/g" > $theBatchFilename
+  #cat $BATCH_TEMPLATEFILE2 |sed "s/_THE_NUMBER_/${counter2}/g" > $theBatchFilename
+  cat $helpFile6 |sed "s/_THE_NUMBER_/${counter2}/g" > $theBatchFilename
   
   
   counter2=$counter2+1
@@ -152,5 +171,6 @@ rm $helpFile2
 rm $helpFile3
 rm $helpFile4
 rm $helpFile5
+rm $helpFile6
 
 
