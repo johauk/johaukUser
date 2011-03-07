@@ -18,7 +18,7 @@ OUTPUTSUFFIX="_cfg.py"
 
 
 ## number of input files
-declare -i nFiles=10
+declare -i nFiles1=10
 
 
 
@@ -87,7 +87,7 @@ cat $BATCH_TEMPLATEFILE1 |sed "s/_THE_NAME_/${DATASETNAME1}/g" > $helpFileB1
 declare -i counter1=1
 
 ## number of files to create (maximum value of counter!!!)
-while [ $counter1 -le ${nFiles} ]
+while [ $counter1 -le ${nFiles1} ]
 do
 
   theFilename="${OUTPUTBASE1}${counter1}${OUTPUTSUFFIX}"
@@ -131,6 +131,11 @@ OUTPUTBASE2="${OUTPUTDIR}${DATASETNAME2}_"
 
 
 
+## number of input files
+declare -i nFiles2=10
+
+
+
 helpFile1="help1.txt"
 cat $TEMPLATEFILE |sed "s/_THE_MAXEVENT_/${maxevent}/g" > $helpFile1
 helpFile2="help2.txt"
@@ -168,7 +173,7 @@ cat $BATCH_TEMPLATEFILE2 |sed "s/_THE_NAME_/${DATASETNAME2}/g" > $helpFileB1
 declare -i counter2=1
 
 ## number of files to create (maximum value of counter!!!)
-while [ $counter2 -le ${nFiles} ]
+while [ $counter2 -le ${nFiles2} ]
 do
 
   theFilename="${OUTPUTBASE2}${counter2}${OUTPUTSUFFIX}"
