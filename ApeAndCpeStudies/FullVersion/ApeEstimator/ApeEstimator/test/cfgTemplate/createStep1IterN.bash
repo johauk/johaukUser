@@ -17,6 +17,18 @@ OUTPUTSUFFIX="_cfg.py"
 
 
 
+## number of input files
+declare -i nFiles=10
+
+
+
+## Which APE estimator modules to run, only standard, or additional control plots?
+apeEstimatorModules="process.ApeEstimator1"
+#apeEstimatorModules="(process.ApeEstimator1 + process.ApeEstimator2)"
+#apeEstimatorModules="(process.ApeEstimator1 + process.ApeEstimator2 + process.ApeEstimator3)"
+
+
+
 ## number of events
 declare -i maxevent=-1
 
@@ -49,6 +61,8 @@ helpFile5="help5.txt"
 cat $helpFile4 |sed "s/_THE_ALIGNMENT_ERROR_RCD_/${alignmentErrorRcd}/g" > $helpFile5
 helpFile6="help6.txt"
 cat $helpFile5 |sed "s/_THE_NAME_/${DATASETNAME1}/g" > $helpFile6
+helpFile7="help7.txt"
+cat $helpFile6 |sed "s/_THE_MODULES_/${apeEstimatorModules}/g" > $helpFile7
 
 
 
@@ -73,11 +87,11 @@ cat $BATCH_TEMPLATEFILE1 |sed "s/_THE_NAME_/${DATASETNAME1}/g" > $helpFileB1
 declare -i counter1=1
 
 ## number of files to create (maximum value of counter!!!)
-while [ $counter1 -le 10 ]
+while [ $counter1 -le ${nFiles} ]
 do
 
   theFilename="${OUTPUTBASE1}${counter1}${OUTPUTSUFFIX}"
-  cat $helpFile6 |sed "s/_THE_NUMBER_/${counter1}/g" > $theFilename
+  cat $helpFile7 |sed "s/_THE_NUMBER_/${counter1}/g" > $theFilename
   
   
   theBatchFilename="${BATCH_OUTPUTBASE1}${counter1}${BATCH_OUTPUTSUFFIX}"
@@ -94,6 +108,7 @@ rm $helpFile3
 rm $helpFile4
 rm $helpFile5
 rm $helpFile6
+rm $helpFile7
 rm $helpFileB1
 
 
@@ -128,6 +143,8 @@ helpFile5="help5.txt"
 cat $helpFile4 |sed "s/_THE_ALIGNMENT_ERROR_RCD_/${alignmentErrorRcd}/g" > $helpFile5
 helpFile6="help6.txt"
 cat $helpFile5 |sed "s/_THE_NAME_/${DATASETNAME2}/g" > $helpFile6
+helpFile7="help7.txt"
+cat $helpFile6 |sed "s/_THE_MODULES_/${apeEstimatorModules}/g" > $helpFile7
 
 
 
@@ -151,11 +168,11 @@ cat $BATCH_TEMPLATEFILE2 |sed "s/_THE_NAME_/${DATASETNAME2}/g" > $helpFileB1
 declare -i counter2=1
 
 ## number of files to create (maximum value of counter!!!)
-while [ $counter2 -le 10 ]
+while [ $counter2 -le ${nFiles} ]
 do
 
   theFilename="${OUTPUTBASE2}${counter2}${OUTPUTSUFFIX}"
-  cat $helpFile6 |sed "s/_THE_NUMBER_/${counter2}/g" > $theFilename
+  cat $helpFile7 |sed "s/_THE_NUMBER_/${counter2}/g" > $theFilename
   
   
   theBatchFilename="${BATCH_OUTPUTBASE2}${counter2}${BATCH_OUTPUTSUFFIX}"
@@ -172,6 +189,7 @@ rm $helpFile3
 rm $helpFile4
 rm $helpFile5
 rm $helpFile6
+rm $helpFile7
 rm $helpFileB1
 
 

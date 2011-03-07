@@ -174,9 +174,10 @@ process.TFileService = cms.Service("TFileService",
 ##
 process.p = cms.Path(
     #process.TriggerSelectionSequence*       # omit trigger selection for particle gun
-    process.RefitterHighPuritySequence
-    *process.ApeEstimator1
-    #*(process.ApeEstimator1 + process.ApeEstimator2)# + process.ApeEstimator3)
+    process.RefitterHighPuritySequence*
+    #process.ApeEstimator1
+    #(process.ApeEstimator1 + process.ApeEstimator2)# + process.ApeEstimator3)
+    _THE_MODULES_
 )
 
 
