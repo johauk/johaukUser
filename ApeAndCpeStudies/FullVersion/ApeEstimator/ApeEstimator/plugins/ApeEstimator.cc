@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.1 2010/10/14 15:20:23 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.2 2011/01/28 20:33:19 hauk Exp $
 //
 //
 
@@ -41,6 +41,7 @@
 #include "DataFormats/CLHEP/interface/AlgebraicObjects.h"
 #include "DataFormats/CLHEP/interface/Migration.h"
 #include "DataFormats/TrackReco/interface/Track.h"
+#include "DataFormats/TrackReco/interface/HitPattern.h"
 #include "DataFormats/TrackingRecHit/interface/TrackingRecHit.h"
 #include "DataFormats/DetId/interface/DetId.h"
 #include "DataFormats/TrackerRecHit2D/interface/SiStripRecHit1D.h"
@@ -596,7 +597,11 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     (*i_sector).second.m_correlationHists["HitsValid"] = (*i_sector).second.bookCorrHists("HitsValid","# hits","[valid]",50,0,50,"npt");
     (*i_sector).second.m_correlationHists["HitsGood"] = (*i_sector).second.bookCorrHists("HitsGood","# hits","[good]",50,0,50,"npt");
     (*i_sector).second.m_correlationHists["HitsInvalid"] = (*i_sector).second.bookCorrHists("HitsInvalid","# hits","[invalid]",20,0,20,"npt");
+    (*i_sector).second.m_correlationHists["Hits2D"] = (*i_sector).second.bookCorrHists("Hits2D","# hits","[2D]",20,0,20,"npth");
     (*i_sector).second.m_correlationHists["LayersMissed"] = (*i_sector).second.bookCorrHists("LayersMissed","# layers","[missed]",10,0,10,"npt");
+    (*i_sector).second.m_correlationHists["HitsPixel"] = (*i_sector).second.bookCorrHists("HitsPixel","# hits","[pixel]",10,0,10,"npt");
+    (*i_sector).second.m_correlationHists["HitsStrip"] = (*i_sector).second.bookCorrHists("HitsStrip","# hits","[strip]",40,0,40,"npt");
+    (*i_sector).second.m_correlationHists["HitsGood"] = (*i_sector).second.bookCorrHists("HitsGood","# hits","[good]",50,0,50,"npt");
     (*i_sector).second.m_correlationHists["NorChi2"] = (*i_sector).second.bookCorrHists("NorChi2","#chi^{2}/ndof","",50,0,norChi2Max,"npr");
     (*i_sector).second.m_correlationHists["Theta"] = (*i_sector).second.bookCorrHists("Theta","#theta","[ ^{o}]",40,-10,190,"npt");
     (*i_sector).second.m_correlationHists["Phi"] = (*i_sector).second.bookCorrHists("Phi","#phi","[ ^{o}]",76,-190,190,"npt");
@@ -717,6 +722,8 @@ ApeEstimator::bookTrackHists(){
   tkDetector_.HitsInvalid  = trkDir.make<TH1F>("h_hitInvalid","# hits  [invalid];# hits  [invalid];# tracks",21,-1,20);
   tkDetector_.Hits2D       = trkDir.make<TH1F>("h_hit2D","# hits  [2D];# hits  [2D];# tracks",21,-1,20);
   tkDetector_.LayersMissed = trkDir.make<TH1F>("h_layerMissed","# layers  [missed];# layers  [missed];# tracks",11,-1,10);
+  tkDetector_.HitsPixel    = trkDir.make<TH1F>("h_hitPixel","# hits  [pixel];# hits  [pixel];# tracks",11,-1,10);
+  tkDetector_.HitsStrip    = trkDir.make<TH1F>("h_hitStrip","# hits  [strip];# hits  [strip];# tracks",41,-1,40);
   tkDetector_.Charge       = trkDir.make<TH1F>("h_charge","charge q;q  [e];# tracks",5,-2,3);
   tkDetector_.Chi2         = trkDir.make<TH1F>("h_chi2"," #chi^{2};#chi^{2};# tracks",100,0,chi2Max);
   tkDetector_.Ndof         = trkDir.make<TH1F>("h_ndof","# degrees of freedom ndof;ndof;# tracks",101,-1,100);
@@ -751,6 +758,8 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
   
   static TrajectoryStateCombiner tsoscomb;
   
+  const reco::HitPattern& hitPattern(track.hitPattern());
+  
   TrackStruct::TrackParameterStruct trkParams;
   
   trkParams.hitsSize     = track.recHitsSize();
@@ -758,6 +767,8 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
   //trkParams.hitsValid    = trkParams.hitsSize-trkParams.hitsLost;  // incorrect: unequal to .found(), because not every invalid hit is a lost one
   trkParams.hitsInvalid  = trkParams.hitsSize-trkParams.hitsValid;
   trkParams.layersMissed = track.lost();  // lost hit means, that a crossed layer doesn't contain a hit (can be more than one invalid hit)
+  trkParams.hitsPixel    = hitPattern.numberOfValidPixelHits();
+  trkParams.hitsStrip    = hitPattern.numberOfValidStripHits();
   trkParams.charge       = track.charge();
   trkParams.chi2         = track.chi2();
   trkParams.ndof         = track.ndof();
@@ -1312,6 +1323,8 @@ ApeEstimator::fillHistsForAnalyzerMode(const TrackStruct& trackStruct){
   tkDetector_.HitsInvalid ->Fill(trackStruct.trkParams.hitsInvalid);
   tkDetector_.Hits2D      ->Fill(trackStruct.trkParams.hits2D);
   tkDetector_.LayersMissed->Fill(trackStruct.trkParams.layersMissed);
+  tkDetector_.HitsPixel   ->Fill(trackStruct.trkParams.hitsPixel);
+  tkDetector_.HitsStrip   ->Fill(trackStruct.trkParams.hitsStrip);
   tkDetector_.Charge      ->Fill(trackStruct.trkParams.charge);
   tkDetector_.Chi2        ->Fill(trackStruct.trkParams.chi2);
   tkDetector_.Ndof        ->Fill(trackStruct.trkParams.ndof);
@@ -1392,7 +1405,10 @@ ApeEstimator::fillHistsForAnalyzerMode(const TrackStruct& trackStruct){
       (*i_sector).second.m_correlationHists["HitsValid"].fillCorrHists(*i_hit,trackStruct.trkParams.hitsValid);
       (*i_sector).second.m_correlationHists["HitsGood"].fillCorrHists(*i_hit,goodHitsPerTrack);
       (*i_sector).second.m_correlationHists["HitsInvalid"].fillCorrHists(*i_hit,trackStruct.trkParams.hitsInvalid);
+      (*i_sector).second.m_correlationHists["Hits2D"].fillCorrHists(*i_hit,trackStruct.trkParams.hits2D);
       (*i_sector).second.m_correlationHists["LayersMissed"].fillCorrHists(*i_hit,trackStruct.trkParams.layersMissed);
+      (*i_sector).second.m_correlationHists["HitsPixel"].fillCorrHists(*i_hit,trackStruct.trkParams.hitsPixel);
+      (*i_sector).second.m_correlationHists["HitsStrip"].fillCorrHists(*i_hit,trackStruct.trkParams.hitsStrip);
       (*i_sector).second.m_correlationHists["NorChi2"].fillCorrHists(*i_hit,trackStruct.trkParams.norChi2);
       (*i_sector).second.m_correlationHists["Theta"].fillCorrHists(*i_hit,trackStruct.trkParams.theta*180./M_PI);
       (*i_sector).second.m_correlationHists["Phi"].fillCorrHists(*i_hit,trackStruct.trkParams.phi*180./M_PI);
