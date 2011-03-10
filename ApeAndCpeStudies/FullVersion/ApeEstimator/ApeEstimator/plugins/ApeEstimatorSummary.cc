@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,6 2-039,+41227673512,
 //         Created:  Mon Oct 11 13:44:03 CEST 2010
-// $Id: ApeEstimatorSummary.cc,v 1.2 2010/10/25 17:04:33 hauk Exp $
+// $Id: ApeEstimatorSummary.cc,v 1.3 2011/01/28 21:00:52 hauk Exp $
 //
 //
 
@@ -306,7 +306,7 @@ ApeEstimatorSummary::calculateApe(){
      firstIter = true;
      if(!setBaseline){
        iterationTree = new TTree("iterTree","Tree for APE values of all iterations");
-       edm::LogInfo("CalculateAPE")<<"First APE iteration, create iteration file with TTree";
+       edm::LogInfo("CalculateAPE")<<"First APE iteration (number 0.), create iteration file with TTree";
      }
      else{
        iterationTree = new TTree("iterTree","Tree for baseline values of normalized residual width");
@@ -315,7 +315,7 @@ ApeEstimatorSummary::calculateApe(){
    }
    else{
      const unsigned int iteration(iterationTree->GetEntries());
-     edm::LogWarning("CalculateAPE")<<"NOT the first APE iteration but the "<<iteration+1<<" one, is this wanted or forgot to delete old iteration file with TTree?";
+     edm::LogWarning("CalculateAPE")<<"NOT the first APE iteration (number 0.) but the "<<iteration<<". one, is this wanted or forgot to delete old iteration file with TTree?";
    }
    
    double a_apeSector[16589];
