@@ -59,8 +59,10 @@ process.options = cms.untracked.PSet(
 ## --- Run XXX-YYY, End of Year Reprocessing ---
 #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMinBias_Run2010A_Dec22ReReco_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMinBias_Run2010B_Dec22ReReco_cff")
-process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010A_Dec22ReReco_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010A_Dec22ReReco_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010A_Dec22ReReco_ApeSkim_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010B_Dec22ReReco_cff")
+process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010B_Dec22ReReco_ApeSkim_cff")
 #readFiles = cms.untracked.vstring()
 #process.source = cms.Source ("PoolSource",
 #    inputCommands = cms.untracked.vstring('keep *', 'drop *_MEtoEDMConverter_*_*'),
@@ -107,10 +109,11 @@ process.GlobalTag.globaltag = 'FT_R_39X_V4A::All'
 ## --- Further information (Monte Carlo and Data) ---
 process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
 #process.TTRHBuilderGeometricAndTemplate.PixelCPE = 'PixelCPEGeneric'
-#process.HighPuritySelector.src = 'MinBiasSkim'
 #process.HighPuritySelector.src = 'generalTracks'
-process.HighPuritySelector.src = 'ALCARECOTkAlMuonIsolated'
+#process.HighPuritySelector.src = 'ALCARECOTkAlMuonIsolated'
+process.HighPuritySelector.src = 'MuSkim'
 #process.HighPuritySelector.src = 'ALCARECOTkAlMinBias'
+#process.HighPuritySelector.src = 'MinBiasSkim'
 
 
 
