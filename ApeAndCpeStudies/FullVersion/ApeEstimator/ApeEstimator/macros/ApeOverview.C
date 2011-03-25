@@ -524,7 +524,7 @@ ApeOverview::drawHistToPad(const TString histName, const bool setLogScale){
 	TProfile *rmsPlot(0);
 	if(histNameP.BeginsWith("p_norResXVs") ||histNameP.BeginsWith("p_probXVs") ){
 	  std::stringstream tempName;
-	  tempName << "temp_" << histNameP << moduleNo_;
+	  tempName << "temp_" << histNameP << "_" << sectorCounter_ << "_" << moduleNo_;
 	  TString tempHist(tempName.str().c_str());
 	  const int nBinX(histP->GetNbinsX());
 	  rmsPlot = new TProfile(tempHist,"temp",nBinX,histP->GetBinLowEdge(1),histP->GetBinLowEdge(nBinX+1));
@@ -533,7 +533,7 @@ ApeOverview::drawHistToPad(const TString histName, const bool setLogScale){
 	    rmsPlot->SetBinEntries(iBin, (histP->GetBinEntries(iBin)<0.1 ? 0 : 1000000));
 	    //rmsPlot->SetBinError(iBin, 0.00001);   // Does not do anything !?
 	  }
-	  std::cout<<"\t\tBins "<<tempHist<<" "<<nBinX<<" "<<histP->GetBinLowEdge(1)<<" "<<histP->GetBinLowEdge(nBinX+1)<<"\n";
+	  //std::cout<<"\t\tBins "<<tempHist<<" "<<nBinX<<" "<<histP->GetBinLowEdge(1)<<" "<<histP->GetBinLowEdge(nBinX+1)<<"\n";
 	}
 	
         histP->Draw();
