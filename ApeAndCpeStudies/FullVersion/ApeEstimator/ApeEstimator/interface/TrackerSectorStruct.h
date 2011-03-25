@@ -162,11 +162,11 @@ TrackerSectorStruct::bookCorrHists(TString varName,TString varTitle,TString labe
   if(options.find("p") != std::string::npos)
   correlationHists.PProbXVsVar = directory->make<TProfile>("p_probXVs"+varName,"prob_{x} vs. "+labelX+";"+labelX+"  "+unitX+";prob_{x}",nBinX2D,minBinX,maxBinX,"s");
   if(options.find("h") != std::string::npos)
-  correlationHists.PSigmaXHitVsVar = directory->make<TProfile>("p_sigmaXHitVs"+varName,"#sigma_{x,hit} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{x,hit}  [cm]",nBinX2D,minBinX,maxBinX,"s");
+  correlationHists.PSigmaXHitVsVar = directory->make<TProfile>("p_sigmaXHitVs"+varName,"#sigma_{x,hit} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{x,hit}  [cm]",nBinX2D,minBinX,maxBinX);
   if(options.find("t") != std::string::npos)
-  correlationHists.PSigmaXTrkVsVar = directory->make<TProfile>("p_sigmaXTrkVs"+varName,"#sigma_{x,track} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{x,track}  [cm]",nBinX2D,minBinX,maxBinX,"s");
+  correlationHists.PSigmaXTrkVsVar = directory->make<TProfile>("p_sigmaXTrkVs"+varName,"#sigma_{x,track} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{x,track}  [cm]",nBinX2D,minBinX,maxBinX);
   if(options.find("r") != std::string::npos)
-  correlationHists.PSigmaXVsVar = directory->make<TProfile>("p_sigmaXVs"+varName,"#sigma_{x} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{x}  [cm]",nBinX2D,minBinX,maxBinX,"s");
+  correlationHists.PSigmaXVsVar = directory->make<TProfile>("p_sigmaXVs"+varName,"#sigma_{x} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{x}  [cm]",nBinX2D,minBinX,maxBinX);
   
   return correlationHists;
 }
