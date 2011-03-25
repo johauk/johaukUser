@@ -190,8 +190,8 @@ process.ApeEstimator1 = ApeEstimator.clone(
     tjTkAssociationMapTag = "TrackRefitterHighPurityForApeEstimator",
     maxTracksPerEvent = 0,
     applyTrackCuts = False,
-    #Sectors = SubdetSectors,
-    Sectors = TIBTOBLayerAndOrientationSeparation,
+    Sectors = SubdetSectors,
+    #Sectors = TIBTOBLayerAndOrientationSeparation,
     analyzerMode = False,
 )
 process.ApeEstimator1.HitSelector.width = []
