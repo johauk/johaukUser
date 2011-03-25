@@ -127,12 +127,15 @@ ApeOverview::eventAndTrackHistos(){
   std::cout<<"List of track histograms to print:\n";
   
   if(!onlyZoomedHists_){
-  this->drawHistToPad("h_hitSize");
-  this->drawHistToPad("h_hitValid");
+  this->drawHistToPad("h_hitsSize");
+  this->drawHistToPad("h_hitsValid");
   this->drawHistToPad("h_hitsGood");
-  this->drawHistToPad("h_hit2D");
-  this->drawHistToPad("h_hitInvalid");
-  this->drawHistToPad("h_layerMissed");
+  this->drawHistToPad("h_hits2D");
+  this->drawHistToPad("h_hitsInvalid");
+  this->drawHistToPad("h_layersMissed");
+  this->drawHistToPad("h_hitsPixel");
+  this->drawHistToPad("h_hitsStrip");
+  this->setNewCanvas(dim1);
   }
   
   this->drawHistToPad("h_chi2");
@@ -158,6 +161,7 @@ ApeOverview::eventAndTrackHistos(){
   if(!onlyZoomedHists_){
   this->drawHistToPad("h2_hitsGoodVsHitsValid",false);
   this->drawHistToPad("h2_meanAngleVsHits",false);
+  this->setNewCanvas(dim2);
   }
   
   histLevel_ = sector;
@@ -246,6 +250,8 @@ ApeOverview::eventAndTrackHistos(){
       if(!onlyZoomedHists_){
       this->drawHistToPad("h2_sigmaXTrkVsHitsInvalid",false);
       this->drawHistToPad("h2_sigmaXTrkVsLayersMissed",false);
+      this->drawHistToPad("h2_sigmaXTrkVsHitsPixel",false);
+      this->drawHistToPad("h2_sigmaXTrkVsHitsStrip",false);
       }
       this->drawHistToPad("h2_sigmaXTrkVsP",false);
       this->setNewCanvas(dim2);
@@ -297,6 +303,8 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_norResXVsMeanAngle",false);
       this->drawHistToPad("h2_norResXVsHitsInvalid",false);
       this->drawHistToPad("h2_norResXVsLayersMissed",false);
+      this->drawHistToPad("h2_norResXVsHitsPixel",false);
+      this->drawHistToPad("h2_norResXVsHitsStrip",false);
       }
       this->drawHistToPad("h2_norResXVsP",false);
       if(!onlyZoomedHists_){
@@ -348,6 +356,8 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_probXVsMeanAngle",false);
       this->drawHistToPad("h2_probXVsHitsInvalid",false);
       this->drawHistToPad("h2_probXVsLayersMissed",false);
+      this->drawHistToPad("h2_probXVsHitsPixel",false);
+      this->drawHistToPad("h2_probXVsHitsStrip",false);
       }
       this->drawHistToPad("h2_probXVsP",false);
       if(!onlyZoomedHists_){
@@ -396,6 +406,7 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_widthVsPhiSensX",false);
       this->drawHistToPad("h2_widthVsWidthProj",false);
       this->drawHistToPad("h2_widthDiffVsMaxStrip",false);
+      this->setNewCanvas(dim2);
       
       this->setNewCanvas(dim1);
       TDirectory* intDir(0);
@@ -420,9 +431,14 @@ ApeOverview::eventAndTrackHistos(){
       this->setNewCanvas(dim1);
       TDirectory* resDir(0);
       std::string resultName("Results/");
+      histDir_  = (sectorName.str() + resultName).c_str();
       std::stringstream fullDirectoryName3;
       fullDirectoryName3 << fullDirectoryName.str() << resultName;
       resDir = (TDirectory*)inputFile_->TDirectory::GetDirectory(fullDirectoryName3.str().c_str());
+      if(resDir){
+      this->drawHistToPad("h_entries");
+      }
+      resultName = "";
       histDir_  = (sectorName.str() + resultName).c_str();
       this->drawHistToPad("h_meanX",false);
       this->drawHistToPad("h_fitMeanX1",false);
@@ -430,7 +446,6 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h_rmsX",false);
       this->drawHistToPad("h_residualWidthX1",false);
       this->drawHistToPad("h_residualWidthX2",false);
-      this->drawHistToPad("h_entries");
       this->drawHistToPad("h_correctionX1",false);
       this->drawHistToPad("h_correctionX2",false);
       }
@@ -453,69 +468,112 @@ ApeOverview::drawHistToPad(const TString histName, const bool setLogScale){
   
   //if(histName.BeginsWith("h_", TString::kIgnoreCase)) not case sensitive
   if(histName.BeginsWith("h_")){
-    if(padCounter->first >= 7){padCounter->first = 1;}
-    if(padCounter->first == 1){
-      //new TCanvas
-      TCanvas* canvas0 = new TCanvas(this->setCanvasName());
-      canvas0->Divide(3,2);
-      canvasPair->first.push_back(canvas0);
-    }
-    (*(--(canvasPair->first.end())))->cd(padCounter->first);
     TH1 *hist1(0);
     inputFile_->GetObject(pluginDir_ + histDir_ + histName + ";1", hist1);
     if(histDir_.BeginsWith(firstSelectedSector_) || histDir_ == "TrackVariables/" || histDir_ == "EventVariables/")std::cout<<"\tDraw 1D Histo\t\t"<<pluginDir_<<histDir_<<histName<<"\n";
     //GetEntries delivers double
     if(hist1){
+      if(padCounter->first >= 7){padCounter->first = 1;}
+      if(padCounter->first == 1){
+        //new TCanvas
+        TCanvas* canvas0 = new TCanvas(this->setCanvasName());
+        canvas0->Divide(3,2);
+        canvasPair->first.push_back(canvas0);
+      }
+      (*(--(canvasPair->first.end())))->cd(padCounter->first);
+      
       if(setLogScale==true && hist1->GetEffectiveEntries()>0.1)(*(--(canvasPair->first.end())))->cd(padCounter->first)->SetLogy();
       //if(setLogScale==true && hist1->Integral()>0.1)(*(--(canvasPair->first.end())))->cd(padCounter->first)->SetLogy();  // gives same result
       hist1->Draw();
+      
+      ++(padCounter->first);
     }
-    else{if(histDir_.BeginsWith(firstSelectedSector_) || histDir_ == "TrackVariables/" || histDir_ == "EventVariables/")std::cout<<"\t\t\t\t... Histogram does not exist!\n"; if(padCounter->first == 1)canvasPair->first.pop_back(); return -1;}
-    ++(padCounter->first);
+    else{if(histDir_.BeginsWith(firstSelectedSector_) || histDir_ == "TrackVariables/" || histDir_ == "EventVariables/")std::cout<<"\t\t\t\t... Histogram does not exist!\n"; return -1;}
     return 0;
   }
   
   else if(histName.BeginsWith("h2_")){
-    if(padCounter->second >= 4){padCounter->second = 1;}
-    if(padCounter->second == 1){
-      //new TCanvas
-      TCanvas* canvas0 = new TCanvas(this->setCanvasName());
-      canvas0->Divide(3,2);
-      canvasPair->second.push_back(canvas0);
-    }
-    (*(--(canvasPair->second.end())))->cd(padCounter->second);
     TH2 *hist2(0);
     inputFile_->GetObject(pluginDir_ + histDir_ + histName + ";1", hist2);
     if(histDir_.BeginsWith(firstSelectedSector_) || histDir_ == "TrackVariables/" || histDir_ == "EventVariables/")std::cout<<"\tDraw 2D Histo\t\t"<<pluginDir_<<histDir_<<histName<<"\n";
     if(hist2){
+      if(padCounter->second >= 4){padCounter->second = 1;}
+      if(padCounter->second == 1){
+        //new TCanvas
+        TCanvas* canvas0 = new TCanvas(this->setCanvasName());
+        canvas0->Divide(3,2);
+        canvasPair->second.push_back(canvas0);
+      }
+      (*(--(canvasPair->second.end())))->cd(padCounter->second);
+      
       if(setLogScale==true && hist2->GetEffectiveEntries()>0.1)(*(--(canvasPair->second.end())))->cd(padCounter->second)->SetLogy();
       hist2->Draw("box");
+      
+      
+      // Include profile corresponding to 2D histo automatically here
+      TString histNameP(histName);
+      histNameP.ReplaceAll("h2_","p_");
+      TProfile *histP(0);
+      inputFile_->GetObject(pluginDir_ + histDir_ + histNameP + ";1", histP);
+      if(histDir_.BeginsWith(firstSelectedSector_) || histDir_ == "TrackVariables/" || histDir_ == "EventVariables/")std::cout<<"\tDraw Profile Histo\t"<<pluginDir_<<histDir_<<histNameP<<"\n";
+      if(histP){
+        (*(--(canvasPair->second.end())))->cd(padCounter->second+3);
+        if(setLogScale==true && histP->GetEffectiveEntries()>0.1)(*(--(canvasPair->second.end())))->cd(padCounter->second+3)->SetLogy();
+	
+	// Loop for separating mean and RMS per bin (separate entries in final plot)
+	TProfile *rmsPlot(0);
+	if(histNameP.BeginsWith("p_norResXVs") ||histNameP.BeginsWith("p_probXVs") ){
+	  std::stringstream tempName;
+	  tempName << "temp_" << histNameP << moduleNo_;
+	  TString tempHist(tempName.str().c_str());
+	  const int nBinX(histP->GetNbinsX());
+	  rmsPlot = new TProfile(tempHist,"temp",nBinX,histP->GetBinLowEdge(1),histP->GetBinLowEdge(nBinX+1));
+	  for(int iBin = 0; iBin < nBinX+1; ++iBin){
+	    rmsPlot->SetBinContent(iBin, 1000000*histP->GetBinError(iBin));   // Scale by factor 1000000, and same for next line --> hack to hide error bars (hard to get rid of in TProfile)
+	    rmsPlot->SetBinEntries(iBin, (histP->GetBinEntries(iBin)<0.1 ? 0 : 1000000));
+	    //rmsPlot->SetBinError(iBin, 0.00001);   // Does not do anything !?
+	  }
+	  std::cout<<"\t\tBins "<<tempHist<<" "<<nBinX<<" "<<histP->GetBinLowEdge(1)<<" "<<histP->GetBinLowEdge(nBinX+1)<<"\n";
+	}
+	
+        histP->Draw();
+        if(rmsPlot){
+	  double yMin(histNameP.BeginsWith("p_probXVs") ? -0.1 : -3);
+	  double yMax(histNameP.BeginsWith("p_probXVs") ? 1.1 : 3);
+	  histP->SetErrorOption("");
+	  histP->GetYaxis()->SetRangeUser(yMin,yMax);
+	  const int nBinX(histP->GetNbinsX());
+	  for(int iBin = 0; iBin < nBinX+1; ++iBin){
+	    if(histP->GetBinContent(iBin)>yMax)histP->SetBinContent(iBin,histP->GetBinEntries(iBin)*yMax);
+	    if(histP->GetBinContent(iBin)<yMin)histP->SetBinContent(iBin,histP->GetBinEntries(iBin)*yMin);
+	    if(rmsPlot->GetBinContent(iBin)>yMax)rmsPlot->SetBinContent(iBin,rmsPlot->GetBinEntries(iBin)*yMax);
+	    if(rmsPlot->GetBinContent(iBin)<yMin)rmsPlot->SetBinContent(iBin,rmsPlot->GetBinEntries(iBin)*yMin);
+	  }
+	  rmsPlot->SetMarkerColor(2);
+	  rmsPlot->SetLineColor(2);
+	  rmsPlot->SetMarkerStyle(24);
+	  rmsPlot->Draw("same");
+	  //rmsPlot->Draw("hist p same");
+	}
+	
+      }
+      else{if(histDir_.BeginsWith(firstSelectedSector_) || histDir_ == "TrackVariables/" || histDir_ == "EventVariables/")std::cout<<"\t\t\t\t... Histogram does not exist!\n";return -1;}
+      
+      ++(padCounter->second);
     }
-    else{if(histDir_.BeginsWith(firstSelectedSector_) || histDir_ == "TrackVariables/" || histDir_ == "EventVariables/")std::cout<<"\t\t\t\t... Histogram does not exist!\n"; if(padCounter->second == 1)canvasPair->second.pop_back(); return -1;}
-    
-    (*(--(canvasPair->second.end())))->cd(padCounter->second+3);
-    TString histNameP(histName);
-    histNameP.ReplaceAll("h2_","p_");
-    TProfile *histP(0);
-    inputFile_->GetObject(pluginDir_ + histDir_ + histNameP + ";1", histP);
-    if(histDir_.BeginsWith(firstSelectedSector_) || histDir_ == "TrackVariables/" || histDir_ == "EventVariables/")std::cout<<"\tDraw Profile Histo\t"<<pluginDir_<<histDir_<<histNameP<<"\n";
-    if(histP){
-      if(setLogScale==true && histP->GetEffectiveEntries()>0.1)(*(--(canvasPair->second.end())))->cd(padCounter->second+3)->SetLogy();
-      histP->Draw();
-    }
-    else{if(histDir_.BeginsWith(firstSelectedSector_) || histDir_ == "TrackVariables/" || histDir_ == "EventVariables/")std::cout<<"\t\t\t\t... Histogram does not exist!\n";return -1;}
-    ++(padCounter->second);
+    else{if(histDir_.BeginsWith(firstSelectedSector_) || histDir_ == "TrackVariables/" || histDir_ == "EventVariables/")std::cout<<"\t\t\t\t... Histogram does not exist!\n"; return -1;}
     return 0;
   }
+  
   else if(histName.BeginsWith("p_")){std::cout<<"\n\tProfile Plot chosen, but set up automatically"<<std::endl; return 1;}
   else if(histName == "sectorTitleSheet"){
     TCanvas* canvas0 = new TCanvas(this->setCanvasName());
-      canvas0->cd();
-      TLatex *title1 = new TLatex(0.1583,0.925,histDir_);title1->SetNDC();//title1->SetTextSize(0.075);
-      title1->Draw();
-      canvasPair->first.push_back(canvas0);
-      this->setNewCanvas(dim1);
-      return 0;
+    canvasPair->first.push_back(canvas0);
+    (*(--(canvasPair->first.end())))->cd();
+    TLatex *title1 = new TLatex(0.1583,0.925,histDir_);title1->SetNDC();//title1->SetTextSize(0.075);
+    title1->Draw();
+    this->setNewCanvas(dim1);
+    return 0;
   }
   else{std::cout<<"\n\tIncorrect Initial Letters for histogram !!!"<<std::endl; return -1;}
 }
@@ -538,7 +596,7 @@ ApeOverview::setNewCanvas(const PlotDimension& pDim){
 
 
 void
-ApeOverview::printOverview(const TString& outputFileName, const HistLevel& histLevel)const{
+ApeOverview::printOverview(const TString& outputFileName, const HistLevel& histLevel){
   if(eventPair_.first.size()==0 && eventPair_.second.size()==0 &&
      trackPair_.first.size()==0 && trackPair_.second.size()==0 &&
      mSectorPair_.size()==0)return;
@@ -558,9 +616,30 @@ ApeOverview::printOverview(const TString& outputFileName, const HistLevel& histL
     for(iSec = mSectorPair_.begin(); iSec != mSectorPair_.end(); ++iSec){
       for(iCan = iSec->second.first.begin(); iCan != iSec->second.first.end(); ++iCan){ps->NewPage();(*iCan)->Draw();}
       for(iCan = iSec->second.second.begin(); iCan != iSec->second.second.end(); ++iCan){ps->NewPage();(*iCan)->Draw();}
-    }    
+    }
   }
   ps->Close();
+  
+  // Now close the canvases printed to the PostScript ...
+  for(iCan = eventPair_.first.begin(); iCan != eventPair_.first.end(); ++iCan){(*iCan)->Close();}
+  for(iCan = eventPair_.second.begin(); iCan != eventPair_.second.end(); ++iCan){(*iCan)->Close();}
+  for(iCan = trackPair_.first.begin(); iCan != trackPair_.first.end(); ++iCan){(*iCan)->Close();}
+  for(iCan = trackPair_.second.begin(); iCan != trackPair_.second.end(); ++iCan){(*iCan)->Close();}
+  for(std::map<unsigned int, CanvasPair>::const_iterator iSec = mSectorPair_.begin(); iSec != mSectorPair_.end(); ++iSec){
+    for(iCan = iSec->second.first.begin(); iCan != iSec->second.first.end(); ++iCan){(*iCan)->Close();}
+    for(iCan = iSec->second.second.begin(); iCan != iSec->second.second.end(); ++iCan){(*iCan)->Close();}
+  }
+  
+  // ... and delete the corresponding vectors (which now contain null pointers only) ...
+  eventPair_.first.clear();
+  eventPair_.second.clear();
+  trackPair_.first.clear();
+  trackPair_.second.clear();
+  mSectorPair_.clear();
+  
+  // ... and reset the counters
+  eventPadCounter_.first = eventPadCounter_.second = trackPadCounter_.first = trackPadCounter_.second = sectorCounter_ = 1;
+  mSectorPadCounter_.clear();
 }
 
 

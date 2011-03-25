@@ -52,12 +52,12 @@ gStyle->SetLabelSize(0.05,"XY");
 
 //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
 
-
+/*
 
 gROOT->ProcessLine(".L ApeOverview.C+");
-gROOT->ProcessLine("ApeOverview a1(\"../hists/test.root\");");
+gROOT->ProcessLine("ApeOverview a1(\"../hists/test_data.root\");");
 
-//gROOT->ProcessLine("a1.whichModuleInFile(2)");
+//gROOT->ProcessLine("a1.whichModuleInFile(3)");
 
 //gROOT->ProcessLine("a1.onlyZoomedHists()");
 
@@ -65,10 +65,34 @@ gROOT->ProcessLine("ApeOverview a1(\"../hists/test.root\");");
 gROOT->ProcessLine("a1.setSectorsForOverview(\"3\")");
 
 gROOT->ProcessLine("a1.getOverview();");
-//gROOT->ProcessLine("a1.printOverview();");
 gROOT->ProcessLine("a1.printOverview(\"../hists/plots/test.ps\");");
 //gROOT->ProcessLine("a1.printOverview(\"../plots/mcHitSelZoom.ps\",ApeOverview::sector);");
 //gROOT->ProcessLine("a1.printOverview(\"apeOverview.ps\",ApeOverview::event);");
+
+*/
+
+
+
+gROOT->ProcessLine(".L ApeOverview.C++");
+
+
+gROOT->ProcessLine("ApeOverview a1(\"../hists/test_data.root\");");
+gROOT->ProcessLine("a1.setSectorsForOverview(\"3\")");
+gROOT->ProcessLine("a1.getOverview();");
+gROOT->ProcessLine("a1.printOverview(\"../hists/plots/test1.ps\");");
+gROOT->ProcessLine("a1.whichModuleInFile(2)");
+gROOT->ProcessLine("a1.getOverview();");
+gROOT->ProcessLine("a1.printOverview(\"../hists/plots/test2.ps\");");
+gROOT->ProcessLine("a1.whichModuleInFile(3)");
+gROOT->ProcessLine("a1.onlyZoomedHists()");
+gROOT->ProcessLine("a1.getOverview();");
+gROOT->ProcessLine("a1.printOverview(\"../hists/plots/test3.ps\");");
+
+
+gROOT->ProcessLine("ApeOverview b1(\"../hists/test_data_resultsFile.root\");");
+gROOT->ProcessLine("b1.setSectorsForOverview(\"3\")");
+gROOT->ProcessLine("b1.getOverview();");
+gROOT->ProcessLine("b1.printOverview(\"../hists/plots/testSummary.ps\");");
 
 
 

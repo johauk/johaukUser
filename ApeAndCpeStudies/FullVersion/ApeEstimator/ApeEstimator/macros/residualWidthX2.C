@@ -58,16 +58,16 @@ gStyle->SetLabelSize(0.05,"XY");
 
 TCanvas* canvas1;
 
-TString* inpath = new TString("$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/workingArea/iter11/");
+TString* inpath = new TString("$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/workingArea/iter0/");
 
-TFile* file1 = TFile::Open("$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/Design/iter0/bothPion1_10_resultsFile.root");
+TFile* file1 = TFile::Open("$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/workingArea/pGun/iter0/allData_resultsFile.root");
 TFile* file2 = TFile::Open(inpath->Copy().Append("allData_resultsFile.root"));
 
 TH1 *hist1, *hist2;
 
 TLegend* legend1;
 
-TString legendEntry1 = "design", legendEntry2 = "TOBmisal20";
+TString legendEntry1 = "TOBmisal20", legendEntry2 = "data";
 Double_t yMax1, yMax2;
 Double_t yMin1, yMin2;
 TString outputDirectory = "plots/";
@@ -78,7 +78,7 @@ TString outputDirectory = "plots/";
 
 
 TFile* file1Baseline(0);
-file1Baseline = TFile::Open("$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/Design/iter0/bothPion1_10_baselineApe.root");
+file1Baseline = TFile::Open("$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/Design/baseline/allData_baselineApe.root");
 TTree* baselineTree(0);
 if(file1Baseline){
   file1Baseline->GetObject("iterTree", baselineTree);

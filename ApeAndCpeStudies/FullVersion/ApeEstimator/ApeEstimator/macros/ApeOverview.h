@@ -27,7 +27,7 @@ class ApeOverview{
       void getOverview();
       
       enum HistLevel{event, track, sector};
-      void printOverview(const TString& outputFileName = "apeOverview.ps", const HistLevel& histLevel = ApeOverview::event)const;  //ApeOverview::event, ApeOverview::track, ApeOverview::sector
+      void printOverview(const TString& outputFileName = "apeOverview.ps", const HistLevel& histLevel = ApeOverview::event);  //ApeOverview::event, ApeOverview::track, ApeOverview::sector
       
    private:
       
