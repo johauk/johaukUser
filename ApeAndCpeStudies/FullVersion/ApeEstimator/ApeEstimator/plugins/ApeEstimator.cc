@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.2 2011/01/28 20:33:19 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.3 2011/03/10 15:51:40 hauk Exp $
 //
 //
 
@@ -595,7 +595,6 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     
     // Track Parameters
     (*i_sector).second.m_correlationHists["HitsValid"] = (*i_sector).second.bookCorrHists("HitsValid","# hits","[valid]",50,0,50,"npt");
-    (*i_sector).second.m_correlationHists["HitsGood"] = (*i_sector).second.bookCorrHists("HitsGood","# hits","[good]",50,0,50,"npt");
     (*i_sector).second.m_correlationHists["HitsInvalid"] = (*i_sector).second.bookCorrHists("HitsInvalid","# hits","[invalid]",20,0,20,"npt");
     (*i_sector).second.m_correlationHists["Hits2D"] = (*i_sector).second.bookCorrHists("Hits2D","# hits","[2D]",20,0,20,"npth");
     (*i_sector).second.m_correlationHists["LayersMissed"] = (*i_sector).second.bookCorrHists("LayersMissed","# layers","[missed]",10,0,10,"npt");
@@ -717,13 +716,13 @@ ApeEstimator::bookTrackHists(){
   TFileDirectory evtDir = fileService->mkdir("EventVariables");
   tkDetector_.TrkSize = evtDir.make<TH1F>("h_trackSize","# tracks;# tracks;# events",trackSizeBins,-1,trackSizeMax);
   TFileDirectory trkDir = fileService->mkdir("TrackVariables");
-  tkDetector_.HitsSize     = trkDir.make<TH1F>("h_hitSize","# hits;# hits;# tracks",51,-1,50);
-  tkDetector_.HitsValid    = trkDir.make<TH1F>("h_hitValid","# hits  [valid];# hits  [valid];# tracks",51,-1,50);
-  tkDetector_.HitsInvalid  = trkDir.make<TH1F>("h_hitInvalid","# hits  [invalid];# hits  [invalid];# tracks",21,-1,20);
-  tkDetector_.Hits2D       = trkDir.make<TH1F>("h_hit2D","# hits  [2D];# hits  [2D];# tracks",21,-1,20);
-  tkDetector_.LayersMissed = trkDir.make<TH1F>("h_layerMissed","# layers  [missed];# layers  [missed];# tracks",11,-1,10);
-  tkDetector_.HitsPixel    = trkDir.make<TH1F>("h_hitPixel","# hits  [pixel];# hits  [pixel];# tracks",11,-1,10);
-  tkDetector_.HitsStrip    = trkDir.make<TH1F>("h_hitStrip","# hits  [strip];# hits  [strip];# tracks",41,-1,40);
+  tkDetector_.HitsSize     = trkDir.make<TH1F>("h_hitsSize","# hits;# hits;# tracks",51,-1,50);
+  tkDetector_.HitsValid    = trkDir.make<TH1F>("h_hitsValid","# hits  [valid];# hits  [valid];# tracks",51,-1,50);
+  tkDetector_.HitsInvalid  = trkDir.make<TH1F>("h_hitsInvalid","# hits  [invalid];# hits  [invalid];# tracks",21,-1,20);
+  tkDetector_.Hits2D       = trkDir.make<TH1F>("h_hits2D","# hits  [2D];# hits  [2D];# tracks",21,-1,20);
+  tkDetector_.LayersMissed = trkDir.make<TH1F>("h_layersMissed","# layers  [missed];# layers  [missed];# tracks",11,-1,10);
+  tkDetector_.HitsPixel    = trkDir.make<TH1F>("h_hitsPixel","# hits  [pixel];# hits  [pixel];# tracks",11,-1,10);
+  tkDetector_.HitsStrip    = trkDir.make<TH1F>("h_hitsStrip","# hits  [strip];# hits  [strip];# tracks",41,-1,40);
   tkDetector_.Charge       = trkDir.make<TH1F>("h_charge","charge q;q  [e];# tracks",5,-2,3);
   tkDetector_.Chi2         = trkDir.make<TH1F>("h_chi2"," #chi^{2};#chi^{2};# tracks",100,0,chi2Max);
   tkDetector_.Ndof         = trkDir.make<TH1F>("h_ndof","# degrees of freedom ndof;ndof;# tracks",101,-1,100);
@@ -804,7 +803,7 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
   
   if(parameterSet_.getParameter<bool>("applyTrackCuts")){
     trackCut_ = false;
-    if(trkParams.hitsValid<12 || trkParams.hits2D<2 || //trkParams.hitsInvalid>2 ||
+    if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.hitsPixel<1 || //trkParams.hitsInvalid>2 ||
        trkParams.pt<10. || trkParams.p<20. || trkParams.p>250. || 
        std::fabs(trkParams.d0Beamspot)>0.1 || std::fabs(trkParams.dz)>10.)trackCut_ = true;
     //if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.pt<2. || trkParams.p<4. || std::fabs(trkParams.d0)>1. || std::fabs(trkParams.dz)>15.)trackCut_ = true;

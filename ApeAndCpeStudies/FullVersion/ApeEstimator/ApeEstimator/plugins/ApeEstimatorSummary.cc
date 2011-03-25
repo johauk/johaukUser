@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,6 2-039,+41227673512,
 //         Created:  Mon Oct 11 13:44:03 CEST 2010
-// $Id: ApeEstimatorSummary.cc,v 1.3 2011/01/28 21:00:52 hauk Exp $
+// $Id: ApeEstimatorSummary.cc,v 1.4 2011/03/10 15:51:54 hauk Exp $
 //
 //
 
@@ -242,12 +242,13 @@ ApeEstimatorSummary::residualErrorBinning(){
 void
 ApeEstimatorSummary::writeHists(){
   //TDirectory* oldDir = gDirectory;
-   TFile* resultsFile = new TFile(parameterSet_.getParameter<std::string>("ResultsFile").c_str(), "RECREATE");
+  TFile* resultsFile = new TFile(parameterSet_.getParameter<std::string>("ResultsFile").c_str(), "RECREATE");
+  TDirectory* baseDir = resultsFile->mkdir("ApeEstimatorSummary");
   for(std::map<unsigned int,TrackerSectorStruct>::const_iterator i_sector=m_tkSector_.begin(); i_sector!=m_tkSector_.end(); ++i_sector){
     std::stringstream dirName;
     dirName<<"Sector_" << (*i_sector).first;
     //resultsFile->mkdir(dirName.str().c_str());
-    TDirectory* dir = resultsFile->mkdir(dirName.str().c_str());
+    TDirectory* dir = baseDir->mkdir(dirName.str().c_str());
     //resultsFile->cd(dirName.str().c_str());
     dir->cd();
     
