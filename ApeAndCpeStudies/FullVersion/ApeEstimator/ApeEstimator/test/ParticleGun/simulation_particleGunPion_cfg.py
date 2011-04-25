@@ -39,7 +39,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load('Configuration.EventContent.EventContent_cff')
 
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.3 $'),
+    version = cms.untracked.string('$Revision: 1.4 $'),
     annotation = cms.untracked.string('MinBias_7TeV.cfi nevts:10'),
     name = cms.untracked.string('PyReleaseValidation')
 )
@@ -72,9 +72,9 @@ process.load("ApeEstimator.ApeEstimator.PrivateSkim_EventContent_cff")
 process.output.outputCommands.extend(process.SimulationEventContent.outputCommands)
 
 # Other statements
-process.GlobalTag.globaltag = 'DESIGN_36_V10::All'
-#process.GlobalTag.globaltag = 'MC_36Y_V10::All'
-#process.GlobalTag.globaltag = 'START36_V10::All'
+process.GlobalTag.globaltag = 'DESIGN_39_V7::All'
+#process.GlobalTag.globaltag = 'MC_39Y_V7::All'
+#process.GlobalTag.globaltag = 'START39_V8::All'
 
 # Set seed numbers for random engine
 #process.load("ApeEstimator.ApeEstimator.randomEngineNumbers_cff")
@@ -83,7 +83,8 @@ process.GlobalTag.globaltag = 'DESIGN_36_V10::All'
 
 process.generator = cms.EDProducer("FlatRandomEGunProducer",
     PGunParameters = cms.PSet(
-        PartID = cms.vint32(211),
+        # Pions: 211; Muons: 13
+	PartID = cms.vint32(211),
         MinEta = cms.double(-2.6),
         MaxEta = cms.double(2.6),
         MinPhi = cms.double(-3.14159265359),
