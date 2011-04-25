@@ -2,10 +2,14 @@
 
 # input template file to configure
 #TEMPLATEFILE="simulation_particleGunPion_jobTemplate_cfg.py"
-TEMPLATEFILE="simulation_particleGunAntiPion_jobTemplate_cfg.py"
+#TEMPLATEFILE="simulation_particleGunAntiPion_jobTemplate_cfg.py"
+TEMPLATEFILE="simulation_particleGunMuon_jobTemplate_cfg.py"
+#TEMPLATEFILE="simulation_particleGunAntiMuon_jobTemplate_cfg.py"
 # composition of output file name for configured files
 #OUTPUTBASE="simulation_particleGunPion_seed"
-OUTPUTBASE="simulation_particleGunAntiPion_seed"
+#OUTPUTBASE="simulation_particleGunAntiPion_seed"
+OUTPUTBASE="simulation_particleGunMuon_seed"
+#OUTPUTBASE="simulation_particleGunAntiMuon_seed"
 OUTPUTSUFFIX="_cfg.py"
 
 # initial seed

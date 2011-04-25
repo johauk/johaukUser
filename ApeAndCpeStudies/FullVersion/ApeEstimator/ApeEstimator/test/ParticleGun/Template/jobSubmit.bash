@@ -2,7 +2,9 @@
 
 # input files to submit to batch queue
 #INPUTBASE="simulation_particleGunPion_seed"
-INPUTBASE="simulation_particleGunAntiPion_seed"
+#INPUTBASE="simulation_particleGunAntiPion_seed"
+INPUTBASE="simulation_particleGunMuon_seed"
+#INPUTBASE="simulation_particleGunAntiMuon_seed"
 INPUTSUFFIX="_cfg.py"
 
 # initial seed
