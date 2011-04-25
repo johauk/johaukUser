@@ -68,12 +68,15 @@ process.ApeEstimatorSummary1 = ApeEstimatorSummary.clone(
     IterationFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/Design/baseline/allData_iterationApe.root',
     ApeOutputFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/Design/baseline/allData_apeOutput.txt',
 )
-
+process.ApeEstimatorSummary2 = process.ApeEstimatorSummary1.clone(
+    setBaseline = False,
+)
 
 
 
 process.p = cms.Path(
     process.ApeEstimatorSummary1
+    *process.ApeEstimatorSummary2
 )
 
 

@@ -25,8 +25,8 @@ declare -i nFiles1=10
 
 ## Which APE estimator modules to run, only standard, or additional control plots?
 #apeEstimatorModules="process.ApeEstimator1"
-apeEstimatorModules="(process.ApeEstimator1 + process.ApeEstimator2)"
-#apeEstimatorModules="(process.ApeEstimator1 + process.ApeEstimator2 + process.ApeEstimator3)"
+#apeEstimatorModules="(process.ApeEstimator1 + process.ApeEstimator2)"
+apeEstimatorModules="(process.ApeEstimator1 + process.ApeEstimator2 + process.ApeEstimator3)"
 
 
 
