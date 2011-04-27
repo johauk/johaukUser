@@ -41,7 +41,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load('Configuration.EventContent.EventContent_cff')
 
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.1 $'),
+    version = cms.untracked.string('$Revision: 1.2 $'),
     annotation = cms.untracked.string('step2 nevts:100'),
     name = cms.untracked.string('PyReleaseValidation')
 )
@@ -188,9 +188,9 @@ process.output.outputCommands.extend(process.ReconstructionEventContent.outputCo
 
 
 # Other statements
-process.GlobalTag.globaltag = 'DESIGN_36_V10::All'
-#process.GlobalTag.globaltag = 'MC_36Y_V10::All'
-#process.GlobalTag.globaltag = 'START36_V10::All'
+process.GlobalTag.globaltag = 'DESIGN_39_V7::All'
+#process.GlobalTag.globaltag = 'MC_39Y_V7::All'
+#process.GlobalTag.globaltag = 'START39_V8::All'
 # Use correct Beamspot for simulated Vertex smearing of ParticleGun
 process.load("ApeEstimator.ApeEstimator.BeamspotForParticleGun_cff")
 
