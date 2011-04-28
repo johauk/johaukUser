@@ -13,13 +13,6 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 
 
-## configure process options
-process.options = cms.untracked.PSet(
-    wantSummary = cms.untracked.bool(True),
-)
-
-
-
 ## sources
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToMuMu_M10To20_pythia_F10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToMuMu_M20_pythia_F10_cff")
@@ -40,6 +33,13 @@ process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToMuMu
 ## define maximal number of events to loop over
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(1001)
+)
+
+
+
+## configure process options
+process.options = cms.untracked.PSet(
+    wantSummary = cms.untracked.bool(True),
 )
 
 
@@ -65,6 +65,12 @@ process.load("ZmumuAnalysis.Configuration.filters.GeneratorTopZmumuFilter_cff")
 #******************************************************************************************
 #   Analyzer Modules
 #******************************************************************************************
+
+## Event Counter
+process.load("ZmumuAnalysis.Analyzer.EventCounter_cfi")
+process.EventCounter0 = process.EventCounter.clone()
+
+
 
 ## generator level muon and di-muon analyzer
 process.load("ZmumuAnalysis.Analyzer.GeneratorZmumuAnalyzer_cfi")
@@ -97,7 +103,8 @@ process.GeneratorZmumuAnalyzerVisible6 = process.GeneratorZmumuAnalyzer.clone()
 
 
 process.InclusiveXsectionSelection = cms.Path(
-    process.GeneratorZmumuDiMuFilter
+    process.EventCounter0
+    *process.GeneratorZmumuDiMuFilter
     *process.GeneratorZmumuAnalyzerInclusive1
     *process.GeneratorZmumuZMassFilterInclusive
     *process.GeneratorZmumuAnalyzerInclusive2

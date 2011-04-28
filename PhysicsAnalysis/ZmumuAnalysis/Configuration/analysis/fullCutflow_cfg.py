@@ -11,13 +11,6 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 
 
-## configure process options
-process.options = cms.untracked.PSet(
-    wantSummary = cms.untracked.bool(True),
-)
-
-
-
 ## sources
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010A_Nov04ReReco_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B1_Nov04ReReco_cff")
@@ -45,6 +38,13 @@ process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYJetsTo
 ## define maximal number of events to loop over
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(1001)
+)
+
+
+
+## configure process options
+process.options = cms.untracked.PSet(
+    wantSummary = cms.untracked.bool(True),
 )
 
 
@@ -100,6 +100,12 @@ process.load("ZmumuAnalysis.Configuration.sequences.metSelection_cff")
 #******************************************************************************************
 #   Analyzer Modules
 #******************************************************************************************
+
+## Event Counter
+process.load("ZmumuAnalysis.Analyzer.EventCounter_cfi")
+process.EventCounter0 = process.EventCounter.clone()
+
+
 
 ## trigger analyzer
 process.load("ZmumuAnalysis.Analyzer.TriggerAnalyzer_cfi")
@@ -199,7 +205,9 @@ process.MetAnalyzerSC9 = process.MetAnalyzer9.clone()
 
 
 process.oppositeChargeAnalysis = cms.Path(
-    process.TriggerAnalyzer1
+    process.EventCounter0 
+    
+    *process.TriggerAnalyzer1
     *process.triggerFilter1
     
     *process.buildMuonCollections
