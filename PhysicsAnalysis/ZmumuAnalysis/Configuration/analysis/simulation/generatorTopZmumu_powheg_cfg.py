@@ -69,13 +69,17 @@ process.load("ZmumuAnalysis.Configuration.filters.GeneratorTopZmumuFilter_cff")
 ## generator level muon and di-muon analyzer
 process.load("ZmumuAnalysis.Analyzer.GeneratorZmumuAnalyzer_cfi")
 process.GeneratorZmumuAnalyzer0 = process.GeneratorZmumuAnalyzer.clone(zDecayMode = [],)
-process.GeneratorZmumuAnalyzerFinal1 = process.GeneratorZmumuAnalyzer.clone()
-process.GeneratorZmumuAnalyzerFinal2 = process.GeneratorZmumuAnalyzer.clone()
-process.GeneratorZmumuAnalyzerFinal3 = process.GeneratorZmumuAnalyzer.clone()
-process.GeneratorZmumuAnalyzerFinal4 = process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerInclusive1 = process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerInclusive2 = process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerInclusive3 = process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerInclusive4 = process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerInclusive5 = process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerInclusive6 = process.GeneratorZmumuAnalyzer.clone()
 process.GeneratorZmumuAnalyzerVisible2 = process.GeneratorZmumuAnalyzer.clone()
 process.GeneratorZmumuAnalyzerVisible3 = process.GeneratorZmumuAnalyzer.clone()
 process.GeneratorZmumuAnalyzerVisible4 = process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerVisible5 = process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerVisible6 = process.GeneratorZmumuAnalyzer.clone()
 
 
 
@@ -92,27 +96,35 @@ process.GeneratorZmumuAnalyzerVisible4 = process.GeneratorZmumuAnalyzer.clone()
 
 
 
-process.FinalXsectionSelection = cms.Path(
+process.InclusiveXsectionSelection = cms.Path(
     process.GeneratorZmumuDiMuFilter
-    *process.GeneratorZmumuAnalyzerFinal1
-    *process.GeneratorZmumuDiMuMassFilterFinal
-    *process.GeneratorZmumuAnalyzerFinal2
-    *process.GeneratorZmumuEtaFilterVisible
-    *process.GeneratorZmumuAnalyzerFinal3
-    *process.GeneratorZmumuPtFilterVisible
-    *process.GeneratorZmumuAnalyzerFinal4
+    *process.GeneratorZmumuAnalyzerInclusive1
+    *process.GeneratorZmumuZMassFilterInclusive
+    *process.GeneratorZmumuAnalyzerInclusive2
+    *process.GeneratorZmumuEtaHighFilter
+    *process.GeneratorZmumuAnalyzerInclusive3
+    *process.GeneratorZmumuPtLowFilter
+    *process.GeneratorZmumuAnalyzerInclusive4
+    *process.GeneratorZmumuEtaLowFilter
+    *process.GeneratorZmumuAnalyzerInclusive5
+    *process.GeneratorZmumuDiMuMassFilterInclusive
+    *process.GeneratorZmumuAnalyzerInclusive6
 )
 
 
 
 process.VisibleXsectionSelection = cms.Path(
     process.GeneratorZmumuDiMuFilter
-    *process.GeneratorZmumuDiMuMassFilterVisible
+    *process.GeneratorZmumuZMassFilterVisible
     *process.GeneratorZmumuAnalyzerVisible2
-    *process.GeneratorZmumuEtaFilterVisible
+    *process.GeneratorZmumuEtaHighFilter
     *process.GeneratorZmumuAnalyzerVisible3
-    *process.GeneratorZmumuPtFilterVisible
+    *process.GeneratorZmumuPtLowFilter
     *process.GeneratorZmumuAnalyzerVisible4
+    *process.GeneratorZmumuEtaLowFilter
+    *process.GeneratorZmumuAnalyzerVisible5
+    *process.GeneratorZmumuDiMuMassFilterVisible
+    *process.GeneratorZmumuAnalyzerVisible6
 )
 
 
