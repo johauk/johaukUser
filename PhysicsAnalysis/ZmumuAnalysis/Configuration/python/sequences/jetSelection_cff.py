@@ -24,7 +24,7 @@ cleanPatJets.src = "selectedPatJetsAK5PF"
 cleanPatElectrons.finalCut = cms.string(
     'et > 20.'
     '& abs(eta) < 2.5'
-    '& electronID("eidTight")'
+    '& electronID("simpleEleId80relIso")'
     '& (trackIso+caloIso)/pt < 0.15'
 )
 cleanPatJets.checkOverlaps.electrons.deltaR  = 0.4
