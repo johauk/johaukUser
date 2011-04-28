@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Wed Sep  1 15:49:35 CEST 2010
-// $Id: GeneratorZmumuFilter.cc,v 1.6 2011/01/28 13:33:27 hauk Exp $
+// $Id: GeneratorZmumuFilter.cc,v 1.7 2011/02/16 18:15:14 hauk Exp $
 //
 //
 
@@ -242,6 +242,8 @@ GeneratorZmumuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     reco::Candidate::LorentzVector lorVecMinus, lorVecPlus;
     if(i_genPart->pdgId()!=23 || i_genPart->status()!=3) continue;
     
+    if(i_genPart->numberOfDaughters()!=3)edm::LogError("Generator Behaviour")<<"Strange decay of Z, not exactly 3 daughters, but: "<<i_genPart->numberOfDaughters()<<"\n";
+
     //zEta = i_genPart->eta();
     //zY = i_genPart->y();
     //zPt = i_genPart->pt();
