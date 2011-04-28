@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu Aug 19 17:46:32 CEST 2010
-// $Id: MuonAnalyzer.cc,v 1.1 2010/08/20 11:47:04 hauk Exp $
+// $Id: MuonAnalyzer.cc,v 1.2 2010/10/22 12:19:33 hauk Exp $
 //
 //
 
@@ -74,6 +74,9 @@ class MuonAnalyzer : public edm::EDAnalyzer {
       TH1* Pt;
       TH1* D0Beamspot;
       
+      TH1* IsoTrk;
+      TH1* IsoCombRel;
+      
 };
 
 //
@@ -95,7 +98,8 @@ NumberOfValidTrackerHits(0), NumberOfValidPixelHits(0),
 NumberOfMatches(0),
 NumberOfValidMuonHits(0),
 NormalizedChi2(0),
-Eta(0), Pt(0), D0Beamspot(0)
+Eta(0), Pt(0), D0Beamspot(0),
+IsoTrk(0), IsoCombRel(0)
 {
 }
 
@@ -131,6 +135,7 @@ MuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   unsigned int numberOfValidMuonHits(999);
   double normalizedChi2(9999.);
   double eta(-999.), pt(-999.), d0Beamspot(-999.);
+  double isoTrk(-999.), isoCombRel(-999.);
   
   pat::MuonCollection::const_iterator i_muon;
   for(i_muon = muons->begin(); i_muon != muons->end(); ++i_muon){
@@ -149,6 +154,9 @@ MuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     pt = i_muon->pt();
     d0Beamspot = i_muon->dB();
     
+    isoTrk = i_muon->trackIso();
+    isoCombRel = (isoTrk + i_muon->caloIso())/pt;
+    
     IsGlobal->Fill(isGlobal);
     IsTracker->Fill(isTracker);
     if(isTracker){
@@ -164,6 +172,8 @@ MuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     Pt->Fill(pt);
     D0Beamspot->Fill(d0Beamspot);
     
+    IsoTrk->Fill(isoTrk);
+    IsoCombRel->Fill(isoCombRel);
   }
 }
 
@@ -188,6 +198,9 @@ MuonAnalyzer::beginJob()
   Eta = dirMuon.make<TH1F>("h_eta","pseudorapidity #eta;#eta;# muons",60,-3,3);
   Pt = dirMuon.make<TH1F>("h_pt","transverse momentum p_{t};p_{t};# muons",100,0,200);
   D0Beamspot = dirMuon.make<TH1F>("h_d0Beamspot","closest approach d_{0} wrt. beamspot;d_{0, BS}  [cm];# muons",100,-1,1);
+  
+  IsoTrk = dirMuon.make<TH1F>("h_isoTrk","Isolation (tracker);I_{trk}  [GeV];# muons",100,0,100);
+  IsoCombRel = dirMuon.make<TH1F>("h_isoCombRel","Isolation (relative combined);I_{comb}^{rel}  [GeV];# muons",100,0,10);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------

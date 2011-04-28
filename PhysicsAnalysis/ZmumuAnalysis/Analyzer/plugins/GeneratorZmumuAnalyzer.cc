@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Fri Feb 26 16:48:04 CET 2010
-// $Id: GeneratorZmumuAnalyzer.cc,v 1.9 2011/01/28 13:33:04 hauk Exp $
+// $Id: GeneratorZmumuAnalyzer.cc,v 1.10 2011/02/16 19:21:16 hauk Exp $
 //
 //
 
@@ -66,7 +66,7 @@ class GeneratorZmumuAnalyzer : public edm::EDAnalyzer {
       const edm::ParameterSet parameterSet_;
       
       TH1 *MuEtaLow, *MuEtaHigh, *MuPtLow, *MuPtHigh,
-	  *DiMuEta, *DiMuPt, *DiMuMass,
+	  *DiMuEta, *DiMuY, *DiMuPt, *DiMuMass,
 	  *ZEta, *ZY, *ZPt, *ZMass,
 	  *DiffY, *DiffPt, *DiffMass,
 	  *ZQuarkOrigin;
@@ -87,7 +87,7 @@ class GeneratorZmumuAnalyzer : public edm::EDAnalyzer {
 GeneratorZmumuAnalyzer::GeneratorZmumuAnalyzer(const edm::ParameterSet& iConfig):
 parameterSet_(iConfig),
 MuEtaLow(0), MuEtaHigh(0), MuPtLow(0), MuPtHigh(0),
-DiMuEta(0), DiMuPt(0), DiMuMass(0),
+DiMuEta(0), DiMuY(0), DiMuPt(0), DiMuMass(0),
 ZEta(0), ZY(0), ZPt(0), ZMass(0),
 DiffY(0), DiffPt(0), DiffMass(0),
 ZQuarkOrigin(0),
@@ -162,6 +162,7 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     if(!isZmumu)continue;
     reco::Candidate::LorentzVector diMuVec = lorVecMinus + lorVecPlus;
     const double diMuEta = diMuVec.eta();
+    const double diMuY = diMuVec.y();
     const double diMuPt = diMuVec.pt();
     double diMuMass = diMuVec.M();
     const double etaLow = std::fabs(etaMinus)<std::fabs(etaPlus) ? etaMinus : etaPlus;
@@ -199,11 +200,12 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     
     for(size_t iMother = 0; iMother < i_genPart->numberOfMothers(); ++iMother){
       const reco::GenParticle* motherQuark(dynamic_cast<const reco::GenParticle*>(i_genPart->mother(iMother)));
+      //if(motherQuark->pdgId()==21 || std::fabs(motherQuark->pdgId())<5)continue;
       //std::cout<<"\tMother quark no. "<<iMother<<" has ID "<<motherQuark->pdgId()<<" and Status "<<motherQuark->status()<<"\n";
       //std::cout<<"\tNo. of mothers: "<<motherQuark->numberOfMothers()<<", first has ID: "<<motherQuark->mother()->pdgId()<<", status "<<motherQuark->mother()->status()<<"\n";
       //std::cout<<"\tNo. of daughters: "<<motherQuark->numberOfDaughters()<<", first has ID: "<<motherQuark->daughter(0)->pdgId()<<", status "<<motherQuark->daughter(0)->status()<<"\n";
       //for(size_t iDaughter = 1; iDaughter < motherQuark->numberOfDaughters(); ++iDaughter){
-        //std::cout<<"\tDaughter no. "<<iDaughter<<" has ID "<<motherQuark->daughter(iDaughter)->pdgId()<<", status "<<motherQuark->daughter(iDaughter)->status()<<"\n";
+      //  std::cout<<"\tDaughter no. "<<iDaughter<<" has ID "<<motherQuark->daughter(iDaughter)->pdgId()<<", status "<<motherQuark->daughter(iDaughter)->status()<<"\n";
       //}
       if(motherQuark->numberOfMothers()!=1)edm::LogError("Generator Behaviour")<<"Strange origin of mother quark, not built from single parton, but "<<motherQuark->numberOfMothers();
       //const reco::GenParticle* gluon(dynamic_cast<const reco::GenParticle*>(motherQuark->mother()));
@@ -224,6 +226,7 @@ GeneratorZmumuAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     MuPtHigh->Fill(ptHigh);
     
     DiMuEta->Fill(diMuEta);
+    DiMuY->Fill(diMuY);
     DiMuPt->Fill(diMuPt);
     DiMuMass->Fill(diMuMass);
     
@@ -256,15 +259,16 @@ GeneratorZmumuAnalyzer::beginJob(){
   
   TFileDirectory dirDiMu = fileService->mkdir("DiMu");
   DiMuEta = dirDiMu.make<TH1F>("h_diMuEta","Pseudorapidity of combined muon pair;#eta;# muon pairs",200,-10,10);
+  DiMuY = dirDiMu.make<TH1F>("h_diMuY","Rapidity of combined muon pair;y;# muon pairs",200,-10,10);
   DiMuPt = dirDiMu.make<TH1F>("h_diMuPt","p_{t} of combined muon pair;p_{t}  [GeV];# muon pairs",200,0,200);
   DiMuMass = dirDiMu.make<TH1F>("h_diMuMass","invariant mass of muon pair;m_{#mu#mu}  [GeV];# muon pairs",200,0,200);
   
   TFileDirectory dirZ = fileService->mkdir("GeneratedZ");
   ZEta = dirZ.make<TH1F>("h_zEta","#eta of generated Z;#eta;# Z",200,-10,10);
-  ZY = dirZ.make<TH1F>("h_zY","rapidity of generated Z;y;# Z",200,-10,10);
+  ZY = dirZ.make<TH1F>("h_zY","Rapidity of generated Z;y;# Z",200,-10,10);
   ZPt = dirZ.make<TH1F>("h_zPt","p_{t} of generated Z;p_{t}  [GeV];# Z",200,0,200);
-  ZMass = dirZ.make<TH1F>("h_zMass","invariant mass of Z;m_{Z} [GeV];# Z",200,0,200);
-  ZQuarkOrigin = dirZ.make<TH1F>("h_zQuarkOrigin","quark origin of Z;;#Z",6,0,6);
+  ZMass = dirZ.make<TH1F>("h_zMass","Invariant mass of Z;m_{Z} [GeV];# Z",200,0,200);
+  ZQuarkOrigin = dirZ.make<TH1F>("h_zQuarkOrigin","Quark origin of Z;;#Z",6,0,6);
   ZQuarkOrigin->GetXaxis()->SetBinLabel(1,"d");
   ZQuarkOrigin->GetXaxis()->SetBinLabel(2,"u");
   ZQuarkOrigin->GetXaxis()->SetBinLabel(3,"s");
