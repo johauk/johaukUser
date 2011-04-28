@@ -54,7 +54,7 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   
   
   
-  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   // Do not touch this area
   
@@ -71,7 +71,7 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   }
   
   
-  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   
   
@@ -102,13 +102,13 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   
   TString* plotName1(0);
   
-  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   
   // Next few lines are only one to change for histo (except for individual style changes)
   
   // Give name of input histogram
-  histName1 = new TString("GeneratedZ/h_massZ");
+  histName1 = new TString("GeneratedZ/h_zMass");
   // Give base name of output plot
   plotName1 = new TString("Z_mass");
   // Change position & size of legend
@@ -145,13 +145,13 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   
   
   
-  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   
   // Next few lines are only one to change for histo (except for individual style changes)
   
   // Give name of input histogram
-  histName1 = new TString("GeneratedZ/h_etaZ");
+  histName1 = new TString("GeneratedZ/h_zEta");
   // Give base name of output plot
   plotName1 = new TString("Z_eta");
   // Change position & size of legend
@@ -188,13 +188,13 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   
   
   
-  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   
   // Next few lines are only one to change for histo (except for individual style changes)
   
   // Give name of input histogram
-  histName1 = new TString("GeneratedZ/h_yZ");
+  histName1 = new TString("GeneratedZ/h_zY");
   // Give base name of output plot
   plotName1 = new TString("Z_y");
   // Change position & size of legend
@@ -231,13 +231,13 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   
   
   
-  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   
   // Next few lines are only one to change for histo (except for individual style changes)
   
   // Give name of input histogram
-  histName1 = new TString("GeneratedZ/h_ptZ");
+  histName1 = new TString("GeneratedZ/h_zPt");
   // Give base name of output plot
   plotName1 = new TString("Z_pt");
   // Change position & size of legend
@@ -274,13 +274,13 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   
   
   
-  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   
   // Next few lines are only one to change for histo (except for individual style changes)
   
   // Give name of input histogram
-  histName1 = new TString("GeneratedZ/h_quarkOrigin");
+  histName1 = new TString("GeneratedZ/h_zQuarkOrigin");
   // Give base name of output plot
   plotName1 = new TString("Z_quarkOrigin");
   // Change position & size of legend
@@ -318,13 +318,13 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   
   
   
-  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   
   // Next few lines are only one to change for histo (except for individual style changes)
   
   // Give name of input histogram
-  histName1 = new TString("SingleMu/h_etaHigh");
+  histName1 = new TString("SingleMu/h_muEtaHigh");
   // Give base name of output plot
   plotName1 = new TString("mu_etaHigh");
   // Change position & size of legend
@@ -361,13 +361,13 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   
   
   
-  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   
   // Next few lines are only one to change for histo (except for individual style changes)
   
   // Give name of input histogram
-  histName1 = new TString("SingleMu/h_etaLow");
+  histName1 = new TString("SingleMu/h_muEtaLow");
   // Give base name of output plot
   plotName1 = new TString("mu_etaLow");
   // Change position & size of legend
@@ -404,15 +404,15 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   
   
   
-  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   
   // Next few lines are only one to change for histo (except for individual style changes)
   
   // Give name of input histogram
-  histName1 = new TString("SingleMu/h_etaLow");
+  histName1 = new TString("SingleMu/h_muEtaLow");
   // Give name of second input histogram for addition
-  histName2 = new TString("SingleMu/h_etaHigh");
+  histName2 = new TString("SingleMu/h_muEtaHigh");
   // Give base name of output plot
   plotName1 = new TString("mu_etaBoth");
   // Change position & size of legend
@@ -456,13 +456,13 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   
   
   
-  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   
   // Next few lines are only one to change for histo (except for individual style changes)
   
   // Give name of input histogram
-  histName1 = new TString("SingleMu/h_ptHigh");
+  histName1 = new TString("SingleMu/h_muPtHigh");
   // Give base name of output plot
   plotName1 = new TString("mu_ptHigh");
   // Change position & size of legend
@@ -499,13 +499,13 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   
   
   
-  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   
   // Next few lines are only one to change for histo (except for individual style changes)
   
   // Give name of input histogram
-  histName1 = new TString("SingleMu/h_ptLow");
+  histName1 = new TString("SingleMu/h_muPtLow");
   // Give base name of output plot
   plotName1 = new TString("mu_ptLow");
   // Change position & size of legend
@@ -542,15 +542,15 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
   
 
 
-    //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   
   // Next few lines are only one to change for histo (except for individual style changes)
   
   // Give name of input histogram
-  histName1 = new TString("SingleMu/h_ptLow");
+  histName1 = new TString("SingleMu/h_muPtLow");
   // Give name of second input histogram for addition
-  histName2 = new TString("SingleMu/h_ptHigh");
+  histName2 = new TString("SingleMu/h_muPtHigh");
   // Give base name of output plot
   plotName1 = new TString("mu_ptBoth");
   // Change position & size of legend
@@ -590,17 +590,293 @@ void GeneratorZmumuPlots(TString pluginSuffix = ""){
     if(a_hist2[iHist])a_hist2[iHist]->Delete();
   }
   canvas1->Close();
+  
+  
+  
+  
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+  
+  
+  // Next few lines are only one to change for histo (except for individual style changes)
+  
+  // Give name of input histogram
+  histName1 = new TString("DiMu/h_diMuMass");
+  // Give base name of output plot
+  plotName1 = new TString("diMu_mass");
+  // Change position & size of legend
+  legend1 = new TLegend(0.85,0.75,0.99,0.95); 
+  
+  
+  // Change only style here
+  
+  canvas1 = new TCanvas("plot", "plot", 800, 800);
+  tools.GetHistArraySameFile(file, a_baseString, *histName1, a_hist1);
+  tools.SetPlotFilling(a_hist1, nFlavour);
+  stack1 = new THStack("stack","stack");
+  tools.FillStack(stack1, a_hist1, nFlavour);
+  tools.FillLegendGenerator(legend1, a_hist1, "f");
+  canvas1->Clear();
+  stack1->Draw();
+  //legend1->Draw("same");
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append(*outform));
+  
+  gPad->SetLogy(1);
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append("_log").Append(*outform));
+      
+  delete histName1;
+  delete plotName1;
+  legend1->Delete();
+  stack1->Delete();
+  for(size_t iHist=0; iHist<nFlavour; ++iHist){
+    if(a_hist1[iHist])a_hist1[iHist]->Delete();
+  }
+  canvas1->Close();
 
   
 
 
 
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+  
+  
+  // Next few lines are only one to change for histo (except for individual style changes)
+  
+  // Give name of input histogram
+  histName1 = new TString("DiMu/h_diMuEta");
+  // Give base name of output plot
+  plotName1 = new TString("diMu_eta");
+  // Change position & size of legend
+  legend1 = new TLegend(0.85,0.75,0.99,0.95); 
+  
+  
+  // Change only style here
+  
+  canvas1 = new TCanvas("plot", "plot", 800, 800);
+  tools.GetHistArraySameFile(file, a_baseString, *histName1, a_hist1);
+  tools.SetPlotFilling(a_hist1, nFlavour);
+  stack1 = new THStack("stack","stack");
+  tools.FillStack(stack1, a_hist1, nFlavour);
+  tools.FillLegendGenerator(legend1, a_hist1, "f");
+  canvas1->Clear();
+  stack1->Draw();
+  //legend1->Draw("same");
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append(*outform));
+  
+  gPad->SetLogy(1);
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append("_log").Append(*outform));
+      
+  delete histName1;
+  delete plotName1;
+  legend1->Delete();
+  stack1->Delete();
+  for(size_t iHist=0; iHist<nFlavour; ++iHist){
+    if(a_hist1[iHist])a_hist1[iHist]->Delete();
+  }
+  canvas1->Close();
 
+
+
+
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   
+  // Next few lines are only one to change for histo (except for individual style changes)
+  
+  // Give name of input histogram
+  histName1 = new TString("DiMu/h_diMuPt");
+  // Give base name of output plot
+  plotName1 = new TString("diMu_pt");
+  // Change position & size of legend
+  legend1 = new TLegend(0.85,0.75,0.99,0.95); 
   
   
-  //++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+  // Change only style here
+  
+  canvas1 = new TCanvas("plot", "plot", 800, 800);
+  tools.GetHistArraySameFile(file, a_baseString, *histName1, a_hist1);
+  tools.SetPlotFilling(a_hist1, nFlavour);
+  stack1 = new THStack("stack","stack");
+  tools.FillStack(stack1, a_hist1, nFlavour);
+  tools.FillLegendGenerator(legend1, a_hist1, "f");
+  canvas1->Clear();
+  stack1->Draw();
+  //legend1->Draw("same");
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append(*outform));
+  
+  gPad->SetLogy(1);
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append("_log").Append(*outform));
+      
+  delete histName1;
+  delete plotName1;
+  legend1->Delete();
+  stack1->Delete();
+  for(size_t iHist=0; iHist<nFlavour; ++iHist){
+    if(a_hist1[iHist])a_hist1[iHist]->Delete();
+  }
+  canvas1->Close();
+
+
+
+
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+  
+  
+  // Next few lines are only one to change for histo (except for individual style changes)
+  
+  // Give name of input histogram
+  histName1 = new TString("Difference/h_diffMass");
+  // Give base name of output plot
+  plotName1 = new TString("diff_mass");
+  // Change position & size of legend
+  legend1 = new TLegend(0.85,0.75,0.99,0.95); 
+  
+  
+  // Change only style here
+  
+  canvas1 = new TCanvas("plot", "plot", 800, 800);
+  tools.GetHistArraySameFile(file, a_baseString, *histName1, a_hist1);
+  tools.SetPlotFilling(a_hist1, nFlavour);
+  stack1 = new THStack("stack","stack");
+  tools.FillStack(stack1, a_hist1, nFlavour);
+  tools.FillLegendGenerator(legend1, a_hist1, "f");
+  canvas1->Clear();
+  stack1->Draw();
+  //legend1->Draw("same");
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append(*outform));
+  
+  gPad->SetLogy(1);
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append("_log").Append(*outform));
+      
+  delete histName1;
+  delete plotName1;
+  legend1->Delete();
+  stack1->Delete();
+  for(size_t iHist=0; iHist<nFlavour; ++iHist){
+    if(a_hist1[iHist])a_hist1[iHist]->Delete();
+  }
+  canvas1->Close();
+
+
+
+
+
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+  
+  
+  // Next few lines are only one to change for histo (except for individual style changes)
+  
+  // Give name of input histogram
+  histName1 = new TString("Difference/h_diffEta");
+  // Give base name of output plot
+  plotName1 = new TString("diff_eta");
+  // Change position & size of legend
+  legend1 = new TLegend(0.85,0.75,0.99,0.95); 
+  
+  
+  // Change only style here
+  
+  canvas1 = new TCanvas("plot", "plot", 800, 800);
+  tools.GetHistArraySameFile(file, a_baseString, *histName1, a_hist1);
+  tools.SetPlotFilling(a_hist1, nFlavour);
+  stack1 = new THStack("stack","stack");
+  tools.FillStack(stack1, a_hist1, nFlavour);
+  tools.FillLegendGenerator(legend1, a_hist1, "f");
+  canvas1->Clear();
+  stack1->Draw();
+  //legend1->Draw("same");
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append(*outform));
+  
+  gPad->SetLogy(1);
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append("_log").Append(*outform));
+      
+  delete histName1;
+  delete plotName1;
+  legend1->Delete();
+  stack1->Delete();
+  for(size_t iHist=0; iHist<nFlavour; ++iHist){
+    if(a_hist1[iHist])a_hist1[iHist]->Delete();
+  }
+  canvas1->Close();
+
+
+
+
+
+
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+  
+  
+  // Next few lines are only one to change for histo (except for individual style changes)
+  
+  // Give name of input histogram
+  histName1 = new TString("Difference/h_diffPt");
+  // Give base name of output plot
+  plotName1 = new TString("diff_pt");
+  // Change position & size of legend
+  legend1 = new TLegend(0.85,0.75,0.99,0.95); 
+  
+  
+  // Change only style here
+  
+  canvas1 = new TCanvas("plot", "plot", 800, 800);
+  tools.GetHistArraySameFile(file, a_baseString, *histName1, a_hist1);
+  tools.SetPlotFilling(a_hist1, nFlavour);
+  stack1 = new THStack("stack","stack");
+  tools.FillStack(stack1, a_hist1, nFlavour);
+  tools.FillLegendGenerator(legend1, a_hist1, "f");
+  canvas1->Clear();
+  stack1->Draw();
+  //legend1->Draw("same");
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append(*outform));
+  
+  gPad->SetLogy(1);
+  canvas1->Update();
+  canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append("_log").Append(*outform));
+      
+  delete histName1;
+  delete plotName1;
+  legend1->Delete();
+  stack1->Delete();
+  for(size_t iHist=0; iHist<nFlavour; ++iHist){
+    if(a_hist1[iHist])a_hist1[iHist]->Delete();
+  }
+  canvas1->Close();
+
+
+
+
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
+  
+  
+  // Next few lines are only one to change for histo (except for individual style changes)
+  
+  // Give name of input histogram
+//  histName1 = new TString("Difference/h2_zMassVsDiMuMass");
+  // Give base name of output plot
+//  plotName1 = new TString("diff_2d_mass");
+  
+
+
+
+
+
+
+
+
+
+
+//++++++++++++++++++++++++++++++++++=====================================+++++++++++++++++++++++++++++++
   
   
   // again, no changes here

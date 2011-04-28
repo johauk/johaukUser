@@ -97,7 +97,7 @@ TLine *line1, *line2, *line3, *line4;
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("GeneratorZmumuAnalyzerVisible3/SingleMu/h_ptLow");
+  TString histName("GeneratorZmumuAnalyzerVisible3/SingleMu/h_muPtLow");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 

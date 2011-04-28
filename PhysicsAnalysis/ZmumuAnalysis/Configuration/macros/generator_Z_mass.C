@@ -97,7 +97,7 @@ TLine *line1, *line2, *line3, *line4;
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("GeneratorZmumuAnalyzerFinal1/GeneratedZ/h_massZ");
+  TString histName("GeneratorZmumuAnalyzerInclusive1/GeneratedZ/h_zMass");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -183,8 +183,7 @@ TLine *line1, *line2, *line3, *line4;
     
   yMinHist = (yMin<maxScaleFactor ? 0.5*maxScaleFactor : 0.5*yMin);
   yMaxHist = (pow(yMax,1.1))/(pow(yMinHist,0.1));
-  //if(yMax>yMin)hist1->SetMinimum(yMinHist);
-  if(yMax>yMin)hist1->SetMinimum(0.001);
+  if(yMax>yMin)hist1->SetMinimum(yMinHist);
   if(yMax>yMin)hist1->SetMaximum(yMaxHist);
   
   if(line1)line1->SetY2(yMaxHist); if(line2)line2->SetY2(yMaxHist); if(line3)line3->SetY2(yMaxHist); if(line4)line4->SetY2(yMaxHist);
