@@ -24,10 +24,10 @@ GeneratorZmumuDiMuMassFilter = ZmumuAnalysis.Filter.GeneratorZmumuFilter_cfi.Gen
 
 
 GeneratorZmumuEtaFilter = ZmumuAnalysis.Filter.GeneratorZmumuFilter_cfi.GeneratorZmumuFilter.clone(
-    etaIntervals = [-2.4,2.4],
+    muEtaHighIntervals = [-2.4,2.4],
 )
 
 
 GeneratorZmumuPtFilter = ZmumuAnalysis.Filter.GeneratorZmumuFilter_cfi.GeneratorZmumuFilter.clone(
-    ptIntervals = [20.,99999.],
+    muPtLowIntervals = [20.,99999.],
 )
