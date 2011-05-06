@@ -76,7 +76,8 @@ cleanDimuons = BestZVertexCleaner.clone(
     vertexSource = 'goodPV',
     dimuonSource = 'selectedDimuons',
     #dimuonSource = 'looseTightHltGlobalDimuons',
-    deltaZMax = 0.1,
+    deltaZMuMuMax = 0.1,
+    deltaZZVertexMax = 0.1,
 )
 
 
