@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May 20 15:47:12 CEST 2010
-// $Id: DiMuonAnalyzer.cc,v 1.6 2010/12/09 16:11:04 hauk Exp $
+// $Id: DiMuonAnalyzer.cc,v 1.7 2011/02/16 19:03:55 hauk Exp $
 //
 //
 
@@ -60,6 +60,7 @@ class DiMuonAnalyzer : public edm::EDAnalyzer {
         DiMuHists():NDimuon(0),
 	            EtaLow(0), EtaHigh(0), PtLow(0), PtHigh(0),
 		    DeltaEta(0), DeltaPhi(0),
+		    DeltaVz(0),
 		    DiMass(0), DiPt(0){}
 	
 	/// Number of dimuons
@@ -69,7 +70,8 @@ class DiMuonAnalyzer : public edm::EDAnalyzer {
         TH1F *EtaLow, *EtaHigh, *PtLow, *PtHigh;
 	
 	/// Differences of the two muons
-        TH1F *DeltaEta, *DeltaPhi;
+        TH1F *DeltaEta, *DeltaPhi,
+	     *DeltaVz;
 	
 	/// Properties of reconstructed di-muon particle
 	TH1F *DiMass, *DiPt,
@@ -135,6 +137,7 @@ DiMuonAnalyzer::bookHists(DiMuHists& hists, const TFileDirectory& dir){
   hists.PtHigh = dir.make<TH1F>("h_ptHigh","muon w/ higher p_{t};p_{t}  [GeV];# muons",100,0,200);
   hists.DeltaEta = dir.make<TH1F>("h_deltaEta","#Delta#eta;#Delta#eta;# muon pairs",100,-5,5);
   hists.DeltaPhi = dir.make<TH1F>("h_deltaPhi","#Delta#phi;#Delta#phi;# muon pairs",100,-200,200);
+  hists.DeltaVz = dir.make<TH1F>("h_deltaVz","#Delta v_{z};#Delta v_{z};# muon pairs",100,-1.,1.);
   hists.DiMass = dir.make<TH1F>("h_diMass","di-muon invariant mass;M_{#mu#mu} [GeV];# muon pairs",100,0.,200.);
   hists.DiPt = dir.make<TH1F>("h_diPt","di-muon p_{t};p_{t}  [GeV];# muon pairs",100,0,200);
   hists.DiY = dir.make<TH1F>("h_diY","di-muon rapidity y;y;# muon pairs",120,-3,3);
@@ -160,6 +163,8 @@ DiMuonAnalyzer::fillHists(DiMuHists& hists, const reco::Candidate& diMuon){
   const double deltaEta = mu2.eta() - mu1.eta();
   const double deltaPhi = reco::deltaPhi(mu2.phi(),mu1.phi());
   
+  const double deltaVz = mu2.vz() - mu1.vz();
+  
   // dimuon invariant mass, pt and rapidity
   const reco::Candidate::LorentzVector diMuVec = mu1.p4() + mu2.p4();
   const double diMass = diMuon.mass();
@@ -172,6 +177,7 @@ DiMuonAnalyzer::fillHists(DiMuHists& hists, const reco::Candidate& diMuon){
   hists.PtHigh->Fill(ptHigh);
   hists.DeltaEta->Fill(deltaEta);
   hists.DeltaPhi->Fill(deltaPhi*180./M_PI);
+  hists.DeltaVz->Fill(deltaVz);
   hists.DiMass->Fill(diMass);
   hists.DiPt->Fill(diPt);
   hists.DiY->Fill(diY);
