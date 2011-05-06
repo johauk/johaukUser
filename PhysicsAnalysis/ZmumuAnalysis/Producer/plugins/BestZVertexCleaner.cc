@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May  5 18:06:19 CEST 2011
-// $Id: BestZVertexCleaner.cc,v 1.2 2011/05/06 16:26:28 hauk Exp $
+// $Id: BestZVertexCleaner.cc,v 1.3 2011/05/06 18:19:09 hauk Exp $
 //
 //
 
@@ -41,6 +41,8 @@
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/Candidate/interface/CandidateFwd.h"
 #include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
+
+#include "DataFormats/Common/interface/CloneTrait.h"
 
 #include "FWCore/Utilities/interface/EDMException.h"
 
@@ -79,8 +81,8 @@ class BestZVertexCleaner : public edm::EDProducer {
 BestZVertexCleaner::BestZVertexCleaner(const edm::ParameterSet& iConfig):
 parameterSet_(iConfig), product_(parameterSet_.getParameter<std::string>("product"))
 {
-  //if(product_=="dimuon")produces<reco::CandidateCollection>();
-  if(product_=="dimuon")produces<std::vector<reco::CompositeCandidate> >();
+  if(product_=="dimuon")produces<reco::CandidateCollection>();
+  //if(product_=="dimuon")produces<std::vector<reco::CompositeCandidate> >();
   else if(product_=="vertex")produces<reco::VertexCollection>();
   //produces<reco::VertexCollection>("bestZVertex");
   else throw edm::Exception( edm::errors::Configuration,   
@@ -103,53 +105,34 @@ void
 BestZVertexCleaner::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
-/* This is an event example
-   //Read 'ExampleData' from the Event
-   Handle<ExampleData> pIn;
-   iEvent.getByLabel("example",pIn);
-
-   //Use the ExampleData to create an ExampleData2 which 
-   // is put into the Event
-   std::auto_ptr<ExampleData2> pOut(new ExampleData2(*pIn));
-   iEvent.put(pOut);
-*/
-
-/* this is an EventSetup example
-   //Read SetupData from the SetupRecord in the EventSetup
-   ESHandle<SetupData> pSetup;
-   iSetup.get<SetupRecord>().get(pSetup);
-*/
   // Get handle on input vertex collection
   const edm::InputTag vertexSource(parameterSet_.getParameter<edm::InputTag>("vertexSource"));
   edm::Handle<reco::VertexCollection> vertices;
   iEvent.getByLabel(vertexSource, vertices);
   //std::auto_ptr<reco::VertexCollection> outputVertex(new reco::VertexCollection(*vertices));
   std::auto_ptr<reco::VertexCollection> outputVertex(new reco::VertexCollection);
-  //std::auto_ptr<std::vector<reco::Vertex> > outputVertex(new std::vector<reco::Vertex>);
   
   // Get handle on di-muon collection
   const edm::InputTag dimuonSource(parameterSet_.getParameter<edm::InputTag>("dimuonSource"));
-  //edm::Handle<reco::CandidateView> diMuons;
-  edm::Handle<std::vector<reco::CompositeCandidate> > diMuons;
-  //edm::Handle<reco::CandidateCollection> diMuons;
-  //edm::Handle<std::vector<reco::Candidate> > diMuons;
+  //edm::Handle<std::vector<reco::CompositeCandidate> > diMuons;
+  //iEvent.getByLabel(dimuonSource, diMuons);
+  //std::auto_ptr<std::vector<reco::CompositeCandidate> > outputDimuon(new std::vector<reco::CompositeCandidate>());
+  edm::Handle<reco::CandidateView> diMuons;
   iEvent.getByLabel(dimuonSource, diMuons);
-  //std::auto_ptr<reco::CandidateView> outputDimuon(new reco::CandidateView(*diMuons));
-  std::auto_ptr<std::vector<reco::CompositeCandidate> > outputDimuon(new std::vector<reco::CompositeCandidate>());
-  //std::auto_ptr<reco::CandidateCollection> outputDimuon(new reco::CandidateCollection(*diMuons));
-  //std::auto_ptr<std::vector<reco::Candidate> > outputDimuon(new std::vector<reco::Candidate>);
+  std::auto_ptr<reco::CandidateCollection> outputDimuon(new reco::CandidateCollection);
+  
   
   // Loop over Zs and vertices, find best vertex (smallest distance)
   LogDebug("BestZVertexCleaner")<<"New Event "<<diMuons->size()<<" , "<<vertices->size();
   const double deltaZMax(parameterSet_.getParameter<double>("deltaZMax"));
-  //reco::CandidateView::const_iterator i_cand;
-  std::vector<reco::CompositeCandidate>::const_iterator i_cand;
+  //std::vector<reco::CompositeCandidate>::const_iterator i_cand;
+  reco::CandidateView::const_iterator i_cand;
   std::vector<std::pair<const reco::Candidate*,int> > v_zVertexPair;
   for(i_cand = diMuons->begin(); i_cand != diMuons->end(); ++i_cand){
     bool isGoodZ(false);
+    //const reco::CompositeCandidate & z = *i_cand;
+    //pat::CompositeCandidate dimuon2(z);
     const reco::Candidate& diMuon = *i_cand;
-    const reco::CompositeCandidate & z = *i_cand;
-    pat::CompositeCandidate dimuon2(z);
     
     const reco::Candidate* daughter1 = diMuon.daughter(0);
     const reco::Candidate* daughter2 = diMuon.daughter(1);
@@ -177,36 +160,21 @@ BestZVertexCleaner::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       isGoodZ = true;
     }
     if(isGoodZ){
-      //outputDimuon->push_back((*diMuons)[0]);
-      outputDimuon->push_back(z);
+      //outputDimuon->push_back(z);
+      outputDimuon->push_back(edm::clonehelper::CloneTrait<reco::CandidateView>::type::clone(diMuon));
       bool vertexDublicate(false);
       std::vector<std::pair<const reco::Candidate*,int> >::const_iterator i_zVertexPair;
       for(i_zVertexPair=v_zVertexPair.begin(); i_zVertexPair!=(--v_zVertexPair.end());++i_zVertexPair){
-        //if(&*bestVertex==&*i_vertex){vertexDublicate = true; break;}
 	if(iBestVertex==i_zVertexPair->second){vertexDublicate = true; break;}
       }
       if(!vertexDublicate)outputVertex->push_back((*vertices)[iBestVertex]);
     }
   }
+  
   LogDebug("BestZVertexCleaner")<<"At End "<<outputDimuon->size()<<" , "<<outputVertex->size();
   
-//  reco::VertexCollection goodVertices;
-//  reco::CandidateCollection goodDimuons;
-//  std::vector<std::pair<const reco::Candidate*,const reco::Vertex*> >::const_iterator i_zVertexPair;
-//  for(i_zVertexPair=v_zVertexPair.begin(); i_zVertexPair!=v_zVertexPair.end(); ++i_zVertexPair){
-//    goodDimuons.push_back(*(i_zVertexPair->first));
-//    goodVertices.push_back(*(i_zVertexPair->second));
-//  }
   
-//  if(product_=="dimuon"){
-//    iEvent.put(outputDimuon);
-//  }
-  //if(product_=="vertex")iEvent.put(outputVertex);
-  
-  //std::auto_ptr<std::vector<reco::Vertex> > outputVertex(new std::vector<reco::Vertex>);
-  //if(product_=="dimuon")iEvent.put(outputDimuon);
   if(product_=="vertex")iEvent.put(outputVertex);
-  //iEvent.put(product_=="dimuon" ? outputDimuon : outputVertex);
   else if(product_=="dimuon")iEvent.put(outputDimuon);
 }
 
