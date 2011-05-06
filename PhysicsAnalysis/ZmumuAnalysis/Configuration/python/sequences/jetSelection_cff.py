@@ -13,28 +13,56 @@ from PhysicsTools.PatAlgos.selectionLayer1.jetCountFilter_cfi import *
 
 ###########################################################################################
 #
-# JET COLLECTION CLEANING
+# JET COLLECTION CLEANING - CREATE LEPTONS FOR CLEANING
+#
+###########################################################################################
+
+# These collections should be only used for cleaning of jets againgst isolated leptons
+
+# Use either preselection or final cut
+
+cleanPatMuons.preselection = 'isGlobalMuon & isTrackerMuon & (trackIso+caloIso)/pt < 0.15'
+
+cleanPatElectrons.preselection = 'electronID("simpleEleId85relIso")==7'
+
+
+
+
+###########################################################################################
+#
+# JET COLLECTION CLEANING - CHECK FOR OVERLAPS, BUT DO NOT YET CLEAN CHOSEN ISOLATED LEPTONS OUT OF COLLECTION ?
 #
 ###########################################################################################
 
 # Clean particleFlow-jet colleciton from electrons and muons (clean out only isolated leptons)
 
 cleanPatJets.src = "selectedPatJetsAK5PF"
+cleanPatJets.preselection = 'pt>15. & abs(eta)<2.4'
+# This would clean them out
+cleanPatJets.finalCut = '!hasOverlaps("muons") & !hasOverlaps("electrons")'
 
-cleanPatElectrons.finalCut = cms.string(
-    'et > 20.'
-    '& abs(eta) < 2.5'
-    '& electronID("simpleEleId80relIso")'
-    '& (trackIso+caloIso)/pt < 0.15'
+
+
+###########################################################################################
+#
+# JET COLLECTION CLEANING - CHECK FOR OVERLAPS BETWEEN 2 FINAL MUONS BUILDING THE Z AND THE JETS ???
+#
+###########################################################################################
+
+
+import ZmumuAnalysis.Producer.JetZOverlapCleaner_cfi
+cleanJets = ZmumuAnalysis.Producer.JetZOverlapCleaner_cfi.JetZOverlapCleaner.clone(
+    jetSource = 'cleanPatJets',
+    dimuonSource = 'finalDimuons',
+    deltaRMin = 0.5,
 )
-cleanPatJets.checkOverlaps.electrons.deltaR  = 0.4
-cleanPatJets.checkOverlaps.electrons.requireNoOverlaps = True 
 
 # take care to check for isolation
-cleanPatJets.checkOverlaps.muons.src  = 'looseMuons'
-cleanPatJets.checkOverlaps.muons.preselection = 'trackIso < 3.'
-cleanPatJets.checkOverlaps.muons.deltaR  = 0.4
-cleanPatJets.checkOverlaps.muons.requireNoOverlaps = True 
+
+#cleanPatJets.checkOverlaps.muons.src  = 'looseMuons'
+#cleanPatJets.checkOverlaps.muons.preselection = 'trackIso < 3.'
+#cleanPatJets.checkOverlaps.muons.deltaR  = 0.4
+#cleanPatJets.checkOverlaps.muons.requireNoOverlaps = True 
 
 
 
@@ -82,7 +110,8 @@ bSvheJets = selectedPatJets.clone(
 ## Count Filters
 ##
 
-oneCleanJetSelection = countPatJets.clone(src = 'cleanPatJets', minNumber = 1)
+oneCleanPatJetSelection = countPatJets.clone(src = 'cleanPatJets', minNumber = 1)
+oneCleanJetSelection = countPatJets.clone(src = 'cleanJets', minNumber = 1)
 oneGoodJetSelection = countPatJets.clone(src = 'goodJets', minNumber = 1)
 oneFinalJetSelection = countPatJets.clone(src = 'finalJets', minNumber = 1)
 oneBTcheJetSelection = countPatJets.clone(src = 'bTcheJets', minNumber = 1)
@@ -105,6 +134,7 @@ apllyJetCleaning = cms.Sequence(
 
 buildJetCollections = cms.Sequence(
     apllyJetCleaning
+    *cleanJets
     *goodJets
     *finalJets
     *bTcheJets
@@ -113,7 +143,8 @@ buildJetCollections = cms.Sequence(
 
 
 jetSelection = cms.Sequence(
-    oneCleanJetSelection
+    oneCleanPatJetSelection
+    *oneCleanJetSelection
     *oneGoodJetSelection
     *oneFinalJetSelection
     *oneBTcheJetSelection   # do not use both b-taggings at same time
