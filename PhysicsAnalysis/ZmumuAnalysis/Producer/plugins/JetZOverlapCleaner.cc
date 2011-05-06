@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May  5 15:11:28 CEST 2011
-// $Id: JetZOverlapCleaner.cc,v 1.1 2011/05/05 14:49:39 hauk Exp $
+// $Id: JetZOverlapCleaner.cc,v 1.2 2011/05/05 14:52:32 hauk Exp $
 //
 //
 
@@ -34,6 +34,7 @@
 #include "DataFormats/Common/interface/Handle.h"
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
+#include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/Candidate/interface/CandidateFwd.h"
 
 #include "DataFormats/Math/interface/deltaR.h"
@@ -121,7 +122,7 @@ JetZOverlapCleaner::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       const double deltaR_1(reco::deltaR(*i_jet, *daughter1));
       const double deltaR_2(reco::deltaR(*i_jet, *daughter2));
       //std::cout<<"\n\t\tDeltaR of both muons "<<deltaR_1<<" , "<<deltaR_2<<"\n";
-      if(deltaR_1<deltaRMin || deltaR_2<deltaRMin){
+      if(std::abs(deltaR_1)<deltaRMin || std::abs(deltaR_2)<deltaRMin){
         hasNoOverlap = false;
 	break;
       }
