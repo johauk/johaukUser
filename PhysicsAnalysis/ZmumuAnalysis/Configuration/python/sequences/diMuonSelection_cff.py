@@ -73,6 +73,7 @@ goodDimuons = cms.EDFilter("CandViewRefSelector",
     src = cms.InputTag("selectedDimuons"),
     cut = cms.string(
       'mass > 20. &'
+      '(daughter(0).vz()-daughter(1).vz())<0.1 &'
       'charge = 0'
     ),
 )
@@ -80,6 +81,7 @@ goodDimuonsSC = cms.EDFilter("CandViewRefSelector",
     src = cms.InputTag("selectedDimuons"),
     cut = cms.string(
       'mass > 20. &'
+      '(daughter(0).vz()-daughter(1).vz())<0.1 &'
       'charge != 0'
     ),
 )
