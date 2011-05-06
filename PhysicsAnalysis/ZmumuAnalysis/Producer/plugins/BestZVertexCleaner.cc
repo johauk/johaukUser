@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May  5 18:06:19 CEST 2011
-// $Id: BestZVertexCleaner.cc,v 1.1 2011/05/06 11:33:32 hauk Exp $
+// $Id: BestZVertexCleaner.cc,v 1.2 2011/05/06 16:26:28 hauk Exp $
 //
 //
 
@@ -177,7 +177,8 @@ BestZVertexCleaner::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       isGoodZ = true;
     }
     if(isGoodZ){
-      outputDimuon->push_back((*diMuons)[0]);
+      //outputDimuon->push_back((*diMuons)[0]);
+      outputDimuon->push_back(z);
       bool vertexDublicate(false);
       std::vector<std::pair<const reco::Candidate*,int> >::const_iterator i_zVertexPair;
       for(i_zVertexPair=v_zVertexPair.begin(); i_zVertexPair!=(--v_zVertexPair.end());++i_zVertexPair){
