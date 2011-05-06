@@ -38,16 +38,16 @@ tightHltGlobalDimuons = cms.EDProducer("CandViewShallowCloneCombiner",
 #tightHltGlobalDimuons = cms.EDProducer("CandViewCombiner",
     checkCharge = cms.bool(False),
     cut = cms.string(''),
-    decay = cms.string('tightHltMuonsTriggerMatch@+ tightHltMuonsTriggerMatch@-'),
+    #decay = cms.string('tightHltMuonsTriggerMatch@+ tightHltMuonsTriggerMatch@-'),
+    decay = cms.string('tightHltMuons@+ tightHltMuons@-'),
 )
 
 
 
 # Collection of interest, but with ambiguities
 looseTightHltGlobalDimuons = tightHltGlobalDimuons.clone(
-    #decay = 'tightHltMuons@+ looseMuons@-',
-    #decay = 'tightMuonsTriggerMatch@+ looseMuonsTriggerMatch@-',
-    decay = 'tightHltMuonsTriggerMatch@+ looseMuonsTriggerMatch@-',
+    #decay = 'tightHltMuonsTriggerMatch@+ looseMuonsTriggerMatch@-',
+    decay = 'tightHltMuons@+ looseMuonsTriggerMatch@-',
 )
 
 
@@ -242,7 +242,7 @@ buildDimuonCollections = cms.Sequence(
     *cleanDimuons
     *goodDimuons
     *isolatedDimuons
-#    *atLeast1HltDimuons
+    *atLeast1HltDimuons
     *finalDimuons
 )
 
@@ -256,7 +256,7 @@ buildDimuonSCCollections = cms.Sequence(
     *cleanDimuons
     *goodDimuonsSC
     *isolatedDimuonsSC
-#    *atLeast1HltDimuonsSC
+    *atLeast1HltDimuonsSC
     *finalDimuonsSC
 )
 
@@ -267,7 +267,7 @@ dimuonSelection = cms.Sequence(
     *cleanDimuonSelection
     *goodDimuonSelection
     *isolatedDimuonSelection
-#    *atLeast1HltDimuonSelection
+    *atLeast1HltDimuonSelection
     *finalDimuonSelection
 )
 
@@ -278,7 +278,7 @@ dimuonSCSelection = cms.Sequence(
     *cleanDimuonSelection
     *goodDimuonSCSelection
     *isolatedDimuonSCSelection
-#    *atLeast1HltDimuonSCSelection
+    *atLeast1HltDimuonSCSelection
     *finalDimuonSCSelection
 )
 
