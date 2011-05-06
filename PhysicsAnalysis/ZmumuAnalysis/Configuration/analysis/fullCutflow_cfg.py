@@ -23,7 +23,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToMuMu_M10To20_pythia_F10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToMuMu_M20_pythia_F10_cff")
 # To use for Zmumu
-process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYJetsToLL_M50_madgraph_F10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYJetsToLL_M50_madgraph_F10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToTauTau_M10To20_pythia_F10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToTauTau_M20_pythia_F10_cff")
 # To use for Ztautau
@@ -31,7 +31,7 @@ process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYJetsTo
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WWTo2L2Nu_pythia_F10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WZTo3LNu_pythia_F10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.ZZToAnything_pythia_F10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
+process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 
 
 
@@ -73,6 +73,11 @@ process.load("ZmumuAnalysis.Configuration.filters.TriggerFilter_cff")
 #process.triggerFilter1 = process.TriggerFilterMu9.clone()
 #process.triggerFilter1 = process.TriggerFilterMu15.clone()
 process.triggerFilter1 = process.TriggerFilterMu9_11_15.clone()
+
+
+
+## filter for good primary vertices
+process.load("ZmumuAnalysis.Configuration.sequences.vertexSelection_cff")
 
 
 
@@ -171,7 +176,8 @@ process.DiMuonAnalyzerSC9 = process.DiMuonAnalyzer9.clone(
 ## jet analyzer
 process.load("ZmumuAnalysis.Analyzer.JetAnalyzer_cfi")
 process.JetAnalyzer7 = process.JetAnalyzer.clone(
-    jetSource = 'finalJets',
+    #jetSource = 'finalJets',
+    jetSource = 'cleanPatJets',
 )
 process.JetAnalyzer8 = process.JetAnalyzer.clone(
     jetSource = 'bTcheJets',
@@ -207,6 +213,9 @@ process.MetAnalyzerSC9 = process.MetAnalyzer9.clone()
 process.oppositeChargeAnalysis = cms.Path(
     process.EventCounter0 
     
+    *process.buildVertexCollections
+    *process.vertexSelection
+    
     *process.TriggerAnalyzer1
     *process.triggerFilter1
     
@@ -225,11 +234,11 @@ process.oppositeChargeAnalysis = cms.Path(
     
     *process.buildJetCollections
     *process.JetAnalyzer7
-    *process.JetAnalyzer8
+#    *process.JetAnalyzer8
     *process.jetSelection
     *process.MuonAnalyzer9
     *process.DiMuonAnalyzer9
-    *process.JetAnalyzer9
+#    *process.JetAnalyzer9
     
     *process.buildMetCollections
     *process.MetAnalyzer9
@@ -238,33 +247,33 @@ process.oppositeChargeAnalysis = cms.Path(
 
 
 
-process.sameChargeAnalysis = cms.Path(
-    process.triggerFilter1
-    
-    *process.buildMuonCollections
-    *process.muonSelection
-    
-    *process.buildDimuonSCCollections
-    *process.DiMuonAnalyzerSC3
-    *process.DiMuonAnalyzerSC4
-#    *process.DiMuonAnalyzerSC5
-    *process.dimuonSCSelection
-    *process.MuonAnalyzerSC6
-    *process.DiMuonAnalyzerSC6
-    
-    *process.buildJetCollections
-    *process.JetAnalyzerSC7
-    *process.JetAnalyzerSC8
-    *process.jetSelection
-    *process.MuonAnalyzerSC9
-    *process.DiMuonAnalyzerSC9
-    *process.JetAnalyzerSC9
-    
-    *process.buildMetCollections
-    *process.MetAnalyzerSC9
-    *process.metSelection
-    
-)
+#process.sameChargeAnalysis = cms.Path(
+#    process.triggerFilter1
+#    
+#    *process.buildMuonCollections
+#    *process.muonSelection
+#    
+#    *process.buildDimuonSCCollections
+#    *process.DiMuonAnalyzerSC3
+#    *process.DiMuonAnalyzerSC4
+##    *process.DiMuonAnalyzerSC5
+#    *process.dimuonSCSelection
+#    *process.MuonAnalyzerSC6
+#    *process.DiMuonAnalyzerSC6
+#    
+#    *process.buildJetCollections
+#    *process.JetAnalyzerSC7
+#    *process.JetAnalyzerSC8
+#    *process.jetSelection
+#    *process.MuonAnalyzerSC9
+#    *process.DiMuonAnalyzerSC9
+#    *process.JetAnalyzerSC9
+#    
+#    *process.buildMetCollections
+#    *process.MetAnalyzerSC9
+#    *process.metSelection
+#    
+#)
 
 
 
