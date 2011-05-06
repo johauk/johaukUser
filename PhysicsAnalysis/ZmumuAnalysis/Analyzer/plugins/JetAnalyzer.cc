@@ -14,7 +14,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Wed Oct 20 16:37:05 CEST 2010
-// $Id: JetAnalyzer.cc,v 1.2 2010/10/22 15:25:42 hauk Exp $
+// $Id: JetAnalyzer.cc,v 1.3 2010/12/09 16:14:23 hauk Exp $
 //
 //
 
@@ -128,8 +128,12 @@ JetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   float chargedHadronEnergyFraction(-999.), neutralHadronEnergyFraction(-999.), chargedEmEnergyFraction(-999.), neutralEmEnergyFraction(-999.);
   
   
+  //std::cout<<"\n\t\tNEXT EVENT\n";
+  
   pat::JetCollection::const_iterator i_jet;
   for(i_jet = jets->begin(); i_jet != jets->end(); ++i_jet){
+    
+    //if(nJet>2)std::cout<<"\n\t\tOverlaps? "<<i_jet->hasOverlaps("muons")<<" , "<<i_jet->hasOverlaps("electrons")<<"\n";
     
     // Common jet properties
     eta = i_jet->eta();
