@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May  5 18:06:19 CEST 2011
-// $Id$
+// $Id: BestZVertexCleaner.cc,v 1.1 2011/05/06 11:33:32 hauk Exp $
 //
 //
 
@@ -29,6 +29,8 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/Common/interface/Handle.h"
@@ -78,7 +80,7 @@ BestZVertexCleaner::BestZVertexCleaner(const edm::ParameterSet& iConfig):
 parameterSet_(iConfig), product_(parameterSet_.getParameter<std::string>("product"))
 {
   //if(product_=="dimuon")produces<reco::CandidateCollection>();
-  if(product_=="dimuon")produces<std::vector<pat::CompositeCandidate> >();
+  if(product_=="dimuon")produces<std::vector<reco::CompositeCandidate> >();
   else if(product_=="vertex")produces<reco::VertexCollection>();
   //produces<reco::VertexCollection>("bestZVertex");
   else throw edm::Exception( edm::errors::Configuration,   
@@ -133,12 +135,12 @@ BestZVertexCleaner::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   //edm::Handle<std::vector<reco::Candidate> > diMuons;
   iEvent.getByLabel(dimuonSource, diMuons);
   //std::auto_ptr<reco::CandidateView> outputDimuon(new reco::CandidateView(*diMuons));
-  std::auto_ptr<std::vector<pat::CompositeCandidate> > outputDimuon(new std::vector<pat::CompositeCandidate>());
+  std::auto_ptr<std::vector<reco::CompositeCandidate> > outputDimuon(new std::vector<reco::CompositeCandidate>());
   //std::auto_ptr<reco::CandidateCollection> outputDimuon(new reco::CandidateCollection(*diMuons));
   //std::auto_ptr<std::vector<reco::Candidate> > outputDimuon(new std::vector<reco::Candidate>);
   
   // Loop over Zs and vertices, find best vertex (smallest distance)
-  std::cout<<"New Event "<<diMuons->size()<<" , "<<vertices->size()<<"\n";
+  LogDebug("BestZVertexCleaner")<<"New Event "<<diMuons->size()<<" , "<<vertices->size();
   const double deltaZMax(parameterSet_.getParameter<double>("deltaZMax"));
   //reco::CandidateView::const_iterator i_cand;
   std::vector<reco::CompositeCandidate>::const_iterator i_cand;
@@ -168,7 +170,7 @@ BestZVertexCleaner::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
     const double deltaZ1(daughter1->vz() - bestVertex->z());
     const double deltaZ2(daughter2->vz() - bestVertex->z());
-    std::cout<<"\tNew Z, Best Vertex "<<deltaZ1<<" , "<<deltaZ2<<"\n";
+    LogDebug("BestZVertexCleaner")<<"New Z, Best Vertex "<<deltaZ1<<" , "<<deltaZ2;
     if(std::abs(deltaZ1) < deltaZMax && std::abs(deltaZ2) < deltaZMax){
       std::pair<const reco::Candidate*,int> zVertexPair(&*i_cand,iBestVertex);
       v_zVertexPair.push_back(zVertexPair);
@@ -185,7 +187,7 @@ BestZVertexCleaner::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if(!vertexDublicate)outputVertex->push_back((*vertices)[iBestVertex]);
     }
   }
-  std::cout<<"At End "<<outputDimuon->size()<<" , "<<outputVertex->size()<<"\n";
+  LogDebug("BestZVertexCleaner")<<"At End "<<outputDimuon->size()<<" , "<<outputVertex->size();
   
 //  reco::VertexCollection goodVertices;
 //  reco::CandidateCollection goodDimuons;
@@ -205,8 +207,6 @@ BestZVertexCleaner::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   if(product_=="vertex")iEvent.put(outputVertex);
   //iEvent.put(product_=="dimuon" ? outputDimuon : outputVertex);
   else if(product_=="dimuon")iEvent.put(outputDimuon);
-  std::cout<<"\n\n\tBLA\n\n\n";
-
 }
 
 // ------------ method called once each job just before starting event loop  ------------

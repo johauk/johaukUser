@@ -3,12 +3,14 @@ import os
 import FWCore.ParameterSet.Config as cms
 
 
-process = cms.Process("BestZVertexProducer")
+process = cms.Process("BestZVertexCleaner")
 
 
 
 ## Message logger
 process.load("FWCore.MessageService.MessageLogger_cfi")
+process.MessageLogger.debugModules = ["BestZVertexCleaner1"]
+process.MessageLogger.cerr.threshold = 'DEBUG'
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000 ## really show only every 1000th
 
 
@@ -24,7 +26,7 @@ process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(101) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(11) )
 
 
 
