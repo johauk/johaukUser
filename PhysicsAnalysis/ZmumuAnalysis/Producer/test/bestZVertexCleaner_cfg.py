@@ -26,7 +26,7 @@ process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(11) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(101) )
 
 
 
@@ -46,10 +46,12 @@ process.selectedDimuons = dimuons.clone(
 process.load("ZmumuAnalysis.Producer.BestZVertexCleaner_cfi")
 process.BestZVertexCleaner1 = process.BestZVertexCleaner.clone(
     #product = "dimuon",
-    product = "vertex",
     #vertexSource = 'offlinePrimaryVertices',
     #dimuonSource = 'selectedDimuons',
     #deltaZMax = 0.1,
+)
+process.BestZVertexCleaner2 = process.BestZVertexCleaner1.clone(
+    product = "vertex",
 )
 
 
@@ -57,7 +59,8 @@ process.BestZVertexCleaner1 = process.BestZVertexCleaner.clone(
 ## Path
 process.p = cms.Path(
     process.selectedDimuons*
-    process.BestZVertexCleaner1
+    process.BestZVertexCleaner1*
+    process.BestZVertexCleaner2
 )
 
 
