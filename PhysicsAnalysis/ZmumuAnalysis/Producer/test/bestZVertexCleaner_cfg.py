@@ -48,7 +48,8 @@ process.BestZVertexCleaner1 = process.BestZVertexCleaner.clone(
     #product = "dimuon",
     #vertexSource = 'offlinePrimaryVertices',
     #dimuonSource = 'selectedDimuons',
-    #deltaZMax = 0.1,
+    #deltaZMuMuMax = 0.1,
+    #deltaZZVertexMax = 0.1,
 )
 process.BestZVertexCleaner2 = process.BestZVertexCleaner1.clone(
     product = "vertex",

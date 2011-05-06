@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May  5 18:06:19 CEST 2011
-// $Id: BestZVertexCleaner.cc,v 1.3 2011/05/06 18:19:09 hauk Exp $
+// $Id: BestZVertexCleaner.cc,v 1.4 2011/05/06 19:27:53 hauk Exp $
 //
 //
 
@@ -40,7 +40,9 @@
 
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/Candidate/interface/CandidateFwd.h"
-#include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
+//#include "DataFormats/Candidate/interface/CompositeCandidate.h"
+//#include "DataFormats/Candidate/interface/CompositeCandidateFwd.h"
+//#include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
 
 #include "DataFormats/Common/interface/CloneTrait.h"
 
@@ -114,29 +116,36 @@ BestZVertexCleaner::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   
   // Get handle on di-muon collection
   const edm::InputTag dimuonSource(parameterSet_.getParameter<edm::InputTag>("dimuonSource"));
-  //edm::Handle<std::vector<reco::CompositeCandidate> > diMuons;
-  //iEvent.getByLabel(dimuonSource, diMuons);
+  //edm::Handle<std::vector<reco::CompositeCandidate> > dimuons;
+  //iEvent.getByLabel(dimuonSource, dimuons);
   //std::auto_ptr<std::vector<reco::CompositeCandidate> > outputDimuon(new std::vector<reco::CompositeCandidate>());
-  edm::Handle<reco::CandidateView> diMuons;
-  iEvent.getByLabel(dimuonSource, diMuons);
+  edm::Handle<reco::CandidateView> dimuons;
+  iEvent.getByLabel(dimuonSource, dimuons);
   std::auto_ptr<reco::CandidateCollection> outputDimuon(new reco::CandidateCollection);
   
   
   // Loop over Zs and vertices, find best vertex (smallest distance)
-  LogDebug("BestZVertexCleaner")<<"New Event "<<diMuons->size()<<" , "<<vertices->size();
-  const double deltaZMax(parameterSet_.getParameter<double>("deltaZMax"));
+  LogDebug("BestZVertexCleaner")<<"New Event "<<dimuons->size()<<" , "<<vertices->size();
+  const double deltaZMuMuMax(parameterSet_.getParameter<double>("deltaZMuMuMax"));
+  const double deltaZZVertexMax(parameterSet_.getParameter<double>("deltaZZVertexMax"));
   //std::vector<reco::CompositeCandidate>::const_iterator i_cand;
   reco::CandidateView::const_iterator i_cand;
   std::vector<std::pair<const reco::Candidate*,int> > v_zVertexPair;
-  for(i_cand = diMuons->begin(); i_cand != diMuons->end(); ++i_cand){
+  for(i_cand = dimuons->begin(); i_cand != dimuons->end(); ++i_cand){
     bool isGoodZ(false);
     //const reco::CompositeCandidate & z = *i_cand;
     //pat::CompositeCandidate dimuon2(z);
-    const reco::Candidate& diMuon = *i_cand;
+    const reco::Candidate& dimuon = *i_cand;
     
-    const reco::Candidate* daughter1 = diMuon.daughter(0);
-    const reco::Candidate* daughter2 = diMuon.daughter(1);
+    const reco::Candidate* daughter1 = dimuon.daughter(0);
+    const reco::Candidate* daughter2 = dimuon.daughter(1);
     
+    // First: check for distance between muons
+    const double deltaZMuMu(daughter1->vz()-daughter2->vz());
+    LogDebug("BestZVertexCleaner")<<"New Z, Muon distance "<<deltaZMuMu;
+    if(std::abs(deltaZMuMu)>deltaZMuMuMax)continue;
+    
+    // Second: check for distance between Z and vertex
     const double vzZ = 0.5*(daughter1->vz()+daughter2->vz());
     
     const reco::Vertex* bestVertex(0);
@@ -154,14 +163,14 @@ BestZVertexCleaner::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     const double deltaZ1(daughter1->vz() - bestVertex->z());
     const double deltaZ2(daughter2->vz() - bestVertex->z());
     LogDebug("BestZVertexCleaner")<<"New Z, Best Vertex "<<deltaZ1<<" , "<<deltaZ2;
-    if(std::abs(deltaZ1) < deltaZMax && std::abs(deltaZ2) < deltaZMax){
+    if(std::abs(deltaZ1) < deltaZZVertexMax && std::abs(deltaZ2) < deltaZZVertexMax){
       std::pair<const reco::Candidate*,int> zVertexPair(&*i_cand,iBestVertex);
       v_zVertexPair.push_back(zVertexPair);
       isGoodZ = true;
     }
     if(isGoodZ){
       //outputDimuon->push_back(z);
-      outputDimuon->push_back(edm::clonehelper::CloneTrait<reco::CandidateView>::type::clone(diMuon));
+      outputDimuon->push_back(edm::clonehelper::CloneTrait<reco::CandidateView>::type::clone(dimuon));
       bool vertexDublicate(false);
       std::vector<std::pair<const reco::Candidate*,int> >::const_iterator i_zVertexPair;
       for(i_zVertexPair=v_zVertexPair.begin(); i_zVertexPair!=(--v_zVertexPair.end());++i_zVertexPair){

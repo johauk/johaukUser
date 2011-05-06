@@ -11,6 +11,9 @@ BestZVertexCleaner = cms.EDProducer('BestZVertexCleaner',
     # vertex collection
     vertexSource = cms.InputTag("offlinePrimaryVertices"),
     
+    # Maximum allowed distance along z between muon and muon
+    deltaZMuMuMax = cms.double(0.1),
+    
     # Maximum allowed distance along z between vertex and Z
-    deltaZMax = cms.double(0.1),
+    deltaZZVertexMax = cms.double(0.1),
 )
