@@ -38,16 +38,16 @@ tightHltGlobalDimuons = cms.EDProducer("CandViewShallowCloneCombiner",
 #tightHltGlobalDimuons = cms.EDProducer("CandViewCombiner",
     checkCharge = cms.bool(False),
     cut = cms.string(''),
-    #decay = cms.string('tightHltMuonsTriggerMatch@+ tightHltMuonsTriggerMatch@-'),
-    decay = cms.string('tightHltMuons@+ tightHltMuons@-'),
+    #decay = cms.string('tightHltMuonsTriggerMatch@+ tightHltMuonsTriggerMatch@-'),   # for OLD version of trigger matching
+    decay = cms.string('tightHltMuons@+ tightHltMuons@-'),   # for NEW version of trigger matching
 )
 
 
 
 # Collection of interest, but with ambiguities
 looseTightHltGlobalDimuons = tightHltGlobalDimuons.clone(
-    #decay = 'tightHltMuonsTriggerMatch@+ looseMuonsTriggerMatch@-',
-    decay = 'tightHltMuons@+ looseMuonsTriggerMatch@-',
+    #decay = 'tightHltMuonsTriggerMatch@+ looseMuonsTriggerMatch@-',   # for OLD version of trigger matching
+    decay = 'tightHltMuons@+ looseMuons@-',   # for NEW version of trigger matching
 )
 
 
@@ -56,7 +56,6 @@ looseTightHltGlobalDimuons = tightHltGlobalDimuons.clone(
 overlapExcludedLooseTightHltGlobalDimuons = cms.EDFilter("ZMuMuOverlapExclusionSelector",
     src = cms.InputTag("looseTightHltGlobalDimuons"),
     overlap = cms.InputTag("tightHltGlobalDimuons"),
-    #overlap = cms.InputTag("cleanDimuons2"),
     filter = cms.bool(False),
 )
 
