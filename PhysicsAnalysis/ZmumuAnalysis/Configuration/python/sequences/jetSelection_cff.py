@@ -39,7 +39,7 @@ cleanPatElectrons.preselection = 'electronID("simpleEleId85relIso")==7'
 cleanPatJets.src = "selectedPatJetsAK5PF"
 cleanPatJets.preselection = 'pt>15. & abs(eta)<2.4'
 # This would clean them out
-cleanPatJets.finalCut = '!hasOverlaps("muons") & !hasOverlaps("electrons")'
+#cleanPatJets.finalCut = '!hasOverlaps("muons") & !hasOverlaps("electrons")'
 
 
 
@@ -77,33 +77,47 @@ cleanJets = ZmumuAnalysis.Producer.JetZOverlapCleaner_cfi.JetZOverlapCleaner.clo
 
 ## good jet ID selection
 goodJets = selectedPatJets.clone(
-    src = 'cleanPatJets', 
-    cut = 'abs(eta) < 2.5'
-          '& chargedHadronEnergyFraction > 0.0'
-	  '& neutralHadronEnergyFraction < 1.0'
-	  '& chargedEmEnergyFraction < 1.0'
-	  '& neutralEmEnergyFraction < 1.0'
-	  '& chargedMultiplicity > 0'
-	  '& nConstituents > 1',
+    src = 'cleanJets', 
+    # Definition of LOOSE PFjet id
+    cut = 'neutralHadronEnergyFraction < 0.99'
+	  '& neutralEmEnergyFraction < 0.99'
+	  '& nConstituents > 1'
+	  # For eta <2.4, additional requirements
+	  '& chargedHadronEnergyFraction > 0'
+	  '& chargedEmEnergyFraction < 0.99'
+	  '& chargedMultiplicity > 0',
 )
 
 ## hard jet selection
 finalJets = selectedPatJets.clone(
     src = 'goodJets',
-    cut = 'pt > 30.',
+    cut = 'abs(eta) < 2.1 &'
+          'pt > 25.',
 )
 
 
-## b-tagging TrackCountingHighEfficiency with loose Working point 1.7
-bTcheJets = selectedPatJets.clone(
+## b-tagging TrackCountingHighEfficiency with Medium Working point
+bTcHeMJets = selectedPatJets.clone(
     src = 'finalJets',
-    cut = 'bDiscriminator("trackCountingHighEffBJetTags") > 1.7',
+    cut = 'bDiscriminator("trackCountingHighEffBJetTags") > 3.3',
 )
-## OR b-tagging SecondaryVertexHighEfficiency with loose Working point 1.74
-bSvheJets = selectedPatJets.clone(
+## b-tagging TrackCountingHighPurity with Tight Working point
+bTcHpTJets = selectedPatJets.clone(
+    src = 'finalJets',
+    cut = 'bDiscriminator("trackCountingHighEffBJetTags") > 3.41',
+)
+## OR b-tagging SecondaryVertexHighEfficiency with Medium Working point
+bSsvHeMJets = selectedPatJets.clone(
     src = 'finalJets',
     cut = 'bDiscriminator("simpleSecondaryVertexHighEffBJetTags") > 1.74',
 )
+## OR b-tagging SecondaryVertexHighEfficiency with Tight(?) Working point (not yet clear set defined)
+bSsvHpTJets = selectedPatJets.clone(
+    src = 'finalJets',
+    cut = 'bDiscriminator("simpleSecondaryVertexHighEffBJetTags") > 2.0',
+)
+
+
 
 
 ##
@@ -114,9 +128,16 @@ oneCleanPatJetSelection = countPatJets.clone(src = 'cleanPatJets', minNumber = 1
 oneCleanJetSelection = countPatJets.clone(src = 'cleanJets', minNumber = 1)
 oneGoodJetSelection = countPatJets.clone(src = 'goodJets', minNumber = 1)
 oneFinalJetSelection = countPatJets.clone(src = 'finalJets', minNumber = 1)
-oneBTcheJetSelection = countPatJets.clone(src = 'bTcheJets', minNumber = 1)
-oneBSvheJetSelection = countPatJets.clone(src = 'bSvheJets', minNumber = 1)
+oneBTcHeMJetSelection = countPatJets.clone(src = 'bTcHeMJets', minNumber = 1)
+oneBTcHpTJetSelection = countPatJets.clone(src = 'bTcHpTJets', minNumber = 1)
+oneBSsvHeMJetSelection = countPatJets.clone(src = 'bSsvHeMJets', minNumber = 1)
+oneBSsvHpTJetSelection = countPatJets.clone(src = 'bSsvHpTJets', minNumber = 1)
 
+twoFinalJetSelection = oneFinalJetSelection.clone(minNumber = 2)
+twoBTcHeMJetSelection = oneBTcHeMJetSelection.clone(minNumber = 2)
+twoBTcHpTJetSelection = oneBTcHpTJetSelection.clone(minNumber = 2)
+twoBSsvHeMJetSelection = oneBSsvHeMJetSelection.clone(minNumber = 2)
+twoBSsvHpTJetSelection = oneBSsvHpTJetSelection.clone(minNumber = 2)
 
 
 
@@ -127,28 +148,48 @@ oneBSvheJetSelection = countPatJets.clone(src = 'bSvheJets', minNumber = 1)
 ###########################################################################################
 
 
-apllyJetCleaning = cms.Sequence(
+applyJetCleaning = cms.Sequence(
     cleanPatCandidates
 )
 
 
 buildJetCollections = cms.Sequence(
-    apllyJetCleaning
+    applyJetCleaning
     *cleanJets
     *goodJets
     *finalJets
-    *bTcheJets
-    *bSvheJets
+    
+    *bTcHeMJets
+    *bTcHpTJets
+    *bSsvHeMJets
+    *bSsvHpTJets
 )
 
 
-jetSelection = cms.Sequence(
+oneJetSelection = cms.Sequence(
     oneCleanPatJetSelection
     *oneCleanJetSelection
     *oneGoodJetSelection
     *oneFinalJetSelection
-    *oneBTcheJetSelection   # do not use both b-taggings at same time
-    #*oneBSvheJetSelection
+    
+    #*oneBTcHeMJetSelection 
+    #*oneBTcHpTJetSelection 
+    *oneBSsvHeMJetSelection
+    #*oneBSsvHpTJetSelection
 )
+
+
+
+twoJetSelection = cms.Sequence(
+    twoFinalJetSelection
+    
+    *oneBSsvHpTJetSelection
+    
+    #*twoBTcHeMJetSelection 
+    #*twoBTcHpTJetSelection 
+    #*twoBSsvHeMJetSelection
+    *twoBSsvHpTJetSelection
+)
+
 
 

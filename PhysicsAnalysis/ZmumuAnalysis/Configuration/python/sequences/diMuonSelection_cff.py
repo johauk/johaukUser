@@ -62,9 +62,39 @@ overlapExcludedLooseTightHltGlobalDimuons = cms.EDFilter("ZMuMuOverlapExclusionS
 
 
 # Merge collections without ambiguities
-selectedDimuons = cms.EDProducer("CandViewMerger",
+selectedDimuonsOLD = cms.EDProducer("CandViewMerger",
     src = cms.VInputTag("tightHltGlobalDimuons","overlapExcludedLooseTightHltGlobalDimuons")
 )
+
+
+
+###########################################################################################
+
+# New selection for collections
+
+
+
+
+# Since only one dimuon collection is created, use directly this ?
+dimuons = cms.EDProducer("CandViewShallowCloneCombiner",
+    checkCharge = cms.bool(False),
+    cut = cms.string(''),
+    #decay = cms.string('tightHltMuons@+ tightMuons@-'),
+    decay = cms.string('tightMuons@+ tightMuons@-'),
+)
+
+
+selectedDimuons = cms.EDFilter("CandViewSelector",
+src = cms.InputTag("dimuons"),
+    cut = cms.string(
+      'mass > 20. &'
+      '(daughter(0).masterClone.triggerObjectMatches.size > 0) || (daughter(1).masterClone.triggerObjectMatches.size > 0) &'
+      'charge = 0'
+    ),
+)
+
+
+
 
 
 
@@ -74,7 +104,6 @@ cleanDimuons = BestZVertexCleaner.clone(
     product = "dimuon",
     vertexSource = 'goodPV',
     dimuonSource = 'selectedDimuons',
-    #dimuonSource = 'looseTightHltGlobalDimuons',
     deltaZMuMuMax = 0.1,
     deltaZZVertexMax = 0.1,
 )
@@ -86,7 +115,7 @@ goodDimuons = cms.EDFilter("CandViewRefSelector",
     src = cms.InputTag("cleanDimuons"),
     cut = cms.string(
       'mass > 20. &'
-      '(daughter(0).vz()-daughter(1).vz())<0.1 &'
+      #'(daughter(0).vz()-daughter(1).vz())<0.1 &'  already contained in cleanDimuons
       'charge = 0'
     ),
 )
@@ -96,7 +125,7 @@ goodDimuonsSC = cms.EDFilter("CandViewRefSelector",
     src = cms.InputTag("cleanDimuons"),
     cut = cms.string(
       'mass > 20. &'
-      '(daughter(0).vz()-daughter(1).vz())<0.1 &'
+      #'(daughter(0).vz()-daughter(1).vz())<0.1 &'
       'charge != 0'
     ),
 )
@@ -104,25 +133,6 @@ goodDimuonsSC = cms.EDFilter("CandViewRefSelector",
 
 
 # Cut on isolation of both Muons in Dimuon system
-## Do not use this complicated module based on IsoDeposits -- easily causes mistakes
-#diMuonIsolation = zSelection.clone(
-#  cut = '',
-#  isoCut = 3.,
-#)
-#isolatedDimuons = cms.EDFilter("ZToMuMuIsolatedIDSelector",
-#    diMuonIsolation,
-#    src = cms.InputTag("goodDimuons"),
-#    filter = cms.bool(False)
-#)
-## Instead use this module as long as it works (no combined and no relative isolation!!! - so, tracker only or calo only...)
-## But does it really work as expected??? --- no event is deselected!!!
-#isolatedDimuons = cms.EDFilter("ZToMuMuIsolatedSelector",
-#    src = cms.InputTag("goodDimuons"),
-#    cut = cms.string(''),
-#    isoCut = cms.double(3.),
-#    isolationType = cms.string("track"),
-#    filter = cms.bool(False)
-#)
 ## Do the isolation cuts by hand in simple way
 ## Use the "CandViewSelector" and not the "CandViewRefSelector":
 ## First one is a lazy parser, so knows about input type
@@ -234,29 +244,31 @@ finalDimuonSCSelection = finalDimuonSelection.clone(src = 'finalDimuonsSC')
 
 
 buildDimuonCollections = cms.Sequence(
-    tightHltGlobalDimuons
-    *looseTightHltGlobalDimuons
-    *overlapExcludedLooseTightHltGlobalDimuons
-    *selectedDimuons
-    *cleanDimuons
-    *goodDimuons
-    *isolatedDimuons
-    *atLeast1HltDimuons
-    *finalDimuons
+#    tightHltGlobalDimuons*
+#    looseTightHltGlobalDimuons*
+#    overlapExcludedLooseTightHltGlobalDimuons*
+    dimuons*
+    selectedDimuons*
+    cleanDimuons*
+    goodDimuons*
+    isolatedDimuons*
+    #atLeast1HltDimuons*
+    finalDimuons
 )
 
 
 
 buildDimuonSCCollections = cms.Sequence(
-    tightHltGlobalDimuons
-    *looseTightHltGlobalDimuons
-    *overlapExcludedLooseTightHltGlobalDimuons
-    *selectedDimuons
-    *cleanDimuons
-    *goodDimuonsSC
-    *isolatedDimuonsSC
-    *atLeast1HltDimuonsSC
-    *finalDimuonsSC
+#    tightHltGlobalDimuons*
+#    looseTightHltGlobalDimuons*
+#    overlapExcludedLooseTightHltGlobalDimuons*
+    dimuons*
+    selectedDimuons*
+    cleanDimuons*
+    goodDimuonsSC*
+    isolatedDimuonsSC*
+    #atLeast1HltDimuonsSC*
+    finalDimuonsSC
 )
 
 
@@ -266,7 +278,7 @@ dimuonSelection = cms.Sequence(
     *cleanDimuonSelection
     *goodDimuonSelection
     *isolatedDimuonSelection
-    *atLeast1HltDimuonSelection
+    #*atLeast1HltDimuonSelection
     *finalDimuonSelection
 )
 
@@ -277,7 +289,7 @@ dimuonSCSelection = cms.Sequence(
     *cleanDimuonSelection
     *goodDimuonSCSelection
     *isolatedDimuonSCSelection
-    *atLeast1HltDimuonSCSelection
+    #*atLeast1HltDimuonSCSelection
     *finalDimuonSCSelection
 )
 

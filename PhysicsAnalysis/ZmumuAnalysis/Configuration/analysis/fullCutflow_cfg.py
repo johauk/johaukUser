@@ -121,13 +121,15 @@ process.TriggerAnalyzer1 =  process.TriggerAnalyzer.clone()
 ## muon analizer
 process.load("ZmumuAnalysis.Analyzer.MuonAnalyzer_cfi")
 process.MuonAnalyzer1 = process.MuonAnalyzer.clone(
-    muonSource = 'looseMuons',
+    muonSource = 'tightMuons',
 )
 process.MuonAnalyzer2 = process.MuonAnalyzer1.clone(
 )
 process.MuonAnalyzer6 = process.MuonAnalyzer1.clone(
 )
 process.MuonAnalyzer9 = process.MuonAnalyzer1.clone(
+)
+process.MuonAnalyzer10 = process.MuonAnalyzer1.clone(
 )
 
 process.MuonAnalyzerSC6 = process.MuonAnalyzer6.clone(
@@ -154,6 +156,9 @@ process.DiMuonAnalyzer6 = process.DiMuonAnalyzer.clone(
 process.DiMuonAnalyzer9 = process.DiMuonAnalyzer.clone(
     diMuonSource = "finalDimuons",
 )
+process.DiMuonAnalyzer10 = process.DiMuonAnalyzer.clone(
+    diMuonSource = "finalDimuons",
+)
 
 process.DiMuonAnalyzerSC3 = process.DiMuonAnalyzer3.clone(
     diMuonSource = "goodDimuonsSC",
@@ -176,14 +181,16 @@ process.DiMuonAnalyzerSC9 = process.DiMuonAnalyzer9.clone(
 ## jet analyzer
 process.load("ZmumuAnalysis.Analyzer.JetAnalyzer_cfi")
 process.JetAnalyzer7 = process.JetAnalyzer.clone(
-    #jetSource = 'finalJets',
-    jetSource = 'cleanPatJets',
+    jetSource = 'goodJets',
 )
 process.JetAnalyzer8 = process.JetAnalyzer.clone(
-    jetSource = 'bTcheJets',
+    jetSource = 'finalJets',
 )
 process.JetAnalyzer9 = process.JetAnalyzer.clone(
-    jetSource = 'bTcheJets',
+    jetSource = 'bSsvHeMJets',
+)
+process.JetAnalyzer10 = process.JetAnalyzer.clone(
+    jetSource = 'bSsvHeMJets',
 )
 
 process.JetAnalyzerSC7 = process.JetAnalyzer.clone()
@@ -227,22 +234,29 @@ process.oppositeChargeAnalysis = cms.Path(
     *process.buildDimuonCollections
     *process.DiMuonAnalyzer3
     *process.DiMuonAnalyzer4
-#    *process.DiMuonAnalyzer5
+    #*process.DiMuonAnalyzer5
     *process.dimuonSelection
     *process.MuonAnalyzer6
     *process.DiMuonAnalyzer6
     
     *process.buildJetCollections
     *process.JetAnalyzer7
-#    *process.JetAnalyzer8
-    *process.jetSelection
+    *process.JetAnalyzer8
+    *process.oneJetSelection
     *process.MuonAnalyzer9
     *process.DiMuonAnalyzer9
-#    *process.JetAnalyzer9
+    *process.JetAnalyzer9
     
     *process.buildMetCollections
     *process.MetAnalyzer9
     *process.metSelection
+    *process.MuonAnalyzer10
+    *process.DiMuonAnalyzer10
+    *process.JetAnalyzer10
+    #*process.MetAnalyzer10
+    
+    
+    *process.twoJetSelection
 )
 
 

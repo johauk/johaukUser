@@ -18,11 +18,11 @@ import FWCore.ParameterSet.Config as cms
 ## good MET selection
 #goodMet = selectedPatMET.clone(
 #    src = 'patMETsPF', 
-#    cut = 'et < 40.',
+#    cut = 'pt < 40.',
 #)
 goodMet = cms.EDFilter("PATMETSelector",
     src = cms.InputTag("patMETsPF"),
-    cut = cms.string("et<40."),
+    cut = cms.string("pt<40."),
 )
 
 
