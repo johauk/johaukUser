@@ -4,32 +4,44 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("FullCutflow")
 
-## add message logger
+## Message logger
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'INFO'
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 
 
-## sources
+## Sources
+# Data
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010A_Nov04ReReco_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B1_Nov04ReReco_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B2_Nov04ReReco_cff")
+
+# QCD
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.QCD_MuEnrichedPt15_pythia_F10_cff")
+# SingleTop
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.TToBLNu_madgraph_F10_cff")
+# TTbar
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.TTJets_D6T_madgraph_F10_cff")
+# Wmu
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WToMuNu_pythia_F10_cff")
+# Wtau
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WToTauNu_pythia_F10_cff")
+# Zmumu (Drell-Yan low masses) not needed here
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToMuMu_M10To20_pythia_F10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToMuMu_M20_pythia_F10_cff")
 # To use for Zmumu
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYJetsToLL_M50_madgraph_F10_cff")
+# Ztautau (Drell-Yan low masses) not needed here
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToTauTau_M10To20_pythia_F10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToTauTau_M20_pythia_F10_cff")
 # To use for Ztautau
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYJetsToLL_M50_D6T_madgraph_F10_cff")
+# WW
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WWTo2L2Nu_pythia_F10_cff")
+# WZ
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WZTo3LNu_pythia_F10_cff")
+# ZZ
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.ZZToAnything_pythia_F10_cff")
 process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 
@@ -52,9 +64,9 @@ process.options = cms.untracked.PSet(
 ## needed for access to trigger menu
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 # data
-process.GlobalTag.globaltag = cms.string('GR_R_38X_V13::All')
+#process.GlobalTag.globaltag = cms.string('GR_R_38X_V13::All')
 # mc
-#process.GlobalTag.globaltag = cms.string('START38_V13::All')
+process.GlobalTag.globaltag = cms.string('START38_V13::All')
 
 
 
@@ -67,6 +79,11 @@ process.TFileService = cms.Service("TFileService",
 #******************************************************************************************
 #   Filter & Producer Modules
 #******************************************************************************************
+
+## Filter for correct decay process
+process.load("ZmumuAnalysis.Configuration.filters.GeneratorZmumuFilter_cff")
+
+
 
 ## filter trigger
 process.load("ZmumuAnalysis.Configuration.filters.TriggerFilter_cff")
@@ -219,6 +236,9 @@ process.MetAnalyzerSC9 = process.MetAnalyzer9.clone()
 
 process.oppositeChargeAnalysis = cms.Path(
     process.EventCounter0 
+    
+#    *process.GeneratorZmumuFilter
+#    *process.GeneratorZtautauFilter
     
     *process.buildVertexCollections
     *process.vertexSelection
