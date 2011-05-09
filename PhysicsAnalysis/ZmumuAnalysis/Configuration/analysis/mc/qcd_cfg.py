@@ -18,7 +18,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B2_Nov04ReReco_cff")
 
 # QCD
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.QCD_MuEnrichedPt15_pythia_F10_cff")
+process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.QCD_MuEnrichedPt15_pythia_F10_cff")
 # SingleTop
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.TToBLNu_madgraph_F10_cff")
 # TTbar
@@ -36,7 +36,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToTauTau_M10To20_pythia_F10_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToTauTau_M20_pythia_F10_cff")
 # To use for Ztautau
-process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYJetsToLL_M50_D6T_madgraph_F10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYJetsToLL_M50_D6T_madgraph_F10_cff")
 # WW
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WWTo2L2Nu_pythia_F10_cff")
 # WZ
@@ -71,18 +71,13 @@ process.GlobalTag.globaltag = cms.string('START38_V13::All')
 
 ## register TFileService
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string(os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/mc/ztautau.root'),
+    fileName = cms.string(os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/mc/qcd.root'),
     closeFileFast = cms.untracked.bool(True)
 )
 
 #******************************************************************************************
 #   Filter & Producer Modules
 #******************************************************************************************
-
-## Filter for correct decay process
-process.load("ZmumuAnalysis.Configuration.filters.GeneratorZmumuFilter_cff")
-
-
 
 ## filter trigger
 process.load("ZmumuAnalysis.Configuration.filters.TriggerFilter_cff")
@@ -235,9 +230,6 @@ process.MetAnalyzerSC9 = process.MetAnalyzer9.clone()
 
 process.oppositeChargeAnalysis = cms.Path(
     process.EventCounter0 
-    
-#    *process.GeneratorZmumuFilter
-    *process.GeneratorZtautauFilter
     
     *process.buildVertexCollections
     *process.vertexSelection
