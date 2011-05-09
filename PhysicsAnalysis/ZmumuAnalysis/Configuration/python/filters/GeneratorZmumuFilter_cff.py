@@ -3,6 +3,21 @@ import FWCore.ParameterSet.Config as cms
 import ZmumuAnalysis.Filter.GeneratorZmumuFilter_cfi
 
 
+
+
+GeneratorZmumuFilter = ZmumuAnalysis.Filter.GeneratorZmumuFilter_cfi.GeneratorZmumuFilter.clone(
+    zDecayMode = [13],
+)
+
+GeneratorZtautauFilter = ZmumuAnalysis.Filter.GeneratorZmumuFilter_cfi.GeneratorZmumuFilter.clone(
+    zDecayMode = [15],
+)
+
+
+
+
+
+
 GeneratorZmumuUdsFilter = ZmumuAnalysis.Filter.GeneratorZmumuFilter_cfi.GeneratorZmumuFilter.clone(
     zQuarkOrigin = [1,2,3],
 )
