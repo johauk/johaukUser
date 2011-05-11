@@ -11,8 +11,15 @@ TriggerFilterMu9 =  HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone(
 
 
 TriggerFilterMu9_11_15 =  HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone(
+    #TriggerResultsTag = cms.InputTag('TriggerResults','','HLT'),   # default
     HLTPaths = ["HLT_Mu9","HLT_Mu11","HLT_Mu15","HLT_Mu15_v*"],
     throw = False,   # do not throw exception on events where not all listed triggers are in...
+)
+
+
+
+TriggerFilterMu9_11_15_Redigi = TriggerFilterMu9_11_15.clone(
+    TriggerResultsTag = cms.InputTag('TriggerResults','','REDIGI38X'),
 )
 
 
