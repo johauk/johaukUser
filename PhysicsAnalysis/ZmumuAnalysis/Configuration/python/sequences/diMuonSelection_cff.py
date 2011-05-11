@@ -87,9 +87,7 @@ dimuons = cms.EDProducer("CandViewShallowCloneCombiner",
 selectedDimuons = cms.EDFilter("CandViewSelector",
 src = cms.InputTag("dimuons"),
     cut = cms.string(
-      'mass > 20. &'
-      '(daughter(0).masterClone.triggerObjectMatches.size > 0) || (daughter(1).masterClone.triggerObjectMatches.size > 0) &'
-      'charge = 0'
+      '(daughter(0).masterClone.triggerObjectMatches.size > 0) || (daughter(1).masterClone.triggerObjectMatches.size > 0)'
     ),
 )
 
