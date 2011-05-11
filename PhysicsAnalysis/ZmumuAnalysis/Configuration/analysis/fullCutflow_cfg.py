@@ -15,7 +15,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 # Data
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010A_Nov04ReReco_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B1_Nov04ReReco_cff")
-process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B2_Nov04ReReco_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B2_Nov04ReReco_cff")
 
 # QCD
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.QCD_MuEnrichedPt15_pythia_F10_cff")
@@ -43,13 +43,13 @@ process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WZTo3LNu_pythia_F10_cff")
 # ZZ
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.ZZToAnything_pythia_F10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
+process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 
 
 
 ## define maximal number of events to loop over
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10001)
+    input = cms.untracked.int32(1001)
 )
 
 
@@ -64,7 +64,7 @@ process.options = cms.untracked.PSet(
 ## needed for access to trigger menu
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 # data
-process.GlobalTag.globaltag = cms.string('GR_R_38X_V13::All')
+process.GlobalTag.globaltag = cms.string('FT_R_311_V4A::All')
 # mc
 #process.GlobalTag.globaltag = cms.string('START38_V13::All')
 
