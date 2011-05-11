@@ -321,8 +321,8 @@ void HistogramTools::SetDefaultStyle()
   stackColors[7] = new TColor(1007, 0.50, 0.00, 0.50,"bgW"  );
   stackColors[8] = new TColor(1008, 1.00, 0.00, 1.00,"bgWW" );
   stackColors[9] = new TColor(1009, 0.50, 0.00, 1.00,"bgWZ" );
-  stackColors[10] = new TColor(1010, 0.00, 0.00, 0.50,"bgZZ" );
-  stackColors[11] = new TColor(1011, 1.00, 0.00, 0.00,"bgQCD");
+  stackColors[10] = new TColor(1010, 1.00, 0.00, 0.00,"bgZZ" );
+  stackColors[11] = new TColor(1011, 0.00, 0.00, 0.50,"bgQCD");
     
   return;    
 }
@@ -418,13 +418,12 @@ void HistogramTools::FillLegend(TLegend* leg, TH1F* hist[], Option_t* opt)
   if(hist[2]  && hist[2]->GetEntries()>0)  leg->AddEntry(hist[2],  "ZZ", opt);
   if(hist[3]  && hist[3]->GetEntries()>0)  leg->AddEntry(hist[3],  "WZ", opt);
   if(hist[4]  && hist[4]->GetEntries()>0)  leg->AddEntry(hist[4],  "WW", opt);
-  if(hist[5]  && hist[5]->GetEntries()>0)  leg->AddEntry(hist[5],  "W #rightarrow #mu#nu", opt);
-  if(hist[6]  && hist[6]->GetEntries()>0)  leg->AddEntry(hist[6],  "Z #rightarrow #tau#tau", opt);
-  if(hist[7]  && hist[7]->GetEntries()>0)  leg->AddEntry(hist[7],  "t (t channel)", opt);
-  if(hist[8]  && hist[8]->GetEntries()>0)  leg->AddEntry(hist[8],  "t (tW channel)", opt);
-  if(hist[9]  && hist[9]->GetEntries()>0)  leg->AddEntry(hist[9],  "t (s channel)", opt);
-  if(hist[10] && hist[10]->GetEntries()>0) leg->AddEntry(hist[10], "t#bar{t}", opt);
-  if(hist[11] && hist[11]->GetEntries()>0) leg->AddEntry(hist[11], "QCD", opt);
+  if(hist[5]  && hist[5]->GetEntries()>0)  leg->AddEntry(hist[5],  "Z #rightarrow #tau#tau", opt);
+  if(hist[6]  && hist[6]->GetEntries()>0)  leg->AddEntry(hist[6],  "W #rightarrow #mu#nu", opt);
+  if(hist[7]  && hist[7]->GetEntries()>0)  leg->AddEntry(hist[7],  "W #rightarrow #tau#nu", opt);
+  if(hist[8]  && hist[8]->GetEntries()>0)  leg->AddEntry(hist[8],  "singleTop", opt);
+  if(hist[9]  && hist[9]->GetEntries()>0)  leg->AddEntry(hist[9],  "t#bar{t}", opt);
+  if(hist[10] && hist[10]->GetEntries()>0) leg->AddEntry(hist[10], "QCD", opt);
   
   return;
 }
@@ -447,7 +446,7 @@ void HistogramTools::SetPlotFilling(TH1F* hist[], size_t n)
 {
   if(hist[0]){
     hist[0]->SetLineWidth( 2);
-    hist[0]->SetLineColor(14);
+    //hist[0]->SetLineColor(14);
   }
   for(size_t i=1; i<n; ++i){
     if(!hist[i]) continue;
@@ -462,7 +461,7 @@ void HistogramTools::SetPlotLines(TH1F* hist[], size_t n)
 {
   if(hist[0]){
     hist[0]->SetLineWidth( 2);
-    hist[0]->SetLineColor(14);
+    //hist[0]->SetLineColor(14);
   }
   for(size_t i=1; i<n; ++i){
     if(!hist[i]) continue;
@@ -485,17 +484,16 @@ void HistogramTools::SetWeights(TH1F* hist[], Double_t dataLumi, size_t n)
     // eventweights
     switch(i){
       //case  0 : if(hist[i]) hist[i]->Scale(1. ); break;    
-      case  1 : nEvents = 2051268; crossSection = 1666.; filterEfficiency = 1.; break;
-      case  2 : nEvents = 145000; crossSection = 5.9; filterEfficiency = 1.; break;  
-      case  3 : nEvents = 118120; crossSection = 18.2; filterEfficiency = 1.; break;     
-      case  4 : nEvents = 122980; crossSection = 43.; filterEfficiency = 1.; break;      
-      case  5 : nEvents = 2047693; crossSection = 10438.; filterEfficiency = 1.; break;      
-      case  6 : nEvents = 2160000; crossSection = 1666.; filterEfficiency = 1.; break;      
-      case  7 : nEvents = 528593; crossSection = 64.6; filterEfficiency = 1.; break;      
-      case  8 : nEvents = 466437; crossSection = 10.6; filterEfficiency = 1.; break;       
-      case  9 : nEvents = 412055; crossSection = 4.21; filterEfficiency = 1.; break; 
-      case 10 : nEvents = 632010; crossSection = 165.; filterEfficiency = 1.; break;       
-      case 11 : nEvents = 4377187; crossSection = 296900.; filterEfficiency = 0.2864; break;  // real values: crossSection*1000, filterEfficiency/1000
+      case  1 : nEvents = 2604559.; crossSection = 3048.; filterEfficiency = 1.; break;
+      case  2 : nEvents = 110000.; crossSection = 7.4; filterEfficiency = 1.; break;  
+      case  3 : nEvents = 110000.; crossSection = 0.61; filterEfficiency = 1.; break;     
+      case  4 : nEvents = 110000.; crossSection = 4.51; filterEfficiency = 1.; break;      
+      case  5 : nEvents = 2543383.; crossSection = 3048.; filterEfficiency = 1.; break;      
+      case  6 : nEvents = 5323040.; crossSection = 10438.; filterEfficiency = 1.; break;      
+      case  7 : nEvents = 5221750.; crossSection = 10438.; filterEfficiency = 1.; break;      
+      case  8 : nEvents = 494961.; crossSection = 10.6; filterEfficiency = 1.; break;       
+      case  9 : nEvents = 1306182.; crossSection = 157.5; filterEfficiency = 1.; break; 
+      case 10 : nEvents = 29504866.; crossSection = 296600.; filterEfficiency = 0.2864; break;  // real values: crossSection*1000, filterEfficiency/1000
       default: continue;      
     }
     if(i>=1 && i<n && hist[i]){

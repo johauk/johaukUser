@@ -130,7 +130,10 @@ process.EventCounter0 = process.EventCounter.clone()
 
 ## trigger analyzer
 process.load("ZmumuAnalysis.Analyzer.TriggerAnalyzer_cfi")
-process.TriggerAnalyzer1 =  process.TriggerAnalyzer.clone()
+process.TriggerAnalyzer1 =  process.TriggerAnalyzer.clone(
+    #triggerResults = cms.InputTag('TriggerResults','','HLT'),
+    #triggerResults = cms.InputTag('TriggerResults','','REDIGI38X'),
+)
 
 
 
@@ -224,6 +227,23 @@ process.MetAnalyzer9 = process.MetAnalyzer.clone(
 process.MetAnalyzerSC9 = process.MetAnalyzer9.clone()
 
 
+
+
+#******************************************************************************************
+#   Analysis Path
+#******************************************************************************************
+
+
+# Additional statements for use with trigger REDIGI
+
+TRIG_RESULT = "HLT"
+#TRIG_RESULT = "REDIGI38X"
+
+process.TriggerAnalyzer1.triggerResults = cms.InputTag('TriggerResults','',TRIG_RESULT)
+process.triggerFilter1.TriggerResultsTag = cms.InputTag('TriggerResults','',TRIG_RESULT)
+process.patTrigger.processName = TRIG_RESULT
+process.patTrigger.triggerResults = cms.InputTag("TriggerResults::" + TRIG_RESULT)
+process.patTrigger.triggerEvent = cms.InputTag("hltTriggerSummaryAOD::" + TRIG_RESULT)
 
 
 

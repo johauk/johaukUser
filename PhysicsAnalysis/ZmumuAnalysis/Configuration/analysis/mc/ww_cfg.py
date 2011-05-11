@@ -79,6 +79,11 @@ process.TFileService = cms.Service("TFileService",
 #   Filter & Producer Modules
 #******************************************************************************************
 
+## Filter for correct decay process
+process.load("ZmumuAnalysis.Configuration.filters.GeneratorZmumuFilter_cff")
+
+
+
 ## filter trigger
 process.load("ZmumuAnalysis.Configuration.filters.TriggerFilter_cff")
 #process.triggerFilter1 = process.TriggerFilterMu9.clone()
@@ -125,7 +130,10 @@ process.EventCounter0 = process.EventCounter.clone()
 
 ## trigger analyzer
 process.load("ZmumuAnalysis.Analyzer.TriggerAnalyzer_cfi")
-process.TriggerAnalyzer1 =  process.TriggerAnalyzer.clone()
+process.TriggerAnalyzer1 =  process.TriggerAnalyzer.clone(
+    #triggerResults = cms.InputTag('TriggerResults','','HLT'),
+    #triggerResults = cms.InputTag('TriggerResults','','REDIGI38X'),
+)
 
 
 
@@ -221,6 +229,23 @@ process.MetAnalyzerSC9 = process.MetAnalyzer9.clone()
 
 
 
+#******************************************************************************************
+#   Analysis Path
+#******************************************************************************************
+
+
+# Additional statements for use with trigger REDIGI
+
+TRIG_RESULT = "HLT"
+#TRIG_RESULT = "REDIGI38X"
+
+process.TriggerAnalyzer1.triggerResults = cms.InputTag('TriggerResults','',TRIG_RESULT)
+process.triggerFilter1.TriggerResultsTag = cms.InputTag('TriggerResults','',TRIG_RESULT)
+process.patTrigger.processName = TRIG_RESULT
+process.patTrigger.triggerResults = cms.InputTag("TriggerResults::" + TRIG_RESULT)
+process.patTrigger.triggerEvent = cms.InputTag("hltTriggerSummaryAOD::" + TRIG_RESULT)
+
+
 
 #******************************************************************************************
 #   Analysis Path
@@ -230,6 +255,9 @@ process.MetAnalyzerSC9 = process.MetAnalyzer9.clone()
 
 process.oppositeChargeAnalysis = cms.Path(
     process.EventCounter0 
+    
+#    *process.GeneratorZmumuFilter
+#    *process.GeneratorZtautauFilter
     
     *process.buildVertexCollections
     *process.vertexSelection
