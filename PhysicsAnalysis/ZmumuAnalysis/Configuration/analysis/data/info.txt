@@ -1,0 +1,60 @@
+## Submit Jobs
+
+# DATA
+
+nafJobSplitter.pl 30 run2010A_Nov04ReReco_cfg.py
+nafJobSplitter.pl 10 run2010B_Nov04ReReco_1_cfg.py
+nafJobSplitter.pl 30 run2010B_Nov04ReReco_2_cfg.py
+
+# MC
+
+nafJobSplitter.pl 50 qcd_cfg.py
+nafJobSplitter.pl 2 singleTop_cfg.py
+nafJobSplitter.pl 5 ttbar_cfg.py
+nafJobSplitter.pl 20 wmunu_cfg.py
+nafJobSplitter.pl 20 wtaunu_cfg.py
+nafJobSplitter.pl 2 ww_cfg.py
+nafJobSplitter.pl 2 wz_cfg.py
+nafJobSplitter.pl 10 zmumu_cfg.py
+nafJobSplitter.pl 10 ztautau_cfg.py
+nafJobSplitter.pl 2 zz_cfg.py
+
+
+
+## Check status of jobs
+
+# DATA
+
+nafJobSplitter.pl check data/naf_run2010A_Nov04ReReco_cfg
+nafJobSplitter.pl check data/naf_run2010B_Nov04ReReco_1_cfg
+nafJobSplitter.pl check data/naf_run2010B_Nov04ReReco_2_cfg
+
+
+# MC
+
+nafJobSplitter.pl check mc/naf_qcd_cfg
+nafJobSplitter.pl check mc/naf_singleTop_cfg
+nafJobSplitter.pl check mc/naf_ttbar_cfg
+nafJobSplitter.pl check mc/naf_wmunu_cfg
+nafJobSplitter.pl check mc/naf_wtaunu_cfg
+nafJobSplitter.pl check mc/naf_ww_cfg
+nafJobSplitter.pl check mc/naf_wz_cfg
+nafJobSplitter.pl check mc/naf_zmumu_cfg
+nafJobSplitter.pl check mc/naf_ztautau_cfg
+nafJobSplitter.pl check mc/naf_zz_cfg
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
