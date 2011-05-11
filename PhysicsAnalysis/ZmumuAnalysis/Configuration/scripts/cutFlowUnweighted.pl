@@ -14,51 +14,58 @@
 #    to appear in the table
 
 # integrated luminosity of data in /pb
-my $lumi = 36.1450;
+my $lumi = 35.9;
 
 # input files (last file is for data)
-my @files = ("trigReport_ttbarmumu.txt",
-             "trigReport_ttbartaumu.txt",
-	     "trigReport_ttbarbg.txt",
-	     "trigReport_singletop.txt",
-	     "trigReport_ww.txt",
-	     "trigReport_wz.txt",
-	     "trigReport_zz.txt",
-	     "trigReport_wmu.txt",
-	     "trigReport_wtau.txt",
-	     "trigReport_dytautau.txt",
-	     "trigReport_ztautau_pyt.txt",
-	     "trigReport_ztautau_mad.txt",
-	     "trigReport_dymumu.txt",
-	     "trigReport_zmumu_pyt.txt",
-	     "trigReport_zmumu_mad.txt",
-	     "trigReport_qcd.txt",
-	     #"trigReport_data.txt"
-	     "trigReport_36pb.txt"
+my @files = ("mc/qcd.txt",
+             "mc/singleTop.txt",
+	     "mc/ttbar.txt",
+	     "mc/wmunu.txt",
+	     "mc/wtaunu.txt",
+	     "mc/ww.txt",
+	     "mc/wz.txt",
+	     "mc/zz.txt",
+	     "mc/ztautau.txt",
+	     "mc/zmumu.txt",
+	     "data/allData.txt"
+	     #"36pb.txt"
 	    );
 
 # cross section over number of events	    
-my @weights = (1.,#$lumi*157.5/1306182.,
-               1.,#$lumi*157.5/1306182.,
-	       1.,#$lumi*157.5/1306182.,	   
-	       1.,#$lumi*10.6/494961.,	   
-	       1.,#$lumi*4.51/110000.,
-	       1.,#$lumi*0.61/110000.,
-	       1.,#$lumi*7.4/110000.,
-	       1.,#$lumi*10438./5323040.,
-	       1.,#$lumi*10438./5221750.,
-	       1.,#$lumi*3457./2142450.,
-	       1.,#$lumi*1666./2007446.,
-	       1.,#$lumi*3048./2543383.,
-	       1.,#$lumi*3457./2227840.,
-	       1.,#$lumi*1666./2289913.,
-	       1.,#$lumi*3048./2604559.,
-	       1.#$lumi*296600.*0.2855/29504866.
+my @weights = (1.,
+               1.,
+	       1.,
+	       1.,
+	       1.,
+	       1.,
+	       1.,
+	       1.,
+	       1.,
+	       1.
 	      ); #for data no weight is needed so 
 	         #weight array is 1 shorter then files array	    
 
 # modules which you want to appear in cutflow
-my @modules = ("analyzeIsolatedMuonPairSelectionRcStep4"
+my @modules = ("EventCounter0",
+               "oneGoodPVSelection",
+	       "triggerFilter1",
+	       "oneTightMuonSelection",
+	       "tightMuonSelection",
+	       "tightHltMuonSelection",
+	       "selectedDimuonSelection",
+	       "cleanDimuonSelection",
+	       "goodDimuonSelection",
+	       "isolatedDimuonSelection",
+	       "finalDimuonSelection",
+	       "oneCleanPatJetSelection",
+	       "oneCleanJetSelection",
+	       "oneGoodJetSelection",
+	       "oneFinalJetSelection",
+	       "oneBSsvHeMJetSelection",
+	       "goodMetSelection",
+	       "twoFinalJetSelection",
+	       "oneBSsvHpTJetSelection",
+	       "twoBSsvHpTJetSelection"
               );
 	      	      	    
 # counter for summed stats	     
