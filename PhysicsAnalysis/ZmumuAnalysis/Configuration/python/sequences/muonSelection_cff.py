@@ -31,12 +31,12 @@ from ZmumuAnalysis.Producer.TriggerMatchedMuonProducer_cfi import *
 selectedPatMuonsTriggerMatchHltMuons = cms.EDProducer("PATTriggerMatcherDRDPtLessByR",
     src     = cms.InputTag("selectedPatMuons"),
     matched = cms.InputTag("patTrigger"),
-    andOr          = cms.bool( False ),
+    andOr          = cms.bool( True ),   # To require only one of pathNames (FALSE can lead to unwanted behaviour if more than one exists)
     filterIdsEnum  = cms.vstring('TriggerMuon'), # 'TriggerMuon' is the enum from trigger::TriggerObjectType for HLT muons
     filterIds      = cms.vint32(0),
     filterLabels   = cms.vstring('*'),
     #pathNames      = cms.vstring('HLT_Mu9'),
-    pathNames      = cms.vstring('HLT_Mu9','HLT_Mu11','HLT_Mu15_v*', 'HLT_Mu15'),
+    pathNames      = cms.vstring('HLT_Mu9','HLT_Mu11','HLT_Mu15_v*'),
     collectionTags = cms.vstring('*'),
     maxDPtRel = cms.double(0.5),
     maxDeltaR = cms.double(0.3),
