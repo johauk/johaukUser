@@ -15,7 +15,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 # Data
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010A_Nov04ReReco_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B1_Nov04ReReco_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B2_Nov04ReReco_cff")
+process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B2_Nov04ReReco_cff")
 
 # QCD
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.QCD_MuEnrichedPt15_pythia_F10_cff")
@@ -23,9 +23,9 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.TToBLNu_madgraph_F10_cff")
 # TTbar
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.TTJets_D6T_madgraph_F10_cff")
-# Wmu
+# Wmunu
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WToMuNu_pythia_F10_cff")
-# Wtau
+# Wtaunu
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WToTauNu_pythia_F10_cff")
 # Zmumu (Drell-Yan low masses) not needed here
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToMuMu_M10To20_pythia_F10_cff")
@@ -43,13 +43,13 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WZTo3LNu_pythia_F10_cff")
 # ZZ
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.ZZToAnything_pythia_F10_cff")
-process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 
 
 
 ## define maximal number of events to loop over
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1001)
+    input = cms.untracked.int32(10001)
 )
 
 
@@ -64,9 +64,9 @@ process.options = cms.untracked.PSet(
 ## needed for access to trigger menu
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 # data
-#process.GlobalTag.globaltag = cms.string('GR_R_38X_V13::All')
+process.GlobalTag.globaltag = cms.string('GR_R_38X_V13::All')
 # mc
-process.GlobalTag.globaltag = cms.string('START38_V13::All')
+#process.GlobalTag.globaltag = cms.string('START38_V13::All')
 
 
 
@@ -131,7 +131,10 @@ process.EventCounter0 = process.EventCounter.clone()
 
 ## trigger analyzer
 process.load("ZmumuAnalysis.Analyzer.TriggerAnalyzer_cfi")
-process.TriggerAnalyzer1 =  process.TriggerAnalyzer.clone()
+process.TriggerAnalyzer1 =  process.TriggerAnalyzer.clone(
+    #triggerResults = cms.InputTag('TriggerResults','','HLT'),
+    #triggerResults = cms.InputTag('TriggerResults','','REDIGI38X'),
+)
 
 
 
@@ -225,6 +228,23 @@ process.MetAnalyzer9 = process.MetAnalyzer.clone(
 process.MetAnalyzerSC9 = process.MetAnalyzer9.clone()
 
 
+
+
+#******************************************************************************************
+#   Analysis Path
+#******************************************************************************************
+
+
+# Additional statements for use with trigger REDIGI
+
+TRIG_RESULT = "HLT"
+#TRIG_RESULT = "REDIGI38X"
+
+process.TriggerAnalyzer1.triggerResults = cms.InputTag('TriggerResults','',TRIG_RESULT)
+process.triggerFilter1.TriggerResultsTag = cms.InputTag('TriggerResults','',TRIG_RESULT)
+process.patTrigger.processName = TRIG_RESULT
+process.patTrigger.triggerResults = cms.InputTag("TriggerResults::" + TRIG_RESULT)
+process.patTrigger.triggerEvent = cms.InputTag("hltTriggerSummaryAOD::" + TRIG_RESULT)
 
 
 
