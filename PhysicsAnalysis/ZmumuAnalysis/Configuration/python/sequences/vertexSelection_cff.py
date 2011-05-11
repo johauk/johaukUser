@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 ## Vertex producer
-from RecoVertex.PrimaryVertexProducer.OfflinePrimaryVertices_cfi import *
+#from RecoVertex.PrimaryVertexProducer.OfflinePrimaryVertices_cfi import *
 
 
 

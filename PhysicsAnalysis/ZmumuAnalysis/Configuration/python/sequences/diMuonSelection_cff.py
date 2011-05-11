@@ -4,9 +4,6 @@ import FWCore.ParameterSet.Config as cms
 from ElectroWeakAnalysis.Skimming.dimuons_cfi import *
 ## di-muon candidate count filter
 from ElectroWeakAnalysis.Skimming.dimuonsFilter_cfi import *
-## isolation selection
-# Do not use anymore this IsoDeposit based parameters, use default PAT values
-#from ElectroWeakAnalysis.ZMuMu.zSelection_cfi import *
 
 
 
@@ -38,7 +35,6 @@ tightHltGlobalDimuons = cms.EDProducer("CandViewShallowCloneCombiner",
 #tightHltGlobalDimuons = cms.EDProducer("CandViewCombiner",
     checkCharge = cms.bool(False),
     cut = cms.string(''),
-    #decay = cms.string('tightHltMuonsTriggerMatch@+ tightHltMuonsTriggerMatch@-'),   # for OLD version of trigger matching
     decay = cms.string('tightHltMuons@+ tightHltMuons@-'),   # for NEW version of trigger matching
 )
 
@@ -46,7 +42,6 @@ tightHltGlobalDimuons = cms.EDProducer("CandViewShallowCloneCombiner",
 
 # Collection of interest, but with ambiguities
 looseTightHltGlobalDimuons = tightHltGlobalDimuons.clone(
-    #decay = 'tightHltMuonsTriggerMatch@+ looseMuonsTriggerMatch@-',   # for OLD version of trigger matching
     decay = 'tightHltMuons@+ looseMuons@-',   # for NEW version of trigger matching
 )
 

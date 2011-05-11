@@ -58,7 +58,6 @@ cleanJets = ZmumuAnalysis.Producer.JetZOverlapCleaner_cfi.JetZOverlapCleaner.clo
 )
 
 # take care to check for isolation
-
 #cleanPatJets.checkOverlaps.muons.src  = 'looseMuons'
 #cleanPatJets.checkOverlaps.muons.preselection = 'trackIso < 3.'
 #cleanPatJets.checkOverlaps.muons.deltaR  = 0.4

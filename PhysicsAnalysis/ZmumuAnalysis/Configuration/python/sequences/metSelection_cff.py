@@ -1,9 +1,9 @@
 import FWCore.ParameterSet.Config as cms
 
-## met selector -- not anymore in release CMSSW_3_8_4...
-#from PhysicsTools.PatAlgos.selectionLayer1.metSelector_cfi import *
-## met count filter -- not yet in release CMSSW_3_8_4
-#from PhysicsTools.PatAlgos.selectionLayer1.metCountFilter_cfi import *
+## met selector
+from PhysicsTools.PatAlgos.selectionLayer1.metSelector_cfi import *
+## met count filter
+from PhysicsTools.PatAlgos.selectionLayer1.metCountFilter_cfi import *
 
 
 
@@ -16,14 +16,14 @@ import FWCore.ParameterSet.Config as cms
 
 
 ## good MET selection
-#goodMet = selectedPatMET.clone(
-#    src = 'patMETsPF', 
-#    cut = 'pt < 40.',
-#)
-goodMet = cms.EDFilter("PATMETSelector",
-    src = cms.InputTag("patMETsPF"),
-    cut = cms.string("pt<40."),
+goodMet = selectedPatMET.clone(
+    src = 'patMETsPF', 
+    cut = 'pt<40.',
 )
+#goodMet = cms.EDFilter("PATMETSelector",
+#    src = cms.InputTag("patMETsPF"),
+#    cut = cms.string("pt<40."),
+#)
 
 
 
@@ -31,12 +31,15 @@ goodMet = cms.EDFilter("PATMETSelector",
 ## Count Filters
 ##
 
-#goodMetSelection = countPatMet.clone(src = 'goodMet', minNumber = 1)
-goodMetSelection = cms.EDFilter("PATCandViewCountFilter",
-    src = cms.InputTag('goodMet'),
-    minNumber = cms.uint32(1),
-    maxNumber = cms.uint32(9999),
+goodMetSelection = countPatMET.clone(
+    src = 'goodMet',
+    minNumber = 1,
 )
+#goodMetSelection = cms.EDFilter("PATCandViewCountFilter",
+#    src = cms.InputTag('goodMet'),
+#    minNumber = cms.uint32(1),
+#    maxNumber = cms.uint32(9999),
+#)
 
 
 
