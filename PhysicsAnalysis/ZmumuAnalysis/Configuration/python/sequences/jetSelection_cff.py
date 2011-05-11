@@ -104,7 +104,7 @@ bTcHeMJets = selectedPatJets.clone(
 ## b-tagging TrackCountingHighPurity with Tight Working point
 bTcHpTJets = selectedPatJets.clone(
     src = 'finalJets',
-    cut = 'bDiscriminator("trackCountingHighEffBJetTags") > 3.41',
+    cut = 'bDiscriminator("trackCountingHighPurBJetTags") > 3.41',
 )
 ## OR b-tagging SecondaryVertexHighEfficiency with Medium Working point
 bSsvHeMJets = selectedPatJets.clone(
@@ -114,7 +114,7 @@ bSsvHeMJets = selectedPatJets.clone(
 ## OR b-tagging SecondaryVertexHighEfficiency with Tight(?) Working point (not yet clear set defined)
 bSsvHpTJets = selectedPatJets.clone(
     src = 'finalJets',
-    cut = 'bDiscriminator("simpleSecondaryVertexHighEffBJetTags") > 2.0',
+    cut = 'bDiscriminator("simpleSecondaryVertexHighPurBJetTags") > 2.0',
 )
 
 
