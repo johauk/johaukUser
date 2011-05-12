@@ -60,14 +60,14 @@ TCanvas* canvas1;
 
 TString* inpath = new TString("$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/workingArea/iter0/");
 
-TFile* file1 = TFile::Open("$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/workingArea/pGun/iter0/allData_resultsFile.root");
+TFile* file1 = TFile::Open("$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/Design/baseline/allData_resultsFile.root");
 TFile* file2 = TFile::Open(inpath->Copy().Append("allData_resultsFile.root"));
 
 TH1 *hist1, *hist2;
 
 TLegend* legend1;
 
-TString legendEntry1 = "TOBmisal20", legendEntry2 = "data";
+TString legendEntry1 = "MCideal", legendEntry2 = "data";
 Double_t yMax1, yMax2;
 Double_t yMin1, yMin2;
 TString outputDirectory = "plots/";
@@ -101,7 +101,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_1/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_1/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -187,7 +187,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_2/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_2/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -273,7 +273,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_3/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_3/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -355,7 +355,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_4/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_4/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -437,7 +437,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_5/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_5/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -519,7 +519,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_6/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_6/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -601,7 +601,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_7/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_7/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -683,7 +683,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_8/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_8/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -765,7 +765,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_9/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_9/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -847,7 +847,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_10/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_10/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -929,7 +929,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_11/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_11/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -1011,7 +1011,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_12/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_12/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -1093,7 +1093,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_13/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_13/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -1175,7 +1175,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_14/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_14/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -1257,7 +1257,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_15/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_15/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -1339,7 +1339,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_16/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_16/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -1421,7 +1421,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_17/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_17/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -1503,7 +1503,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_18/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_18/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -1585,7 +1585,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_19/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_19/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -1667,7 +1667,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_20/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_20/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -1749,7 +1749,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_21/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_21/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -1831,7 +1831,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_22/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_22/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -1913,7 +1913,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_23/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_23/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -1995,7 +1995,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_24/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_24/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -2077,7 +2077,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_25/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_25/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -2159,7 +2159,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_26/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_26/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -2241,7 +2241,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_27/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_27/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
@@ -2323,7 +2323,7 @@ baseline->SetLineWidth(2);
     canvas1->cd();
   //canvas1->SetLogy();
   
-  TString histName("Sector_28/h_residualWidthX2");
+  TString histName("ApeEstimatorSummary/Sector_28/h_residualWidthX2");
     file1->GetObject(histName + ";1", hist1);
     file2->GetObject(histName + ";1", hist2);
 
