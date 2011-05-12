@@ -35,7 +35,7 @@ process.load("Configuration.StandardSequences.Geometry_cff")
 # so it is clear that when choosing special regions in e.g. globalPhi, Modules of the same Rod are contained in the same region
 # --- this is now improved, it is always taken from ideal geometry independent of the GlobalTag
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-process.GlobalTag.globaltag = 'DESIGN_3X_V26::All'
+process.GlobalTag.globaltag = 'DESIGN311_V2::All'
 
 
 ## ANALYZER
