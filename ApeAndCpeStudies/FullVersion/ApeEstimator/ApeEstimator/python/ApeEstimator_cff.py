@@ -22,7 +22,7 @@ ApeEstimator = ApeEstimatorTemplate.clone(
 ApeEstimator.HitSelector.width = [2,3]
 ApeEstimator.HitSelector.widthDiff = [-3.,0.1]
 #ApeEstimator.HitSelector.edgeStrips = [2,800]   # exclude first (and so also last) strip
-ApeEstimator.HitSelector.sOverN = [18.,20000.]
+ApeEstimator.HitSelector.sOverN = [20.,70.]
 
 #ApeEstimator.HitSelector.phiSensX = [-1.0472,1.0472]  # [-60,60] degree
 #ApeEstimator.HitSelector.phiSensY = [-1.0472,1.0472]  # [-60,60] degree
