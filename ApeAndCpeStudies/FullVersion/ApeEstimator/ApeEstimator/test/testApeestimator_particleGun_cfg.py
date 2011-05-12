@@ -41,10 +41,6 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000 ## really show only ever
 process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(True),
     Rethrow = cms.untracked.vstring("ProductNotFound") # make this exception fatal
-    #, fileMode  =  cms.untracked.string('FULLMERGE') # any file order (default): caches all lumi/run products (memory!)
-    #, fileMode  =  cms.untracked.string('MERGE') # needs files sorted in run and within run in lumi sections (hard to achieve)
-    #, fileMode  =  cms.untracked.string('FULLLUMIMERGE') # needs files sorted in run, caches lumi
-    , fileMode  =  cms.untracked.string('NOMERGE') #  no ordering needed, but calls endRun/beginRun etc. at file boundaries
 )
 
 
@@ -53,9 +49,12 @@ process.options = cms.untracked.PSet(
 ## Input Files (Collisions '10, 7 TeV)
 ##
 ## --- Particle Gun ---
-process.load("ApeEstimator.ApeEstimator.samples.ParticleGunPion_mc_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunPion_mc_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunAntiPion_mc_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunBothPion_mc_cff")
+process.load("ApeEstimator.ApeEstimator.samples.ParticleGunMuon_mc_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunAntiMuon_mc_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunBothMuon_mc_cff")
 ## --- Monte Carlo ---
 ## --- Run XXX-YYY, End of Year Reprocessing ---
 #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMinBias_Run2010A_Dec22ReReco_cff")

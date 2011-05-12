@@ -7,7 +7,8 @@ declare -i nIter=11
 
 
 ## identification name of dataset --- This is the only thing to change for different datasets
-DATASETNAME1="antiPion"
+#DATASETNAME1="antiPion"
+DATASETNAME1="antiMuon"
 ## input template file to configure
 TEMPLATEFILE="cfgTemplate_cfg.py"
 ## composition of output file name for configured files
@@ -18,7 +19,8 @@ OUTPUTSUFFIX="_cfg.py"
 
 
 ## name of input files
-INPUTBASE1="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk\/mc\/ParticleGunAntiPion\/RECO\/reco"
+#INPUTBASE1="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk\/mc\/ParticleGunAntiPion\/RECO\/reco"
+INPUTBASE1="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk\/mc\/ParticleGunAntiMuon\/RECO\/reco"
 
 
 
@@ -133,14 +135,16 @@ rm $helpFileB2
 
 
 ## identification name of dataset --- This is the only thing to change for different datasets
-DATASETNAME2="pion"
+#DATASETNAME2="pion"
+DATASETNAME2="muon"
 ## composition of output file name for configured files
 OUTPUTBASE2="${OUTPUTDIR}${DATASETNAME2}_"
 
 
 
 ## name of input files
-INPUTBASE2="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk\/mc\/ParticleGunPion\/RECO\/reco"
+#INPUTBASE2="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk\/mc\/ParticleGunPion\/RECO\/reco"
+INPUTBASE2="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk\/mc\/ParticleGunMuon\/RECO\/reco"
 
 
 
