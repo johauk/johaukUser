@@ -87,9 +87,6 @@ process.load("ZmumuAnalysis.Configuration.filters.GeneratorZmumuFilter_cff")
 
 ## filter trigger
 process.load("ZmumuAnalysis.Configuration.filters.TriggerFilter_cff")
-#process.triggerFilter1 = process.TriggerFilterMu9.clone()
-#process.triggerFilter1 = process.TriggerFilterMu15.clone()
-process.triggerFilter1 = process.TriggerFilterMu9_11_15.clone()
 
 
 
@@ -241,7 +238,7 @@ TRIG_RESULT = "HLT"
 #TRIG_RESULT = "REDIGI38X"
 
 process.TriggerAnalyzer1.triggerResults = cms.InputTag('TriggerResults','',TRIG_RESULT)
-process.triggerFilter1.TriggerResultsTag = cms.InputTag('TriggerResults','',TRIG_RESULT)
+process.TriggerFilter.TriggerResultsTag = cms.InputTag('TriggerResults','',TRIG_RESULT)
 process.patTrigger.processName = TRIG_RESULT
 process.patTrigger.triggerResults = cms.InputTag("TriggerResults::" + TRIG_RESULT)
 process.patTrigger.triggerEvent = cms.InputTag("hltTriggerSummaryAOD::" + TRIG_RESULT)
@@ -264,7 +261,7 @@ process.oppositeChargeAnalysis = cms.Path(
     *process.vertexSelection
     
     *process.TriggerAnalyzer1
-    *process.triggerFilter1
+    *process.TriggerFilter
     
     *process.buildMuonCollections
     *process.MuonAnalyzer1
@@ -302,7 +299,7 @@ process.oppositeChargeAnalysis = cms.Path(
 
 
 #process.sameChargeAnalysis = cms.Path(
-#    process.triggerFilter1
+#    process.TriggerFilter
 #    
 #    *process.buildMuonCollections
 #    *process.muonSelection
