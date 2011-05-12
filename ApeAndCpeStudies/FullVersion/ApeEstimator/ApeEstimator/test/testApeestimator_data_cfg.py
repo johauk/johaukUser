@@ -100,11 +100,11 @@ process.source.duplicateCheckMode = cms.untracked.string("checkEachRealDataFile"
 ##
 process.load("ApeEstimator.ApeEstimator.TrackRefitter_38T_cff")
 ## --- Monte Carlo for Particle Gun ---
-#process.GlobalTag.globaltag = 'DESIGN_39_V7::All'
-#process.GlobalTag.globaltag = 'MC_39Y_V7::All'
-#process.GlobalTag.globaltag = 'START39_V8::All'
+#process.GlobalTag.globaltag = 'DESIGN311_V2::All'
+#process.GlobalTag.globaltag = 'MC_311_V2::All'
+#process.GlobalTag.globaltag = 'START311_V2::All'
 ## --- Run XXX-YYY, End of Jear Reprocessing ---
-process.GlobalTag.globaltag = 'FT_R_39X_V4A::All'
+process.GlobalTag.globaltag = 'FT_R_311_V4A::All'
 
 ## --- Further information (Monte Carlo and Data) ---
 process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
