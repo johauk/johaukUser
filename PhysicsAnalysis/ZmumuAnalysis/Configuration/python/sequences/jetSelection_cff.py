@@ -75,17 +75,29 @@ cleanJets = ZmumuAnalysis.Producer.JetZOverlapCleaner_cfi.JetZOverlapCleaner.clo
 
 
 ## good jet ID selection
-goodJets = selectedPatJets.clone(
-    src = 'cleanJets', 
-    # Definition of LOOSE PFjet id
-    cut = 'neutralHadronEnergyFraction < 0.99'
-	  '& neutralEmEnergyFraction < 0.99'
-	  '& nConstituents > 1'
-	  # For eta <2.4, additional requirements
-	  '& chargedHadronEnergyFraction > 0'
-	  '& chargedEmEnergyFraction < 0.99'
-	  '& chargedMultiplicity > 0',
+#goodJets = selectedPatJets.clone(
+#    src = 'cleanJets', 
+#    # Definition of LOOSE PFjet id
+#    # Selection needs to be done on uncorrected jets
+#    cut = 'correctedJet("Uncorrected").neutralHadronEnergyFraction < 0.99'
+#	  '& correctedJet("Uncorrected").neutralEmEnergyFraction < 0.99'
+#	  '& correctedJet("Uncorrected").nConstituents > 1'
+#	  # For eta <2.4, additional requirements
+#	  '& correctedJet("Uncorrected").chargedHadronEnergyFraction > 0'
+#	  '& correctedJet("Uncorrected").chargedEmEnergyFraction < 0.99'
+#	  '& correctedJet("Uncorrected").chargedMultiplicity > 0',
+#)
+
+from ZmumuAnalysis.Filter.JetIdFunctorFilter_cfi import *
+goodJets = goodIdJets.clone(
+    jets = 'cleanJets',
+    jetType = 'PF',
+    version = 'FIRSTDATA',
+    quality = 'LOOSE',
 )
+
+
+
 
 ## hard jet selection
 finalJets = selectedPatJets.clone(
@@ -158,8 +170,8 @@ buildJetCollections = cms.Sequence(
     *goodJets
     *finalJets
     
-    *bTcHeMJets
-    *bTcHpTJets
+    #*bTcHeMJets
+    #*bTcHpTJets
     *bSsvHeMJets
     *bSsvHpTJets
 )
@@ -180,14 +192,14 @@ oneJetSelection = cms.Sequence(
 
 
 twoJetSelection = cms.Sequence(
-    twoFinalJetSelection
     
-    *oneBSsvHpTJetSelection
+    oneBSsvHpTJetSelection*
+    twoFinalJetSelection*
     
-    #*twoBTcHeMJetSelection 
-    #*twoBTcHpTJetSelection 
-    #*twoBSsvHeMJetSelection
-    *twoBSsvHpTJetSelection
+    #twoBTcHeMJetSelection 
+    #twoBTcHpTJetSelection 
+    #twoBSsvHeMJetSelection
+    twoBSsvHpTJetSelection
 )
 
 

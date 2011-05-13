@@ -13,6 +13,9 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 ## Sources
 # Data
+process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.Run2011A_PromptReco_v1_May7_160404_163757_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.Run2011A_PromptReco_v2_May7_160404_163757_cff")
+
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010A_Nov04ReReco_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B1_Nov04ReReco_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B2_Nov04ReReco_cff")
@@ -43,7 +46,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WZTo3LNu_pythia_F10_cff")
 # ZZ
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.ZZToAnything_pythia_F10_cff")
-process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 
 
 
@@ -135,6 +138,17 @@ process.TriggerAnalyzer1 =  process.TriggerAnalyzer.clone(
 
 
 
+## vertex analyzer
+process.load("ZmumuAnalysis.Analyzer.VertexAnalyzer_cfi")
+process.VertexAnalyzer1 = process.VertexAnalyzer.clone(
+    #vertexSource = 'offlinePrimaryVertices',
+)
+process.VertexAnalyzer2 = process.VertexAnalyzer.clone(
+    vertexSource = 'goodPV',
+)
+
+
+
 ## muon analizer
 process.load("ZmumuAnalysis.Analyzer.MuonAnalyzer_cfi")
 process.MuonAnalyzer1 = process.MuonAnalyzer.clone(
@@ -197,6 +211,15 @@ process.DiMuonAnalyzerSC9 = process.DiMuonAnalyzer9.clone(
 
 ## jet analyzer
 process.load("ZmumuAnalysis.Analyzer.JetAnalyzer_cfi")
+process.JetAnalyzer7a = process.JetAnalyzer.clone(
+    jetSource = 'selectedPatJetsAK5PF',
+)
+process.JetAnalyzer7b = process.JetAnalyzer.clone(
+    jetSource = 'cleanPatJets',
+)
+process.JetAnalyzer7c = process.JetAnalyzer.clone(
+    jetSource = 'cleanJets',
+)
 process.JetAnalyzer7 = process.JetAnalyzer.clone(
     jetSource = 'goodJets',
 )
@@ -258,7 +281,9 @@ process.oppositeChargeAnalysis = cms.Path(
 #    *process.GeneratorZtautauFilter
     
     *process.buildVertexCollections
+    *process.VertexAnalyzer1
     *process.vertexSelection
+    *process.VertexAnalyzer2
     
     *process.TriggerAnalyzer1
     *process.TriggerFilter
@@ -277,6 +302,9 @@ process.oppositeChargeAnalysis = cms.Path(
     *process.DiMuonAnalyzer6
     
     *process.buildJetCollections
+    *process.JetAnalyzer7a
+    *process.JetAnalyzer7b
+    *process.JetAnalyzer7c
     *process.JetAnalyzer7
     *process.JetAnalyzer8
     *process.oneJetSelection
