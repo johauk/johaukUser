@@ -177,6 +177,37 @@ finalDimuonsSC = finalDimuons.clone(src = "isolatedDimuonsSC")
 
 
 
+# Primary vertices associated to finalDimuons
+finalPVs = BestZVertexCleaner.clone(
+    product = "vertex",
+    vertexSource = 'goodPV',
+    dimuonSource = 'finalDimuons',
+    deltaZMuMuMax = 0.1,
+    deltaZZVertexMax = 0.1,
+)
+
+
+
+# Choose best dimuon
+from ZmumuAnalysis.Producer.BestZSelector_cfi import BestZSelector
+bestDimuon = BestZSelector.clone(
+    dimuonSource = 'finalDimuons',
+    criterion = 'zMass',
+)
+
+
+
+# Associated primary vertex for bestDimuon
+bestPV = BestZVertexCleaner.clone(
+    product = "vertex",
+    vertexSource = 'goodPV',
+    dimuonSource = 'bestDimuon',
+    deltaZMuMuMax = 0.1,
+    deltaZZVertexMax = 0.1,
+)
+
+
+
 
 ##
 ## Count Filters
@@ -246,7 +277,11 @@ buildDimuonCollections = cms.Sequence(
     goodDimuons*
     isolatedDimuons*
     #atLeast1HltDimuons*
-    finalDimuons
+    finalDimuons*
+    
+    finalPVs*
+    bestDimuon*
+    bestPV
 )
 
 
