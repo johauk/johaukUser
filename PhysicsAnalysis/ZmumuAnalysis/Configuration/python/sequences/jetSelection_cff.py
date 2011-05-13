@@ -75,6 +75,7 @@ cleanJets = ZmumuAnalysis.Producer.JetZOverlapCleaner_cfi.JetZOverlapCleaner.clo
 
 
 ## good jet ID selection
+# Either do it by hand (then, for the UN-COREECTED jets!!!)
 #goodJets = selectedPatJets.clone(
 #    src = 'cleanJets', 
 #    # Definition of LOOSE PFjet id
@@ -88,14 +89,24 @@ cleanJets = ZmumuAnalysis.Producer.JetZOverlapCleaner_cfi.JetZOverlapCleaner.clo
 #	  '& correctedJet("Uncorrected").chargedMultiplicity > 0',
 #)
 
-from ZmumuAnalysis.Filter.JetIdFunctorFilter_cfi import *
-goodJets = goodIdJets.clone(
-    jets = 'cleanJets',
-    jetType = 'PF',
-    version = 'FIRSTDATA',
-    quality = 'LOOSE',
-)
+# Or use the JetIDSelectionFunctor
+#from ZmumuAnalysis.Producer.JetIdFunctorSelector_cfi import *
+#goodJets = JetIdFunctorSelector.clone(
+#    jetSource = 'cleanJets',
+#    jetType = 'PF',
+#    version = 'FIRSTDATA',
+#    quality = 'LOOSE',
+#)
 
+# Or use directly these simple selectors
+from PhysicsTools.SelectorUtils.pfJetIDSelector_cfi import pfJetIDSelector
+pfJetIDSelector.version = 'FIRSTDATA'
+pfJetIDSelector.quality = 'LOOSE'
+goodJets = cms.EDFilter("PFJetIDSelectionFunctorFilter",
+    filterParams = pfJetIDSelector.clone(),
+    src = cms.InputTag('cleanJets'),
+    filter = cms.bool(False)
+)
 
 
 
