@@ -20,7 +20,7 @@ import FWCore.ParameterSet.Config as cms
 #)
 
 
-goodPV = cms.EDFilter("VertexSelector",
+goodPVs = cms.EDFilter("VertexSelector",
     src = cms.InputTag('offlinePrimaryVertices'),
     cut = cms.string('ndof>4 &'
                      'abs(z)<24 &'
@@ -30,7 +30,7 @@ goodPV = cms.EDFilter("VertexSelector",
 )
 
 
-#goodPV = cms.EDFilter("PATPrimaryVertexCleaner",
+#goodPVs = cms.EDFilter("PATPrimaryVertexCleaner",
 #    src = cms.InputTag('offlinePrimaryVertices'),
 #    minMultiplicity = cms.uint32(4),
 #    minPtSum = ...
@@ -41,7 +41,7 @@ goodPV = cms.EDFilter("VertexSelector",
 
 
 # Alternatively, filter directly
-#goodPV = cms.EDFilter("GoodVertexFilter",
+#goodPVs = cms.EDFilter("GoodVertexFilter",
 #    vertexCollection = cms.InputTag('offlinePrimaryVertices'),
 #    minimumNDOF = cms.uint32(4) ,
 #    maxAbsZ = cms.double(24),	
@@ -52,7 +52,7 @@ goodPV = cms.EDFilter("VertexSelector",
 
 
 oneGoodPVSelection = cms.EDFilter("VertexCountFilter",
-    src = cms.InputTag('goodPV'),
+    src = cms.InputTag('goodPVs'),
     minNumber = cms.uint32(1),
     maxNumber = cms.uint32(99999),
     
@@ -71,7 +71,7 @@ oneGoodPVSelection = cms.EDFilter("VertexCountFilter",
 
 
 buildVertexCollections = cms.Sequence(
-    goodPV
+    goodPVs
 )
 
 

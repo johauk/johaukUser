@@ -95,7 +95,7 @@ src = cms.InputTag("dimuons"),
 from ZmumuAnalysis.Producer.BestZVertexCleaner_cfi import BestZVertexCleaner
 cleanDimuons = BestZVertexCleaner.clone(
     product = "dimuon",
-    vertexSource = 'goodPV',
+    vertexSource = 'goodPVs',
     dimuonSource = 'selectedDimuons',
     deltaZMuMuMax = 0.1,
     deltaZZVertexMax = 0.1,
@@ -180,7 +180,7 @@ finalDimuonsSC = finalDimuons.clone(src = "isolatedDimuonsSC")
 # Primary vertices associated to finalDimuons
 finalPVs = BestZVertexCleaner.clone(
     product = "vertex",
-    vertexSource = 'goodPV',
+    vertexSource = 'goodPVs',
     dimuonSource = 'finalDimuons',
     deltaZMuMuMax = 0.1,
     deltaZZVertexMax = 0.1,
@@ -200,7 +200,7 @@ bestDimuon = BestZSelector.clone(
 # Associated primary vertex for bestDimuon
 bestPV = BestZVertexCleaner.clone(
     product = "vertex",
-    vertexSource = 'goodPV',
+    vertexSource = 'finalPVs',
     dimuonSource = 'bestDimuon',
     deltaZMuMuMax = 0.1,
     deltaZZVertexMax = 0.1,

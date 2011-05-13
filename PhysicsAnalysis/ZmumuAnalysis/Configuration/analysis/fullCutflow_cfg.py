@@ -144,7 +144,7 @@ process.VertexAnalyzer1 = process.VertexAnalyzer.clone(
     #vertexSource = 'offlinePrimaryVertices',
 )
 process.VertexAnalyzer2 = process.VertexAnalyzer.clone(
-    vertexSource = 'goodPV',
+    vertexSource = 'goodPVs',
 )
 process.VertexAnalyzer6 = process.VertexAnalyzer.clone(
     vertexSource = 'finalPVs',
