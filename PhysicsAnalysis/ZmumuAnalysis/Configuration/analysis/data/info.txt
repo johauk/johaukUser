@@ -1,5 +1,13 @@
 ## Submit Jobs
 
+
+
+###===============================================================================================###
+                                      Data and Fall10 samples
+###===============================================================================================###
+
+## Submit Jobs
+
 # DATA
 
 nafJobSplitter.pl 30 run2010A_Nov04ReReco_cfg.py
@@ -48,9 +56,23 @@ nafJobSplitter.pl check mc/naf_zz_cfg
 
 
 
+###===============================================================================================###
+                                      Data and Spring11 samples
+###===============================================================================================###
+
+# DATA
+
+nafJobSplitter.pl 10 run2011A_May7PromptReco_1_cfg.py
+nafJobSplitter.pl 100 run2011A_May7PromptReco_2_cfg.py
 
 
 
+## Check status of jobs
+
+# DATA
+
+nafJobSplitter.pl check data/naf_run2011A_May7PromptReco_1_cfg
+nafJobSplitter.pl check data/naf_run2011A_May7PromptReco_2_cfg
 
 
 

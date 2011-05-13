@@ -12,7 +12,6 @@ hadd $DIRBASE/hists/data/allData.root $DIRBASE/hists/data/*.root
 
 
 
-
 hadd $DIRBASE/hists/mc/qcd.root $DIRBASE/analysis/mc/naf_qcd_cfg/*.root
 hadd $DIRBASE/hists/mc/singleTop.root $DIRBASE/analysis/mc/naf_singleTop_cfg/*.root
 hadd $DIRBASE/hists/mc/ttbar.root $DIRBASE/analysis/mc/naf_ttbar_cfg/*.root
@@ -29,12 +28,14 @@ hadd $DIRBASE/hists/mc/zz.root $DIRBASE/analysis/mc/naf_zz_cfg/*.root
 
 
 
+
+
+
 sumTriggerReports2.pl $DIRBASE/analysis/data/naf_run2010A_Nov04ReReco_cfg/out*.txt > $DIRBASE/hists/data/run2010A_Nov04ReReco.txt
 sumTriggerReports2.pl $DIRBASE/analysis/data/naf_run2010B_Nov04ReReco_1_cfg/out*.txt > $DIRBASE/hists/data/run2010B_Nov04ReReco_1.txt
 sumTriggerReports2.pl $DIRBASE/analysis/data/naf_run2010B_Nov04ReReco_2_cfg/out*.txt > $DIRBASE/hists/data/run2010B_Nov04ReReco_2.txt
 
 sumTriggerReports2.pl $DIRBASE/hists/data/run2010*_Nov04ReReco*.txt > $DIRBASE/hists/data/allData.txt
-
 
 
 
@@ -53,6 +54,21 @@ sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_zz_cfg/out*.txt > $DIRBASE/hists/
 
 
 
+
+
+
+
+hadd $DIRBASE/hists/data/run2011A_May7PromptReco_1.root $DIRBASE/analysis/data/naf_run2011A_May7PromptReco_1_cfg/*.root
+hadd $DIRBASE/hists/data/run2011A_May7PromptReco_2.root $DIRBASE/analysis/data/naf_run2011A_May7PromptReco_2_cfg/*.root
+
+hadd $DIRBASE/hists/data/allData.root $DIRBASE/hists/data/*.root
+
+
+
+sumTriggerReports2.pl $DIRBASE/analysis/data/naf_run2011A_May7PromptReco_1_cfg/out*.txt > $DIRBASE/hists/data/run2011A_May7PromptReco_1.txt
+sumTriggerReports2.pl $DIRBASE/analysis/data/naf_run2011A_May7PromptReco_2_cfg/out*.txt > $DIRBASE/hists/data/run2011A_May7PromptReco_2.txt
+
+sumTriggerReports2.pl $DIRBASE/hists/data/run2011*_May7PromptReco*.txt > $DIRBASE/hists/data/allData.txt
 
 
 
