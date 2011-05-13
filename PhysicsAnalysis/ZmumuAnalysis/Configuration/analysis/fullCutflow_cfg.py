@@ -146,6 +146,13 @@ process.VertexAnalyzer1 = process.VertexAnalyzer.clone(
 process.VertexAnalyzer2 = process.VertexAnalyzer.clone(
     vertexSource = 'goodPV',
 )
+process.VertexAnalyzer6 = process.VertexAnalyzer.clone(
+    vertexSource = 'finalPVs',
+)
+process.VertexAnalyzer6a = process.VertexAnalyzer.clone(
+    vertexSource = 'bestPV',
+)
+
 
 
 
@@ -183,6 +190,9 @@ process.DiMuonAnalyzer4 = process.DiMuonAnalyzer.clone(
 #)
 process.DiMuonAnalyzer6 = process.DiMuonAnalyzer.clone(
     diMuonSource = "finalDimuons",
+)
+process.DiMuonAnalyzer6a = process.DiMuonAnalyzer.clone(
+    diMuonSource = "bestDimuon",
 )
 process.DiMuonAnalyzer9 = process.DiMuonAnalyzer.clone(
     diMuonSource = "finalDimuons",
@@ -300,6 +310,9 @@ process.oppositeChargeAnalysis = cms.Path(
     *process.dimuonSelection
     *process.MuonAnalyzer6
     *process.DiMuonAnalyzer6
+    *process.VertexAnalyzer6
+    *process.DiMuonAnalyzer6a
+    *process.VertexAnalyzer6a
     
     *process.buildJetCollections
     *process.JetAnalyzer7a
