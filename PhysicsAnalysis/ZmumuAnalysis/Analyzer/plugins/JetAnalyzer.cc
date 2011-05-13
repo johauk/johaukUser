@@ -14,7 +14,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Wed Oct 20 16:37:05 CEST 2010
-// $Id: JetAnalyzer.cc,v 1.3 2010/12/09 16:14:23 hauk Exp $
+// $Id: JetAnalyzer.cc,v 1.4 2011/05/06 11:27:01 hauk Exp $
 //
 //
 
@@ -132,6 +132,13 @@ JetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   
   pat::JetCollection::const_iterator i_jet;
   for(i_jet = jets->begin(); i_jet != jets->end(); ++i_jet){
+    
+    // Check the names of the JEC levels
+    //const std::vector<std::string> availableJecLevels(i_jet->availableJECLevels());
+    //std::vector<std::string>::const_iterator i_Jec;
+    //for(i_Jec = availableJecLevels.begin(); i_Jec != availableJecLevels.end(); ++i_Jec){
+    //  std::cout<<"\tLabels of JEC levels "<<*i_Jec<<"\n";
+    //}
     
     //if(nJet>2)std::cout<<"\n\t\tOverlaps? "<<i_jet->hasOverlaps("muons")<<" , "<<i_jet->hasOverlaps("electrons")<<"\n";
     
