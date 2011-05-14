@@ -1,0 +1,7 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/PluginManager"/>
+<use name="FWCore/ParameterSet"/>
+<library file="*.cc" name="ZmumuAnalysisUtilsPlugins">
+  <use name="ZmumuAnalysis/Utils"/>
+  <flags EDM_PLUGIN="1"/>
+</library>
