@@ -20,10 +20,3 @@ RunEventListing = cms.EDAnalyzer('RunEventListing',
 )
 
 
-
-RunEventListingFromTree = RunEventListing.clone(
-    getEventsFromTree = True,
-    createTree = False,   # Allows empty input source (and TTree exists already!!!)
-)
-
-

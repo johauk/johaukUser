@@ -31,12 +31,12 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
 
 
 ## Analyzer under test
-process.load("ZmumuAnalysis.Utils.RunEventListing_cfi")
+process.load("ZmumuAnalysis.Utils.RunEventListing_cff")
 process.RunEventListingFromTree1 = process.RunEventListingFromTree.clone(
     #getEventsFromTree = True,
-    inputTreeFile = 'hists/runEventList.root',
+    inputTreeFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Utils/hists/runEventList.root',
     inputPluginName = 'RunEventListing1',
-    #printToCommandLine = False,
+    printToCommandLine = True,
     #printToFile = False,
     outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Utils/hists/runEventListFromTree_cff.py',
     #createTree = False,

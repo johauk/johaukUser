@@ -46,8 +46,8 @@ process.RunEventListing2 = process.RunEventListing.clone(
     getEventsFromTree = True,
     # To read from previous created TTree, the creation of the corresponding file must have already stopped
     # Example can be found now in runEventListingFromTree_cfg.py
-    #inputTreeFile = 'hists/runEventList.root',
-    inputTreeFile = 'hists/runEventList2.root',
+    #inputTreeFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Utils/hists/runEventList.root',
+    inputTreeFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Utils/hists/runEventList2.root',
     inputPluginName = 'RunEventListing1',
     #printToCommandLine = False,
     #printToFile = False,
