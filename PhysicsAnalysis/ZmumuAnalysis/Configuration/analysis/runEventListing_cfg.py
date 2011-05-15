@@ -35,22 +35,23 @@ process.load("ZmumuAnalysis.Utils.RunEventListing_cff")
 # The only thing to change: moduleNumber
 moduleNumber = "6"
 process.RunEventListingFromTree6 = process.RunEventListingFromTree.clone(
-    inputTreeFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/fullSelection.root',
+    inputTreeFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/data/allData.root',
+    #inputTreeFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/fullSelection.root',
     inputPluginName = 'RunEventListing' + moduleNumber,
-    #outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/data/runEventList' + moduleNumber + '_cff.py',
-    outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/runEventList' + moduleNumber + '_cff.py',
+    outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/data/runEventList' + moduleNumber + '_cff.py',
+    #outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/runEventList' + moduleNumber + '_cff.py',
 )
 moduleNumber = "9"
 process.RunEventListingFromTree9 = process.RunEventListingFromTree6.clone(
     inputPluginName = 'RunEventListing' + moduleNumber,
-    #outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/data/runEventList' + moduleNumber + '_cff.py',
-    outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/runEventList' + moduleNumber + '_cff.py',
+    outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/data/runEventList' + moduleNumber + '_cff.py',
+    #outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/runEventList' + moduleNumber + '_cff.py',
 )
 moduleNumber = "10"
 process.RunEventListingFromTree10 = process.RunEventListingFromTree6.clone(
     inputPluginName = 'RunEventListing' + moduleNumber,
-    #outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/data/runEventList' + moduleNumber + '_cff.py',
-    outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/runEventList' + moduleNumber + '_cff.py',
+    outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/data/runEventList' + moduleNumber + '_cff.py',
+    #outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/runEventList' + moduleNumber + '_cff.py',
 )
 
 
