@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Sat May 14 21:44:38 CEST 2011
-// $Id: RunEventListing.cc,v 1.1 2011/05/14 21:33:42 hauk Exp $
+// $Id: RunEventListing.cc,v 1.2 2011/05/15 01:03:31 hauk Exp $
 //
 //
 
@@ -39,6 +39,9 @@
 #include "CommonTools/Utils/interface/TFileDirectory.h"
 
 #include "TTree.h"
+#include "TFile.h"
+#include "TString.h"
+#include "TDirectory.h"
 
 //
 // class declaration
@@ -62,11 +65,13 @@ class RunEventListing : public edm::EDAnalyzer {
       virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
       
+      bool getEventsFromTree();
       void createOutputTextFile(std::ofstream& outputTextFile)const;
       void createOutputRootFile(TTree*&, unsigned int&, unsigned int&, unsigned int&)const;
       // ----------member data ---------------------------
       
       const edm::ParameterSet parameterSet_;
+      const bool getEventsFromTree_;
       
       typedef std::vector<unsigned int> Events;
       typedef std::map<unsigned int, Events> LumiEvents;
@@ -89,7 +94,9 @@ class RunEventListing : public edm::EDAnalyzer {
 // constructors and destructor
 //
 RunEventListing::RunEventListing(const edm::ParameterSet& iConfig):
-parameterSet_(iConfig), nEvent_(0)
+parameterSet_(iConfig),
+getEventsFromTree_(parameterSet_.getParameter<bool>("getEventsFromTree")),
+nEvent_(0)
 {
 }
 
@@ -107,6 +114,9 @@ RunEventListing::~RunEventListing()
 void
 RunEventListing::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+  // Use in Analyzer mode or take input from previous created TTree
+  if(getEventsFromTree_)return;
+  
   const unsigned int run(iEvent.id().run());
   const unsigned int lumiBlock(iEvent.id().luminosityBlock());
   const unsigned int event(iEvent.id().event());
@@ -127,6 +137,11 @@ RunEventListing::beginJob()
 void 
 RunEventListing::endJob() 
 {
+  // Check if events should be taken from TTree (or from default analyzer mode), if yes do so
+  if(getEventsFromTree_){
+    if(!getEventsFromTree())return;
+  }
+  
   // Check which output modes are chosen
   const bool printToCommandLine(parameterSet_.getParameter<bool>("printToCommandLine"));
   const bool printToFile(parameterSet_.getParameter<bool>("printToFile"));
@@ -139,6 +154,9 @@ RunEventListing::endJob()
   
   unsigned int run(0), lumiBlock(0), event(0);
   
+  // When using std::cout
+  if(printToCommandLine)std::cout<<"Number of selected events: "<<nEvent_<<"\n";
+  
   // Create text output file, if asked for in config
   std::ofstream outputTextFile;
   if(printToFile)this->createOutputTextFile(outputTextFile);
@@ -147,7 +165,7 @@ RunEventListing::endJob()
   TTree* eventTree(0);
   if(createTree)this->createOutputRootFile(eventTree, run, lumiBlock, event);
   
-  std::cout<<"Number of selected events: "<<nEvent_<<"\n";
+  // Loop over events and generate output
   RunLumiEvents::iterator i_run;
   for(i_run = runLumiEvents_.begin(); i_run != runLumiEvents_.end(); ++i_run){
     run = i_run->first;
@@ -169,9 +187,75 @@ RunEventListing::endJob()
     }
   }
   
-  
-  if(outputTextFile.is_open())outputTextFile.close();
+  // Final additions
+  if(outputTextFile.is_open()){
+    outputTextFile<<"] )";
+    outputTextFile.close();
+  }
   if(eventTree)eventTree->Print();
+}
+
+
+
+bool
+RunEventListing::getEventsFromTree(){
+  unsigned int run(0), lumiBlock(0), event(0);
+  
+  // Check if input file exists
+  TFile* inputFile(0);
+  const std::string inputFileName(parameterSet_.getParameter<std::string>("inputTreeFile"));
+  ifstream inputFileStream;
+  inputFileStream.open(inputFileName.c_str());
+  if(inputFileStream.is_open()){
+    inputFile = new TFile(inputFileName.c_str(),"READ");
+  }
+  if(inputFile){
+    edm::LogInfo("RunEventListing")<<"Input file with TTree opened";
+  }
+  else{
+    edm::LogError("RunEventListing")<<"There is NO input file !!!\n"
+       <<"...Event list creation stopped. Please check path of input file name in config:\n"
+       <<"\t"<<inputFileName;
+    return false;
+  }
+  
+  // Check if specified plugin exists
+  TDirectory* treeDir(0);
+  TString inputPluginName((parameterSet_.getParameter<std::string>("inputPluginName")).c_str());
+  inputPluginName += "/EventTree/";
+  treeDir = (TDirectory*)inputFile->TDirectory::GetDirectory(inputPluginName);
+  if(treeDir){
+    edm::LogInfo("RunEventListing")<<"Directory with TTree opened";
+  }
+  else{
+    edm::LogError("RunEventListing")<<"There is NO directory !!!\n"
+       <<"...Event list creation stopped. Please check path of input plugin name in config:\n"
+       <<"\t"<<inputPluginName;
+    return false;
+  }
+  
+  // Get input TTree
+  TTree* inputTree(0);
+  treeDir->GetObject("t_eventTree", inputTree);
+  if(inputTree){
+    //edm::LogInfo("RunEventListing")<<"TTree opened";
+    inputTree->SetBranchAddress("Run", &run);
+    inputTree->SetBranchAddress("LumiBlock", &lumiBlock);
+    inputTree->SetBranchAddress("Event", &event);
+  }
+  else{
+    edm::LogError("RunEventListing")<<"There is NO TTree !!!\n"
+       <<"...Event list creation stopped.\n";
+    return false;
+  }
+  
+  nEvent_ = inputTree->GetEntries();
+  for(UInt_t iEvent=0; iEvent<nEvent_; iEvent++){
+    inputTree->GetEntry(iEvent);
+    runLumiEvents_[run][lumiBlock].push_back(event);
+  }
+  
+  return true;
 }
 
 
@@ -183,9 +267,10 @@ RunEventListing::createOutputTextFile(std::ofstream& outputTextFile)const{
   if(outputTextFile.is_open()){
     edm::LogInfo("RunEventListing")<<"Output text file sucessfully opened";
     outputTextFile<<"import FWCore.ParameterSet.Config as cms\n\n";
-    outputTextFile<<"source.eventsToProcess = cms.untracked.VEventRange()\n\n";
+    outputTextFile<<"# Simply add in cfg: process.source.eventsToProcess = SelectedEvents\n";
+    outputTextFile<<"SelectedEvents = cms.untracked.VEventRange()\n\n";
     outputTextFile<<"# These are "<<nEvent_<<" selected events\n";
-    outputTextFile<<"eventsToProcess.extend( [\n";
+    outputTextFile<<"SelectedEvents.extend( [\n";
   }
   else{
     edm::LogError("RunEventListing")<<"Output text file could not be opened !!!\n"
@@ -204,7 +289,7 @@ RunEventListing::createOutputRootFile(TTree*& eventTree, unsigned int& run, unsi
   }
   else{
     TFileDirectory dirTree = fileService->mkdir("EventTree");
-    eventTree = dirTree.make<TTree>("eventTree","Tree containing event numbers");
+    eventTree = dirTree.make<TTree>("t_eventTree","Tree containing event numbers");
   }
   //eventTree = new TTree("eventTree","Tree containing event numbers");
   
