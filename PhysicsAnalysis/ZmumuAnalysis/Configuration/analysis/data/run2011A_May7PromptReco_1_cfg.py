@@ -138,6 +138,24 @@ process.TriggerAnalyzer1 =  process.TriggerAnalyzer.clone(
 
 
 
+## vertex analyzer
+process.load("ZmumuAnalysis.Analyzer.VertexAnalyzer_cfi")
+process.VertexAnalyzer1 = process.VertexAnalyzer.clone(
+    #vertexSource = 'offlinePrimaryVertices',
+)
+process.VertexAnalyzer2 = process.VertexAnalyzer.clone(
+    vertexSource = 'goodPVs',
+)
+process.VertexAnalyzer6 = process.VertexAnalyzer.clone(
+    vertexSource = 'finalPVs',
+)
+process.VertexAnalyzer6a = process.VertexAnalyzer.clone(
+    vertexSource = 'bestPV',
+)
+
+
+
+
 ## muon analizer
 process.load("ZmumuAnalysis.Analyzer.MuonAnalyzer_cfi")
 process.MuonAnalyzer1 = process.MuonAnalyzer.clone(
@@ -173,6 +191,9 @@ process.DiMuonAnalyzer4 = process.DiMuonAnalyzer.clone(
 process.DiMuonAnalyzer6 = process.DiMuonAnalyzer.clone(
     diMuonSource = "finalDimuons",
 )
+process.DiMuonAnalyzer6a = process.DiMuonAnalyzer.clone(
+    diMuonSource = "bestDimuon",
+)
 process.DiMuonAnalyzer9 = process.DiMuonAnalyzer.clone(
     diMuonSource = "finalDimuons",
 )
@@ -200,6 +221,15 @@ process.DiMuonAnalyzerSC9 = process.DiMuonAnalyzer9.clone(
 
 ## jet analyzer
 process.load("ZmumuAnalysis.Analyzer.JetAnalyzer_cfi")
+process.JetAnalyzer7a = process.JetAnalyzer.clone(
+    jetSource = 'selectedPatJetsAK5PF',
+)
+process.JetAnalyzer7b = process.JetAnalyzer.clone(
+    jetSource = 'cleanPatJets',
+)
+process.JetAnalyzer7c = process.JetAnalyzer.clone(
+    jetSource = 'cleanJets',
+)
 process.JetAnalyzer7 = process.JetAnalyzer.clone(
     jetSource = 'goodJets',
 )
@@ -228,6 +258,16 @@ process.MetAnalyzer9 = process.MetAnalyzer.clone(
 process.MetAnalyzerSC9 = process.MetAnalyzer9.clone()
 
 
+
+
+#******************************************************************************************
+#   Utils Modules
+#******************************************************************************************
+
+process.load("ZmumuAnalysis.Utils.RunEventListing_cff")
+process.RunEventListing6 = process.RunEventListingCreateTreeOnly.clone()
+process.RunEventListing9 = process.RunEventListingCreateTreeOnly.clone()
+process.RunEventListing10 = process.RunEventListingCreateTreeOnly.clone()
 
 
 #******************************************************************************************
@@ -261,7 +301,9 @@ process.oppositeChargeAnalysis = cms.Path(
 #    *process.GeneratorZtautauFilter
     
     *process.buildVertexCollections
+    *process.VertexAnalyzer1
     *process.vertexSelection
+    *process.VertexAnalyzer2
     
     *process.TriggerAnalyzer1
     *process.TriggerFilter
@@ -278,14 +320,22 @@ process.oppositeChargeAnalysis = cms.Path(
     *process.dimuonSelection
     *process.MuonAnalyzer6
     *process.DiMuonAnalyzer6
+    *process.VertexAnalyzer6
+    *process.DiMuonAnalyzer6a
+    *process.VertexAnalyzer6a
+    *process.RunEventListing6
     
     *process.buildJetCollections
+    *process.JetAnalyzer7a
+    *process.JetAnalyzer7b
+    *process.JetAnalyzer7c
     *process.JetAnalyzer7
     *process.JetAnalyzer8
     *process.oneJetSelection
     *process.MuonAnalyzer9
     *process.DiMuonAnalyzer9
     *process.JetAnalyzer9
+    *process.RunEventListing9
     
     *process.buildMetCollections
     *process.MetAnalyzer9
@@ -294,7 +344,7 @@ process.oppositeChargeAnalysis = cms.Path(
     *process.DiMuonAnalyzer10
     *process.JetAnalyzer10
     #*process.MetAnalyzer10
-    
+    *process.RunEventListing10
     
     *process.twoJetSelection
 )
