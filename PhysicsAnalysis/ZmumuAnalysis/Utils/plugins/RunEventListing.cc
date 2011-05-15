@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Sat May 14 21:44:38 CEST 2011
-// $Id: RunEventListing.cc,v 1.2 2011/05/15 01:03:31 hauk Exp $
+// $Id: RunEventListing.cc,v 1.3 2011/05/15 12:53:54 hauk Exp $
 //
 //
 
@@ -192,7 +192,7 @@ RunEventListing::endJob()
     outputTextFile<<"] )";
     outputTextFile.close();
   }
-  if(eventTree)eventTree->Print();
+  //if(eventTree)eventTree->Print();
 }
 
 

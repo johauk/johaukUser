@@ -261,6 +261,16 @@ process.MetAnalyzerSC9 = process.MetAnalyzer9.clone()
 
 
 #******************************************************************************************
+#   Utils Modules
+#******************************************************************************************
+
+process.load("ZmumuAnalysis.Utils.RunEventListing_cff")
+process.RunEventListing6 = process.RunEventListingCreateTreeOnly.clone()
+process.RunEventListing9 = process.RunEventListingCreateTreeOnly.clone()
+process.RunEventListing10 = process.RunEventListingCreateTreeOnly.clone()
+
+
+#******************************************************************************************
 #   Analysis Path
 #******************************************************************************************
 
@@ -313,6 +323,7 @@ process.oppositeChargeAnalysis = cms.Path(
     *process.VertexAnalyzer6
     *process.DiMuonAnalyzer6a
     *process.VertexAnalyzer6a
+    *process.RunEventListing6
     
     *process.buildJetCollections
     *process.JetAnalyzer7a
@@ -324,6 +335,7 @@ process.oppositeChargeAnalysis = cms.Path(
     *process.MuonAnalyzer9
     *process.DiMuonAnalyzer9
     *process.JetAnalyzer9
+    *process.RunEventListing9
     
     *process.buildMetCollections
     *process.MetAnalyzer9
@@ -332,7 +344,7 @@ process.oppositeChargeAnalysis = cms.Path(
     *process.DiMuonAnalyzer10
     *process.JetAnalyzer10
     #*process.MetAnalyzer10
-    
+    *process.RunEventListing10
     
     *process.twoJetSelection
 )
