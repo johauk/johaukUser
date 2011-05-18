@@ -13,40 +13,28 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 ## Sources
 # Data
-process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.Run2011A_PromptReco_v1_May7_160404_163757_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.Run2011A_PromptReco_v1_May7_160404_163757_cff")
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.Run2011A_PromptReco_v2_May7_160404_163757_cff")
 
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010A_Nov04ReReco_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B1_Nov04ReReco_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B2_Nov04ReReco_cff")
-
-# QCD
+# (OLD) QCD
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.QCD_MuEnrichedPt15_pythia_F10_cff")
 # SingleTop
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.TToBLNu_madgraph_F10_cff")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_TToBLNu_TuneZ2_s_channel_7TeV_madgraph")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_TToBLNu_TuneZ2_tW_channel_7TeV_madgraph")
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_TToBLNu_TuneZ2_t_channel_7TeV_madgraph")
 # TTbar
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.TTJets_D6T_madgraph_F10_cff")
-# Wmunu
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_TTJets_TuneD6T_7TeV_madgraph_tauola")
+# (OLD) Wmunu
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WToMuNu_pythia_F10_cff")
-# Wtaunu
+# (OLD) Wtaunu
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WToTauNu_pythia_F10_cff")
-# Zmumu (Drell-Yan low masses) not needed here
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToMuMu_M10To20_pythia_F10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToMuMu_M20_pythia_F10_cff")
-# To use for Zmumu
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYJetsToLL_M50_madgraph_F10_cff")
-# Ztautau (Drell-Yan low masses) not needed here
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToTauTau_M10To20_pythia_F10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToTauTau_M20_pythia_F10_cff")
-# To use for Ztautau
+# Zmumu
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_DYJetsToLL_TuneZ2_M_50_7TeV_madgraph_tauola")
+# (OLD) To use for Ztautau
 #process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYJetsToLL_M50_D6T_madgraph_F10_cff")
-# WW
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WWTo2L2Nu_pythia_F10_cff")
-# WZ
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WZTo3LNu_pythia_F10_cff")
-# ZZ
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.ZZToAnything_pythia_F10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
+# VV
+#process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_VVJetsTo4L_TuneD6T_7TeV_madgraph_tauola")
+process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 
 
 
@@ -67,9 +55,9 @@ process.options = cms.untracked.PSet(
 ## needed for access to trigger menu
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 # data
-process.GlobalTag.globaltag = cms.string('FT_R_311_V4A::All')
+#process.GlobalTag.globaltag = cms.string('FT_R_311_V4A::All')
 # mc
-#process.GlobalTag.globaltag = cms.string('START38_V13::All')
+process.GlobalTag.globaltag = cms.string('START41_V0::All')
 
 
 
@@ -277,8 +265,10 @@ process.RunEventListing10 = process.RunEventListingCreateTreeOnly.clone()
 
 # Additional statements for use with trigger REDIGI
 
-TRIG_RESULT = "HLT"
-#TRIG_RESULT = "REDIGI38X"
+#TRIG_RESULT = "HLT"
+TRIG_RESULT = "REDIGI311X"
+# Does this work for all files? - No, al least not for TriggerFilter
+#TRIG_RESULT = "PAT"
 
 process.TriggerAnalyzer1.triggerResults = cms.InputTag('TriggerResults','',TRIG_RESULT)
 process.TriggerFilter.TriggerResultsTag = cms.InputTag('TriggerResults','',TRIG_RESULT)
