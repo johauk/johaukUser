@@ -11,73 +11,141 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 
 
-## Sources
+##
+## Specify whether is MC or data, and which conrete type
+##
+# Data samples
+counter = 0
+isData1 = False
+isData2 = True
+# MC samples
+isQcd = False
+isSingleTopS = False
+isSingleTopTw = False
+isSingleTopT = False
+isTtbar = False
+isWmunu = False
+isWtaunu = False
+isZmumu = False
+isZtautau = False
+isVv = False
+isTest = False
+
+## Just list here all data and MC samples
+isData = False
+isMC = False
 # Data
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.Run2011A_PromptReco_v1_May7_160404_163757_cff")
-process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.Run2011A_PromptReco_v2_May7_160404_163757_cff")
+if(isData1): counter += 1; isData = True
+if(isData2): counter += 1; isData = True
+# MC
+if(isQcd): counter += 1; isMC = True
+if(isSingleTopS): counter += 1; isMC = True
+if(isSingleTopTw): counter += 1; isMC = True
+if(isSingleTopT): counter += 1; isMC = True
+if(isTtbar): counter += 1; isMC = True
+if(isWmunu): counter += 1; isMC = True
+if(isWtaunu): counter += 1; isMC = True
+if(isZmumu): counter += 1; isMC = True
+if(isZtautau): counter += 1; isMC = True
+if(isVv): counter += 1; isMC = True
+if(isTest): counter += 1; isMC = True
 
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010A_Nov04ReReco_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B1_Nov04ReReco_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Run2010B2_Nov04ReReco_cff")
-
-# QCD
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.QCD_MuEnrichedPt15_pythia_F10_cff")
-# SingleTop
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.TToBLNu_madgraph_F10_cff")
-# TTbar
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.TTJets_D6T_madgraph_F10_cff")
-# Wmunu
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WToMuNu_pythia_F10_cff")
-# Wtaunu
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WToTauNu_pythia_F10_cff")
-# Zmumu (Drell-Yan low masses) not needed here
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToMuMu_M10To20_pythia_F10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToMuMu_M20_pythia_F10_cff")
-# To use for Zmumu
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYJetsToLL_M50_madgraph_F10_cff")
-# Ztautau (Drell-Yan low masses) not needed here
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToTauTau_M10To20_pythia_F10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYToTauTau_M20_pythia_F10_cff")
-# To use for Ztautau
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.DYJetsToLL_M50_D6T_madgraph_F10_cff")
-# WW
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WWTo2L2Nu_pythia_F10_cff")
-# WZ
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WZTo3LNu_pythia_F10_cff")
-# ZZ
-#process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.ZZToAnything_pythia_F10_cff")
-#process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
+#print counter
+if(not counter == 1): print "Error, wrong configuration of samples"; raise KeyError("ERROR")
+    
 
 
+##
+## Sources
+##
+# Data
+if(isData1):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.Run2011A_PromptReco_v1_May7_160404_163757_cff")
+elif(isData2):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.Run2011A_PromptReco_v2_May7_160404_163757_cff")
+# MC
+elif(isQcd):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.QCD_MuEnrichedPt15_pythia_F10_cff")
+elif(isSingleTopS):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_TToBLNu_TuneZ2_s_channel_7TeV_madgraph")
+elif(isSingleTopTw):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_TToBLNu_TuneZ2_tW_channel_7TeV_madgraph")
+elif(isSingleTopT):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_TToBLNu_TuneZ2_t_channel_7TeV_madgraph")
+elif(isTtbar):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_TTJets_TuneD6T_7TeV_madgraph_tauola")
+elif(isWmunu):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WToMuNu_pythia_F10_cff")
+elif(isWtaunu):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WToTauNu_pythia_F10_cff")
+elif(isZmumu):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_DYJetsToLL_TuneZ2_M_50_7TeV_madgraph_tauola")
+elif(isZtautau):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_DYJetsToLL_TuneZ2_M_50_7TeV_madgraph_tauola")
+elif(isVv):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_VVJetsTo4L_TuneD6T_7TeV_madgraph_tauola")
+elif(isTest):
+    process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
+else: print "Error, wrong configuration of samples"; raise KeyError("ERROR")
 
+
+
+##
 ## define maximal number of events to loop over
+##
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1)
+    input = cms.untracked.int32(1001)
 )
+if(not isTest): process.maxEvents.input = -1
 
 
 
+##
 ## configure process options
+##
 process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(True),
 )
 
 
-
+##
 ## needed for access to trigger menu
+##
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-# data
-process.GlobalTag.globaltag = cms.string('FT_R_311_V4A::All')
-# mc
-#process.GlobalTag.globaltag = cms.string('START38_V13::All')
+if(isData): process.GlobalTag.globaltag = 'FT_R_311_V4A::All'
+elif(isMC): process.GlobalTag.globaltag = 'START41_V0::All'
+else: print "Error, wrong configuration of samples"; raise KeyError("ERROR")
 
 
 
+##
 ## register TFileService
+##
+fileBase = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/'
+fileName = ''
+# Data
+if(isData1): fileName = 'data/run2011A_May7PromptReco_1.root'
+elif(isData2): fileName = 'data/run2011A_May7PromptReco_2.root'
+# MC
+elif(isQcd): fileName = 'mc/qcd.root'
+elif(isSingleTopS): fileName = 'mc/singleTopS.root'
+elif(isSingleTopTw): fileName = 'mc/singleTopTw.root'
+elif(isSingleTopT): fileName = 'mc/singleTopT.root'
+elif(isTtbar): fileName = 'mc/ttbar.root'
+elif(isWmunu): fileName = 'mc/wmunu.root'
+elif(isWtaunu): fileName = 'mc/wtaunu.root'
+elif(isZmumu): fileName = 'mc/zmumu.root'
+elif(isZtautau): fileName = 'mc/ztautau.root'
+elif(isVv): fileName = 'mc/vv.root'
+elif(isTest): fileName = 'fullSelection.root'
+else: print "Error, wrong configuration of samples"; raise KeyError("ERROR")
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string(os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/data/run2011A_May7PromptReco_2.root'),
+    fileName = cms.string(fileBase + fileName),
     closeFileFast = cms.untracked.bool(True)
 )
+
+
+
 
 #******************************************************************************************
 #   Filter & Producer Modules
@@ -277,8 +345,12 @@ process.RunEventListing10 = process.RunEventListingCreateTreeOnly.clone()
 
 # Additional statements for use with trigger REDIGI
 
-TRIG_RESULT = "HLT"
-#TRIG_RESULT = "REDIGI38X"
+if(isData): TRIG_RESULT = "HLT"
+elif(isMC): TRIG_RESULT = "REDIGI311X"
+else: print "Error, wrong configuration of samples"; raise KeyError("ERROR")
+
+# Does this work for all files? - No, al least not for TriggerFilter
+#TRIG_RESULT = "PAT"
 
 process.TriggerAnalyzer1.triggerResults = cms.InputTag('TriggerResults','',TRIG_RESULT)
 process.TriggerFilter.TriggerResultsTag = cms.InputTag('TriggerResults','',TRIG_RESULT)
@@ -289,16 +361,28 @@ process.patTrigger.triggerEvent = cms.InputTag("hltTriggerSummaryAOD::" + TRIG_R
 
 
 #******************************************************************************************
+#   Sequences
+#******************************************************************************************
+
+## Apply generator filters here
+process.seqGeneratorFilter = cms.Sequence()
+if(isZmumu): process.seqGeneratorFilter *= process.GeneratorZmumuFilter
+if(isZtautau): process.seqGeneratorFilter *= process.GeneratorZtautauFilter
+
+
+
+
+
+#******************************************************************************************
 #   Analysis Path
 #******************************************************************************************
 
 
 
 process.oppositeChargeAnalysis = cms.Path(
-    process.EventCounter0 
+    process.EventCounter0
     
-#    *process.GeneratorZmumuFilter
-#    *process.GeneratorZtautauFilter
+    *process.seqGeneratorFilter
     
     *process.buildVertexCollections
     *process.VertexAnalyzer1
