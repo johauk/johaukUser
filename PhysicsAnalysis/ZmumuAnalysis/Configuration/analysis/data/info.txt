@@ -63,7 +63,20 @@ nafJobSplitter.pl check mc/naf_zz_cfg
 # DATA
 
 nafJobSplitter.pl 10 run2011A_May7PromptReco_1_cfg.py
-nafJobSplitter.pl 100 run2011A_May7PromptReco_2_cfg.py
+nafJobSplitter.pl 30 run2011A_May7PromptReco_2_cfg.py
+
+
+
+
+nafJobSplitter.pl 2 singleTopS_cfg.py
+nafJobSplitter.pl 2 singleTopT_cfg.py
+nafJobSplitter.pl 2 singleTopTq_cfg.py
+nafJobSplitter.pl 10 ttbar_cfg.py
+nafJobSplitter.pl 2 vv_cfg.py
+nafJobSplitter.pl 20 zmumu_cfg.py
+nafJobSplitter.pl 20 ztautau_cfg.py
+
+
 
 
 
