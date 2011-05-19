@@ -16,9 +16,9 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 ##
 # Data samples
 counter = 0
-isData1 = True
+isData1 = False
 isData2 = False
-isData3 = False
+isData3 = True
 # MC samples
 isQcd = False
 isSingleTopS = False
