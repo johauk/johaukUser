@@ -1,6 +1,10 @@
 #!/bin/bash
 
-export PYTHONHOME=/afs/cern.ch/cms/sw/slc5_ia32_gcc434/external/python/2.6.4-cms
+
+cd $CMSSW_BASE/src
+eval `scram runtime -sh`
+cd -
+
 
 export STAGE_SVCCLASS=cmscafuser
 
