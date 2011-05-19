@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.4 2011/03/25 10:41:01 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.5 2011/05/12 17:48:41 hauk Exp $
 //
 //
 
@@ -804,7 +804,7 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
   if(parameterSet_.getParameter<bool>("applyTrackCuts")){
     trackCut_ = false;
     if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.hitsPixel<1 || //trkParams.hitsInvalid>2 ||
-       trkParams.pt<15. || trkParams.p>50. || 
+       trkParams.pt<15. || trkParams.p>100. || 
        std::fabs(trkParams.d0Beamspot)>0.1 || std::fabs(trkParams.dz)>10.)trackCut_ = true;
     //if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.hitsPixel<1 || //trkParams.hitsInvalid>2 ||
     //   trkParams.pt<10. || trkParams.p<20. || trkParams.p>250. || 
