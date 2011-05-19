@@ -23,14 +23,14 @@ isData3 = False
 isQcd = False
 isSingleTopS = False
 isSingleTopTw = False
-isSingleTopT = True
+isSingleTopT = False
 isTtbar = False
 isWmunu = False
 isWtaunu = False
 isZmumu = False
 isZtautau = False
 isWw = False
-isWz = False
+isWz = True
 isZz = False
 isTest = False
 

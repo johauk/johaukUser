@@ -23,7 +23,7 @@ isData3 = False
 isQcd = False
 isSingleTopS = False
 isSingleTopTw = False
-isSingleTopT = True
+isSingleTopT = False
 isTtbar = False
 isWmunu = False
 isWtaunu = False
@@ -31,7 +31,7 @@ isZmumu = False
 isZtautau = False
 isWw = False
 isWz = False
-isZz = False
+isZz = True
 isTest = False
 
 ## Just list here all data and MC samples

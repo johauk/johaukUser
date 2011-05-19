@@ -18,6 +18,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 counter = 0
 isData1 = False
 isData2 = False
+isData3 = False
 # MC samples
 isQcd = False
 isSingleTopS = False
@@ -28,7 +29,9 @@ isWmunu = False
 isWtaunu = False
 isZmumu = True
 isZtautau = False
-isVv = False
+isWw = False
+isWz = False
+isZz = False
 isTest = False
 
 ## Just list here all data and MC samples
@@ -37,6 +40,7 @@ isMC = False
 # Data
 if(isData1): counter += 1; isData = True
 if(isData2): counter += 1; isData = True
+if(isData3): counter += 1; isData = True
 # MC
 if(isQcd): counter += 1; isMC = True
 if(isSingleTopS): counter += 1; isMC = True
@@ -47,7 +51,9 @@ if(isWmunu): counter += 1; isMC = True
 if(isWtaunu): counter += 1; isMC = True
 if(isZmumu): counter += 1; isMC = True
 if(isZtautau): counter += 1; isMC = True
-if(isVv): counter += 1; isMC = True
+if(isWw): counter += 1; isMC = True
+if(isWz): counter += 1; isMC = True
+if(isZz): counter += 1; isMC = True
 if(isTest): counter += 1; isMC = True
 
 #print counter
@@ -63,27 +69,33 @@ if(isData1):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.Run2011A_PromptReco_v1_May7_160404_163757_cff")
 elif(isData2):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.Run2011A_PromptReco_v2_May7_160404_163757_cff")
+elif(isData3):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.dilepton.Run2011A_v2_May7_to_May13_cff")
 # MC
-elif(isQcd):
+elif(isQcd): # OLD
     process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.QCD_MuEnrichedPt15_pythia_F10_cff")
 elif(isSingleTopS):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_TToBLNu_TuneZ2_s_channel_7TeV_madgraph")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TToBLNu_TuneZ2_s_channel_7TeV_madgraph_cff")
 elif(isSingleTopTw):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_TToBLNu_TuneZ2_tW_channel_7TeV_madgraph")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TToBLNu_TuneZ2_t_channel_7TeV_madgraph_cff")
 elif(isSingleTopT):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_TToBLNu_TuneZ2_t_channel_7TeV_madgraph")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TToBLNu_madgraph_F10_cff")
 elif(isTtbar):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_TTJets_TuneD6T_7TeV_madgraph_tauola")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TTJets_D6T_madgraph_F10_cff")
 elif(isWmunu):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WToMuNu_pythia_F10_cff")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Spring11_WToMuNu_pythia_F10_cff")
 elif(isWtaunu):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.WToTauNu_pythia_F10_cff")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Spring11_WToTauNu_pythia_F10_cff")
 elif(isZmumu):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_DYJetsToLL_TuneZ2_M_50_7TeV_madgraph_tauola")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_DYJetsToLL_M50_madgraph_F10_cff")
 elif(isZtautau):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_DYJetsToLL_TuneZ2_M_50_7TeV_madgraph_tauola")
-elif(isVv):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.s11_VVJetsTo4L_TuneD6T_7TeV_madgraph_tauola")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_DYJetsToLL_M50_madgraph_F10_cff")
+elif(isWw):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_WWTo2L2Nu_pythia_F10_cff")
+elif(isWz):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_WZTo3LNu_pythia_F10_cff")
+elif(isZz):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_ZZToAnything_pythia_F10_cff")
 elif(isTest):
     process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 else: print "Error, wrong configuration of samples"; raise KeyError("ERROR")
@@ -126,6 +138,7 @@ fileName = ''
 # Data
 if(isData1): fileName = 'data/run2011A_May7PromptReco_1.root'
 elif(isData2): fileName = 'data/run2011A_May7PromptReco_2.root'
+elif(isData3): fileName = 'data/run2011A_May7to13PromptReco.root'
 # MC
 elif(isQcd): fileName = 'mc/qcd.root'
 elif(isSingleTopS): fileName = 'mc/singleTopS.root'
@@ -136,7 +149,9 @@ elif(isWmunu): fileName = 'mc/wmunu.root'
 elif(isWtaunu): fileName = 'mc/wtaunu.root'
 elif(isZmumu): fileName = 'mc/zmumu.root'
 elif(isZtautau): fileName = 'mc/ztautau.root'
-elif(isVv): fileName = 'mc/vv.root'
+elif(isWw): fileName = 'mc/ww.root'
+elif(isWz): fileName = 'mc/wz.root'
+elif(isZz): fileName = 'mc/zz.root'
 elif(isTest): fileName = 'fullSelection.root'
 else: print "Error, wrong configuration of samples"; raise KeyError("ERROR")
 process.TFileService = cms.Service("TFileService",
