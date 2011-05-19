@@ -52,6 +52,17 @@ import FWCore.ParameterSet.Config as cms
 
 
 
+## Trigger for MC
+hltMu9FilterMC = cms.EDFilter("HLTHighLevel",
+    TriggerResultsTag = cms.InputTag("TriggerResults","","REDIGI41X"),
+    HLTPaths = cms.vstring('HLT_Mu9'),
+    eventSetupPathsKey = cms.string(''),
+    andOr = cms.bool(True),
+    throw = cms.bool(True),
+)
+
+
+
 ## SEQUENCE
 TriggerSelectionSequence = cms.Sequence(
     #L1T1*
@@ -61,5 +72,11 @@ TriggerSelectionSequence = cms.Sequence(
     #*beamScrapFilter
     #*HBHENoiseFilter
 )
+
+TriggerHltMu9Sequence = cms.Sequence(
+    hltMu9FilterMC
+)
+
+
 
 

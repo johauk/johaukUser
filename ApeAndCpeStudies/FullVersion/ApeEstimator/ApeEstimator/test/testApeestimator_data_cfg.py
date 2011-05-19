@@ -40,10 +40,6 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000 ## really show only ever
 ##
 process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(True),
-    #fileMode  =  cms.untracked.string('FULLMERGE'),  # any file order (default): caches all lumi/run products (memory!)
-    #fileMode  =  cms.untracked.string('MERGE'),  # needs files sorted in run and within run in lumi sections (hard to achieve)
-    #fileMode  =  cms.untracked.string('FULLLUMIMERGE'),  # needs files sorted in run, caches lumi
-    #fileMode  =  cms.untracked.string('NOMERGE'),  # no ordering needed, but calls endRun/beginRun etc. at file boundaries
 )
 
 
@@ -55,7 +51,14 @@ process.options = cms.untracked.PSet(
 #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunPion_mc_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunAntiPion_mc_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunBothPion_mc_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunMuon_mc_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunAntiMuon_mc_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunBothMuon_mc_cff")
 ## --- Monte Carlo ---
+#process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_WToMuNu_ApeSkim_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_WToMuNu_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_QcdMuPt10_ApeSkim_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_QcdMuPt10_cff")
 ## --- Run XXX-YYY, End of Year Reprocessing ---
 #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMinBias_Run2010A_Dec22ReReco_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMinBias_Run2010B_Dec22ReReco_cff")
@@ -63,17 +66,6 @@ process.options = cms.untracked.PSet(
 #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010A_Dec22ReReco_ApeSkim_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010B_Dec22ReReco_cff")
 process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010B_Dec22ReReco_ApeSkim_cff")
-#readFiles = cms.untracked.vstring()
-#process.source = cms.Source ("PoolSource",
-#    inputCommands = cms.untracked.vstring('keep *', 'drop *_MEtoEDMConverter_*_*'),
-#    fileNames = readFiles
-#)
-#readFiles.extend( [
-#    '/store/data/Run2010B/Mu/ALCARECO/TkAlMuonIsolated-Dec22ReReco_v1/0047/3CBB82EC-CB13-E011-AEAD-90E6BA442F41.root',
-#    'file:/tmp/hauk/reco1.root',
-#    'file:reco.root',
-#    'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/ParticleGunPion/RECO/reco1.root',
-#] );
 
 
 
@@ -81,7 +73,6 @@ process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010B_D
 ## Number of Events (should be after input file)
 ##
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
-#process.source.inputCommands = cms.untracked.vstring('keep *', 'drop *_MEtoEDMConverter_*_*') # hack to get rid of the memory consumption problem in 2_2_X and beond
 
 
 
@@ -203,12 +194,10 @@ process.ApeEstimator1.HitSelector.probX = []
 process.ApeEstimator1.HitSelector.phiSensX = []
 process.ApeEstimator1.HitSelector.phiSensY = []
 
-
 process.ApeEstimator2 = process.ApeEstimator1.clone(
     analyzerMode = True,
     calculateApe = False,
 )
-
 
 process.ApeEstimator3 = process.ApeEstimator2.clone(
     zoomHists = False,
@@ -230,7 +219,7 @@ process.TFileService = cms.Service("TFileService",
 ## Path
 ##
 process.p = cms.Path(
-    process.TriggerSelectionSequence*
+    #process.TriggerSelectionSequence*
     process.RefitterHighPuritySequence
     *(process.ApeEstimator1
      +process.ApeEstimator2
