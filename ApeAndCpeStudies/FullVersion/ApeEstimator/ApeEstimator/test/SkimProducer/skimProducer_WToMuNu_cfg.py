@@ -56,7 +56,7 @@ process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_WToMu
 ##
 ## Number of Events (should be after input file)
 ##
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 
 
@@ -100,8 +100,8 @@ process.MuSkim = ApeEstimator.ApeEstimator.AlignmentTrackSelector_cff.MuSkimSele
 ##
 process.path = cms.Path(
     #process.TriggerSelectionSequence*
-    process.TriggerHltMu9Sequence*
-    process.seqALCARECOTkAlMuonIsolated*
+    #process.TriggerHltMu9Sequence*
+    #process.seqALCARECOTkAlMuonIsolated*
     #process.MinBiasSkim
     process.MuSkim
 )
@@ -124,10 +124,9 @@ EventSelection = cms.PSet(
 ##
 process.out = cms.OutputModule("PoolOutputModule",
     ## Parameters directly for PoolOutputModule
-    #fileName = cms.untracked.string('rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/data/Mu/Run2010A_Dec22ReReco/apeSkim.root'),
-    #fileName = cms.untracked.string('rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Wmunu/apeSkim.root'),
-    fileName = cms.untracked.string('test.root'),
-    #fileName = cms.untracked.string('/afs/cern.ch/user/h/hauk/cms/CMSSW_3_9_7/src/ApeEstimator/ApeEstimator/crab/test.root'),
+    fileName = cms.untracked.string('rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Wmunu/apeSkim.root'),
+    #fileName = cms.untracked.string(os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/test.root'),
+    #fileName = cms.untracked.string('test.root'),
     #logicalFileName = cms.untracked.string(''),
     #catalog = cms.untracked.string(''),
     # Maximus size per file before a new one is created
@@ -151,14 +150,6 @@ process.out = cms.OutputModule("PoolOutputModule",
     SelectEvents = EventSelection.SelectEvents,
     outputCommands = cms.untracked.vstring(
         'drop *',
-	
-	#'keep *',
-        #'drop *_generator_*_*',
-        #'drop *_g4SimHits_*_*',
-        #'drop *_genParticles_*_*',
-        #'drop *TauDiscriminator_*_*_*',
-        #'drop *PF*_*_*_*',
-        #'drop *MET*_*_*_*',
     ),
 )
 process.load("ApeEstimator.ApeEstimator.PrivateSkim_EventContent_cff")
