@@ -4,7 +4,7 @@ import FWCore.ParameterSet.Config as cms
 
 
 
-process = cms.Process("Demo")
+process = cms.Process("Data")
 
 
 
@@ -49,7 +49,6 @@ process.options = cms.untracked.PSet(
 ##
 readFiles = cms.untracked.vstring()
 process.source = cms.Source ("PoolSource",
-    #inputCommands = cms.untracked.vstring('keep *', 'drop *_MEtoEDMConverter_*_*'),
     fileNames = readFiles
 )
 readFiles.extend( [
@@ -66,7 +65,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(_THE_MAXEVEN
 
 
 ##
-## Check run and event numbers for Dublicates
+## Check run and event numbers for Dublicates --- only for real data
 ##
 #process.source.duplicateCheckMode = cms.untracked.string("noDuplicateCheck")
 #process.source.duplicateCheckMode = cms.untracked.string("checkEachFile")
@@ -80,17 +79,17 @@ process.source.duplicateCheckMode = cms.untracked.string("checkEachRealDataFile"
 ##
 process.load("ApeEstimator.ApeEstimator.TrackRefitter_38T_cff")
 ## --- Monte Carlo for Particle Gun ---
-#process.GlobalTag.globaltag = 'DESIGN_39_V7::All'
-#process.GlobalTag.globaltag = 'MC_39Y_V7::All'
-#process.GlobalTag.globaltag = 'START39_V8::All'
+#process.GlobalTag.globaltag = 'DESIGN311_V2::All'
+#process.GlobalTag.globaltag = 'MC_311_V2::All'
+#process.GlobalTag.globaltag = 'START311_V2::All'
 ## --- Run XXX-YYY, End of Jear Reprocessing ---
-process.GlobalTag.globaltag = 'FT_R_39X_V4A::All'
+process.GlobalTag.globaltag = 'FT_R_311_V4A::All'
 
 ## --- Further information (Monte Carlo and Data) ---
 process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
 #process.TTRHBuilderGeometricAndTemplate.PixelCPE = 'PixelCPEGeneric'
-process.HighPuritySelector.src = 'MuSkim'
 #process.HighPuritySelector.src = 'generalTracks'
+process.HighPuritySelector.src = 'MuSkim'
 
 
 
@@ -116,13 +115,13 @@ import CalibTracker.Configuration.Common.PoolDBESSource_cfi
 process.myTrackerAlignmentErr = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
     connect = '_THE_ALIGNMENT_ERROR_RCD_CONNECT_',
     #connect = 'frontier://FrontierProd/CMS_COND_31X_FROM21X',
-    toGet = cms.VPSet(
+    toGet = [
       cms.PSet(
         record = cms.string('TrackerAlignmentErrorRcd'),
 	tag = cms.string('_THE_ALIGNMENT_ERROR_RCD_')
         #tag = cms.string('TrackerIdealGeometryErrors210_mc')
       )
-    )
+    ],
 )
 process.es_prefer_trackerAlignmentErr = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentErr")
 
@@ -169,7 +168,7 @@ process.TFileService = cms.Service("TFileService",
 ## Path
 ##
 process.p = cms.Path(
-    #process.TriggerSelectionSequence*       # omit trigger selection for particle gun
+    #process.TriggerSelectionSequence*
     process.RefitterHighPuritySequence*
     #process.ApeEstimator1
     #(process.ApeEstimator1 + process.ApeEstimator2)# + process.ApeEstimator3)
