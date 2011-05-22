@@ -62,40 +62,56 @@ nafJobSplitter.pl check mc/naf_zz_cfg
 
 # DATA
 
-nafJobSplitter.pl 10 run2011A_May7PromptReco_1_cfg.py
+nafJobSplitter.pl 5 run2011A_May7PromptReco_1_cfg.py
 nafJobSplitter.pl 30 run2011A_May7PromptReco_2_cfg.py
+nafJobSplitter.pl 10 run2011A_May7to13PromptReco_cfg.py
 
 
 
+# MC
 
+nafJobSplitter.pl 100 qcd_cfg.py
 nafJobSplitter.pl 2 singleTopS_cfg.py
 nafJobSplitter.pl 2 singleTopT_cfg.py
 nafJobSplitter.pl 2 singleTopTw_cfg.py
 nafJobSplitter.pl 10 ttbar_cfg.py
-nafJobSplitter.pl 2 vv_cfg.py
+nafJobSplitter.pl 20 wmunu_cfg.py
+nafJobSplitter.pl 20 wtaunu_cfg.py
+nafJobSplitter.pl 2 ww_cfg.py
+nafJobSplitter.pl 2 wz_cfg.py
 nafJobSplitter.pl 20 zmumu_cfg.py
 nafJobSplitter.pl 20 ztautau_cfg.py
-
+nafJobSplitter.pl 2 zz_cfg.py
 
 
 
 
 ## Check status of jobs
 
-# DATA
 
 nafJobSplitter.pl check data/naf_run2011A_May7PromptReco_1_cfg
 nafJobSplitter.pl check data/naf_run2011A_May7PromptReco_2_cfg
+nafJobSplitter.pl check data/naf_run2011A_May7to13PromptReco_cfg
 
 
 
+nafJobSplitter.pl check mc/naf_qcd_cfg
 nafJobSplitter.pl check mc/naf_singleTopS_cfg
 nafJobSplitter.pl check mc/naf_singleTopT_cfg
 nafJobSplitter.pl check mc/naf_singleTopTw_cfg
 nafJobSplitter.pl check mc/naf_ttbar_cfg
-nafJobSplitter.pl check mc/naf_vv_cfg
+nafJobSplitter.pl check mc/naf_wmunu_cfg
+nafJobSplitter.pl check mc/naf_wtaunu_cfg
+nafJobSplitter.pl check mc/naf_ww_cfg
+nafJobSplitter.pl check mc/naf_wz_cfg
 nafJobSplitter.pl check mc/naf_zmumu_cfg
 nafJobSplitter.pl check mc/naf_ztautau_cfg
+nafJobSplitter.pl check mc/naf_zz_cfg
+
+
+
+
+
 
 
 

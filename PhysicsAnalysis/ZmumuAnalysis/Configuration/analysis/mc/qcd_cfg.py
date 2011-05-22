@@ -72,8 +72,8 @@ elif(isData2):
 elif(isData3):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.dilepton.Run2011A_v2_May7_to_May13_cff")
 # MC
-elif(isQcd): # OLD
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.QCD_MuEnrichedPt15_pythia_F10_cff")
+elif(isQcd):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_QCD_MuEnrichedPt15_pythia_F10_cff")
 elif(isSingleTopS):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TToBLNu_TuneZ2_s_channel_7TeV_madgraph_cff")
 elif(isSingleTopTw):
@@ -83,9 +83,9 @@ elif(isSingleTopT):
 elif(isTtbar):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TTJets_D6T_madgraph_F10_cff")
 elif(isWmunu):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Spring11_WToMuNu_pythia_F10_cff")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_WToMuNu_pythia_F10_cff")
 elif(isWtaunu):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndFall10.samples.Spring11_WToTauNu_pythia_F10_cff")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_WToTauNu_pythia_F10_cff")
 elif(isZmumu):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_DYJetsToLL_M50_madgraph_F10_cff")
 elif(isZtautau):
