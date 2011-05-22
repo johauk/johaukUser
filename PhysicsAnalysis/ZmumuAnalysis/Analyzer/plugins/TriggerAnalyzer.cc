@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Tue Jun  8 11:21:18 CEST 2010
-// $Id: TriggerAnalyzer.cc,v 1.2 2010/07/02 15:44:18 hauk Exp $
+// $Id: TriggerAnalyzer.cc,v 1.3 2010/08/20 11:51:28 hauk Exp $
 //
 //
 
@@ -143,7 +143,10 @@ TriggerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   const unsigned int nTrigPath(hltPaths_.size());
   const edm::TriggerNames trigNames = iEvent.triggerNames(*trigResults);
   for(size_t iTrig=0; iTrig<nTrig; ++iTrig){
-    //std::cout<<"Trigger name: "<<trigNames.triggerName(iTrig)<<"\n";
+    if(n_events_==0){
+      const bool printTriggerNames(parameterSet_.getParameter<bool>("printTriggerNames"));
+      if(printTriggerNames)std::cout<<"Trigger name: "<<trigNames.triggerName(iTrig)<<"\n";
+    }
     if(!trigResults.product()->accept(iTrig))continue;
     for(size_t iTrigPath=0; iTrigPath<nTrigPath; ++iTrigPath){
       if(trigNames.triggerName(iTrig)!=hltPaths_[iTrigPath])continue;

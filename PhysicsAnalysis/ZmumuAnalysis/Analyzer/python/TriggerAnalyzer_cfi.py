@@ -22,4 +22,5 @@ TriggerAnalyzer = cms.EDAnalyzer('TriggerAnalyzer',
       'HLT_Mu3_L1MuOpen',
       'HLT_Mu5_L1MuOpen'
     ),
+    printTriggerNames = cms.bool(False),
 )

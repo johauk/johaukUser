@@ -30,12 +30,15 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
 ## Analyzer under test
 process.load("ZmumuAnalysis.Analyzer.TriggerAnalyzer_cfi")
 process.TriggerAnalyzer1 = process.TriggerAnalyzer.clone(
+    triggerResults = cms.InputTag('TriggerResults','','REDIGI311X'),
+    printTriggerNames = True,
 )
 process.TriggerAnalyzer2 = process.TriggerAnalyzer1.clone(
     hltPaths = [
       'HLT_DoubleMu3',
       'HLT_Mu9',
     ],
+    printTriggerNames = False,
 )
 
 
