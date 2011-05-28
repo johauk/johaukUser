@@ -22,8 +22,8 @@ isData3 = False
 # MC samples
 isQcd = False
 isSingleTopS = False
-isSingleTopTw = False
 isSingleTopT = False
+isSingleTopTw = False
 isTtbar = False
 isWmunu = False
 isWtaunu = False
@@ -44,8 +44,8 @@ if(isData3): counter += 1; isData = True
 # MC
 if(isQcd): counter += 1; isMC = True
 if(isSingleTopS): counter += 1; isMC = True
-if(isSingleTopTw): counter += 1; isMC = True
 if(isSingleTopT): counter += 1; isMC = True
+if(isSingleTopTw): counter += 1; isMC = True
 if(isTtbar): counter += 1; isMC = True
 if(isWmunu): counter += 1; isMC = True
 if(isWtaunu): counter += 1; isMC = True
@@ -76,9 +76,9 @@ elif(isQcd):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_QCD_MuEnrichedPt15_pythia_F10_cff")
 elif(isSingleTopS):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TToBLNu_TuneZ2_s_channel_7TeV_madgraph_cff")
-elif(isSingleTopTw):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TToBLNu_TuneZ2_t_channel_7TeV_madgraph_cff")
 elif(isSingleTopT):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TToBLNu_TuneZ2_t_channel_7TeV_madgraph_cff")
+elif(isSingleTopTw):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TToBLNu_madgraph_F10_cff")
 elif(isTtbar):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TTJets_D6T_madgraph_F10_cff")
@@ -142,8 +142,8 @@ elif(isData3): fileName = 'data/run2011A_May7to13PromptReco.root'
 # MC
 elif(isQcd): fileName = 'mc/qcd.root'
 elif(isSingleTopS): fileName = 'mc/singleTopS.root'
-elif(isSingleTopTw): fileName = 'mc/singleTopTw.root'
 elif(isSingleTopT): fileName = 'mc/singleTopT.root'
+elif(isSingleTopTw): fileName = 'mc/singleTopTw.root'
 elif(isTtbar): fileName = 'mc/ttbar.root'
 elif(isWmunu): fileName = 'mc/wmunu.root'
 elif(isWtaunu): fileName = 'mc/wtaunu.root'
