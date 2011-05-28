@@ -27,6 +27,8 @@ ApeEstimatorTemplate = cms.EDAnalyzer('ApeEstimator',
       maxCharge = cms.vdouble(),
       chargeOnEdges = cms.vdouble(),    # fraction of charge on edge strips of cluster
       chargeAsymmetry = cms.vdouble(),     # asymmetry of charge on edge strips of cluster
+      chargeLRplus = cms.vdouble(),    # fraction of charge left and right from strip with maxCharge
+      chargeLRminus = cms.vdouble(),     # asymmetry of charge left and right from strip with maxCharge
       maxIndex = cms.vuint32(),
       sOverN = cms.vdouble(),
       
