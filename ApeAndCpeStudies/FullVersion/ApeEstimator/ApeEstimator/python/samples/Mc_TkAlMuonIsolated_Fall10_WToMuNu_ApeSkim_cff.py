@@ -8,8 +8,10 @@ source = cms.Source ("PoolSource",fileNames = readFiles, secondaryFileNames = se
 
 readFiles.extend( [
 
-       'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Qcd/apeSkim1.root',
-       'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Qcd/apeSkim2.root',
-       'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Qcd/apeSkim3.root',
+       'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Wmunu/apeSkim1.root',
+       'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Wmunu/apeSkim2.root',
+       'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Wmunu/apeSkim3.root',
+       'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Wmunu/apeSkim4.root',
+       'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Wmunu/apeSkim5.root',
 
 ] )
