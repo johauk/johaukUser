@@ -25,7 +25,7 @@ const TString* outform = new TString(".png");
 const size_t nFiles = 12;
 
 // Integrated lumi of taken data for normalising MC in pb-1
-const Double_t dataLumi(35.9);
+const Double_t dataLumi(191.0);
 
 
 void JetPlots(TString pluginSuffix = ""){
@@ -42,7 +42,7 @@ void JetPlots(TString pluginSuffix = ""){
   a_file[5]=new TFile(inpath->Copy().Append("mc/ztautau.root"));
   a_file[6]=new TFile(inpath->Copy().Append("mc/wmunu.root"));
   a_file[7]=new TFile(inpath->Copy().Append("mc/wtaunu.root"));
-  a_file[8]=new TFile(inpath->Copy().Append("mc/singleTop.root"));
+  a_file[8]=new TFile(inpath->Copy().Append("mc/singleTopTw.root"));
   a_file[9]=new TFile(inpath->Copy().Append("mc/ttbar.root"));
   a_file[10]=new TFile(inpath->Copy().Append("mc/qcd.root"));
   

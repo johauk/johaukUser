@@ -24,7 +24,7 @@ sumTriggerReports2.pl $DIRBASE/analysis/data/naf_run2011A_May7PromptReco_1_cfg/o
 sumTriggerReports2.pl $DIRBASE/analysis/data/naf_run2011A_May7PromptReco_2_cfg/out*.txt > $DIRBASE/hists/data/run2011A_May7PromptReco_2.txt
 sumTriggerReports2.pl $DIRBASE/analysis/data/naf_run2011A_May7to13PromptReco_cfg/out*.txt > $DIRBASE/hists/data/run2011A_May7to13PromptReco.txt
 
-sumTriggerReports2.pl $DIRBASE/hists/data/run2011*_May7PromptReco*.txt > $DIRBASE/hists/data/allData.txt
+sumTriggerReports2.pl $DIRBASE/hists/data/run2011*PromptReco*.txt > $DIRBASE/hists/data/allData.txt
 
 
 

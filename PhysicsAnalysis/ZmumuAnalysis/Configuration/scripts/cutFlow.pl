@@ -14,11 +14,13 @@
 #    to appear in the table
 
 # integrated luminosity of data in /pb
-my $lumi = 35.9;
+my $lumi = 191.0;
 
 # input files (last file is for data)
 my @files = ("mc/qcd.txt",
-             "mc/singleTop.txt",
+             "mc/singleTopS.txt",
+	     "mc/singleTopT.txt",
+	     "mc/singleTopTw.txt",
 	     "mc/ttbar.txt",
 	     "mc/wmunu.txt",
 	     "mc/wtaunu.txt",
@@ -32,23 +34,25 @@ my @files = ("mc/qcd.txt",
 	    );
 
 # cross section over number of events	    
-my @weights = ($lumi*296600.*0.2855/29504866.,
-               $lumi*10.6/494961.,
-	       $lumi*157.5/1306182.,
-	       $lumi*10438./5323040.,
-	       $lumi*10438./5221750.,
+my @weights = ($lumi*296600.*0.2855/29434562.,
+               $lumi*4.6/494967.,
+	       $lumi*64.6/489417.,
+	       $lumi*10.6/484060.,
+	       $lumi*157.5/1286491.,
+	       $lumi*10438./5038640.,
+	       $lumi*10438./4773750.,
 	       $lumi*4.51/110000.,
 	       $lumi*0.61/110000.,
-	       $lumi*7.4/110000.,
-	       $lumi*3048./2543383.,
-	       $lumi*3048./2604559.,
+	       $lumi*7.4/2108608.,
+	       $lumi*3048./2329439.,
+	       $lumi*3048./2329439.,
 	      ); #for data no weight is needed so 
 	         #weight array is 1 shorter then files array	    
 
 # modules which you want to appear in cutflow
 my @modules = ("EventCounter0",
                "oneGoodPVSelection",
-	       "triggerFilter1",
+	       "TriggerFilter",
 	       "oneTightMuonSelection",
 	       "tightMuonSelection",
 	       "tightHltMuonSelection",
@@ -63,8 +67,8 @@ my @modules = ("EventCounter0",
 	       "oneFinalJetSelection",
 	       "oneBSsvHeMJetSelection",
 	       "goodMetSelection",
-	       "twoFinalJetSelection",
 	       "oneBSsvHpTJetSelection",
+	       "twoFinalJetSelection",
 	       "twoBSsvHpTJetSelection"
               );
 	      	      	    

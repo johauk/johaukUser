@@ -484,16 +484,16 @@ void HistogramTools::SetWeights(TH1F* hist[], Double_t dataLumi, size_t n)
     // eventweights
     switch(i){
       //case  0 : if(hist[i]) hist[i]->Scale(1. ); break;    
-      case  1 : nEvents = 2604559.; crossSection = 3048.; filterEfficiency = 1.; break;
-      case  2 : nEvents = 110000.; crossSection = 7.4; filterEfficiency = 1.; break;  
+      case  1 : nEvents = 2329439.; crossSection = 3048.; filterEfficiency = 1.; break;
+      case  2 : nEvents = 2108608.; crossSection = 7.4; filterEfficiency = 1.; break;  
       case  3 : nEvents = 110000.; crossSection = 0.61; filterEfficiency = 1.; break;     
       case  4 : nEvents = 110000.; crossSection = 4.51; filterEfficiency = 1.; break;      
-      case  5 : nEvents = 2543383.; crossSection = 3048.; filterEfficiency = 1.; break;      
-      case  6 : nEvents = 5323040.; crossSection = 10438.; filterEfficiency = 1.; break;      
-      case  7 : nEvents = 5221750.; crossSection = 10438.; filterEfficiency = 1.; break;      
-      case  8 : nEvents = 494961.; crossSection = 10.6; filterEfficiency = 1.; break;       
-      case  9 : nEvents = 1306182.; crossSection = 157.5; filterEfficiency = 1.; break; 
-      case 10 : nEvents = 29504866.; crossSection = 296600.; filterEfficiency = 0.2864; break;  // real values: crossSection*1000, filterEfficiency/1000
+      case  5 : nEvents = 2329439.; crossSection = 3048.; filterEfficiency = 1.; break;      
+      case  6 : nEvents = 5038640.; crossSection = 10438.; filterEfficiency = 1.; break;      
+      case  7 : nEvents = 4773750.; crossSection = 10438.; filterEfficiency = 1.; break;      
+      case  8 : nEvents = 489417.; crossSection = 10.6; filterEfficiency = 1.; break;       
+      case  9 : nEvents = 1286491.; crossSection = 157.5; filterEfficiency = 1.; break; 
+      case 10 : nEvents = 29434562.; crossSection = 296600.; filterEfficiency = 0.2864; break;  // real values: crossSection*1000, filterEfficiency/1000
       default: continue;      
     }
     if(i>=1 && i<n && hist[i]){

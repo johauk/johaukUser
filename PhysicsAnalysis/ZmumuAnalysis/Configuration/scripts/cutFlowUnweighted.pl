@@ -14,11 +14,13 @@
 #    to appear in the table
 
 # integrated luminosity of data in /pb
-my $lumi = 35.9;
+my $lumi = 191.0;
 
 # input files (last file is for data)
 my @files = ("mc/qcd.txt",
-             "mc/singleTop.txt",
+             "mc/singleTopS.txt",
+	     "mc/singleTopT.txt",
+	     "mc/singleTopTw.txt",
 	     "mc/ttbar.txt",
 	     "mc/wmunu.txt",
 	     "mc/wtaunu.txt",
@@ -41,14 +43,16 @@ my @weights = (1.,
 	       1.,
 	       1.,
 	       1.,
-	       1.
+	       1.,
+	       1.,
+	       1.,
 	      ); #for data no weight is needed so 
 	         #weight array is 1 shorter then files array	    
 
 # modules which you want to appear in cutflow
 my @modules = ("EventCounter0",
                "oneGoodPVSelection",
-	       "triggerFilter1",
+	       "TriggerFilter",
 	       "oneTightMuonSelection",
 	       "tightMuonSelection",
 	       "tightHltMuonSelection",
@@ -63,8 +67,8 @@ my @modules = ("EventCounter0",
 	       "oneFinalJetSelection",
 	       "oneBSsvHeMJetSelection",
 	       "goodMetSelection",
-	       "twoFinalJetSelection",
 	       "oneBSsvHpTJetSelection",
+	       "twoFinalJetSelection",
 	       "twoBSsvHpTJetSelection"
               );
 	      	      	    
