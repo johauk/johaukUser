@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.5 2011/05/12 17:48:41 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.6 2011/05/19 13:49:08 hauk Exp $
 //
 //
 
@@ -523,7 +523,7 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     double probXMin = zoomHists ? -0.01 :  -0.1;
     double probXMax = zoomHists ? 0.11 :  1.1;
     double sigmaXMin = zoomHists ? 0. : -0.05;
-    double sigmaXMax = zoomHists ? 0.1 : 1.;
+    double sigmaXMax = zoomHists ? 0.02 : 1.;
     double sigmaX2Max = sigmaXMax*sigmaXMax;
     double sigmaXHitMax = zoomHists ? 0.02 : 1.;
     
@@ -557,8 +557,10 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     (*i_sector).second.m_correlationHists["MaxStrip"] = (*i_sector).second.bookCorrHists("MaxStrip","strip with max. charge","n_{cl,max}","[# strips]",800,800,-10.,790.,"npht");
     (*i_sector).second.m_correlationHists["MaxCharge"] = (*i_sector).second.bookCorrHists("MaxCharge","charge of strip with max. charge","c_{cl,max}","[APV counts]",300,75,-10.,290.,"nph");
     (*i_sector).second.m_correlationHists["MaxIndex"] = (*i_sector).second.bookCorrHists("MaxIndex","cluster-index of strip with max. charge","i_{cl,max}","[# strips]",10,10,0.,10.,"nph");
-    (*i_sector).second.m_correlationHists["ChargeOnEdges"] = (*i_sector).second.bookCorrHists("ChargeOnEdges","fraction of charge on edge strips","(c_{cl,L}+c_{cl,R})/c_{cl}","",60,60,-0.1,1.1,"nph");
-    (*i_sector).second.m_correlationHists["ChargeAsymmetry"] = (*i_sector).second.bookCorrHists("ChargeAsymmetry","asymmetry of charge on edge strips","(c_{cl,L}-c_{cl,R})/c_{cl}","",110,55,-1.1,1.1,"nph");
+    (*i_sector).second.m_correlationHists["ChargeOnEdges"] = (*i_sector).second.bookCorrHists("ChargeOnEdges","fraction of charge on edge strips","(c_{st,L}+c_{st,R})/c_{cl}","",60,60,-0.1,1.1,"nph");
+    (*i_sector).second.m_correlationHists["ChargeAsymmetry"] = (*i_sector).second.bookCorrHists("ChargeAsymmetry","asymmetry of charge on edge strips","(c_{st,L}-c_{st,R})/c_{cl}","",110,55,-1.1,1.1,"nph");
+    (*i_sector).second.m_correlationHists["ChargeLRplus"] = (*i_sector).second.bookCorrHists("ChargeLRplus","fraction of charge not on maxStrip","(c_{cl,L}+c_{cl,R})/c_{cl}","",60,60,-0.1,1.1,"nph");
+    (*i_sector).second.m_correlationHists["ChargeLRminus"] = (*i_sector).second.bookCorrHists("ChargeLRminus","asymmetry of charge L and R of maxStrip","(c_{cl,L}-c_{cl,R})/c_{cl}","",110,55,-1.1,1.1,"nph");
     (*i_sector).second.m_correlationHists["BaryStrip"] = (*i_sector).second.bookCorrHists("BaryStrip","barycenter of cluster charge","b_{cl}","[# strips]",800,100,-10.,790.,"nph");
     (*i_sector).second.m_correlationHists["SOverN"] = (*i_sector).second.bookCorrHists("SOverN","signal over noise","s/N","",100,50,0,sOverNMax,"nph");
     (*i_sector).second.m_correlationHists["WidthProj"] = (*i_sector).second.bookCorrHists("WidthProj","projected width","w_{p}","[# strips]",200,20,0.,widthMax,"nph");
@@ -803,9 +805,14 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
   
   if(parameterSet_.getParameter<bool>("applyTrackCuts")){
     trackCut_ = false;
-    if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.hitsPixel<1 || //trkParams.hitsInvalid>2 ||
-       trkParams.pt<15. || trkParams.p>100. || 
+    if(trkParams.hitsStrip<11 || trkParams.hits2D<2 || trkParams.hitsPixel<2 || //trkParams.hitsInvalid>2 ||
+       trkParams.hitsStrip>18 || trkParams.hitsPixel>5 ||
+       trkParams.norChi2>5 ||
+       trkParams.pt<15. || trkParams.pt>100. || 
        std::fabs(trkParams.d0Beamspot)>0.1 || std::fabs(trkParams.dz)>10.)trackCut_ = true;
+    //if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.hitsPixel<1 || //trkParams.hitsInvalid>2 ||
+    //   trkParams.pt<15. || trkParams.p>100. || 
+    //   std::fabs(trkParams.d0Beamspot)>0.1 || std::fabs(trkParams.dz)>10.)trackCut_ = true;
     //if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.hitsPixel<1 || //trkParams.hitsInvalid>2 ||
     //   trkParams.pt<10. || trkParams.p<20. || trkParams.p>250. || 
     //   std::fabs(trkParams.d0Beamspot)>0.1 || std::fabs(trkParams.dz)>10.)trackCut_ = true;
@@ -1045,6 +1052,10 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
     }
     const SiStripCluster& stripCluster(*clusterPtr);
     const SiStripClusterInfo clusterInfo = SiStripClusterInfo(stripCluster, iSetup);
+    //const std::vector<uint8_t>& stripCharges = clusterInfo.stripCharges();
+    const std::vector<uint8_t>::const_iterator stripChargeL(clusterInfo.stripCharges().begin());
+    const std::vector<uint8_t>::const_iterator stripChargeR(--(clusterInfo.stripCharges().end()));
+    const std::pair<uint16_t, uint16_t> stripChargeLR = std::make_pair(*stripChargeL,*stripChargeR);
     
     hitParams.isModuleUsable   = clusterInfo.IsModuleUsable();
     hitParams.width            = clusterInfo.width();
@@ -1053,8 +1064,10 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
     hitParams.charge           = clusterInfo.charge();
     hitParams.maxCharge        = clusterInfo.maxCharge();
     hitParams.maxIndex         = clusterInfo.maxIndex();
-    hitParams.chargeOnEdges    = static_cast<float>(clusterInfo.chargeLR().first + clusterInfo.chargeLR().second)/static_cast<float>(hitParams.charge);
-    hitParams.chargeAsymmetry  = static_cast<float>(clusterInfo.chargeLR().first - clusterInfo.chargeLR().second)/static_cast<float>(hitParams.charge);
+    hitParams.chargeOnEdges    = static_cast<float>(stripChargeLR.first + stripChargeLR.second)/static_cast<float>(hitParams.charge);
+    hitParams.chargeAsymmetry  = static_cast<float>(stripChargeLR.first - stripChargeLR.second)/static_cast<float>(stripChargeLR.first + stripChargeLR.second);
+    hitParams.chargeLRplus     = static_cast<float>(clusterInfo.chargeLR().first + clusterInfo.chargeLR().second)/static_cast<float>(hitParams.charge);
+    hitParams.chargeLRminus    = static_cast<float>(clusterInfo.chargeLR().first - clusterInfo.chargeLR().second)/static_cast<float>(hitParams.charge);
     hitParams.baryStrip        = clusterInfo.baryStrip() +1.;
     hitParams.sOverN           = clusterInfo.signalOverNoise();
     
@@ -1145,6 +1158,8 @@ ApeEstimator::hitSelection(){
   this->setHitSelectionMapUInt("maxIndex");
   this->setHitSelectionMap("chargeOnEdges");
   this->setHitSelectionMap("chargeAsymmetry");
+  this->setHitSelectionMap("chargeLRplus");
+  this->setHitSelectionMap("chargeLRminus");
   this->setHitSelectionMap("sOverN");
   
   this->setHitSelectionMap("resX");
@@ -1263,6 +1278,8 @@ ApeEstimator::hitSelected(const TrackStruct::HitParameterStruct& hitParams)const
     else if((*i_hitSelection).first == "maxCharge")       variable = hitParams.maxCharge;
     else if((*i_hitSelection).first == "chargeOnEdges")   variable = hitParams.chargeOnEdges;
     else if((*i_hitSelection).first == "chargeAsymmetry") variable = hitParams.chargeAsymmetry;
+    else if((*i_hitSelection).first == "chargeLRplus")    variable = hitParams.chargeLRplus;
+    else if((*i_hitSelection).first == "chargeLRminus")   variable = hitParams.chargeLRminus;
     else if((*i_hitSelection).first == "sOverN")          variable = hitParams.sOverN;
     
     else if((*i_hitSelection).first == "resX")            variable = hitParams.resX;
@@ -1277,10 +1294,12 @@ ApeEstimator::hitSelected(const TrackStruct::HitParameterStruct& hitParams)const
     else if((*i_hitSelection).first == "phiSensY")        variable = hitParams.phiSensY;
     
     int entry(1); double intervalBegin(999.);
+    bool isSelected(false);
     for(std::vector<double>::const_iterator i_hitInterval = (*i_hitSelection).second.begin(); i_hitInterval != (*i_hitSelection).second.end(); ++i_hitInterval, ++entry){
       if(entry%2==1)intervalBegin = *i_hitInterval;
-      else if(variable < intervalBegin || variable >= *i_hitInterval)return false;
+      else if(variable>=intervalBegin && variable<*i_hitInterval)isSelected = true;
     }
+    if(!isSelected)return false;
   }
   
   for(std::map<std::string, std::vector<unsigned int> >::const_iterator i_hitSelection = m_hitSelectionUInt_.begin(); i_hitSelection != m_hitSelectionUInt_.end(); ++i_hitSelection){
@@ -1292,11 +1311,14 @@ ApeEstimator::hitSelected(const TrackStruct::HitParameterStruct& hitParams)const
     else if((*i_hitSelection).first == "maxIndex")   variable = hitParams.maxIndex;
     
     int entry(1); unsigned int intervalBegin(999);
+    bool isSelected(false);
     for(std::vector<unsigned int>::const_iterator i_hitInterval = (*i_hitSelection).second.begin(); i_hitInterval != (*i_hitSelection).second.end(); ++i_hitInterval, ++entry){
       if(entry%2==1)intervalBegin = *i_hitInterval;
-      else if(variable < intervalBegin || variable > *i_hitInterval)return false;
-      else if(variable2 != 999 && (variable2 < intervalBegin || variable2 > *i_hitInterval))return false;
+      else if(variable>=intervalBegin && variable<=*i_hitInterval){
+        if(variable2==999 || (variable2>=intervalBegin && variable2<=*i_hitInterval))isSelected = true;
+      }
     }
+    if(!isSelected)return false;
   }
   
   return true;
@@ -1366,6 +1388,8 @@ ApeEstimator::fillHistsForAnalyzerMode(const TrackStruct& trackStruct){
       (*i_sector).second.m_correlationHists["MaxIndex"].fillCorrHists(*i_hit,(*i_hit).maxIndex);
       (*i_sector).second.m_correlationHists["ChargeOnEdges"].fillCorrHists(*i_hit,(*i_hit).chargeOnEdges);
       (*i_sector).second.m_correlationHists["ChargeAsymmetry"].fillCorrHists(*i_hit,(*i_hit).chargeAsymmetry);
+      (*i_sector).second.m_correlationHists["ChargeLRplus"].fillCorrHists(*i_hit,(*i_hit).chargeLRplus);
+      (*i_sector).second.m_correlationHists["ChargeLRminus"].fillCorrHists(*i_hit,(*i_hit).chargeLRminus);
       (*i_sector).second.m_correlationHists["BaryStrip"].fillCorrHists(*i_hit,(*i_hit).baryStrip);
       (*i_sector).second.m_correlationHists["SOverN"].fillCorrHists(*i_hit,(*i_hit).sOverN);
       (*i_sector).second.m_correlationHists["WidthProj"].fillCorrHists(*i_hit,(*i_hit).projWidth);
