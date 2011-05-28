@@ -130,7 +130,7 @@ process.out = cms.OutputModule("PoolOutputModule",
     #logicalFileName = cms.untracked.string(''),
     #catalog = cms.untracked.string(''),
     # Maximus size per file before a new one is created
-    maxSize = cms.untracked.int32(2000000),
+    maxSize = cms.untracked.int32(500000),
     #compressionLevel = cms.untracked.int32(0),
     #basketSize = cms.untracked.int32(0),
     #splitLevel = cms.untracked.int32(0),

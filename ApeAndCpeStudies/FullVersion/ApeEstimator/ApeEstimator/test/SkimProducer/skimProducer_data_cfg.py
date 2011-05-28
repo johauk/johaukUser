@@ -31,11 +31,6 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000 ## really show only ever
 ##
 process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(True),
-    ## Do not use 'NOMERGE' for skimming, else there is one output file per input file!!!
-    #fileMode  =  cms.untracked.string('FULLMERGE'),  # any file order (default): caches all lumi/run products (memory!)
-    #fileMode  =  cms.untracked.string('MERGE'),  # needs files sorted in run and within run in lumi sections (hard to achieve)
-    #fileMode  =  cms.untracked.string('FULLLUMIMERGE'),  # needs files sorted in run, caches lumi
-    #fileMode  =  cms.untracked.string('NOMERGE'),  # no ordering needed, but calls endRun/beginRun etc. at file boundaries
 )
 
 
@@ -48,6 +43,8 @@ process.options = cms.untracked.PSet(
 #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunAntiPion_mc_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunBothPion_mc_cff")
 ## --- Monte Carlo ---
+#process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_WToMuNu_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_QcdMuPt10_cff")
 ## --- Run XXX-YYY, End of Year Reprocessing ---
 #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMinBias_Run2010A_Dec22ReReco_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMinBias_Run2010B_Dec22ReReco_cff")
@@ -59,8 +56,7 @@ process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010B_D
 ##
 ## Number of Events (should be after input file)
 ##
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
-#process.source.inputCommands = cms.untracked.vstring('keep *', 'drop *_MEtoEDMConverter_*_*') # hack to get rid of the memory consumption problem in 2_2_X and beond
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 
 
@@ -94,7 +90,8 @@ process.MuSkim = ApeEstimator.ApeEstimator.AlignmentTrackSelector_cff.MuSkimSele
 ## Path
 ##
 process.path = cms.Path(
-    process.TriggerSelectionSequence*
+    #process.TriggerSelectionSequence*
+    #process.TriggerHltMu9Sequence*
     #process.MinBiasSkim
     process.MuSkim
 )
@@ -118,12 +115,13 @@ EventSelection = cms.PSet(
 process.out = cms.OutputModule("PoolOutputModule",
     ## Parameters directly for PoolOutputModule
     #fileName = cms.untracked.string('rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/data/Mu/Run2010A_Dec22ReReco/apeSkim.root'),
-    #fileName = cms.untracked.string('rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/data/Mu/Run2010B_Dec22ReReco/apeSkim.root'),
-    fileName = cms.untracked.string('test.root'),
+    fileName = cms.untracked.string('rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/data/Mu/Run2010B_Dec22ReReco/apeSkim.root'),
+    #fileName = cms.untracked.string(os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/test.root'),
+    #fileName = cms.untracked.string('test.root'),
     #logicalFileName = cms.untracked.string(''),
     #catalog = cms.untracked.string(''),
     # Maximus size per file before a new one is created
-    maxSize = cms.untracked.int32(2000000),
+    maxSize = cms.untracked.int32(500000),
     #compressionLevel = cms.untracked.int32(0),
     #basketSize = cms.untracked.int32(0),
     #splitLevel = cms.untracked.int32(0),
@@ -141,7 +139,9 @@ process.out = cms.OutputModule("PoolOutputModule",
     
     ## Parameters for inherited OutputModule
     SelectEvents = EventSelection.SelectEvents,
-    outputCommands = cms.untracked.vstring('keep *'),
+    outputCommands = cms.untracked.vstring(
+        'drop *',
+    ),
 )
 process.load("ApeEstimator.ApeEstimator.PrivateSkim_EventContent_cff")
 process.out.outputCommands.extend(process.ApeSkimEventContent.outputCommands)
