@@ -27,7 +27,8 @@ struct TrackStruct{
     // cluster parameters
     bool isModuleUsable;
     unsigned int width, charge, maxStrip, maxStripInv, maxCharge, maxIndex;
-    float chargeOnEdges, chargeAsymmetry;
+    float chargeOnEdges, chargeAsymmetry,
+          chargeLRplus, chargeLRminus;
     float baryStrip, sOverN;
     float projWidth;
     // trackFit results
