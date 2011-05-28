@@ -23,7 +23,7 @@ INPUTBASE1="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk\/data\/Mu\/Run2010B_D
 
 
 ## number of input files
-declare -i nFiles1=8
+declare -i nFiles1=17
 
 
 

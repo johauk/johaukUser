@@ -55,9 +55,9 @@ process.options = cms.untracked.PSet(
 #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunAntiMuon_mc_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunBothMuon_mc_cff")
 ## --- Monte Carlo ---
-process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_WToMuNu_ApeSkim_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_WToMuNu_ApeSkim_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_WToMuNu_cff")
-#process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_QcdMuPt10_ApeSkim_cff")
+process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_QcdMuPt10_ApeSkim_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_QcdMuPt10_cff")
 ## --- Run XXX-YYY, End of Year Reprocessing ---
 #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMinBias_Run2010A_Dec22ReReco_cff")
@@ -184,6 +184,7 @@ process.ApeEstimator1 = ApeEstimator.clone(
     analyzerMode = False,
 )
 process.ApeEstimator1.HitSelector.width = []
+process.ApeEstimator1.HitSelector.maxIndex = []
 process.ApeEstimator1.HitSelector.widthProj = []
 process.ApeEstimator1.HitSelector.widthDiff = []
 process.ApeEstimator1.HitSelector.edgeStrips = []
