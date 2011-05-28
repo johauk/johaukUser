@@ -5,8 +5,9 @@
 ## identification name of dataset --- This is the only thing to change for different datasets
 #DATASETNAME1="antiPion"
 #DATASETNAME1="antiMuon"
-DATASETNAME1="wmunu"
+#DATASETNAME1="wmunu"
 #DATASETNAME1="qcd"
+DATASETNAME1="ideal"
 ## input template file to configure
 TEMPLATEFILE="cfgTemplate_cfg.py"
 ## composition of output file name for configured files
@@ -19,13 +20,15 @@ OUTPUTSUFFIX="_cfg.py"
 ## name of input files
 #INPUTBASE1="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk\/mc\/ParticleGunAntiPion\/RECO\/reco"
 #INPUTBASE1="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk\/mc\/ParticleGunAntiMuon\/RECO\/reco"
-INPUTBASE1="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk\/mc\/Wmunu\/apeSkim"
-#INPUTBASE1="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk\/mc\/Qcd\/apeSkim"
+#INPUTBASE1="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk\/mc\/Wmunu\/apeSkim"
+INPUTBASE1="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk\/mc\/Qcd\/apeSkim"
 
 
 
 ## number of input files
-declare -i nFiles1=2
+#declare -i nFiles1=9
+# To take also one Wmunu sample, set to 10
+declare -i nFiles1=10
 
 
 
