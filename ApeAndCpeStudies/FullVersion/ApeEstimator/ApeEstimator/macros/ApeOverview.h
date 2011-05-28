@@ -22,7 +22,7 @@ class ApeOverview{
       
       void onlyZoomedHists();  // if wanted, has to be set before getOverview()
       
-      void setSectorsForOverview(const TString sectors);  // comma separated list; if wanted, has to be set before getOverview()
+      void setSectorsForOverview(const TString& sectors);  // comma separated list; if wanted, has to be set before getOverview()
       
       void getOverview();
       

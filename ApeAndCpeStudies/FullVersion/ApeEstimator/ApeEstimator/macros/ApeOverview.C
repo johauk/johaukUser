@@ -40,24 +40,24 @@ ApeOverview::onlyZoomedHists(){
 
 
 void
-ApeOverview::setSectorsForOverview(const TString sectors){
+ApeOverview::setSectorsForOverview(const TString& sectors){
   //std::vector<>
-  TObjArray* aSector = TString(sectors).Tokenize(",");
-  for(Int_t iSec= 0; iSec < aSector->GetEntriesFast(); ++iSec){
+  TObjArray* a_Sector = TString(sectors).Tokenize(",");
+  for(Int_t iSec= 0; iSec < a_Sector->GetEntriesFast(); ++iSec){
     
-    TString sector = aSector->At(iSec)->GetName();
+    const TString& sectorNumber = a_Sector->At(iSec)->GetName();
     bool validSectorArgument(false);
     for(unsigned int i = 0; i<20000 ; ++i){
       std::stringstream ssSec;
       ssSec << i;
-      if(ssSec.str().c_str() == sector){
+      if(ssSec.str().c_str() == sectorNumber){
         vSelectedSector_.push_back(i);
-	std::cout<<"\n\tPrint overview for Sector:\t"<<sector<<"\n";
+	std::cout<<"\n\tPrint overview for Sector:\t"<<sectorNumber<<"\n";
 	validSectorArgument = true;
 	break;
       }
     }
-    if(!validSectorArgument)std::cout<<"\n\tWrong argument in comma separated sector list:\t"<<sector<<"\n";
+    if(!validSectorArgument)std::cout<<"\n\tWrong argument in comma separated sector list:\t"<<sectorNumber<<"\n";
   }
 }
 
