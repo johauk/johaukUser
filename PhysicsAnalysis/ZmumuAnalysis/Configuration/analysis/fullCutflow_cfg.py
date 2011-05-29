@@ -28,6 +28,8 @@ isTtbar = False
 isWmunu = False
 isWtaunu = False
 isZmumu = False
+isZmumuB = False
+isZmumuUdsc = False
 isZtautau = False
 isWw = False
 isWz = False
@@ -50,6 +52,8 @@ if(isTtbar): counter += 1; isMC = True
 if(isWmunu): counter += 1; isMC = True
 if(isWtaunu): counter += 1; isMC = True
 if(isZmumu): counter += 1; isMC = True
+if(isZmumuB): counter += 1; isMC = True
+if(isZmumuUdsc): counter += 1; isMC = True
 if(isZtautau): counter += 1; isMC = True
 if(isWw): counter += 1; isMC = True
 if(isWz): counter += 1; isMC = True
@@ -87,6 +91,10 @@ elif(isWmunu):
 elif(isWtaunu):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_WToTauNu_pythia_F10_cff")
 elif(isZmumu):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_DYJetsToLL_M50_madgraph_F10_cff")
+elif(isZmumuB):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_DYJetsToLL_M50_madgraph_F10_cff")
+elif(isZmumuUdsc):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_DYJetsToLL_M50_madgraph_F10_cff")
 elif(isZtautau):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_DYJetsToLL_M50_madgraph_F10_cff")
@@ -148,6 +156,8 @@ elif(isTtbar): fileName = 'mc/ttbar.root'
 elif(isWmunu): fileName = 'mc/wmunu.root'
 elif(isWtaunu): fileName = 'mc/wtaunu.root'
 elif(isZmumu): fileName = 'mc/zmumu.root'
+elif(isZmumuB): fileName = 'mc/zmumuB.root'
+elif(isZmumuUdsc): fileName = 'mc/zmumuUdsc.root'
 elif(isZtautau): fileName = 'mc/ztautau.root'
 elif(isWw): fileName = 'mc/ww.root'
 elif(isWz): fileName = 'mc/wz.root'
@@ -168,6 +178,7 @@ process.TFileService = cms.Service("TFileService",
 
 ## Filter for correct decay process
 process.load("ZmumuAnalysis.Configuration.filters.GeneratorZmumuFilter_cff")
+process.load("ZmumuAnalysis.Configuration.filters.GeneratorBclFilter_cff")
 
 
 
@@ -355,6 +366,8 @@ process.load("ZmumuAnalysis.Utils.RunEventListing_cff")
 process.RunEventListing3 = process.RunEventListingCreateTreeOnly.clone()
 process.RunEventListing5 = process.RunEventListingCreateTreeOnly.clone()
 process.RunEventListing6 = process.RunEventListingCreateTreeOnly.clone()
+process.RunEventListing7 = process.RunEventListingCreateTreeOnly.clone()
+
 
 
 #******************************************************************************************
@@ -385,8 +398,17 @@ process.patTrigger.triggerEvent = cms.InputTag("hltTriggerSummaryAOD::" + TRIG_R
 
 ## Apply generator filters here
 process.seqGeneratorFilter = cms.Sequence()
-if(isZmumu): process.seqGeneratorFilter *= process.GeneratorZmumuDiMuFilter
-if(isZtautau): process.seqGeneratorFilter *= process.GeneratorZmumuDiTauFilter
+if(isZmumu):
+    process.seqGeneratorFilter *= process.GeneratorZmumuDiMuFilter
+if(isZmumuB or isZmumuUdsc):
+    process.seqGeneratorFilter *= process.GeneratorZmumuDiMuFilter
+    process.seqGeneratorFilter *= process.buildSignalBCollections
+if(isZmumuB):
+    process.seqGeneratorFilter *= process.signalBSelection
+if(isZmumuUdsc):
+    process.seqGeneratorFilter *= ~process.signalBSelection
+if(isZtautau):
+    process.seqGeneratorFilter *= process.GeneratorZmumuDiTauFilter
 
 
 
@@ -486,6 +508,7 @@ process.step7b = cms.Sequence(
 process.step7c = cms.Sequence(
 )
 process.step7 = cms.Sequence(
+    process.RunEventListing7
 )
 
 

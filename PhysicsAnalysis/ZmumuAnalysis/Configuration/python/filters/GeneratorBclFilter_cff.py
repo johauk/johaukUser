@@ -89,3 +89,22 @@ twoBSelection = cms.Sequence(
     twoVisibleGeometricBSelection*
     twoVisibleKinematicBSelection
 )
+
+
+
+##
+## Define signal process
+##
+signalBs = selectedBs
+buildSignalBCollections = cms.Sequence(
+    signalBs
+)
+
+signalBSelection = genParticleCountFilter.clone(
+    src = 'signalBs',
+    minNumber = 1,
+)
+
+
+
+
