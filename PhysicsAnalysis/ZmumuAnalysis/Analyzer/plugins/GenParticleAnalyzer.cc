@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Sun May 29 20:16:41 CEST 2011
-// $Id$
+// $Id: GenParticleAnalyzer.cc,v 1.1 2011/05/29 19:31:28 hauk Exp $
 //
 //
 
@@ -40,6 +40,7 @@
 #include "CommonTools/Utils/interface/TFileDirectory.h"
 
 #include "TH1.h"
+#include "TH2.h"
 
 //
 // class declaration
@@ -69,6 +70,8 @@ class GenParticleAnalyzer : public edm::EDAnalyzer {
       
       TH1* NParticle;
       
+      TH2* NStatus2VsNStatus3;
+      
       TH1* Status;
       TH1* NDaughter;
       TH1* NMother;
@@ -92,7 +95,7 @@ class GenParticleAnalyzer : public edm::EDAnalyzer {
 //
 GenParticleAnalyzer::GenParticleAnalyzer(const edm::ParameterSet& iConfig):
 parameterSet_(iConfig),
-NParticle(0),
+NParticle(0), NStatus2VsNStatus3(0),
 Status(0), NDaughter(0), NMother(0), Eta(0), Phi(0), Pt(0), Charge(0), Mass(0)
 {
 }
@@ -118,12 +121,13 @@ GenParticleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   // Event properties
   const unsigned int nParticle(genParticles->size());
   NParticle->Fill(nParticle);
+  unsigned int nStatus2(0), nStatus3(0);
   
   reco::GenParticleCollection::const_iterator i_genPart;
   for(i_genPart = genParticles->begin(); i_genPart != genParticles->end(); ++i_genPart) {
-    const double status(i_genPart->status());
-    const double numberOfDaughters(i_genPart->numberOfDaughters());
-    const double numberOfMothers(i_genPart->numberOfMothers());
+    const int status(i_genPart->status());
+    const int numberOfDaughters(i_genPart->numberOfDaughters());
+    const int numberOfMothers(i_genPart->numberOfMothers());
     const double eta(i_genPart->eta());
     const double phi(i_genPart->phi());
     const double pt(i_genPart->pt());
@@ -139,8 +143,13 @@ GenParticleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     Charge->Fill(charge);
     Mass->Fill(mass);
     
+    if(status==2)++nStatus2;
+    if(status==3)++nStatus3;
+    
     //std::cout<<"\tCharge, mass: "<<charge<<" , "<<mass<<"\n";
   }
+  
+  NStatus2VsNStatus3->Fill(nStatus2,nStatus3);
 }
 
 
@@ -151,6 +160,7 @@ GenParticleAnalyzer::beginJob()
   edm::Service<TFileService> fileService;
   TFileDirectory dirEvent = fileService->mkdir("EventProperties");
   NParticle = dirEvent.make<TH1F>("h_nParticle","# particles;# particles;# events",20,0,20);
+  NStatus2VsNStatus3 = dirEvent.make<TH2F>("h2_nStatus2VsNStatus3","# particles [status2] vs. [status3];# particles [status2];# particles [status3]",10,0,10,10,0,10);
   
   TFileDirectory dirPart = fileService->mkdir("ParticleProperties");
   Status = dirPart.make<TH1F>("h_status","Generator status;status;# events",10,0,10);
