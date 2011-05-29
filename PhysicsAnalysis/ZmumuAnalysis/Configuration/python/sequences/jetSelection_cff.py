@@ -209,7 +209,7 @@ twoJetSelection = cms.Sequence(
     
     #twoBTcHeMJetSelection 
     #twoBTcHpTJetSelection 
-    #twoBSsvHeMJetSelection
+    twoBSsvHeMJetSelection*
     twoBSsvHpTJetSelection
 )
 
