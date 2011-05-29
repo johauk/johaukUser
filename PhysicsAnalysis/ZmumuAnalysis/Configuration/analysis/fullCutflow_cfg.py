@@ -385,8 +385,8 @@ process.patTrigger.triggerEvent = cms.InputTag("hltTriggerSummaryAOD::" + TRIG_R
 
 ## Apply generator filters here
 process.seqGeneratorFilter = cms.Sequence()
-if(isZmumu): process.seqGeneratorFilter *= process.GeneratorZmumuFilter
-if(isZtautau): process.seqGeneratorFilter *= process.GeneratorZtautauFilter
+if(isZmumu): process.seqGeneratorFilter *= process.GeneratorZmumuDiMuFilter
+if(isZtautau): process.seqGeneratorFilter *= process.GeneratorZmumuDiTauFilter
 
 
 
