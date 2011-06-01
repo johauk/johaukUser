@@ -53,12 +53,11 @@ import FWCore.ParameterSet.Config as cms
 
 
 ## Trigger for MC
-hltMu9FilterMC = cms.EDFilter("HLTHighLevel",
+import HLTrigger.HLTfilters.hltHighLevel_cfi
+hltMu9FilterMC = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone(
     TriggerResultsTag = cms.InputTag("TriggerResults","","REDIGI41X"),
-    HLTPaths = cms.vstring('HLT_Mu9'),
-    eventSetupPathsKey = cms.string(''),
-    andOr = cms.bool(True),
-    throw = cms.bool(True),
+    HLTPaths = ['HLT_Mu9'],
+    #throw = False,
 )
 
 

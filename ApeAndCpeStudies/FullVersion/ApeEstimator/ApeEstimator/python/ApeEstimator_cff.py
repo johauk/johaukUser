@@ -31,7 +31,7 @@ ApeEstimator.HitSelector.sOverN = [20.,50.]
 
 # Why is charge and maxCharge double, not int?
 #ApeEstimator.HitSelector.maxCharge = [0.,250.]
-#ApeEstimator.HitSelector.chargeOnEdges = [0.1,0.5]
+ApeEstimator.HitSelector.chargeOnEdges = [0.,0.5]
 
 
 #ApeEstimator.HitSelector.phiSensX = [-3.5,-0.122173,0.,3.5]  # exclude [-7,0] degree
