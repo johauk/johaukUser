@@ -2,7 +2,8 @@
 
 # Directory on Castor
 #FILEBASE="/castor/cern.ch/cms/store/caf/user/hauk/data/Mu/Run2010A_Dec22ReReco/apeSkim"
-FILEBASE="/castor/cern.ch/cms/store/caf/user/hauk/data/Mu/Run2010B_Dec22ReReco/apeSkim"
+#FILEBASE="/castor/cern.ch/cms/store/caf/user/hauk/data/Mu/Run2010B_Dec22ReReco/apeSkim"
+FILEBASE="/castor/cern.ch/cms/store/caf/user/hauk/mc/Zmumu/apeSkim"
 #FILEBASE="/castor/cern.ch/cms/store/caf/user/hauk/mc/Wmunu/apeSkim"
 #FILEBASE="/castor/cern.ch/cms/store/caf/user/hauk/mc/Qcd/apeSkim"
 
