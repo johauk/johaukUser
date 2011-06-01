@@ -28,7 +28,9 @@ INPUTBASE1="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk\/mc\/Qcd\/apeSkim"
 ## number of input files
 #declare -i nFiles1=9
 # To take also one Wmunu sample, set to 10
-declare -i nFiles1=10
+#declare -i nFiles1=10
+# To take also one Zmumu sample, set to 11 (65000 events)
+declare -i nFiles1=11
 
 
 
