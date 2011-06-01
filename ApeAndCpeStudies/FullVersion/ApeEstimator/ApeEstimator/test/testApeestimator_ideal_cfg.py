@@ -55,9 +55,10 @@ process.options = cms.untracked.PSet(
 #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunAntiMuon_mc_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunBothMuon_mc_cff")
 ## --- Monte Carlo ---
+process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_DYToMuMu_ApeSkim_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_WToMuNu_ApeSkim_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_WToMuNu_cff")
-process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_QcdMuPt10_ApeSkim_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_QcdMuPt10_ApeSkim_cff")
 #process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_QcdMuPt10_cff")
 ## --- Run XXX-YYY, End of Year Reprocessing ---
 #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMinBias_Run2010A_Dec22ReReco_cff")
@@ -90,8 +91,8 @@ process.source.duplicateCheckMode = cms.untracked.string("checkEachRealDataFile"
 process.load("ApeEstimator.ApeEstimator.TrackRefitter_38T_cff")
 ## --- Monte Carlo for Particle Gun ---
 #process.GlobalTag.globaltag = 'DESIGN311_V2::All'
-#process.GlobalTag.globaltag = 'MC_311_V2::All'
-process.GlobalTag.globaltag = 'START311_V2::All'
+process.GlobalTag.globaltag = 'MC_311_V2::All'
+#process.GlobalTag.globaltag = 'START311_V2::All'
 ## --- Run XXX-YYY, End of Jear Reprocessing ---
 #process.GlobalTag.globaltag = 'FT_R_311_V4A::All'
 
