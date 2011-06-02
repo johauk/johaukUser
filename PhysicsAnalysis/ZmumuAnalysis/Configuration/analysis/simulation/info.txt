@@ -1,0 +1,27 @@
+## Submit Jobs
+
+
+
+
+###===============================================================================================###
+                 Spring11 samples
+###===============================================================================================###
+
+# MC
+
+nafJobSplitter.pl 20 genParticle_cfg.py
+
+
+
+
+## Check status of jobs
+
+nafJobSplitter.pl check simulation/naf_genParticle_cfg
+
+
+
+
+
+
+
+
