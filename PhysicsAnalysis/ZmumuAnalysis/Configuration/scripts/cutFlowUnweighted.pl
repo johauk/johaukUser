@@ -28,9 +28,10 @@ my @files = ("mc/qcd.txt",
 	     "mc/wz.txt",
 	     "mc/zz.txt",
 	     "mc/ztautau.txt",
-	     "mc/zmumu.txt",
-	     "data/allData.txt"
-	     #"36pb.txt"
+	     #"mc/zmumu.txt",
+	     "mc/zmumuUdsc.txt",
+	     "mc/zmumuB.txt",
+	     "data/allData.txt",
 	    );
 
 # cross section over number of events	    
@@ -45,14 +46,18 @@ my @weights = (1.,
 	       1.,
 	       1.,
 	       1.,
+	       #1.,
+	       1.,
 	       1.,
 	      ); #for data no weight is needed so 
 	         #weight array is 1 shorter then files array	    
 
 # modules which you want to appear in cutflow
 my @modules = ("EventCounter0",
-               "oneGoodPVSelection",
+	       # To be replaced by eventCounter1a one day...
+	       "TriggerAnalyzer1a",
 	       "TriggerFilter",
+	       "oneGoodPVSelection",
 	       "oneTightMuonSelection",
 	       "tightMuonSelection",
 	       "tightHltMuonSelection",

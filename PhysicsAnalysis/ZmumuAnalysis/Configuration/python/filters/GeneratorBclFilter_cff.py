@@ -95,7 +95,7 @@ twoBSelection = cms.Sequence(
 ##
 ## Define signal process
 ##
-signalBs = selectedBs
+signalBs = genParticleSelector.clone(src = 'selectedBs',)
 buildSignalBCollections = cms.Sequence(
     signalBs
 )

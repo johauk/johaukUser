@@ -220,6 +220,7 @@ process.load("ZmumuAnalysis.Configuration.sequences.metSelection_cff")
 ## Event Counter
 process.load("ZmumuAnalysis.Analyzer.EventCounter_cfi")
 process.EventCounter0 = process.EventCounter.clone()
+process.EventCounter1a = process.EventCounter.clone()
 
 
 
@@ -418,6 +419,7 @@ process.step0 = cms.Sequence(
 )
 
 process.step1a = cms.Sequence(
+    process.EventCounter1a*
     process.TriggerAnalyzer1a
 )
 process.step1b = cms.Sequence(

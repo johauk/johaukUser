@@ -42,7 +42,9 @@ hadd $DIRBASE/hists/mc/wmunu.root $DIRBASE/analysis/mc/naf_wmunu_cfg/*.root
 hadd $DIRBASE/hists/mc/wtaunu.root $DIRBASE/analysis/mc/naf_wtaunu_cfg/*.root
 hadd $DIRBASE/hists/mc/ww.root $DIRBASE/analysis/mc/naf_ww_cfg/*.root
 hadd $DIRBASE/hists/mc/wz.root $DIRBASE/analysis/mc/naf_wz_cfg/*.root
-hadd $DIRBASE/hists/mc/zmumu.root $DIRBASE/analysis/mc/naf_zmumu_cfg/*.root
+#hadd $DIRBASE/hists/mc/zmumu.root $DIRBASE/analysis/mc/naf_zmumu_cfg/*.root
+hadd $DIRBASE/hists/mc/zmumuB.root $DIRBASE/analysis/mc/naf_zmumuB_cfg/*.root
+hadd $DIRBASE/hists/mc/zmumuUdsc.root $DIRBASE/analysis/mc/naf_zmumuUdsc_cfg/*.root
 hadd $DIRBASE/hists/mc/ztautau.root $DIRBASE/analysis/mc/naf_ztautau_cfg/*.root
 hadd $DIRBASE/hists/mc/zz.root $DIRBASE/analysis/mc/naf_zz_cfg/*.root
 
@@ -58,7 +60,9 @@ sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_wmunu_cfg/out*.txt > $DIRBASE/his
 sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_wtaunu_cfg/out*.txt > $DIRBASE/hists/mc/wtaunu.txt
 sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_ww_cfg/out*.txt > $DIRBASE/hists/mc/ww.txt
 sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_wz_cfg/out*.txt > $DIRBASE/hists/mc/wz.txt
-sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_zmumu_cfg/out*.txt > $DIRBASE/hists/mc/zmumu.txt
+#sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_zmumu_cfg/out*.txt > $DIRBASE/hists/mc/zmumu.txt
+sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_zmumuB_cfg/out*.txt > $DIRBASE/hists/mc/zmumuB.txt
+sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_zmumuUdsc_cfg/out*.txt > $DIRBASE/hists/mc/zmumuUdsc.txt
 sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_ztautau_cfg/out*.txt > $DIRBASE/hists/mc/ztautau.txt
 sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_zz_cfg/out*.txt > $DIRBASE/hists/mc/zz.txt
 
