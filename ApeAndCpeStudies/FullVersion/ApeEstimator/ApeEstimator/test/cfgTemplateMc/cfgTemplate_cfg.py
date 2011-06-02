@@ -86,7 +86,7 @@ process.GlobalTag.globaltag = 'MC_311_V2::All'
 #process.GlobalTag.globaltag = 'FT_R_311_V4A::All'
 
 ## --- Further information (Monte Carlo and Data) ---
-process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
+#process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
 #process.TTRHBuilderGeometricAndTemplate.PixelCPE = 'PixelCPEGeneric'
 #process.HighPuritySelector.src = 'generalTracks'
 process.HighPuritySelector.src = 'MuSkim'
