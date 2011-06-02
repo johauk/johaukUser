@@ -97,7 +97,7 @@ process.GlobalTag.globaltag = 'MC_311_V2::All'
 #process.GlobalTag.globaltag = 'FT_R_311_V4A::All'
 
 ## --- Further information (Monte Carlo and Data) ---
-process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
+#process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
 #process.TTRHBuilderGeometricAndTemplate.PixelCPE = 'PixelCPEGeneric'
 #process.HighPuritySelector.src = 'generalTracks'
 #process.HighPuritySelector.src = 'ALCARECOTkAlMuonIsolated'
@@ -190,9 +190,12 @@ process.ApeEstimator1.HitSelector.widthProj = []
 process.ApeEstimator1.HitSelector.widthDiff = []
 process.ApeEstimator1.HitSelector.edgeStrips = []
 process.ApeEstimator1.HitSelector.sOverN = []
+process.ApeEstimator1.HitSelector.maxCharge = []
+process.ApeEstimator1.HitSelector.chargeOnEdges = []
 process.ApeEstimator1.HitSelector.probX = []
 process.ApeEstimator1.HitSelector.phiSensX = []
 process.ApeEstimator1.HitSelector.phiSensY = []
+process.ApeEstimator1.HitSelector.errXHit = []
 
 process.ApeEstimator2 = process.ApeEstimator1.clone(
     analyzerMode = True,
