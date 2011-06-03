@@ -32,23 +32,27 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
 
 ## Analyzer
 process.load("ZmumuAnalysis.Utils.RunEventListing_cff")
-# The only thing to change: moduleNumber
-moduleNumber = "6"
-process.RunEventListingFromTree6 = process.RunEventListingFromTree.clone(
+process.RunEventListingFromTreeTemplate = process.RunEventListingFromTree.clone(
     inputTreeFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/data/allData.root',
     #inputTreeFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/fullSelection.root',
+)
+
+
+# The only thing to change: moduleNumber
+moduleNumber = "5"
+process.RunEventListingFromTree5 = process.RunEventListingFromTreeTemplate.clone(
     inputPluginName = 'RunEventListing' + moduleNumber,
     outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/data/runEventList' + moduleNumber + '_cff.py',
     #outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/runEventList' + moduleNumber + '_cff.py',
 )
-moduleNumber = "9"
-process.RunEventListingFromTree9 = process.RunEventListingFromTree6.clone(
+moduleNumber = "6"
+process.RunEventListingFromTree6 = process.RunEventListingFromTreeTemplate.clone(
     inputPluginName = 'RunEventListing' + moduleNumber,
     outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/data/runEventList' + moduleNumber + '_cff.py',
     #outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/runEventList' + moduleNumber + '_cff.py',
 )
-moduleNumber = "10"
-process.RunEventListingFromTree10 = process.RunEventListingFromTree6.clone(
+moduleNumber = "7"
+process.RunEventListingFromTree7 = process.RunEventListingFromTreeTemplate.clone(
     inputPluginName = 'RunEventListing' + moduleNumber,
     outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/data/runEventList' + moduleNumber + '_cff.py',
     #outputTextFile = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/runEventList' + moduleNumber + '_cff.py',
@@ -58,9 +62,9 @@ process.RunEventListingFromTree10 = process.RunEventListingFromTree6.clone(
 
 ## Path
 process.p = cms.Path(
+    process.RunEventListingFromTree5*
     process.RunEventListingFromTree6*
-    process.RunEventListingFromTree9*
-    process.RunEventListingFromTree10
+    process.RunEventListingFromTree7
 )
 
 
