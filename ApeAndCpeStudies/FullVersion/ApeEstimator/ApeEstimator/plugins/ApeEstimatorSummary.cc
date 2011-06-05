@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,6 2-039,+41227673512,
 //         Created:  Mon Oct 11 13:44:03 CEST 2010
-// $Id: ApeEstimatorSummary.cc,v 1.4 2011/03/10 15:51:54 hauk Exp $
+// $Id: ApeEstimatorSummary.cc,v 1.5 2011/03/25 10:41:01 hauk Exp $
 //
 //
 
@@ -68,7 +68,9 @@ class ApeEstimatorSummary : public edm::EDAnalyzer {
       void writeHists();
       
       void calculateApe();
-
+      
+      enum ApeWeight{invalid, unity, entries, entriesOverSigmaX2};
+      
       // ----------member data ---------------------------
       const edm::ParameterSet parameterSet_;
       
@@ -366,8 +368,27 @@ ApeEstimatorSummary::calculateApe(){
    
    
    // Loop over sectors for calculating APE
-   const double correctionScaling(parameterSet_.getParameter<double>("correctionScaling"));
+   const std::string apeWeightName(parameterSet_.getParameter<std::string>("apeWeight"));
+   ApeWeight apeWeight(invalid);
+   if(apeWeightName=="unity") apeWeight = unity;
+   else if(apeWeightName=="entries")apeWeight = entries;
+   else if(apeWeightName=="entriesOverSigmaX2")apeWeight = entriesOverSigmaX2;
+   if(apeWeight==invalid){
+     edm::LogError("CalculateAPE")<<"Invalid parameter 'apeWeight' in cfg file: \""<<apeWeightName
+                                  <<"\"\nimplemented apeWeights are \"unity\", \"entries\", \"entriesOverSigmaX2\""
+				  <<"\n...APE calculation stopped.";
+     return;
+   }
    const double sigmaFactorFit(parameterSet_.getParameter<double>("sigmaFactorFit"));
+   const double correctionScaling(parameterSet_.getParameter<double>("correctionScaling"));
+   const bool smoothIteration(parameterSet_.getParameter<bool>("smoothIteration"));
+   const double smoothFraction(parameterSet_.getParameter<double>("smoothFraction"));
+   if(smoothFraction<=0. || smoothFraction>1.){
+     edm::LogError("CalculateAPE")<<"Incorrect parameter in cfg file,"
+                                  <<"\nsmoothFraction has to be in [0,1], but is "<<smoothFraction
+				  <<"\n...APE calculation stopped.";
+     return;
+   }
    for(std::map<unsigned int,TrackerSectorStruct>::iterator i_sector = m_tkSector_.begin(); i_sector != m_tkSector_.end(); ++i_sector){
      
      // All entries of all those bins which are used for calculation
@@ -513,45 +534,27 @@ ApeEstimatorSummary::calculateApe(){
      
      
      
-/*     
-     // Calculate squared correction for sector (or squared baselineWidth in setBaseline mode)
-     if(v_entriesAndCorrectionX2PerBin.size() == 0){
-       edm::LogError("CalculateAPE")<<"NO error interval of sector "<<(*i_sector).first<<" has a valid APE calculated,\n...so cannot set APE";
-       continue;
-     }
-          
-     
-     // Try to calculate mean weighted by entries per bin
-     double correctionX2(999.);
-     double entriesSum(0.);
-     unsigned int regardedInterval(1);
-     std::vector<std::pair<double,double> >::const_iterator i_apeBins;
-     for(i_apeBins = v_entriesAndCorrectionX2PerBin.begin(); i_apeBins != v_entriesAndCorrectionX2PerBin.end(); ++i_apeBins){
-       if(regardedInterval==1)correctionX2 = (*i_apeBins).second * (*i_apeBins).first;
-       else correctionX2 += (*i_apeBins).second * (*i_apeBins).first;
-       ++regardedInterval;
-       entriesSum += (*i_apeBins).first;
-     }
-     correctionX2 = correctionX2/entriesSum;
-*/     
-     
-     
      if(!setBaseline){
-       // scale APE Correction with value given in cfg
-       edm::LogInfo("CalculateAPE")<<"Unscaled correction for sector "<<(*i_sector).first<<" is "<<(correctionX2>0 ? +1 : -1)*std::sqrt(std::fabs(correctionX2));
-       correctionX2 = correctionX2*correctionScaling*correctionScaling;
-     
        // Calculate updated squared APE of current iteration
        double apeX2(999.);
+       
        // old APE value from last iteration
        if(firstIter)apeX2 = 0.;
        else apeX2 = a_apeSector[(*i_sector).first];
+       const double apeX2old = apeX2;
+       
+       // scale APE Correction with value given in cfg (not if smoothed iteration is used)
+       edm::LogInfo("CalculateAPE")<<"Unscaled correction for sector "<<(*i_sector).first<<" is "<<(correctionX2>0 ? +1 : -1)*std::sqrt(std::fabs(correctionX2));
+       if(!smoothIteration || firstIter)correctionX2 = correctionX2*correctionScaling*correctionScaling;
+
        // new APE value
+       // smooth iteration or not?
        if(apeX2 + correctionX2 < 0.) correctionX2 = -apeX2;
-       apeX2 = apeX2 + correctionX2;
+       const double apeX2new(apeX2old + correctionX2);
+       if(!smoothIteration || firstIter)apeX2 = apeX2new;
+       else apeX2 = std::pow(smoothFraction*std::sqrt(apeX2new) + (1-smoothFraction)*std::sqrt(apeX2old), 2);
        if(apeX2<0.)edm::LogError("CalculateAPE")<<"\n\n\tBad APE, but why???\n\n\n";
        a_apeSector[(*i_sector).first] = apeX2;
-       
        
        // Set the calculated APE spherical for all modules of the sector
        const double apeX(std::sqrt(apeX2));
