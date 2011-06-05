@@ -5,7 +5,7 @@
 
 
 ## give number of iteration (start with 0 in first step) --- This is the only thing to change...
-declare -i nIter=1
+declare -i nIter=0
 
 
 
@@ -55,6 +55,10 @@ cat $TEMPLATEFILE2 |sed "s/_THE_ITERATION_/${nIter}/g" > $theFilename
 
 ROOTFILEBASE="$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/workingArea"
 
+# If there is already output from previous studies, move it
+mv ${ROOTFILEBASE}/iter${nIter} ${ROOTFILEBASE}/iter${nIter}_old
+mv /afs/cern.ch/user/h/hauk/scratch0/apeStudies/apeObjects/apeIter${nIter}.db /afs/cern.ch/user/h/hauk/scratch0/apeStudies/apeObjects/apeIter${nIter}_old.db
+
 mkdir ${ROOTFILEBASE}/iter${nIter}
 
 
@@ -80,7 +84,7 @@ fi
 
 
 #######################################################
-## Add root files from step1 and delete them, kepp only summed file
+## Add root files from step1 and delete them, keep only summed file
 
 
 
