@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,6 2-039,+41227673512,
 //         Created:  Mon Oct 11 13:44:03 CEST 2010
-// $Id: ApeEstimatorSummary.cc,v 1.5 2011/03/25 10:41:01 hauk Exp $
+// $Id: ApeEstimatorSummary.cc,v 1.6 2011/06/05 15:40:46 hauk Exp $
 //
 //
 
@@ -464,6 +464,7 @@ ApeEstimatorSummary::calculateApe(){
        
        double correctionX_1 = correctionX2_1>=0. ? std::sqrt(correctionX2_1) : -std::sqrt(-correctionX2_1);
        double correctionX_2 = correctionX2_2>=0. ? std::sqrt(correctionX2_2) : -std::sqrt(-correctionX2_2);
+       // Meanwhile, this got very bad default values, or? (negative corrections allowed)
        if(isnan(correctionX_1))correctionX_1 = -0.0010;
        if(isnan(correctionX_2))correctionX_2 = -0.0010;
        
@@ -491,7 +492,9 @@ ApeEstimatorSummary::calculateApe(){
        
        
        usedEntries += entries;
-       std::pair<double,double> entriesErrorX2AndResidualWidthX2PerBin(entries*meanSigmaX*meanSigmaX, residualWidth_2*residualWidth_2);
+       // Change output: use result of first gauss fit
+       std::pair<double,double> entriesErrorX2AndResidualWidthX2PerBin(entries*meanSigmaX*meanSigmaX, residualWidth_1*residualWidth_1);
+       //std::pair<double,double> entriesErrorX2AndResidualWidthX2PerBin(entries*meanSigmaX*meanSigmaX, residualWidth_2*residualWidth_2);
        v_entriesErrorX2AndResidualWidthX2PerBin.push_back(entriesErrorX2AndResidualWidthX2PerBin);
        
        
