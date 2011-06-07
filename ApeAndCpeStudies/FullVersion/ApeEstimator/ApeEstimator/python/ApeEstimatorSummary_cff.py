@@ -8,7 +8,7 @@ from ApeEstimator.ApeEstimator.ApeEstimatorSummary_cfi import *
 
 ApeEstimatorSummaryBaseline = ApeEstimatorSummary.clone(
     setBaseline = True,
-    #apeWeight = "entries",
+    apeWeight = "entriesOverSigmaX2",
     #sigmaFactorFit = 2.5,
     #InputFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/inputFile.root',
     #ResultsFile = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/resultsFile.root',
@@ -19,7 +19,7 @@ ApeEstimatorSummaryBaseline = ApeEstimatorSummary.clone(
 
 ApeEstimatorSummaryIter = ApeEstimatorSummary.clone(
     #setBaseline = False,
-    #apeWeight = "entries",
+    apeWeight = "entriesOverSigmaX2",
     #sigmaFactorFit = 2.5,
     correctionScaling = 0.6,
     #smoothIteration = True,
