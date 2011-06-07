@@ -67,6 +67,8 @@ process.ApeEstimatorSummary2 = ApeEstimatorSummaryIter.clone(
 )
 process.ApeEstimatorSummary3 = ApeEstimatorSummaryIter.clone(
     apeWeight = "entries",
+    #apeWeight = "unity",
+    #apeWeight = "entriesOverSigmaX2",
     correctionScaling = 0.6,
     smoothIteration = True,
     smoothFraction = 0.5,
