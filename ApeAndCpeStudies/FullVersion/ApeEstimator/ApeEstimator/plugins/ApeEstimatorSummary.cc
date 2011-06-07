@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,6 2-039,+41227673512,
 //         Created:  Mon Oct 11 13:44:03 CEST 2010
-// $Id: ApeEstimatorSummary.cc,v 1.6 2011/06/05 15:40:46 hauk Exp $
+// $Id: ApeEstimatorSummary.cc,v 1.7 2011/06/05 15:48:03 hauk Exp $
 //
 //
 
@@ -69,7 +69,7 @@ class ApeEstimatorSummary : public edm::EDAnalyzer {
       
       void calculateApe();
       
-      enum ApeWeight{invalid, unity, entries, entriesOverSigmaX2};
+      enum ApeWeight{wInvalid, wUnity, wEntries, wEntriesOverSigmaX2};
       
       // ----------member data ---------------------------
       const edm::ParameterSet parameterSet_;
@@ -365,15 +365,13 @@ ApeEstimatorSummary::calculateApe(){
    
    
    
-   
-   
    // Loop over sectors for calculating APE
    const std::string apeWeightName(parameterSet_.getParameter<std::string>("apeWeight"));
-   ApeWeight apeWeight(invalid);
-   if(apeWeightName=="unity") apeWeight = unity;
-   else if(apeWeightName=="entries")apeWeight = entries;
-   else if(apeWeightName=="entriesOverSigmaX2")apeWeight = entriesOverSigmaX2;
-   if(apeWeight==invalid){
+   ApeWeight apeWeight(wInvalid);
+   if(apeWeightName=="unity") apeWeight = wUnity;
+   else if(apeWeightName=="entries")apeWeight = wEntries;
+   else if(apeWeightName=="entriesOverSigmaX2")apeWeight = wEntriesOverSigmaX2;
+   if(apeWeight==wInvalid){
      edm::LogError("CalculateAPE")<<"Invalid parameter 'apeWeight' in cfg file: \""<<apeWeightName
                                   <<"\"\nimplemented apeWeights are \"unity\", \"entries\", \"entriesOverSigmaX2\""
 				  <<"\n...APE calculation stopped.";
@@ -391,11 +389,10 @@ ApeEstimatorSummary::calculateApe(){
    }
    for(std::map<unsigned int,TrackerSectorStruct>::iterator i_sector = m_tkSector_.begin(); i_sector != m_tkSector_.end(); ++i_sector){
      
-     // All entries of all those bins which are used for calculation
-     double usedEntries(0.);
-     // Per bin: (entries * squaredMeanError, squaredResidualWidth)
-     //std::vector<std::pair<double,double> > v_entriesAndCorrectionX2PerBin;
-     std::vector<std::pair<double,double> > v_entriesErrorX2AndResidualWidthX2PerBin;
+     typedef std::pair<double,double> ErrorX2AndResidualWidthX2PerBin;
+     typedef std::pair<double,ErrorX2AndResidualWidthX2PerBin> WeightAndResultsPerBin;
+     std::vector<WeightAndResultsPerBin> v_weightAndResultsPerBin;
+     
      
      double baselineWidthX2(a_baselineSector[(*i_sector).first]);
      
@@ -490,47 +487,52 @@ ApeEstimatorSummary::calculateApe(){
        // Use result for bin only when entries>1000
        if(entries<1000.)continue;
        
+       double weight(0.);
+       if(apeWeight==wUnity)weight = 1.;
+       else if(apeWeight==wEntries)weight = entries;
+       else if(apeWeight==wEntriesOverSigmaX2)weight = entries/(meanSigmaX*meanSigmaX);
        
-       usedEntries += entries;
-       // Change output: use result of first gauss fit
-       std::pair<double,double> entriesErrorX2AndResidualWidthX2PerBin(entries*meanSigmaX*meanSigmaX, residualWidth_1*residualWidth_1);
-       //std::pair<double,double> entriesErrorX2AndResidualWidthX2PerBin(entries*meanSigmaX*meanSigmaX, residualWidth_2*residualWidth_2);
-       v_entriesErrorX2AndResidualWidthX2PerBin.push_back(entriesErrorX2AndResidualWidthX2PerBin);
-       
-       
-       // Fill correction^2 for APE calculation, BUT fill residualWidth^2 for setBaseline mode
-       //std::pair<double,double> entriesAndCorrectionX2PerBin(entries, setBaseline ? residualWidth_2*residualWidth_2 : correctionX2_2);
-       //v_entriesAndCorrectionX2PerBin.push_back(entriesAndCorrectionX2PerBin);
+       const ErrorX2AndResidualWidthX2PerBin errorX2AndResidualWidthX2PerBin(meanSigmaX*meanSigmaX, residualWidth_1*residualWidth_1);
+       const WeightAndResultsPerBin weightAndResultsPerBin(weight, errorX2AndResidualWidthX2PerBin);
+       v_weightAndResultsPerBin.push_back(weightAndResultsPerBin);
      }
      
      
+     // Do the final calculations
      
-     
-     
-     
-     if(v_entriesErrorX2AndResidualWidthX2PerBin.size() == 0){
+     if(v_weightAndResultsPerBin.size() == 0){
        edm::LogError("CalculateAPE")<<"NO error interval of sector "<<(*i_sector).first<<" has a valid APE calculated,\n...so cannot set APE";
        continue;
      }
      
-      double correctionX2(999.);
-      if(!setBaseline){
-       // Calculate mean weighted by entries per bin
+     double correctionX2(999.);
+     
+     // Get sum of all weights
+     double weightSum(0.);
+     std::vector<WeightAndResultsPerBin>::const_iterator i_apeBin;
+     for(i_apeBin=v_weightAndResultsPerBin.begin(); i_apeBin!=v_weightAndResultsPerBin.end(); ++i_apeBin){
+       weightSum += i_apeBin->first;
+     }
+     
+     if(!setBaseline){
+       // Calculate weighted mean
        bool firstInterval(true);
-       for(std::vector<std::pair<double,double> >::const_iterator i_apeBins = v_entriesErrorX2AndResidualWidthX2PerBin.begin(); i_apeBins != v_entriesErrorX2AndResidualWidthX2PerBin.end(); ++i_apeBins){
+       for(i_apeBin=v_weightAndResultsPerBin.begin(); i_apeBin!=v_weightAndResultsPerBin.end(); ++i_apeBin){
          if(firstInterval){
-           correctionX2 = (*i_apeBins).first * ((*i_apeBins).second  - baselineWidthX2);
+	   correctionX2 = i_apeBin->first*i_apeBin->second.first*(i_apeBin->second.second - baselineWidthX2);
 	   firstInterval = false;
-         }
-         else correctionX2 += (*i_apeBins).first * ((*i_apeBins).second  - baselineWidthX2);
+	 }
+	 else{
+	   correctionX2 += i_apeBin->first*i_apeBin->second.first*(i_apeBin->second.second - baselineWidthX2);
+	 }
        }
-       correctionX2 = correctionX2/usedEntries;
+       correctionX2 = correctionX2/weightSum;
      }
      else{
        double numerator(0.), denominator(0.);
-       for(std::vector<std::pair<double,double> >::const_iterator i_apeBins = v_entriesErrorX2AndResidualWidthX2PerBin.begin(); i_apeBins != v_entriesErrorX2AndResidualWidthX2PerBin.end(); ++i_apeBins){
-         numerator += (*i_apeBins).first * (*i_apeBins).second;
-	 denominator+= (*i_apeBins).first;
+       for(i_apeBin=v_weightAndResultsPerBin.begin(); i_apeBin!=v_weightAndResultsPerBin.end(); ++i_apeBin){
+         numerator += i_apeBin->first*i_apeBin->second.first*i_apeBin->second.second;
+	 denominator+= i_apeBin->first*i_apeBin->second.first;
        }
        correctionX2 = numerator/denominator;
      }
