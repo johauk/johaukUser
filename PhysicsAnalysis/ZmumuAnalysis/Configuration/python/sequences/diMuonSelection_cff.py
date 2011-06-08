@@ -107,7 +107,7 @@ cleanDimuons = BestZVertexCleaner.clone(
 goodDimuons = cms.EDFilter("CandViewRefSelector",
     src = cms.InputTag("cleanDimuons"),
     cut = cms.string(
-      'mass > 20. &'
+      'mass > 12. &'
       #'(daughter(0).vz()-daughter(1).vz())<0.1 &'  already contained in cleanDimuons
       'charge = 0'
     ),
@@ -117,7 +117,7 @@ goodDimuons = cms.EDFilter("CandViewRefSelector",
 goodDimuonsSC = cms.EDFilter("CandViewRefSelector",
     src = cms.InputTag("cleanDimuons"),
     cut = cms.string(
-      'mass > 20. &'
+      'mass > 12. &'
       #'(daughter(0).vz()-daughter(1).vz())<0.1 &'
       'charge != 0'
     ),
@@ -167,14 +167,15 @@ finalDimuons = cms.EDFilter("CandViewRefSelector",
     src = cms.InputTag("isolatedDimuons"),
     #src = cms.InputTag("atLeast1HltDimuons"),
     cut = cms.string(
-      'mass > 60.' +'&'+
-      'mass < 120.'# +'&'+
-      #'charge = 0'# +'&'+
+      'mass > 60. &'
+      'mass < 120.'
     ),
 )
 finalDimuonsSC = finalDimuons.clone(src = "isolatedDimuonsSC")
 #finalDimuonsSC = finalDimuons.clone(src = "atLeast1HltDimuonsSC")
-
+finalDimuonsZVeto = finalDimuons.clone(
+    cut = 'mass <= 60. | mass >= 120.',
+)
 
 
 # Primary vertices associated to finalDimuons
@@ -184,6 +185,9 @@ finalPVs = BestZVertexCleaner.clone(
     dimuonSource = 'finalDimuons',
     deltaZMuMuMax = 0.1,
     deltaZZVertexMax = 0.1,
+)
+finalPVsZVeto = finalPVs.clone(
+    dimuonSource = 'finalDimuonsZVeto',
 )
 
 
@@ -248,6 +252,12 @@ finalDimuonSelection = dimuonsFilter.clone(
     minNumber = 1,
 )
 
+finalDimuonZVetoSelection = dimuonsFilter.clone(
+    src = 'finalDimuonsZVeto',
+    minNumber = 1,
+)
+
+
 
 
 goodDimuonSCSelection = goodDimuonSelection.clone(src = 'goodDimuonsSC')
@@ -286,6 +296,20 @@ buildDimuonCollections = cms.Sequence(
 
 
 
+buildDimuonZVetoCollections = cms.Sequence(
+    dimuons*
+    selectedDimuons*
+    cleanDimuons*
+    goodDimuons*
+    isolatedDimuons*
+    #atLeast1HltDimuons*
+    finalDimuonsZVeto*
+    
+    finalPVsZVeto
+)
+
+
+
 buildDimuonSCCollections = cms.Sequence(
 #    tightHltGlobalDimuons*
 #    looseTightHltGlobalDimuons*
@@ -302,23 +326,34 @@ buildDimuonSCCollections = cms.Sequence(
 
 
 dimuonSelection = cms.Sequence(
-    selectedDimuonSelection
-    *cleanDimuonSelection
-    *goodDimuonSelection
-    *isolatedDimuonSelection
-    #*atLeast1HltDimuonSelection
-    *finalDimuonSelection
+    selectedDimuonSelection*
+    cleanDimuonSelection*
+    goodDimuonSelection*
+    isolatedDimuonSelection*
+    #atLeast1HltDimuonSelection*
+    finalDimuonSelection
+)
+
+
+
+dimuonZVetoSelection = cms.Sequence(
+    selectedDimuonSelection*
+    cleanDimuonSelection*
+    goodDimuonSelection*
+    isolatedDimuonSelection*
+    #atLeast1HltDimuonSelection*
+    finalDimuonZVetoSelection
 )
 
 
 
 dimuonSCSelection = cms.Sequence(
-    selectedDimuonSelection
-    *cleanDimuonSelection
-    *goodDimuonSCSelection
-    *isolatedDimuonSCSelection
-    #*atLeast1HltDimuonSCSelection
-    *finalDimuonSCSelection
+    selectedDimuonSelection*
+    cleanDimuonSelection*
+    goodDimuonSCSelection*
+    isolatedDimuonSCSelection*
+    #atLeast1HltDimuonSCSelection*
+    finalDimuonSCSelection
 )
 
 
