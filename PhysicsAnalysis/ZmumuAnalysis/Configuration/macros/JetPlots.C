@@ -35,16 +35,18 @@ void JetPlots(TString pluginSuffix = ""){
   TFile* a_file[nFiles];
   for(size_t iFile=0; iFile<nFiles; ++iFile) a_file[iFile]=0;
   a_file[0]=new TFile(inpath->Copy().Append("data/allData.root"));
-  a_file[1]=new TFile(inpath->Copy().Append("mc/zmumu.root"));
-  a_file[2]=new TFile(inpath->Copy().Append("mc/zz.root"));
-  a_file[3]=new TFile(inpath->Copy().Append("mc/wz.root"));
-  a_file[4]=new TFile(inpath->Copy().Append("mc/ww.root"));
-  a_file[5]=new TFile(inpath->Copy().Append("mc/ztautau.root"));
-  a_file[6]=new TFile(inpath->Copy().Append("mc/wmunu.root"));
-  a_file[7]=new TFile(inpath->Copy().Append("mc/wtaunu.root"));
-  a_file[8]=new TFile(inpath->Copy().Append("mc/singleTopTw.root"));
-  a_file[9]=new TFile(inpath->Copy().Append("mc/ttbar.root"));
-  a_file[10]=new TFile(inpath->Copy().Append("mc/qcd.root"));
+  //a_file[1]=new TFile(inpath->Copy().Append("mc/zmumu.root"));
+  a_file[1]=new TFile(inpath->Copy().Append("mc/zmumuB.root"));
+  a_file[2]=new TFile(inpath->Copy().Append("mc/zmumuUdsc.root"));
+  a_file[3]=new TFile(inpath->Copy().Append("mc/zz.root"));
+  a_file[4]=new TFile(inpath->Copy().Append("mc/wz.root"));
+  a_file[5]=new TFile(inpath->Copy().Append("mc/ww.root"));
+  a_file[6]=new TFile(inpath->Copy().Append("mc/ztautau.root"));
+  a_file[7]=new TFile(inpath->Copy().Append("mc/wmunu.root"));
+  a_file[8]=new TFile(inpath->Copy().Append("mc/wtaunu.root"));
+  a_file[9]=new TFile(inpath->Copy().Append("mc/singleTopTw.root"));
+  a_file[10]=new TFile(inpath->Copy().Append("mc/ttbar.root"));
+  a_file[11]=new TFile(inpath->Copy().Append("mc/qcd.root"));
   
   //Specify plugin name
   TString* pluginName(0);
