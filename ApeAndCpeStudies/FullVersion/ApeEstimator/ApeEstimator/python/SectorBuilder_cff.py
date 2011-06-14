@@ -1203,6 +1203,445 @@ TIBTOBQuartersLayerAndOrientationSeparation = cms.VPSet(
 
 
 
+###======================================================================================================================================================================
+###======================================================================================================================================================================
+
+## Only TID and TEC, Separation of side(+,-) and of rings (also rphi and stereo rings separated) and orientations
+
+# In TEC: All RPhi modules within a ring point in same w direction. Same is valid for Stereo modules, but with opposite sign
+
+TIDTECSideAndRingAndOrientationSeparation = cms.VPSet(
+  
+  # TID- ring 1, pointing outwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [1],
+    subdetId = [4],
+    isRPhi = [1],
+    wDirection = [1],
+  )),
+  
+  # TID- ring 1, pointing outwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [1],
+    subdetId = [4],
+    isRPhi = [2],
+    wDirection = [1],
+  )),
+  
+  # TID- ring 1, pointing inwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [1],
+    subdetId = [4],
+    isRPhi = [1],
+    wDirection = [-1],
+  )),
+  
+  # TID- ring 1, pointing inwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [1],
+    subdetId = [4],
+    isRPhi = [2],
+    wDirection = [-1],
+  )),
+  
+  
+  # TID- ring 2, pointing outwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [2],
+    subdetId = [4],
+    isRPhi = [1],
+    wDirection = [1],
+  )),
+  
+  # TID- ring 2, pointing outwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [2],
+    subdetId = [4],
+    isRPhi = [2],
+    wDirection = [1],
+  )),
+  
+  # TID- ring 2, pointing inwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [2],
+    subdetId = [4],
+    isRPhi = [1],
+    wDirection = [-1],
+  )),
+  
+  # TID- ring 2, pointing inwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [2],
+    subdetId = [4],
+    isRPhi = [2],
+    wDirection = [-1],
+  )),
+  
+  
+  # TID- ring 3, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [3],
+    subdetId = [4],
+    wDirection = [1],
+  )),
+  
+  # TID- ring 3, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [3],
+    subdetId = [4],
+    wDirection = [-1],
+  )),
+  
+  
+  
+  
+  
+  
+  
+  # TEC- ring 1, pointing outwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [1],
+    subdetId = [6],
+    isRPhi = [2],
+    #wDirection = [1],
+  )),
+  
+  # TEC- ring 1, pointing inwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [1],
+    subdetId = [6],
+    isRPhi = [1],
+    #wDirection = [-1],
+  )),
+  
+  
+  # TEC- ring 2, pointing outwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [2],
+    subdetId = [6],
+    isRPhi = [1],
+    #wDirection = [1],
+  )),
+  
+  # TEC- ring 2, pointing inwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [2],
+    subdetId = [6],
+    isRPhi = [2],
+    #wDirection = [-1],
+  )),
+  
+  
+  # TEC- ring 3, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [3],
+    subdetId = [6],
+    #wDirection = [1],
+  )),
+  
+  
+  # TEC- ring 4, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [4],
+    subdetId = [6],
+    #wDirection = [-1],
+  )),
+  
+  
+  # TEC- ring 5, pointing outwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [5],
+    subdetId = [6],
+    isRPhi = [2],
+    #wDirection = [1],
+  )),
+  
+  # TEC- ring 5, pointing inwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [5],
+    subdetId = [6],
+    isRPhi = [1],
+    #wDirection = [-1],
+  )),
+  
+  
+  # TEC- ring 6, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [6],
+    subdetId = [6],
+    #wDirection = [-1],
+  )),
+  
+  
+  # TEC- ring 7, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    side = [1],
+    ring = [7],
+    subdetId = [6],
+    #wDirection = [1],
+  )),
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  # TID+ ring 1, pointing outwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [1],
+    subdetId = [4],
+    isRPhi = [1],
+    wDirection = [1],
+  )),
+  
+  # TID+ ring 1, pointing outwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [1],
+    subdetId = [4],
+    isRPhi = [2],
+    wDirection = [1],
+  )),
+  
+  # TID+ ring 1, pointing inwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [1],
+    subdetId = [4],
+    isRPhi = [1],
+    wDirection = [-1],
+  )),
+  
+  # TID+ ring 1, pointing inwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [1],
+    subdetId = [4],
+    isRPhi = [2],
+    wDirection = [-1],
+  )),
+  
+  
+  # TID+ ring 2, pointing outwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [2],
+    subdetId = [4],
+    isRPhi = [1],
+    wDirection = [1],
+  )),
+  
+  # TID+ ring 2, pointing outwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [2],
+    subdetId = [4],
+    isRPhi = [2],
+    wDirection = [1],
+  )),
+  
+  # TID+ ring 2, pointing inwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [2],
+    subdetId = [4],
+    isRPhi = [1],
+    wDirection = [-1],
+  )),
+  
+  # TID+ ring 2, pointing inwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [2],
+    subdetId = [4],
+    isRPhi = [2],
+    wDirection = [-1],
+  )),
+  
+  
+  # TID+ ring 3, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [3],
+    subdetId = [4],
+    wDirection = [1],
+  )),
+  
+  # TID+ ring 3, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [3],
+    subdetId = [4],
+    wDirection = [-1],
+  )),
+  
+  
+  
+  
+  
+  
+  
+  # TEC+ ring 1, pointing outwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [1],
+    subdetId = [6],
+    isRPhi = [1],
+    #wDirection = [1],
+  )),
+  
+  # TEC+ ring 1, pointing inwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [1],
+    subdetId = [6],
+    isRPhi = [2],
+    #wDirection = [-1],
+  )),
+  
+  
+  # TEC+ ring 2, pointing outwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [2],
+    subdetId = [6],
+    isRPhi = [2],
+    #wDirection = [1],
+  )),
+  
+  # TEC+ ring 2, pointing inwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [2],
+    subdetId = [6],
+    isRPhi = [1],
+    #wDirection = [-1],
+  )),
+  
+  
+  # TEC+ ring 3, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [3],
+    subdetId = [6],
+    #wDirection = [-1],
+  )),
+  
+  
+  # TEC+ ring 4, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [4],
+    subdetId = [6],
+    #wDirection = [1],
+  )),
+  
+  
+  # TEC+ ring 5, pointing outwards, rphi modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [5],
+    subdetId = [6],
+    isRPhi = [1],
+    #wDirection = [1],
+  )),
+  
+  # TEC+ ring 5, pointing inwards, stereo modules
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [5],
+    subdetId = [6],
+    isRPhi = [2],
+    #wDirection = [-1],
+  )),
+  
+  
+  # TEC+ ring 6, pointing outwards
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [6],
+    subdetId = [6],
+    #wDirection = [1],
+  )),
+  
+  
+  # TEC+ ring 7, pointing inwards
+  cms.PSet(
+    EmptySector.clone(
+    side = [2],
+    ring = [7],
+    subdetId = [6],
+    #wDirection = [-1],
+  )),
+)
+
+
+
+
+
+
 
 
 
