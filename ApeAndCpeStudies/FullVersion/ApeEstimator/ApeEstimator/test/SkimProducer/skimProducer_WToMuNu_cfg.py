@@ -15,7 +15,7 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.categories.append('AlignmentTrackSelector')
 #process.MessageLogger.categories.append('')
 process.MessageLogger.cerr.INFO.limit = 0
-process.MessageLogger.cerr.default.limit = 0
+process.MessageLogger.cerr.default.limit = -1
 process.MessageLogger.cerr.AlignmentTrackSelector = cms.untracked.PSet(limit = cms.untracked.int32(-1))
 
 #process.MessageLogger.cout = cms.untracked.PSet(INFO = cms.untracked.PSet(
@@ -27,7 +27,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000 ## really show only ever
 
 
 ##
-## Handle huge number of Files
+## Process options
 ##
 process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(True),

@@ -14,7 +14,7 @@ process = cms.Process("Demo")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.categories.append('CalculateAPE')
 process.MessageLogger.cerr.INFO.limit = 0
-process.MessageLogger.cerr.default.limit = 0
+process.MessageLogger.cerr.default.limit = -1
 process.MessageLogger.cerr.CalculateAPE = cms.untracked.PSet(limit = cms.untracked.int32(-1))
 
 #process.MessageLogger.cout = cms.untracked.PSet(INFO = cms.untracked.PSet(

@@ -3,33 +3,34 @@ import os
 import FWCore.ParameterSet.Config as cms
 
 
+
 process = cms.Process("ApeSkim")
 
+
+
+##
+## Message Logger
+##
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.categories.append('')
-#process.MessageLogger.categories.append('TrackRefitter')
 process.MessageLogger.categories.append('AlignmentTrackSelector')
-process.MessageLogger.cerr.INFO = cms.untracked.VPSet(
-    default = cms.untracked.PSet( limit = cms.untracked.int32(0)  ),
-)
+#process.MessageLogger.categories.append('')
+process.MessageLogger.cerr.INFO.limit = 0
+process.MessageLogger.cerr.default.limit = -1
+process.MessageLogger.cerr.AlignmentTrackSelector = cms.untracked.PSet(limit = cms.untracked.int32(-1))
+
 #process.MessageLogger.cout = cms.untracked.PSet(INFO = cms.untracked.PSet(
-    #reportEvery = cms.untracked.int32(100)  # every 100th only
-    #limit = cms.untracked.int32(10)        # or limit to 10 printouts...
+#    reportEvery = cms.untracked.int32(100),  # every 100th only
+#    limit = cms.untracked.int32(10),         # or limit to 10 printouts...
 #))
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000 ## really show only every 1000th
 
 
 
 ##
-## Handle huge number of Files
+## Process options
 ##
 process.options = cms.untracked.PSet(
-    #wantSummary = cms.untracked.bool(True),
-    Rethrow = cms.untracked.vstring("ProductNotFound") # make this exception fatal
-    #, fileMode  =  cms.untracked.string('FULLMERGE') # any file order (default): caches all lumi/run products (memory!)
-    #, fileMode  =  cms.untracked.string('MERGE') # needs files sorted in run and within run in lumi sections (hard to achieve)
-    #, fileMode  =  cms.untracked.string('FULLLUMIMERGE') # needs files sorted in run, caches lumi
-    , fileMode  =  cms.untracked.string('NOMERGE') #  no ordering needed, but calls endRun/beginRun etc. at file boundaries
+    wantSummary = cms.untracked.bool(True),
 )
 
 
