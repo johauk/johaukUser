@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.7 2011/05/28 14:13:51 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.8 2011/06/15 13:20:41 hauk Exp $
 //
 //
 
@@ -293,16 +293,10 @@ ApeEstimator::sectorBuilder(){
 			v_posX(parSet.getParameter<std::vector<double> >("posX")),
 			v_posY(parSet.getParameter<std::vector<double> >("posY")),
 			v_posZ(parSet.getParameter<std::vector<double> >("posZ"));
-    //if(v_posR.size()%2 == 1 || v_posPhi.size()%2 == 1 || v_posEta.size()%2 == 1 || 
-    //   v_posX.size()%2 == 1 || v_posY.size()%2 == 1 || v_posZ.size()%2 == 1){
-    //   edm::LogError("SectorBuilder")<<"Incorrect Sector Definition: Position Vectors need even number of arguments (Intervals)"
-    //                                 <<"\n... sector selection is not applied, no sectors are built";
-    //   return;
-    //}
+    
     if(!this->checkIntervalsForSectors(sectorCounter,v_posR) || !this->checkIntervalsForSectors(sectorCounter,v_posPhi) ||
        !this->checkIntervalsForSectors(sectorCounter,v_posEta) || !this->checkIntervalsForSectors(sectorCounter,v_posX) ||
        !this->checkIntervalsForSectors(sectorCounter,v_posY)   || !this->checkIntervalsForSectors(sectorCounter,v_posZ))continue;
-    
     
     
     TrackerSectorStruct tkSector;
@@ -913,7 +907,7 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
                                          <<"One of the squared error methods gives negative result"
                                          <<"\n\tSubdetector\terrHitWoApe.xx()\terrHitWoApe.yy()\terrHitAPE.xx()\terrHitAPE.yy()\terrTrk.xx()\terrTrk.yy()"
                                          <<"\n\t"<<m_tkTreeVar_[rawId].subdetId<<"\t\t"<<errHitWoApe.xx()<<"\t"<<errHitWoApe.yy()
-					 <<errHitAPE.xx()<<"\t"<<errHitAPE.yy()<<"\t"<<errTrk.xx()<<"\t"<<errTrk.yy();
+					 <<"\t"<<errHitAPE.xx()<<"\t"<<errHitAPE.yy()<<"\t"<<errTrk.xx()<<"\t"<<errTrk.yy();
     return hitParams;
   }
   
@@ -971,7 +965,9 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
                                            <<"One of the squared error methods gives negative result"
                                            <<"\n\tmeasHitErr.uu()\tmeasHitErr.vv()\tmeasTrkErr.uu()\tmeasTrkErr.vv()"
 	                                   <<"\n\t"<<measHitErr.uu()<<"\t"<<measHitErr.vv()<<"\t"<<measTrkErr.uu()<<"\t"<<measTrkErr.vv()
-					   <<"\n\nOriginalValues:\n"<<lPHit.x()<<" "<<lPHit.y()<<"\n"<<lPTrk.x()<<" "<<lPTrk.y()<<"\n"
+					   <<"\n\nOriginalValues:\n"
+					   <<lPHit.x()<<" "<<lPHit.y()<<"\n"
+					   <<lPTrk.x()<<" "<<lPTrk.y()<<"\n"
 					   <<errHitWoApe.xx()<<" "<<errHitWoApe.yy()<<"\n"
 					   <<errHitAPE.xx()<<" "<<errHitAPE.yy()<<"\n"
 					   <<"Subdet: "<<m_tkTreeVar_[rawId].subdetId<<" , Width: "<<hitParams.width;
