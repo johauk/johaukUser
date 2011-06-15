@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.6 2011/05/19 13:49:08 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.7 2011/05/28 14:13:51 hauk Exp $
 //
 //
 
@@ -69,6 +69,7 @@
 #include "TrackingTools/TrajectoryState/interface/TrajectoryStateOnSurface.h"
 
 #include "Geometry/CommonDetUnit/interface/GeomDetUnit.h"
+#include "Geometry/CommonDetUnit/interface/GeomDetType.h"
 #include "Geometry/CommonTopologies/interface/RadialStripTopology.h"
 #include "Geometry/TrackerGeometryBuilder/interface/StripGeomDetUnit.h"
 
@@ -949,8 +950,8 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
     if(!hit.detUnit()){hitParams.hitState = TrackStruct::invalid; return hitParams;} // is it a single physical module?
     const GeomDetUnit& detUnit = *hit.detUnit();
     
-    if(!dynamic_cast<const RadialStripTopology*>(&detUnit.topology())){hitParams.hitState = TrackStruct::invalid; return hitParams;}
-    const RadialStripTopology& topol = dynamic_cast<const RadialStripTopology&>(detUnit.topology());
+    if(!dynamic_cast<const RadialStripTopology*>(&detUnit.type().topology())){hitParams.hitState = TrackStruct::invalid; return hitParams;}
+    const RadialStripTopology& topol = dynamic_cast<const RadialStripTopology&>(detUnit.type().topology());
     
     MeasurementPoint measHitPos = topol.measurementPosition(lPHit);
     MeasurementPoint measTrkPos = topol.measurementPosition(lPTrk);
@@ -970,9 +971,10 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
                                            <<"One of the squared error methods gives negative result"
                                            <<"\n\tmeasHitErr.uu()\tmeasHitErr.vv()\tmeasTrkErr.uu()\tmeasTrkErr.vv()"
 	                                   <<"\n\t"<<measHitErr.uu()<<"\t"<<measHitErr.vv()<<"\t"<<measTrkErr.uu()<<"\t"<<measTrkErr.vv()
-					   <<"\n\nOriginalValues: "<<lPHit.x()<<" "<<lPHit.y()<<"\n"<<lPTrk.x()<<" "<<lPTrk.y()<<"\n"<<errHitWoApe.xx()<<" "<<errHitWoApe.yy()<<"\n"
-					   <<errHitAPE.xx()<<" "<<errHitAPE.yy()<<"\n"<<"Subdet: "<<m_tkTreeVar_[rawId].subdetId
-					   <<"Width: "<<hitParams.width;
+					   <<"\n\nOriginalValues:\n"<<lPHit.x()<<" "<<lPHit.y()<<"\n"<<lPTrk.x()<<" "<<lPTrk.y()<<"\n"
+					   <<errHitWoApe.xx()<<" "<<errHitWoApe.yy()<<"\n"
+					   <<errHitAPE.xx()<<" "<<errHitAPE.yy()<<"\n"
+					   <<"Subdet: "<<m_tkTreeVar_[rawId].subdetId<<" , Width: "<<hitParams.width;
       hitParams.hitState = TrackStruct::negativeError;
       return hitParams;
     }
@@ -1074,7 +1076,7 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
     // Calculate projection length corrected by drift
     if(!hit.detUnit()){hitParams.hitState = TrackStruct::invalid; return hitParams;} // is it a single physical module?
     const GeomDetUnit& detUnit = *hit.detUnit();
-    if(!dynamic_cast<const StripTopology*>(&detUnit.topology())){hitParams.hitState = TrackStruct::invalid; return hitParams;}
+    if(!dynamic_cast<const StripTopology*>(&detUnit.type().topology())){hitParams.hitState = TrackStruct::invalid; return hitParams;}
     
     
     edm::ESHandle<MagneticField> magFieldHandle;
@@ -1102,7 +1104,7 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
     
     
     
-    const StripTopology& topol = dynamic_cast<const StripTopology&>(detUnit.topology());
+    const StripTopology& topol = dynamic_cast<const StripTopology&>(detUnit.type().topology());
     LocalVector momentumDir(tsos.localDirection());
     LocalPoint momentumPos(tsos.localPosition());
     LocalVector scaledMomentumDir(momentumDir);
@@ -1268,6 +1270,7 @@ ApeEstimator::hitSelected(const TrackStruct::HitParameterStruct& hitParams)const
   if(hitParams.hitState == TrackStruct::notInTracker)return false;
   if(hitParams.hitState == TrackStruct::invalid || hitParams.hitState == TrackStruct::negativeError)return false;
   if(0==m_hitSelection_.size())return true;
+  std::cout<<"\n\ttest2\n";
   for(std::map<std::string, std::vector<double> >::const_iterator i_hitSelection = m_hitSelection_.begin(); i_hitSelection != m_hitSelection_.end(); ++i_hitSelection){
     if(0==(*i_hitSelection).second.size())continue;
     float variable(999.F);
