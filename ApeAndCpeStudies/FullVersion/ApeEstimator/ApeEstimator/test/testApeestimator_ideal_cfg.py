@@ -20,7 +20,7 @@ process.MessageLogger.categories.append('ApeEstimator')
 #process.MessageLogger.categories.append('TrackRefitter')
 process.MessageLogger.categories.append('AlignmentTrackSelector')
 process.MessageLogger.cerr.INFO.limit = 0
-process.MessageLogger.cerr.default.limit = 0
+process.MessageLogger.cerr.default.limit = -1  # Do not use =0, else all error messages (except those listed below) are supressed
 process.MessageLogger.cerr.SectorBuilder = cms.untracked.PSet(limit = cms.untracked.int32(-1))
 process.MessageLogger.cerr.HitSelector = cms.untracked.PSet(limit = cms.untracked.int32(-1))
 process.MessageLogger.cerr.CalculateAPE = cms.untracked.PSet(limit = cms.untracked.int32(-1))
@@ -181,7 +181,9 @@ process.ApeEstimator1 = ApeEstimator.clone(
     maxTracksPerEvent = 0,
     applyTrackCuts = False,
     Sectors = SubdetSectors,
+    #Sectors = TIDTEC,
     #Sectors = TIBTOBLayerAndOrientationSeparation,
+    #Sectors = TIDTECSideAndRingAndOrientationSeparation,
     analyzerMode = False,
 )
 process.ApeEstimator1.HitSelector.width = []

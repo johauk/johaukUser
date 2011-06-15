@@ -20,7 +20,7 @@ process.MessageLogger.categories.append('ApeEstimator')
 #process.MessageLogger.categories.append('TrackRefitter')
 process.MessageLogger.categories.append('AlignmentTrackSelector')
 process.MessageLogger.cerr.INFO.limit = 0
-process.MessageLogger.cerr.default.limit = 0
+process.MessageLogger.cerr.default.limit = -1
 process.MessageLogger.cerr.SectorBuilder = cms.untracked.PSet(limit = cms.untracked.int32(-1))
 process.MessageLogger.cerr.HitSelector = cms.untracked.PSet(limit = cms.untracked.int32(-1))
 process.MessageLogger.cerr.CalculateAPE = cms.untracked.PSet(limit = cms.untracked.int32(-1))
