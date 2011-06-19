@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.8 2011/06/15 13:20:41 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.9 2011/06/15 17:15:21 hauk Exp $
 //
 //
 
@@ -117,6 +117,9 @@ class ApeEstimator : public edm::EDAnalyzer {
 
 
    private:
+      typedef std::pair<float,float> XAndY;
+      typedef std::pair<XAndY,XAndY> PositionAndError2;
+      
       virtual void beginJob() ;
       virtual void analyze(const edm::Event&, const edm::EventSetup&);
       virtual void endJob();
@@ -139,6 +142,7 @@ class ApeEstimator : public edm::EDAnalyzer {
       
       TrackStruct::TrackParameterStruct fillTrackVariables(const reco::Track&, const Trajectory&, const reco::BeamSpot&);
       TrackStruct::HitParameterStruct fillHitVariables(const TrajectoryMeasurement&, const edm::EventSetup&);
+      PositionAndError2 positionAndError2(const LocalPoint&, const LocalError&, const uint32_t&)const;
       
       void hitSelection();
       void setHitSelectionMap(const std::string&);
@@ -879,67 +883,83 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
   xMomentum = mom.x()>0. ? 1 : -1;
   yMomentum = mom.y()>0. ? 1 : -1;
   zMomentum = mom.z()>0. ? 1 : -1;
-  float phiSensX = atan(fabs(mom.x()/mom.z()))*static_cast<float>(m_tkTreeVar_[rawId].vDirection);  // check for orientation of E- and B- Field (thoughts for barrel)
-  float phiSensY = atan(fabs(mom.y()/mom.z()))*static_cast<float>(m_tkTreeVar_[rawId].vDirection);
-  hitParams.phiSens  = atan(fabs(sqrt(mom.x()*mom.x()+mom.y()*mom.y())/mom.z()));
+  float phiSensX = std::atan(std::fabs(mom.x()/mom.z()))*static_cast<float>(m_tkTreeVar_[rawId].vDirection);  // check for orientation of E- and B- Field (thoughts for barrel)
+  float phiSensY = std::atan(std::fabs(mom.y()/mom.z()))*static_cast<float>(m_tkTreeVar_[rawId].vDirection);
+  hitParams.phiSens  = std::atan(std::fabs(std::sqrt(mom.x()*mom.x()+mom.y()*mom.y())/mom.z()));
   hitParams.phiSensX = (xMomentum==zMomentum ? phiSensX : -phiSensX );
   hitParams.phiSensY = (yMomentum==zMomentum ? phiSensY : -phiSensY );
   
   
-  
   if(!hit.isValid()){hitParams.hitState = TrackStruct::invalid; return hitParams;}
   
+  
+  // Get local positions and errors of hit and track
   LocalPoint lPHit = hit.localPosition(), lPTrk = tsos.localPosition();
-  hitParams.xHit = lPHit.x();
-  hitParams.xTrk = lPTrk.x();
   
   // use APE also for the hit error, while APE is automatically included in tsos error
   AlgebraicROOTObject<2>::SymMatrix mat = asSMatrix<2>(hit.parametersError());
-  LocalError errHitAPE = LocalError( mat(0,0),mat(0,1),mat(1,1) ),
+  LocalError errHitApe = LocalError( mat(0,0),mat(0,1),mat(1,1) ),
              errHitWoApe = hit.localPositionError(),
 	     errTrk = tsos.localError().positionError();
   
-  
-  if(errHitWoApe.xx()<0. || errHitWoApe.yy()<0. || errHitAPE.xx()<0. || errHitAPE.yy()<0. || errTrk.xx()<0. || errTrk.yy()<0.){
+  if(errHitWoApe.xx()<0. || errHitWoApe.yy()<0. || errHitApe.xx()<0. || errHitApe.yy()<0. || errTrk.xx()<0. || errTrk.yy()<0.){
     hitParams.hitState = TrackStruct::negativeError;
     ++counter1;
     edm::LogError("Negative error Value")<<"@SUB=ApeEstimator::fillHitVariables"
                                          <<"One of the squared error methods gives negative result"
                                          <<"\n\tSubdetector\terrHitWoApe.xx()\terrHitWoApe.yy()\terrHitAPE.xx()\terrHitAPE.yy()\terrTrk.xx()\terrTrk.yy()"
                                          <<"\n\t"<<m_tkTreeVar_[rawId].subdetId<<"\t\t"<<errHitWoApe.xx()<<"\t"<<errHitWoApe.yy()
-					 <<"\t"<<errHitAPE.xx()<<"\t"<<errHitAPE.yy()<<"\t"<<errTrk.xx()<<"\t"<<errTrk.yy();
+					 <<"\t"<<errHitApe.xx()<<"\t"<<errHitApe.yy()<<"\t"<<errTrk.xx()<<"\t"<<errTrk.yy();
     return hitParams;
   }
   
-  // errors in cartesian x, also in TID, TEC
-  float errX2(999.F), errY2(999.F);
-  errX2 = errHitAPE.xx()+errTrk.xx();
-  errY2 = errHitAPE.yy()+errTrk.yy();
-  hitParams.errXHit = sqrt(errHitAPE.xx());
-  hitParams.errXTrk = sqrt(errTrk.xx());
-  hitParams.errX2   = errX2;
-  hitParams.errX    = sqrt(errX2);
   
-  float errX2WoApe(999.F), errY2WoApe(999.F);
-  errX2WoApe = errHitWoApe.xx()+errTrk.xx();
-  errY2WoApe = errHitWoApe.yy()+errTrk.yy();
-  hitParams.errXHitWoApe = sqrt(errHitWoApe.xx());
-  hitParams.errXWoApe = sqrt(errX2WoApe);
-  
-  
+  // Calculate all positions, errors and residuals in primed coordinate system
   align::LocalVector res = lPTrk - lPHit;
-  float resX(999.F), resY(999.F), errX(999.F), errY(999.F), norResX(999.F), norResY(999.F);
+  
+  float xHit(999.F), xTrk(999.F);
+  float yHit(999.F), yTrk(999.F);
+  
+  float errXHit(999.F), errXHitWoApe(999.F), errXTrk(999.F);
+  float errYHit(999.F), errYHitWoApe(999.F), errYTrk(999.F);
+  float errX(999.F), errXWoApe(999.F);
+  float errY(999.F), errYWoApe(999.F);
+  float resX(999.F), resY(999.F), norResX(999.F), norResY(999.F);
   
   if(m_tkTreeVar_[rawId].subdetId==PixelSubdetector::PixelBarrel || m_tkTreeVar_[rawId].subdetId==PixelSubdetector::PixelEndcap ||
      m_tkTreeVar_[rawId].subdetId==StripSubdetector::TIB || m_tkTreeVar_[rawId].subdetId==StripSubdetector::TOB){
+    
+    xHit = lPHit.x();
+    xTrk = lPTrk.x();
+    
+    yHit = lPHit.y();
+    yTrk = lPTrk.y();
+    
+    const float errXHit2(errHitApe.xx()), errXHitWoApe2(errHitWoApe.xx()), errXTrk2(errTrk.xx());
+    const float errYHit2(errHitApe.yy()), errYHitWoApe2(errHitWoApe.yy()), errYTrk2(errTrk.yy());
+    
+    errXHit = std::sqrt(errXHit2);
+    errXHitWoApe = std::sqrt(errXHitWoApe2);
+    errXTrk = std::sqrt(errXTrk2);
+    
+    errYHit = std::sqrt(errYHit2);
+    errYHitWoApe = std::sqrt(errYHitWoApe2);
+    errYTrk = std::sqrt(errYTrk2);
+    
+    errX = std::sqrt(errXHit2 + errXTrk2);
+    errXWoApe = std::sqrt(errXHitWoApe2 + errXTrk2);
+    
+    errY = std::sqrt(errYHit2 + errYTrk2);
+    errYWoApe = std::sqrt(errYHitWoApe2 + errYTrk2);
+    
     resX = res.x();
     resY = res.y();
-    errX = sqrt(errX2);
-    errY = sqrt(errY2);
     norResX = resX/errX;
     norResY = resY/errY;
   }
   else if(m_tkTreeVar_[rawId].subdetId==StripSubdetector::TID || m_tkTreeVar_[rawId].subdetId==StripSubdetector::TEC){
+    // Local x in radial coordinates (global orientation not yet taken into account)
+    // Local y not radial
     
     if(!hit.detUnit()){hitParams.hitState = TrackStruct::invalid; return hitParams;} // is it a single physical module?
     const GeomDetUnit& detUnit = *hit.detUnit();
@@ -947,13 +967,14 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
     if(!dynamic_cast<const RadialStripTopology*>(&detUnit.type().topology())){hitParams.hitState = TrackStruct::invalid; return hitParams;}
     const RadialStripTopology& topol = dynamic_cast<const RadialStripTopology&>(detUnit.type().topology());
     
-    MeasurementPoint measHitPos = topol.measurementPosition(lPHit);
-    MeasurementPoint measTrkPos = topol.measurementPosition(lPTrk);
+    MeasurementPoint measPosHit = topol.measurementPosition(lPHit);
+    MeasurementPoint measPosTrk = topol.measurementPosition(lPTrk);
       
-    MeasurementError measHitErr = topol.measurementError(lPHit,errHitAPE);
-    MeasurementError measTrkErr = topol.measurementError(lPTrk,errTrk);
+    MeasurementError measErrHitApe = topol.measurementError(lPHit,errHitApe);
+    MeasurementError measErrHitWoApe = topol.measurementError(lPHit,errHitWoApe);
+    MeasurementError measErrTrk = topol.measurementError(lPTrk,errTrk);
     
-    if(measHitErr.uu()<0. || measHitErr.vv()<0. || measTrkErr.uu()<0. || measTrkErr.vv()<0.){
+    if(measErrHitWoApe.uu()<0. || measErrHitWoApe.vv()<0. || measErrHitApe.uu()<0. || measErrHitApe.vv()<0. || measErrTrk.uu()<0. || measErrTrk.vv()<0.){
       ++counter1;
       
       const SiStripRecHit2D& stripHit = dynamic_cast<const SiStripRecHit2D&>(recHit);
@@ -963,43 +984,87 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
       
       edm::LogError("Negative error Value")<<"@SUB=ApeEstimator::fillHitVariables"
                                            <<"One of the squared error methods gives negative result"
-                                           <<"\n\tmeasHitErr.uu()\tmeasHitErr.vv()\tmeasTrkErr.uu()\tmeasTrkErr.vv()"
-	                                   <<"\n\t"<<measHitErr.uu()<<"\t"<<measHitErr.vv()<<"\t"<<measTrkErr.uu()<<"\t"<<measTrkErr.vv()
+                                           <<"\n\tmeasErrHitWoApe.uu()\tmeasErrHitWoApe.vv()\tmeasErrHitApe.uu()\tmeasErrHitApe.vv()\tmeasErrTrk.uu()\tmeasErrTrk.vv()"
+	                                   <<"\n\t"<<measErrHitWoApe.uu()<<"\t"<<measErrHitWoApe.vv()<<"\t"<<measErrHitApe.uu()<<"\t"<<measErrHitApe.vv()<<"\t"<<measErrTrk.uu()<<"\t"<<measErrTrk.vv()
 					   <<"\n\nOriginalValues:\n"
 					   <<lPHit.x()<<" "<<lPHit.y()<<"\n"
 					   <<lPTrk.x()<<" "<<lPTrk.y()<<"\n"
 					   <<errHitWoApe.xx()<<" "<<errHitWoApe.yy()<<"\n"
-					   <<errHitAPE.xx()<<" "<<errHitAPE.yy()<<"\n"
+					   <<errHitApe.xx()<<" "<<errHitApe.yy()<<"\n"
 					   <<"Subdet: "<<m_tkTreeVar_[rawId].subdetId<<" , Width: "<<hitParams.width;
       hitParams.hitState = TrackStruct::negativeError;
       return hitParams;
     }
-//    else edm::LogError("No Negative error Value")<<"@SUB=ApeEstimator::fillHitVariables"
-//                                                 <<"None of the squared error methods gives negative result !!!!!";
+    //else edm::LogError("No Negative error Value")<<"@SUB=ApeEstimator::fillHitVariables"
+    //                                             <<"None of the squared error methods gives negative result !!!!!";
     
-    float localStripLengthHit = topol.localStripLength(lPHit);
-    float localStripLengthTrk = topol.localStripLength(lPTrk);
-    float phiHit = topol.stripAngle(measHitPos.x());
-    float phiTrk = topol.stripAngle(measTrkPos.x());
-    float r_0 = topol.originToIntersection();
     
-    resX = (phiTrk-phiHit)*r_0;
-    float cosPhiHit(cos(phiHit)), cosPhiTrk(cos(phiTrk)),
-          sinPhiHit(sin(phiHit)), sinPhiTrk(sin(phiTrk));
-    float l_0 = r_0 - topol.detHeight()/2;
-    resY = measTrkPos.y()*localStripLengthTrk - measHitPos.y()*localStripLengthHit + l_0*(1/cosPhiTrk - 1/cosPhiHit);
     
-    errX = std::sqrt(measHitErr.uu()+measTrkErr.uu())*topol.angularWidth()*r_0;
-    float helpSummand = l_0*l_0*topol.angularWidth()*topol.angularWidth()*(sinPhiHit*sinPhiHit/pow(cosPhiHit,4)*measHitErr.uu()
-                                                                         + sinPhiTrk*sinPhiTrk/pow(cosPhiTrk,4)*measTrkErr.uu());
-    errY = std::sqrt(measHitErr.vv()*localStripLengthHit*localStripLengthHit
-                   + measTrkErr.vv()*localStripLengthTrk*localStripLengthTrk + helpSummand);
+    const float r_0 = topol.originToIntersection();
+    const float phiHit = topol.stripAngle(measPosHit.x());
+    const float phiTrk = topol.stripAngle(measPosTrk.x());
+    const float stripLengthHit = topol.localStripLength(lPHit);
+    const float stripLengthTrk = topol.localStripLength(lPTrk);
+    
+    xHit = phiHit*r_0;
+    xTrk = phiTrk*r_0;
+    
+    // Cartesian y
+    yHit = lPHit.y();
+    yTrk = lPTrk.y();
+    // Trapezoidal y (symmetric around 0; length along strip)
+    yHit = measPosHit.y()*stripLengthHit;
+    yTrk = measPosTrk.y()*stripLengthTrk;
+    // Radial y (not symmetric around 0; radial distance with minimum at middle strip at lower edge [0, yMax])
+    const float l_0 = r_0 - topol.detHeight()/2;
+    const float cosPhiHit(std::cos(phiHit)), sinPhiHit(std::sin(phiHit));
+    const float cosPhiTrk(std::cos(phiTrk)), sinPhiTrk(std::sin(phiTrk));
+    yHit = measPosHit.y()*stripLengthHit - 0.5*stripLengthHit + l_0*(1./cosPhiHit - 1.);
+    yTrk = measPosTrk.y()*stripLengthTrk - 0.5*stripLengthTrk + l_0*(1./cosPhiTrk - 1.);
+    
+    
+    const float angularWidth2(topol.angularWidth()*topol.angularWidth());
+    const float stripLengthHit2(stripLengthHit*stripLengthHit);
+    const float stripLengthTrk2(stripLengthTrk*stripLengthTrk);
+    const float errPhiHit2(angularWidth2*measErrHitApe.uu()), errPhiHitWoApe2(angularWidth2*measErrHitWoApe.uu()), errPhiTrk2(angularWidth2*measErrTrk.uu());
+    const float errXHit2(errPhiHit2*r_0*r_0), errXHitWoApe2(errPhiHitWoApe2*r_0*r_0), errXTrk2(errPhiTrk2*r_0*r_0);
+    // Cartesian y
+    //const float errYHit2(errHitApe.yy()), errYHitWoApe2(errHitWoApe.yy()), errYTrk2(errTrk.yy());
+    // Trapezoidal y (symmetric around 0, length along strip)
+    //const float errYHit2(measErrHitApe.vv()*stripLengthHit2), errYHitWoApe2(measErrHitWoApe.vv()*stripLengthHit2), errYTrk2(measErrTrk.vv()*stripLengthTrk2);
+    // Radial y (not symmetric around 0, real radial distance from intersection point)
+    const float cosPhiHit4(std::pow(cosPhiHit,4)), sinPhiHit2(sinPhiHit*sinPhiHit);
+    const float cosPhiTrk4(std::pow(cosPhiTrk,4)), sinPhiTrk2(sinPhiTrk*sinPhiTrk);
+    const float helpSummandHit = l_0*l_0*(sinPhiHit2/cosPhiHit4*errPhiHit2);
+    const float helpSummandHitWoApe = l_0*l_0*(sinPhiHit2/cosPhiHit4*errPhiHitWoApe2);
+    const float helpSummandTrk = l_0*l_0*(sinPhiTrk2/cosPhiTrk4*errPhiTrk2);
+    const float errYHit2(measErrHitApe.vv()*stripLengthHit2+helpSummandHit), errYHitWoApe2(measErrHitWoApe.vv()*stripLengthHit2+helpSummandHitWoApe), errYTrk2(measErrTrk.vv()*stripLengthTrk2+helpSummandTrk);
+    
+    
+    
+    errXHit = std::sqrt(errXHit2);
+    errXHitWoApe = std::sqrt(errXHitWoApe2);
+    errXTrk = std::sqrt(errXTrk2);
+    
+    errYHit = std::sqrt(errYHit2);
+    errYHitWoApe = std::sqrt(errYHitWoApe2);
+    errYTrk = std::sqrt(errYTrk2);
+    
+    errX = std::sqrt(errXHit2 + errXTrk2);
+    errXWoApe = std::sqrt(errXHitWoApe2 + errXTrk2);
+    
+    errY = std::sqrt(errYHit2 + errYTrk2);
+    errYWoApe = std::sqrt(errYHitWoApe2 + errYTrk2);
+    
+    resX = xTrk - xHit;
+    resY = yTrk - yHit;
     
     norResX = resX/errX;
     norResY = resY/errY;
   }
   
-  //now take global orientation into account
+  
+  // Take global orientation into account for residuals (sign is not important for errors)
   float resXprime(999.F), resYprime(999.F), norResXprime(999.F), norResYprime(999.F);
   if(m_tkTreeVar_[rawId].uDirection == 1){resXprime = resX; norResXprime = norResX;}
   else if(m_tkTreeVar_[rawId].uDirection == -1){resXprime = -resX; norResXprime = -norResX;}
@@ -1008,6 +1073,17 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
   else if(m_tkTreeVar_[rawId].vDirection == -1){resYprime = -resY; norResYprime = -norResY;}
   else {edm::LogError("FillHitVariables")<<"Incorrect value of vDirection, which gives global module orientation"; hitParams.hitState = TrackStruct::invalid; return hitParams;}
   
+  hitParams.xHit = xHit;
+  hitParams.xTrk = xTrk;
+  
+  hitParams.errXHit = errXHit;
+  hitParams.errXHitWoApe = errXHitWoApe;
+  hitParams.errXTrk = errXTrk;
+  
+  hitParams.errX2 = errX*errX;
+  hitParams.errX = errX;
+  hitParams.errXWoApe = errXWoApe;
+
   hitParams.resX    = resXprime;
   hitParams.norResX = norResXprime;
   
@@ -1143,6 +1219,16 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
 
 
 
+ApeEstimator::PositionAndError2
+ApeEstimator::positionAndError2(const LocalPoint& lP, const LocalError& lE, const uint32_t& rawId)const{
+  PositionAndError2 pE2;
+  return pE2;
+}
+
+
+
+
+
 // -----------------------------------------------------------------------------------------------------------
 
 void
@@ -1266,7 +1352,6 @@ ApeEstimator::hitSelected(const TrackStruct::HitParameterStruct& hitParams)const
   if(hitParams.hitState == TrackStruct::notInTracker)return false;
   if(hitParams.hitState == TrackStruct::invalid || hitParams.hitState == TrackStruct::negativeError)return false;
   if(0==m_hitSelection_.size())return true;
-  std::cout<<"\n\ttest2\n";
   for(std::map<std::string, std::vector<double> >::const_iterator i_hitSelection = m_hitSelection_.begin(); i_hitSelection != m_hitSelection_.end(); ++i_hitSelection){
     if(0==(*i_hitSelection).second.size())continue;
     float variable(999.F);
