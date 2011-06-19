@@ -16,7 +16,8 @@ ApeEstimator = ApeEstimatorTemplate.clone(
   #Sectors = TIBTOBQuarters,
   #Sectors = TIBTOBQuarters2DSeparation,
   #Sectors = TIBTOBPitchAnd2DSeparation,
-  Sectors = TIBTOBLayerAndOrientationSeparation,
+  #Sectors = TIBTOBLayerAndOrientationSeparation,
+  Sectors = TIDTECSideAndRingAndOrientationSeparation,
   tjTkAssociationMapTag = "TrackRefitterHighPurityForApeEstimator",
 )
 #ApeEstimator.HitSelector.width = [2,3]
