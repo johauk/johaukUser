@@ -28,7 +28,7 @@ void drawIteration(unsigned int iLow = 0, unsigned int iHigh = 99999){
   double width = 600.;
   gStyle->SetCanvasDefW(width);
   gStyle->SetCanvasDefH(width);
-  gStyle->SetTitleX(0.2);
+  gStyle->SetTitleX(0.25);
   gStyle->SetPadLeftMargin(0.12);
   gStyle->SetPadRightMargin(0.08);
   gStyle->SetPadTopMargin(0.08);
@@ -83,7 +83,7 @@ void drawIteration(unsigned int iLow = 0, unsigned int iHigh = 99999){
   
   std::map<unsigned int, std::vector<double> > m_sectorValue;
   
-  for(size_t iIter = 0; iIter < tree1->GetEntries(); ++iIter){
+  for(unsigned int iIter = 0; iIter < tree1->GetEntries(); ++iIter){
     unsigned int iSector(1);
     for(std::vector<TBranch*>::const_iterator i_branch = v_branch.begin(); i_branch != v_branch.end(); ++i_branch, ++iSector){
       double value(-999.);
@@ -143,7 +143,7 @@ void drawIteration(unsigned int iLow = 0, unsigned int iHigh = 99999){
     TGraph* graph(*i_graph);
     graph->SetTitle("Absolute correction");
     graph->GetXaxis()->SetTitle("iteration");
-    graph->GetYaxis()->SetTitle("#sigma_{APE,x}");
+    graph->GetYaxis()->SetTitle("#sigma_{APE,x}  [cm]");
     if(firstGraph){
       graph->Draw("AL*");
       
@@ -174,7 +174,7 @@ void drawIteration(unsigned int iLow = 0, unsigned int iHigh = 99999){
     TGraph* graph(*i_graph);
     graph->SetTitle("Relative correction");
     graph->GetXaxis()->SetTitle("iteration");
-    graph->GetYaxis()->SetTitle("#Delta#sigma_{APE,x}");
+    graph->GetYaxis()->SetTitle("#Delta#sigma_{APE,x}  [cm]");
     if(firstGraph){
       graph->Draw("AL*");
       
