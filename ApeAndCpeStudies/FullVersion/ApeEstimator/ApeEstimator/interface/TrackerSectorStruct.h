@@ -71,6 +71,11 @@ class TrackerSectorStruct{
   std::map<std::string,CorrelationHists> m_correlationHists;
   
   
+  // Name of sector as string and as title of a histogram
+  std::string name;
+  TH1 *Name;
+  
+  // Module IDs of modules in sector
   std::vector<unsigned int> v_rawId;
   
   
@@ -104,6 +109,7 @@ class TrackerSectorStruct{
 
 TrackerSectorStruct::TrackerSectorStruct(): directory_(0),
                          norResXMax_(999.), sigmaXHitMax_(999.), sigmaXMax_(999.),
+			 name("default"), Name(0),
 			 ResX(0), NorResX(0), XHit(0), XTrk(0),
 			 SigmaX2(0), ProbX(0),
 			 WidthVsPhiSensX(0), WidthVsWidthProjected(0), WidthDiffVsMaxStrip(0), WidthDiffVsSigmaXHit(0),

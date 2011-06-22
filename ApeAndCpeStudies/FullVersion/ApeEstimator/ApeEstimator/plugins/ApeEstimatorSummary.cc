@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,6 2-039,+41227673512,
 //         Created:  Mon Oct 11 13:44:03 CEST 2010
-// $Id: ApeEstimatorSummary.cc,v 1.7 2011/06/05 15:48:03 hauk Exp $
+// $Id: ApeEstimatorSummary.cc,v 1.8 2011/06/07 19:49:56 hauk Exp $
 //
 //
 
@@ -154,6 +154,8 @@ ApeEstimatorSummary::getTrackerSectorStructs(){
     sectorDir = (TDirectory*)inputFile_->TDirectory::GetDirectory(fullName);
     if(sectorDir){
       TrackerSectorStruct tkSector;
+      sectorDir->GetObject("z_name;1", tkSector.Name);
+      tkSector.name = tkSector.Name->GetTitle();
       bool intervalBool(true);
       for(unsigned int iInterval(1);intervalBool;++iInterval){
         std::stringstream intervalName, fullIntervalName;
@@ -254,6 +256,7 @@ ApeEstimatorSummary::writeHists(){
     //resultsFile->cd(dirName.str().c_str());
     dir->cd();
     
+    (*i_sector).second.Name->Write();
     (*i_sector).second.MeanX->Write();
     (*i_sector).second.RmsX->Write();	   
     (*i_sector).second.FitMeanX1->Write();	   
@@ -279,16 +282,19 @@ ApeEstimatorSummary::calculateApe(){
    const std::string baselineFileName(parameterSet_.getParameter<std::string>("BaselineFile"));
    TFile* baselineFile(0);
    TTree* baselineTree(0);
+   TTree* sectorNameBaselineTree(0);
    if(!setBaseline){
      ifstream baselineFileStream;
      // Check if baseline file exists
      baselineFileStream.open(baselineFileName.c_str());
      if(baselineFileStream.is_open()){
+       baselineFileStream.close();
        baselineFile = new TFile(baselineFileName.c_str(),"READ");
      }
      if(baselineFile){
        edm::LogInfo("CalculateAPE")<<"Baseline file for APE values sucessfully opened";
        baselineFile->GetObject("iterTree;1",baselineTree);
+       baselineFile->GetObject("nameTree;1",sectorNameBaselineTree);
      }
      else{
        edm::LogWarning("CalculateAPE")<<"There is NO baseline file for APE values, so normalized residual width =1 for ideal conditions is assumed";
@@ -303,6 +309,9 @@ ApeEstimatorSummary::calculateApe(){
    // Set up TTree for iterative APE values on first pass (first iteration) or read from file (further iterations)
    TTree* iterationTree(0);
    iterationFile->GetObject("iterTree;1",iterationTree);
+   // The same for TTree containing the names of the sectors (no additional check, since always handled exactly as iterationTree)
+   TTree* sectorNameTree(0);
+   iterationFile->GetObject("nameTree;1",sectorNameTree);
    
    bool firstIter(false);
    if(!iterationTree){ // should be always true in setBaseline mode, since file is recreated
@@ -310,10 +319,12 @@ ApeEstimatorSummary::calculateApe(){
      if(!setBaseline){
        iterationTree = new TTree("iterTree","Tree for APE values of all iterations");
        edm::LogInfo("CalculateAPE")<<"First APE iteration (number 0.), create iteration file with TTree";
+       sectorNameTree = new TTree("nameTree","Tree with names of sectors");
      }
      else{
        iterationTree = new TTree("iterTree","Tree for baseline values of normalized residual width");
        edm::LogInfo("CalculateAPE")<<"Set baseline, create baseline file with TTree";
+       sectorNameTree = new TTree("nameTree","Tree with names of sectors");
      }
    }
    else{
@@ -321,16 +332,24 @@ ApeEstimatorSummary::calculateApe(){
      edm::LogWarning("CalculateAPE")<<"NOT the first APE iteration (number 0.) but the "<<iteration<<". one, is this wanted or forgot to delete old iteration file with TTree?";
    }
    
+   
+   // Assign the information stored in the trees to arrays
    double a_apeSector[16589];
    double a_baselineSector[16589];
+   std::string* a_sectorName[16589];
+   std::string* a_sectorBaselineName[16589];
    for(size_t i_sector = 1; i_sector <= m_tkSector_.size(); ++i_sector){
      a_apeSector[i_sector] = 99.;
      a_baselineSector[i_sector] = -99.;
+     a_sectorName[i_sector] = 0;
+     a_sectorBaselineName[i_sector] = 0;
      std::stringstream ss_sector, ss_sectorSuffixed;
      ss_sector << "Ape_Sector_" << i_sector;
      if(!setBaseline && baselineTree){
        baselineTree->SetBranchAddress(ss_sector.str().c_str(), &a_baselineSector[i_sector]);
        baselineTree->GetEntry(0);
+       sectorNameBaselineTree->SetBranchAddress(ss_sector.str().c_str(), &a_sectorBaselineName[i_sector]);
+       sectorNameBaselineTree->GetEntry(0);
      }
      else{
        // Set default ideal normalized residual width to 1
@@ -339,10 +358,38 @@ ApeEstimatorSummary::calculateApe(){
      if(firstIter){ // should be always true in setBaseline mode, since file is recreated  
        ss_sectorSuffixed << ss_sector.str() << "/D";
        iterationTree->Branch(ss_sector.str().c_str(), &a_apeSector[i_sector], ss_sectorSuffixed.str().c_str());
+       sectorNameTree->Branch(ss_sector.str().c_str(), &a_sectorName[i_sector], 32000, 00);
      }
      else{
        iterationTree->SetBranchAddress(ss_sector.str().c_str(), &a_apeSector[i_sector]);
        iterationTree->GetEntry(iterationTree->GetEntries()-1);
+       sectorNameTree->SetBranchAddress(ss_sector.str().c_str(), &a_sectorName[i_sector]);
+       sectorNameTree->GetEntry(0);
+     }
+   }
+   
+   
+   // Check whether sector definitions are identical with the ones of previous iterations and with the ones in baseline file
+   for(std::map<unsigned int,TrackerSectorStruct>::iterator i_sector = m_tkSector_.begin(); i_sector != m_tkSector_.end(); ++i_sector){
+     const std::string& name(i_sector->second.name);
+     if(!firstIter){
+       const std::string& nameLastIter(*a_sectorName[(*i_sector).first]);
+       if(name!=nameLastIter){
+         edm::LogError("CalculateAPE")<<"Inconsistent sector definition in iterationFile for sector "<<i_sector->first<<",\n"
+                                      <<"Recent iteration has name \""<<name<<"\", while previous had \""<<nameLastIter<<"\"\n"
+				      <<"...APE calculation stopped. Please check sector definitions in config!\n";
+         return;
+       }
+     }
+     else a_sectorName[(*i_sector).first] = new std::string(name);
+     if(!setBaseline && baselineFile){
+       const std::string& nameBaseline(*a_sectorBaselineName[(*i_sector).first]);
+       if(name!=nameBaseline){
+         edm::LogError("CalculateAPE")<<"Inconsistent sector definition in baselineFile for sector "<<i_sector->first<<",\n"
+                                      <<"Recent iteration has name \""<<name<<"\", while baseline had \""<<nameBaseline<<"\"\n"
+				      <<"...APE calculation stopped. Please check sector definitions in config!\n";
+         return;
+       }
      }
    }
    
@@ -579,6 +626,10 @@ ApeEstimatorSummary::calculateApe(){
    
    iterationTree->Fill();
    iterationTree->Write("iterTree", TObject::kOverwrite);  // TObject::kOverwrite needed to not produce another iterTree;2
+   if(firstIter){
+     sectorNameTree->Fill();
+     sectorNameTree->Write("nameTree");
+   }
    iterationFile->Close();
    
    if(baselineFile)baselineFile->Close();

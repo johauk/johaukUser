@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.10 2011/06/19 14:56:05 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.11 2011/06/19 20:25:16 hauk Exp $
 //
 //
 
@@ -280,6 +280,7 @@ ApeEstimator::sectorBuilder(){
   std::vector<edm::ParameterSet>::const_iterator i_parSet;
   for(i_parSet = v_sectorDef.begin(); i_parSet != v_sectorDef.end();++i_parSet, ++sectorCounter){
     const edm::ParameterSet& parSet = *i_parSet;
+    const std::string& sectorName(parSet.getParameter<std::string>("name"));
     std::vector<unsigned int> v_rawId(parSet.getParameter<std::vector<unsigned int> >("rawId")),
                               v_subdetId(parSet.getParameter<std::vector<unsigned int> >("subdetId")),
 			      v_layer(parSet.getParameter<std::vector<unsigned int> >("layer")),
@@ -313,6 +314,8 @@ ApeEstimator::sectorBuilder(){
     
     
     TrackerSectorStruct tkSector;
+    tkSector.name = sectorName;
+    
     ReducedTrackerTreeVariables tkTreeVar;
     
     //Loop over all Modules
@@ -551,7 +554,13 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     std::stringstream sector; sector << "Sector_" << (*i_sector).first;
     TFileDirectory secDir = fileService->mkdir(sector.str().c_str());
     
+    // Dummy histo containing the sector name as title
+    (*i_sector).second.Name = secDir.make<TH1F>("z_name",(*i_sector).second.name.c_str(),1,0,1);
+    
+    // Do not book histos for empty sectors
     if((*i_sector).second.v_rawId.size()==0){
+      // Needed for automisation: Directory secDir is only created, if at least one histo (or other object) is booked within
+      // Now obsolete, since new histo "Name" is booked in every case!?
       TH1F* noModule(0);
       noModule = secDir.make<TH1F>("NoModuleInSector","",1,0,1);
       continue;
@@ -667,7 +676,13 @@ ApeEstimator::bookSectorHistsForApeCalculation(){
     std::stringstream sector; sector << "Sector_" << (*i_sector).first;
     TFileDirectory secDir = fileService->mkdir(sector.str().c_str());
     
+    // Dummy histo containing the sector name as title
+    (*i_sector).second.Name = secDir.make<TH1F>("z_name",(*i_sector).second.name.c_str(),1,0,1);
+    
+    // Do not book histos for empty sectors
     if((*i_sector).second.v_rawId.size()==0){
+      // Needed for automisation: Directory secDir is only created, if at least one histo (or other object) is booked within
+      // Now obsolete, since new histo "Name" is booked in every case!?
       TH1F* noModule(0);
       noModule = secDir.make<TH1F>("NoModuleInSector","",1,0,1);
       continue;

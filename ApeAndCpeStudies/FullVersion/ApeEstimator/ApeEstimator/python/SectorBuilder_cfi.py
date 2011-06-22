@@ -3,6 +3,8 @@ import FWCore.ParameterSet.Config as cms
 
   
 EmptySector = cms.PSet(
+    # Give names to individual sectors
+    name = cms.string("default"),
     # empty is equal to all possibilities (means no selections)
     rawId        = cms.vuint32(),
     subdetId     = cms.vuint32(),      #(1,2,3,4,5,6)
