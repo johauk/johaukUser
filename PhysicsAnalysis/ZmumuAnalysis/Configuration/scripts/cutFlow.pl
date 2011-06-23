@@ -53,12 +53,14 @@ my @weights = ($lumi*296600.*0.2855/29434562.,
 	         #weight array is 1 shorter then files array	    
 
 # modules which you want to appear in cutflow
-my @modules = ("EventCounter0",
-	       # To be replaced by eventCounter1a one day...
-	       "TriggerAnalyzer1a",
+my @modules = ("EventCounterStep0",
+	       "EventCounterStep1a",
 	       "TriggerFilter",
 	       "oneGoodPVSelection",
+	       "oneInitialMuonSelection",
+	       "oneLooseMuonSelection",
 	       "oneTightMuonSelection",
+	       "looseMuonSelection",
 	       "tightMuonSelection",
 	       "tightHltMuonSelection",
 	       "selectedDimuonSelection",
@@ -74,6 +76,7 @@ my @modules = ("EventCounter0",
 	       "goodMetSelection",
 	       "oneBSsvHpTJetSelection",
 	       "twoFinalJetSelection",
+	       "twoBSsvHeMJetSelection",
 	       "twoBSsvHpTJetSelection"
               );
 	      	      	    

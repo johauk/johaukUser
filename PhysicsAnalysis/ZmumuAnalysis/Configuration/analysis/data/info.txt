@@ -29,7 +29,7 @@ nafJobSplitter.pl 2 wz_cfg.py
 nafJobSplitter.pl 20 zmumuB_cfg.py
 nafJobSplitter.pl 20 zmumuUdsc_cfg.py
 nafJobSplitter.pl 20 ztautau_cfg.py
-nafJobSplitter.pl 2 zz_cfg.py
+nafJobSplitter.pl 20 zz_cfg.py
 
 
 
