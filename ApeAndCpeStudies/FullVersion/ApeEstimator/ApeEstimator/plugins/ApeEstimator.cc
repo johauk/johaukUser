@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.11 2011/06/19 20:25:16 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.12 2011/06/22 16:08:49 hauk Exp $
 //
 //
 
@@ -739,7 +739,8 @@ ApeEstimator::bookTrackHists(){
   edm::Service<TFileService> fileService;
   //TFileDirectory dir1(*fileService);
   TFileDirectory evtDir = fileService->mkdir("EventVariables");
-  tkDetector_.TrkSize = evtDir.make<TH1F>("h_trackSize","# tracks;# tracks;# events",trackSizeBins,-1,trackSizeMax);
+  tkDetector_.TrkSize     = evtDir.make<TH1F>("h_trackSize","# tracks  [all];# tracks;# events",trackSizeBins,-1,trackSizeMax);
+  tkDetector_.TrkSizeGood = evtDir.make<TH1F>("h_trackSizeGood","# tracks  [good];# tracks;# events",trackSizeBins,-1,trackSizeMax);
   TFileDirectory trkDir = fileService->mkdir("TrackVariables");
   tkDetector_.HitsSize     = trkDir.make<TH1F>("h_hitsSize","# hits;# hits;# tracks",51,-1,50);
   tkDetector_.HitsValid    = trkDir.make<TH1F>("h_hitsValid","# hits  [valid];# hits  [valid];# tracks",51,-1,50);
@@ -1743,6 +1744,7 @@ ApeEstimator::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    //static TrajectoryStateCombiner tsoscomb;
    
    //Loop over Tracks & Hits
+   unsigned int trackSizeGood(0);
    ConstTrajTrackPairCollection::const_iterator iTrack;
    for(iTrack = trajTracks.begin(); iTrack != trajTracks.end();++iTrack){
      
@@ -1764,7 +1766,10 @@ ApeEstimator::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      
      if(analyzerMode_)this->fillHistsForAnalyzerMode(trackStruct);
      if(calculateApe_)this->fillHistsForApeCalculation(trackStruct);
+     
+     if(trackStruct.v_hitParams.size()>0)++trackSizeGood;
    }
+   if(analyzerMode_)tkDetector_.TrkSizeGood->Fill(trackSizeGood);
 }
 
 

@@ -6,7 +6,7 @@
 
 struct TrackerDetectorStruct{
   
-  TrackerDetectorStruct(): TrkSize(0),
+  TrackerDetectorStruct(): TrkSize(0), TrkSizeGood(0),
                            HitsSize(0), HitsValid(0), HitsInvalid(0), Hits2D(0),
 			   HitsGood(0), LayersMissed(0),
 			   HitsPixel(0), HitsStrip(0),
@@ -16,7 +16,7 @@ struct TrackerDetectorStruct{
 			   HitsGoodVsHitsValid(0), MeanAngleVsHits(0),
 			   PHitsGoodVsHitsValid(0), PMeanAngleVsHits(0){}
   
-  TH1 *TrkSize,
+  TH1 *TrkSize, *TrkSizeGood,
       *HitsSize, *HitsValid, *HitsInvalid, *Hits2D,
       *HitsGood, *LayersMissed,
       *HitsPixel, *HitsStrip,
