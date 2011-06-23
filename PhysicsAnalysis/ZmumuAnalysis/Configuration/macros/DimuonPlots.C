@@ -269,6 +269,7 @@ void DimuonPlots(TString pluginSuffix = ""){
   canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append(*outform));
   
   gPad->SetLogy(1);
+  //stack1->SetMinimum(0.01);
   canvas1->Update();
   canvas1->Print(outpath->Copy().Append(*plotName1).Append(pluginSuffix).Append("_log").Append(*outform));
       
