@@ -64,34 +64,34 @@ process.load("ZmumuAnalysis.Configuration.filters.GeneratorZmumuFilter_cff")
 
 ## Event Counter
 process.load("ZmumuAnalysis.Analyzer.EventCounter_cfi")
-process.EventCounter0 = process.EventCounter.clone()
+process.EventCounterStep0 = process.EventCounter.clone()
 
 
 
 ## generator level b-quark occurence analyzer
 process.load("ZmumuAnalysis.Analyzer.GenParticleAnalyzer_cfi")
-process.GenParticleAnalyzerB2 = process.GenParticleAnalyzer.clone(src = 'selectedBs',)
-process.GenParticleAnalyzerB3 = process.GenParticleAnalyzer.clone(src = 'goodBs',)
-process.GenParticleAnalyzerB4a = process.GenParticleAnalyzer.clone(src = 'visibleGeometricBs',)
-process.GenParticleAnalyzerB4 = process.GenParticleAnalyzer.clone(src = 'visibleKinematicBs',)
-process.GenParticleAnalyzerB6 = process.GenParticleAnalyzer.clone(src = 'visibleKinematicBs',)
+process.GenParticleAnalyzerStepB2 = process.GenParticleAnalyzer.clone(src = 'selectedBs',)
+process.GenParticleAnalyzerStepB3 = process.GenParticleAnalyzer.clone(src = 'goodBs',)
+process.GenParticleAnalyzerStepB4a = process.GenParticleAnalyzer.clone(src = 'visibleGeometricBs',)
+process.GenParticleAnalyzerStepB4 = process.GenParticleAnalyzer.clone(src = 'visibleKinematicBs',)
+process.GenParticleAnalyzerStepB6 = process.GenParticleAnalyzer.clone(src = 'visibleKinematicBs',)
 
 
 
 ## generator level muon and di-muon analyzer
 process.load("ZmumuAnalysis.Analyzer.GeneratorZmumuAnalyzer_cfi")
-process.GeneratorZmumuAnalyzer1a =  process.GeneratorZmumuAnalyzer.clone()
-process.GeneratorZmumuAnalyzer1 =  process.GeneratorZmumuAnalyzer.clone()
-process.GeneratorZmumuAnalyzerB2 =  process.GeneratorZmumuAnalyzer.clone()
-process.GeneratorZmumuAnalyzerB3 =  process.GeneratorZmumuAnalyzer.clone()
-process.GeneratorZmumuAnalyzerB4 =  process.GeneratorZmumuAnalyzer.clone()
-process.GeneratorZmumuAnalyzerB5 =  process.GeneratorZmumuAnalyzer.clone()
-process.GeneratorZmumuAnalyzerB6 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerStep1a =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerStep1 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerStepB2 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerStepB3 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerStepB4 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerStepB5 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerStepB6 =  process.GeneratorZmumuAnalyzer.clone()
 
-process.GeneratorZmumuAnalyzerUdsc2 =  process.GeneratorZmumuAnalyzer.clone()
-process.GeneratorZmumuAnalyzerUdsc3 =  process.GeneratorZmumuAnalyzer.clone()
-process.GeneratorZmumuAnalyzerUdsc4 =  process.GeneratorZmumuAnalyzer.clone()
-process.GeneratorZmumuAnalyzerUdsc6 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerStepUdsc2 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerStepUdsc3 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerStepUdsc4 =  process.GeneratorZmumuAnalyzer.clone()
+process.GeneratorZmumuAnalyzerStepUdsc6 =  process.GeneratorZmumuAnalyzer.clone()
 
 
 
@@ -102,56 +102,56 @@ process.GeneratorZmumuAnalyzerUdsc6 =  process.GeneratorZmumuAnalyzer.clone()
 
 
 process.step0 = cms.Sequence(
-    process.EventCounter0
+    process.EventCounterStep0
 )
 process.step1a = cms.Sequence(
-    process.GeneratorZmumuAnalyzer1a
+    process.GeneratorZmumuAnalyzerStep1a
 )
 process.step1 = cms.Sequence(
-    process.GeneratorZmumuAnalyzer1
+    process.GeneratorZmumuAnalyzerStep1
 )
 process.step2 = cms.Sequence(
-    process.GeneratorZmumuAnalyzerB2+
-    process.GenParticleAnalyzerB2
+    process.GeneratorZmumuAnalyzerStepB2+
+    process.GenParticleAnalyzerStepB2
 )
 process.step3a = cms.Sequence(
 )
 process.step3 = cms.Sequence(
-    process.GeneratorZmumuAnalyzerB3+
-    process.GenParticleAnalyzerB3
+    process.GeneratorZmumuAnalyzerStepB3+
+    process.GenParticleAnalyzerStepB3
 )
 process.step4a = cms.Sequence(
-    process.GenParticleAnalyzerB4a
+    process.GenParticleAnalyzerStepB4a
 )
 process.step4 = cms.Sequence(
-    process.GeneratorZmumuAnalyzerB4+
-    process.GenParticleAnalyzerB4
+    process.GeneratorZmumuAnalyzerStepB4+
+    process.GenParticleAnalyzerStepB4
 )
 process.step5 = cms.Sequence(
-    process.GeneratorZmumuAnalyzerB5
+    process.GeneratorZmumuAnalyzerStepB5
 )
 process.step6 = cms.Sequence(
-    process.GeneratorZmumuAnalyzerB6+
-    process.GenParticleAnalyzerB6
+    process.GeneratorZmumuAnalyzerStepB6+
+    process.GenParticleAnalyzerStepB6
 )
 
 
 
-process.udscStep2 = cms.Sequence(
-    process.GeneratorZmumuAnalyzerUdsc2
+process.stepUdsc2 = cms.Sequence(
+    process.GeneratorZmumuAnalyzerStepUdsc2
 )
-process.udscStep3a = cms.Sequence(
+process.stepUdsc3a = cms.Sequence(
 )
-process.udscStep3 = cms.Sequence(
-    process.GeneratorZmumuAnalyzerUdsc3
+process.stepUdsc3 = cms.Sequence(
+    process.GeneratorZmumuAnalyzerStepUdsc3
 )
-process.udscStep4a = cms.Sequence(
+process.stepUdsc4a = cms.Sequence(
 )
-process.udscStep4 = cms.Sequence(
-    process.GeneratorZmumuAnalyzerUdsc4
+process.stepUdsc4 = cms.Sequence(
+    process.GeneratorZmumuAnalyzerStepUdsc4
 )
-process.udscStep6 = cms.Sequence(
-    process.GeneratorZmumuAnalyzerUdsc6
+process.stepUdsc6 = cms.Sequence(
+    process.GeneratorZmumuAnalyzerStepUdsc6
 )
 
 
@@ -206,7 +206,7 @@ process.udscSelection = cms.Path(
     process.buildBCollections*
     
     ~process.twoVisibleKinematicBSelection*
-    process.udscStep6*
+    process.stepUdsc6*
     ## Makes no sense to require more than one module here
     #~process.twoVisibleGeometricBSelection*
     #~process.twoGoodBSelection*
@@ -215,19 +215,19 @@ process.udscSelection = cms.Path(
     #~process.twoSelectedBSelection*
     
     ~process.oneVisibleKinematicBSelection*
-    process.udscStep4*
+    process.stepUdsc4*
     
     ~process.oneVisibleGeometricBSelection*
-    process.udscStep4a*
+    process.stepUdsc4a*
     
     ~process.oneGoodBSelection*
-    process.udscStep3*
+    process.stepUdsc3*
     
     ~process.oneCleanBSelection*
-    process.udscStep3a*
+    process.stepUdsc3a*
     
     ~process.oneSelectedBSelection*
-    process.udscStep2
+    process.stepUdsc2
 )
 
 
