@@ -18,9 +18,9 @@ my $lumi = 191.0;
 
 # input files (last file is for data)
 my @files = ("mc/qcd.txt",
-             "mc/singleTopS.txt",
-	     "mc/singleTopT.txt",
-	     "mc/singleTopTw.txt",
+             "mc/singletopS.txt",
+	     "mc/singletopT.txt",
+	     "mc/singletopTw.txt",
 	     "mc/ttbar.txt",
 	     "mc/wmunu.txt",
 	     "mc/wtaunu.txt",
