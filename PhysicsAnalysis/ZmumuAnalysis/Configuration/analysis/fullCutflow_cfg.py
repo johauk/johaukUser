@@ -21,9 +21,9 @@ isData2 = False
 isData3 = False
 # MC samples
 isQcd = False
-isSingleTopS = False
-isSingleTopT = False
-isSingleTopTw = False
+isSingletopS = False
+isSingletopT = False
+isSingletopTw = False
 isTtbar = False
 isWmunu = False
 isWtaunu = False
@@ -45,9 +45,9 @@ if(isData2): counter += 1; isData = True
 if(isData3): counter += 1; isData = True
 # MC
 if(isQcd): counter += 1; isMC = True
-if(isSingleTopS): counter += 1; isMC = True
-if(isSingleTopT): counter += 1; isMC = True
-if(isSingleTopTw): counter += 1; isMC = True
+if(isSingletopS): counter += 1; isMC = True
+if(isSingletopT): counter += 1; isMC = True
+if(isSingletopTw): counter += 1; isMC = True
 if(isTtbar): counter += 1; isMC = True
 if(isWmunu): counter += 1; isMC = True
 if(isWtaunu): counter += 1; isMC = True
@@ -78,11 +78,11 @@ elif(isData3):
 # MC
 elif(isQcd):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_QCD_MuEnrichedPt15_pythia_F10_cff")
-elif(isSingleTopS):
+elif(isSingletopS):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TToBLNu_TuneZ2_s_channel_7TeV_madgraph_cff")
-elif(isSingleTopT):
+elif(isSingletopT):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TToBLNu_TuneZ2_t_channel_7TeV_madgraph_cff")
-elif(isSingleTopTw):
+elif(isSingletopTw):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TToBLNu_madgraph_F10_cff")
 elif(isTtbar):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TTJets_D6T_madgraph_F10_cff")
@@ -149,9 +149,9 @@ elif(isData2): fileName = 'data/run2011A_May7PromptReco_2.root'
 elif(isData3): fileName = 'data/run2011A_May7to13PromptReco.root'
 # MC
 elif(isQcd): fileName = 'mc/qcd.root'
-elif(isSingleTopS): fileName = 'mc/singleTopS.root'
-elif(isSingleTopT): fileName = 'mc/singleTopT.root'
-elif(isSingleTopTw): fileName = 'mc/singleTopTw.root'
+elif(isSingletopS): fileName = 'mc/singletopS.root'
+elif(isSingletopT): fileName = 'mc/singletopT.root'
+elif(isSingletopTw): fileName = 'mc/singletopTw.root'
 elif(isTtbar): fileName = 'mc/ttbar.root'
 elif(isWmunu): fileName = 'mc/wmunu.root'
 elif(isWtaunu): fileName = 'mc/wtaunu.root'

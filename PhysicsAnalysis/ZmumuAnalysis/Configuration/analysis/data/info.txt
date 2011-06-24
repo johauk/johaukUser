@@ -18,9 +18,9 @@ nafJobSplitter.pl 10 run2011A_May7to13PromptReco_cfg.py
 # MC
 
 nafJobSplitter.pl 100 qcd_cfg.py
-nafJobSplitter.pl 2 singleTopS_cfg.py
-nafJobSplitter.pl 2 singleTopT_cfg.py
-nafJobSplitter.pl 2 singleTopTw_cfg.py
+nafJobSplitter.pl 2 singletopS_cfg.py
+nafJobSplitter.pl 2 singletopT_cfg.py
+nafJobSplitter.pl 2 singletopTw_cfg.py
 nafJobSplitter.pl 10 ttbar_cfg.py
 nafJobSplitter.pl 20 wmunu_cfg.py
 nafJobSplitter.pl 20 wtaunu_cfg.py
@@ -44,9 +44,9 @@ nafJobSplitter.pl check data/naf_run2011A_May7to13PromptReco_cfg
 
 
 nafJobSplitter.pl check mc/naf_qcd_cfg
-nafJobSplitter.pl check mc/naf_singleTopS_cfg
-nafJobSplitter.pl check mc/naf_singleTopT_cfg
-nafJobSplitter.pl check mc/naf_singleTopTw_cfg
+nafJobSplitter.pl check mc/naf_singletopS_cfg
+nafJobSplitter.pl check mc/naf_singletopT_cfg
+nafJobSplitter.pl check mc/naf_singletopTw_cfg
 nafJobSplitter.pl check mc/naf_ttbar_cfg
 nafJobSplitter.pl check mc/naf_wmunu_cfg
 nafJobSplitter.pl check mc/naf_wtaunu_cfg

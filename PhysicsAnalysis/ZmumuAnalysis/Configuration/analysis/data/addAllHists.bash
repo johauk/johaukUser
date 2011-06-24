@@ -34,9 +34,9 @@ sumTriggerReports2.pl $DIRBASE/hists/data/run2011*PromptReco*.txt > $DIRBASE/his
 
 
 hadd $DIRBASE/hists/mc/qcd.root $DIRBASE/analysis/mc/naf_qcd_cfg/*.root
-hadd $DIRBASE/hists/mc/singleTopS.root $DIRBASE/analysis/mc/naf_singleTopS_cfg/*.root
-hadd $DIRBASE/hists/mc/singleTopT.root $DIRBASE/analysis/mc/naf_singleTopT_cfg/*.root
-hadd $DIRBASE/hists/mc/singleTopTw.root $DIRBASE/analysis/mc/naf_singleTopTw_cfg/*.root
+hadd $DIRBASE/hists/mc/singletopS.root $DIRBASE/analysis/mc/naf_singletopS_cfg/*.root
+hadd $DIRBASE/hists/mc/singletopT.root $DIRBASE/analysis/mc/naf_singletopT_cfg/*.root
+hadd $DIRBASE/hists/mc/singletopTw.root $DIRBASE/analysis/mc/naf_singletopTw_cfg/*.root
 hadd $DIRBASE/hists/mc/ttbar.root $DIRBASE/analysis/mc/naf_ttbar_cfg/*.root
 hadd $DIRBASE/hists/mc/wmunu.root $DIRBASE/analysis/mc/naf_wmunu_cfg/*.root
 hadd $DIRBASE/hists/mc/wtaunu.root $DIRBASE/analysis/mc/naf_wtaunu_cfg/*.root
@@ -52,9 +52,9 @@ hadd $DIRBASE/hists/mc/zz.root $DIRBASE/analysis/mc/naf_zz_cfg/*.root
 
 
 sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_qcd_cfg/out*.txt > $DIRBASE/hists/mc/qcd.txt
-sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_singleTopS_cfg/out*.txt > $DIRBASE/hists/mc/singleTopS.txt
-sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_singleTopT_cfg/out*.txt > $DIRBASE/hists/mc/singleTopT.txt
-sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_singleTopTw_cfg/out*.txt > $DIRBASE/hists/mc/singleTopTw.txt
+sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_singletopS_cfg/out*.txt > $DIRBASE/hists/mc/singletopS.txt
+sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_singletopT_cfg/out*.txt > $DIRBASE/hists/mc/singletopT.txt
+sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_singletopTw_cfg/out*.txt > $DIRBASE/hists/mc/singletopTw.txt
 sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_ttbar_cfg/out*.txt > $DIRBASE/hists/mc/ttbar.txt
 sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_wmunu_cfg/out*.txt > $DIRBASE/hists/mc/wmunu.txt
 sumTriggerReports2.pl $DIRBASE/analysis/mc/naf_wtaunu_cfg/out*.txt > $DIRBASE/hists/mc/wtaunu.txt
