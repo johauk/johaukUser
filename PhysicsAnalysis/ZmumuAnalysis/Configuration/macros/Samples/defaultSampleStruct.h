@@ -12,14 +12,14 @@
 
 struct defaultStruct{
   
-  defaultStruct():lumiWeight_(-1.){}
+  defaultStruct():dynamicWeight_(-1.){}
   
   TFile* openInputFile(const std::string&, const std::string&, const unsigned int);
-  double setLumiWeight(TFile*, const unsigned int);
+  double setDynamicWeight(TFile*, const unsigned int);
   
   static const std::string cmsswBase(){return getenv("CMSSW_BASE");}
   
-  double lumiWeight_;
+  double dynamicWeight_;
 };
 
 TFile* defaultStruct::openInputFile(const std::string& datasetName,const std::string& fullName, const unsigned int nEvents){
@@ -32,7 +32,7 @@ TFile* defaultStruct::openInputFile(const std::string& datasetName,const std::st
   }
   if(file){
     std::cout<<"\nOpened file \""<<datasetName<<"\" sucessfully\n";
-    lumiWeight_ = this->setLumiWeight(file, nEvents);
+    dynamicWeight_ = this->setDynamicWeight(file, nEvents);
   }
   else{
     std::cout<<"\nThe file \""<<datasetName<<"\" could not be found!\n"
@@ -41,7 +41,7 @@ TFile* defaultStruct::openInputFile(const std::string& datasetName,const std::st
   return file;
 }
 
-double defaultStruct::setLumiWeight(TFile* file, const unsigned int nEvents){
+double defaultStruct::setDynamicWeight(TFile* file, const unsigned int nEvents){
   TH1* EventCount(0);
   file->GetObject("EventCounterStep0/h_eventCount;1", EventCount);
   
@@ -91,7 +91,7 @@ struct DataStruct : defaultStruct {
   const double lumi_;
   
   // The root file
-  const TFile* file_;
+  TFile* file_;
 };
 
 
@@ -121,7 +121,7 @@ struct McStruct : defaultStruct {
   const TColor* color_;
   
   // The root file
-  const TFile* file_;
+  TFile* file_;
 };
 
 
@@ -145,7 +145,7 @@ struct SimulationStruct : defaultStruct {
   const unsigned int nEvents_;
   
   // The root file
-  const TFile* file_;
+  TFile* file_;
 };
 
 
