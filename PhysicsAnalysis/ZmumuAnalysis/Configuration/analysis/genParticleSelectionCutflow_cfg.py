@@ -65,6 +65,21 @@ process.load("ZmumuAnalysis.Configuration.filters.GeneratorZmumuFilter_cff")
 ## Event Counter
 process.load("ZmumuAnalysis.Analyzer.EventCounter_cfi")
 process.EventCounterStep0 = process.EventCounter.clone()
+process.EventCounterStep1a = process.EventCounter.clone()
+process.EventCounterStep1 = process.EventCounter.clone()
+process.EventCounterStepB2 = process.EventCounter.clone()
+process.EventCounterStepB3a = process.EventCounter.clone()
+process.EventCounterStepB3 = process.EventCounter.clone()
+process.EventCounterStepB4a = process.EventCounter.clone()
+process.EventCounterStepB4 = process.EventCounter.clone()
+process.EventCounterStepB5 = process.EventCounter.clone()
+process.EventCounterStepB6 = process.EventCounter.clone()
+process.EventCounterStepUdsc2 = process.EventCounter.clone()
+process.EventCounterStepUdsc3a = process.EventCounter.clone()
+process.EventCounterStepUdsc3 = process.EventCounter.clone()
+process.EventCounterStepUdsc4a = process.EventCounter.clone()
+process.EventCounterStepUdsc4 = process.EventCounter.clone()
+process.EventCounterStepUdsc6 = process.EventCounter.clone()
 
 
 
@@ -105,32 +120,41 @@ process.step0 = cms.Sequence(
     process.EventCounterStep0
 )
 process.step1a = cms.Sequence(
+    process.EventCounterStep1a+
     process.GeneratorZmumuAnalyzerStep1a
 )
 process.step1 = cms.Sequence(
+    process.EventCounterStep1+
     process.GeneratorZmumuAnalyzerStep1
 )
 process.step2 = cms.Sequence(
+    process.EventCounterStepB2+
     process.GeneratorZmumuAnalyzerStepB2+
     process.GenParticleAnalyzerStepB2
 )
 process.step3a = cms.Sequence(
+    process.EventCounterStepB3a
 )
 process.step3 = cms.Sequence(
+    process.EventCounterStepB3+
     process.GeneratorZmumuAnalyzerStepB3+
     process.GenParticleAnalyzerStepB3
 )
 process.step4a = cms.Sequence(
+    process.EventCounterStepB4a+
     process.GenParticleAnalyzerStepB4a
 )
 process.step4 = cms.Sequence(
+    process.EventCounterStepB4+
     process.GeneratorZmumuAnalyzerStepB4+
     process.GenParticleAnalyzerStepB4
 )
 process.step5 = cms.Sequence(
+    process.EventCounterStepB5+
     process.GeneratorZmumuAnalyzerStepB5
 )
 process.step6 = cms.Sequence(
+    process.EventCounterStepB6+
     process.GeneratorZmumuAnalyzerStepB6+
     process.GenParticleAnalyzerStepB6
 )
@@ -138,19 +162,25 @@ process.step6 = cms.Sequence(
 
 
 process.stepUdsc2 = cms.Sequence(
+    process.EventCounterStepUdsc2+
     process.GeneratorZmumuAnalyzerStepUdsc2
 )
 process.stepUdsc3a = cms.Sequence(
+    process.EventCounterStepUdsc3a
 )
 process.stepUdsc3 = cms.Sequence(
+    process.EventCounterStepUdsc3+
     process.GeneratorZmumuAnalyzerStepUdsc3
 )
 process.stepUdsc4a = cms.Sequence(
+    process.EventCounterStepUdsc4a
 )
 process.stepUdsc4 = cms.Sequence(
+    process.EventCounterStepUdsc4+
     process.GeneratorZmumuAnalyzerStepUdsc4
 )
 process.stepUdsc6 = cms.Sequence(
+    process.EventCounterStepUdsc6+
     process.GeneratorZmumuAnalyzerStepUdsc6
 )
 

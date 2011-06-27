@@ -221,6 +221,62 @@ process.load("ZmumuAnalysis.Configuration.sequences.metSelection_cff")
 process.load("ZmumuAnalysis.Analyzer.EventCounter_cfi")
 process.EventCounterStep0 = process.EventCounter.clone()
 process.EventCounterStep1a = process.EventCounter.clone()
+process.EventCounterStep1b = process.EventCounter.clone()
+process.EventCounterStep1 = process.EventCounter.clone()
+process.EventCounterStep2a = process.EventCounter.clone()
+process.EventCounterStep2b = process.EventCounter.clone()
+process.EventCounterStep2c = process.EventCounter.clone()
+process.EventCounterStep2d = process.EventCounter.clone()
+process.EventCounterStep2e = process.EventCounter.clone()
+process.EventCounterStep2f = process.EventCounter.clone()
+process.EventCounterStep2 = process.EventCounter.clone()
+process.EventCounterStep3a = process.EventCounter.clone()
+process.EventCounterStep3b = process.EventCounter.clone()
+process.EventCounterStep3c = process.EventCounter.clone()
+process.EventCounterStep3d = process.EventCounter.clone()
+process.EventCounterStep3e = process.EventCounter.clone()
+process.EventCounterStep3f = process.EventCounter.clone()
+process.EventCounterStep3 = process.EventCounter.clone()
+process.EventCounterStep4a = process.EventCounter.clone()
+process.EventCounterStep4b = process.EventCounter.clone()
+process.EventCounterStep4c = process.EventCounter.clone()
+process.EventCounterStep4d = process.EventCounter.clone()
+process.EventCounterStep4 = process.EventCounter.clone()
+process.EventCounterStep5 = process.EventCounter.clone()
+process.EventCounterStep6a = process.EventCounter.clone()
+process.EventCounterStep6 = process.EventCounter.clone()
+process.EventCounterStep7a = process.EventCounter.clone()
+process.EventCounterStep7b = process.EventCounter.clone()
+process.EventCounterStep7c = process.EventCounter.clone()
+process.EventCounterStep7 = process.EventCounter.clone()
+process.EventCounterStepZVetoLow3f = process.EventCounter.clone()
+process.EventCounterStepZVetoLow3 = process.EventCounter.clone()
+process.EventCounterStepZVetoLow4a = process.EventCounter.clone()
+process.EventCounterStepZVetoLow4b = process.EventCounter.clone()
+process.EventCounterStepZVetoLow4c = process.EventCounter.clone()
+process.EventCounterStepZVetoLow4d = process.EventCounter.clone()
+process.EventCounterStepZVetoLow4 = process.EventCounter.clone()
+process.EventCounterStepZVetoLow5 = process.EventCounter.clone()
+process.EventCounterStepZVetoLow6a = process.EventCounter.clone()
+process.EventCounterStepZVetoLow6 = process.EventCounter.clone()
+process.EventCounterStepZVetoLow7a = process.EventCounter.clone()
+process.EventCounterStepZVetoLow7b = process.EventCounter.clone()
+process.EventCounterStepZVetoLow7c = process.EventCounter.clone()
+process.EventCounterStepZVetoLow7 = process.EventCounter.clone()
+process.EventCounterStepZVetoHigh3f = process.EventCounter.clone()
+process.EventCounterStepZVetoHigh3 = process.EventCounter.clone()
+process.EventCounterStepZVetoHigh4a = process.EventCounter.clone()
+process.EventCounterStepZVetoHigh4b = process.EventCounter.clone()
+process.EventCounterStepZVetoHigh4c = process.EventCounter.clone()
+process.EventCounterStepZVetoHigh4d = process.EventCounter.clone()
+process.EventCounterStepZVetoHigh4 = process.EventCounter.clone()
+process.EventCounterStepZVetoHigh5 = process.EventCounter.clone()
+process.EventCounterStepZVetoHigh6a = process.EventCounter.clone()
+process.EventCounterStepZVetoHigh6 = process.EventCounter.clone()
+process.EventCounterStepZVetoHigh7a = process.EventCounter.clone()
+process.EventCounterStepZVetoHigh7b = process.EventCounter.clone()
+process.EventCounterStepZVetoHigh7c = process.EventCounter.clone()
+process.EventCounterStepZVetoHigh7 = process.EventCounter.clone()
 
 
 
@@ -248,8 +304,11 @@ process.VertexAnalyzerStep3 = process.VertexAnalyzer.clone(
     vertexSource = 'bestPV',
 )
 
-process.VertexAnalyzerStepZVeto3f = process.VertexAnalyzerStep3f.clone(
-    vertexSource = 'finalPVsZVeto',
+process.VertexAnalyzerStepZVetoLow3f = process.VertexAnalyzerStep3f.clone(
+    vertexSource = 'finalPVsZVetoLow',
+)
+process.VertexAnalyzerStepZVetoHigh3f = process.VertexAnalyzerStep3f.clone(
+    vertexSource = 'finalPVsZVetoHigh',
 )
 
 
@@ -272,9 +331,12 @@ process.MuonAnalyzerStep6 = process.MuonAnalyzer.clone(
     muonSource = 'tightMuons',
 )
 
-process.MuonAnalyzerStepZVeto3 = process.MuonAnalyzerStep3.clone()
-process.MuonAnalyzerStepZVeto5 = process.MuonAnalyzerStep5.clone()
-process.MuonAnalyzerStepZVeto6 = process.MuonAnalyzerStep6.clone()
+process.MuonAnalyzerStepZVetoLow3 = process.MuonAnalyzerStep3.clone()
+process.MuonAnalyzerStepZVetoLow5 = process.MuonAnalyzerStep5.clone()
+process.MuonAnalyzerStepZVetoLow6 = process.MuonAnalyzerStep6.clone()
+process.MuonAnalyzerStepZVetoHigh3 = process.MuonAnalyzerStep3.clone()
+process.MuonAnalyzerStepZVetoHigh5 = process.MuonAnalyzerStep5.clone()
+process.MuonAnalyzerStepZVetoHigh6 = process.MuonAnalyzerStep6.clone()
 
 process.MuonAnalyzerStepSC3 = process.MuonAnalyzerStep3.clone(
 )
@@ -304,14 +366,23 @@ process.DiMuonAnalyzerStep6 = process.DiMuonAnalyzer.clone(
     diMuonSource = "finalDimuons",
 )
 
-process.DiMuonAnalyzerStepZVeto3f = process.DiMuonAnalyzerStep3f.clone(
-    diMuonSource = "finalDimuonsZVeto",
+process.DiMuonAnalyzerStepZVetoLow3f = process.DiMuonAnalyzerStep3f.clone(
+    diMuonSource = "finalDimuonsZVetoLow",
 )
-process.DiMuonAnalyzerStepZVeto5 = process.DiMuonAnalyzerStep5.clone(
-    diMuonSource = "finalDimuonsZVeto",
+process.DiMuonAnalyzerStepZVetoLow5 = process.DiMuonAnalyzerStep5.clone(
+    diMuonSource = "finalDimuonsZVetoLow",
 )
-process.DiMuonAnalyzerStepZVeto6 = process.DiMuonAnalyzerStep6.clone(
-    diMuonSource = "finalDimuonsZVeto",
+process.DiMuonAnalyzerStepZVetoLow6 = process.DiMuonAnalyzerStep6.clone(
+    diMuonSource = "finalDimuonsZVetoLow",
+)
+process.DiMuonAnalyzerStepZVetoHigh3f = process.DiMuonAnalyzerStep3f.clone(
+    diMuonSource = "finalDimuonsZVetoHigh",
+)
+process.DiMuonAnalyzerStepZVetoHigh5 = process.DiMuonAnalyzerStep5.clone(
+    diMuonSource = "finalDimuonsZVetoHigh",
+)
+process.DiMuonAnalyzerStepZVetoHigh6 = process.DiMuonAnalyzerStep6.clone(
+    diMuonSource = "finalDimuonsZVetoHigh",
 )
 
 process.DiMuonAnalyzerStepSC3d = process.DiMuonAnalyzerStep3d.clone(
@@ -353,10 +424,14 @@ process.JetAnalyzerStep6 = process.JetAnalyzer.clone(
     jetSource = 'bSsvHeMJets',
 )
 
-process.JetAnalyzerStepZVeto4d = process.JetAnalyzerStep4d.clone()
-process.JetAnalyzerStepZVeto4 = process.JetAnalyzerStep4.clone()
-process.JetAnalyzerStepZVeto5 = process.JetAnalyzerStep5.clone()
-process.JetAnalyzerStepZVeto6 = process.JetAnalyzerStep6.clone()
+process.JetAnalyzerStepZVetoLow4d = process.JetAnalyzerStep4d.clone()
+process.JetAnalyzerStepZVetoLow4 = process.JetAnalyzerStep4.clone()
+process.JetAnalyzerStepZVetoLow5 = process.JetAnalyzerStep5.clone()
+process.JetAnalyzerStepZVetoLow6 = process.JetAnalyzerStep6.clone()
+process.JetAnalyzerStepZVetoHigh4d = process.JetAnalyzerStep4d.clone()
+process.JetAnalyzerStepZVetoHigh4 = process.JetAnalyzerStep4.clone()
+process.JetAnalyzerStepZVetoHigh5 = process.JetAnalyzerStep5.clone()
+process.JetAnalyzerStepZVetoHigh6 = process.JetAnalyzerStep6.clone()
 
 
 
@@ -366,7 +441,8 @@ process.MetAnalyzerStep6a = process.MetAnalyzer.clone(
     metSource = 'patMETsPF',
 )
 
-process.MetAnalyzerStepZVeto6a = process.MetAnalyzerStep6a.clone()
+process.MetAnalyzerStepZVetoLow6a = process.MetAnalyzerStep6a.clone()
+process.MetAnalyzerStepZVetoHigh6a = process.MetAnalyzerStep6a.clone()
 
 process.MetAnalyzerStepSC6a = process.MetAnalyzerStep6a.clone()
 
@@ -383,10 +459,15 @@ process.RunEventListingStep5 = process.RunEventListingCreateTreeOnly.clone()
 process.RunEventListingStep6 = process.RunEventListingCreateTreeOnly.clone()
 process.RunEventListingStep7 = process.RunEventListingCreateTreeOnly.clone()
 
-process.RunEventListingStepZVeto3 = process.RunEventListingCreateTreeOnly.clone()
-process.RunEventListingStepZVeto5 = process.RunEventListingCreateTreeOnly.clone()
-process.RunEventListingStepZVeto6 = process.RunEventListingCreateTreeOnly.clone()
-process.RunEventListingStepZVeto7 = process.RunEventListingCreateTreeOnly.clone()
+process.RunEventListingStepZVetoLow3 = process.RunEventListingCreateTreeOnly.clone()
+process.RunEventListingStepZVetoLow5 = process.RunEventListingCreateTreeOnly.clone()
+process.RunEventListingStepZVetoLow6 = process.RunEventListingCreateTreeOnly.clone()
+process.RunEventListingStepZVetoLow7 = process.RunEventListingCreateTreeOnly.clone()
+
+process.RunEventListingStepZVetoHigh3 = process.RunEventListingCreateTreeOnly.clone()
+process.RunEventListingStepZVetoHigh5 = process.RunEventListingCreateTreeOnly.clone()
+process.RunEventListingStepZVetoHigh6 = process.RunEventListingCreateTreeOnly.clone()
+process.RunEventListingStepZVetoHigh7 = process.RunEventListingCreateTreeOnly.clone()
 
 
 
@@ -438,192 +519,334 @@ process.step0 = cms.Sequence(
 )
 
 process.step1a = cms.Sequence(
-    process.EventCounterStep1a*
+    process.EventCounterStep1a+
     process.TriggerAnalyzerStep1a
 )
 process.step1b = cms.Sequence(
+    process.EventCounterStep1b+
     process.VertexAnalyzerStep1b
 )
 process.step1 = cms.Sequence(
+    process.EventCounterStep1+
     process.VertexAnalyzerStep1
 )
 
 process.step2a = cms.Sequence(
+    process.EventCounterStep2a
 )
 process.step2b = cms.Sequence(
+    process.EventCounterStep2b+
     process.MuonAnalyzerStep2b
 )
 process.step2c = cms.Sequence(
+    process.EventCounterStep2c
 )
 process.step2d = cms.Sequence(
+    process.EventCounterStep2d
 )
 process.step2e = cms.Sequence(
+    process.EventCounterStep2e
 )
 process.step2f = cms.Sequence(
+    process.EventCounterStep2f
 )
 process.step2 = cms.Sequence(
+    process.EventCounterStep2+
     process.MuonAnalyzerStep2
 )
 
 process.step3a = cms.Sequence(
+    process.EventCounterStep3a
 )
 process.step3b = cms.Sequence(
+    process.EventCounterStep3b
 )
 process.step3c = cms.Sequence(
+    process.EventCounterStep3c
 )
 process.step3d = cms.Sequence(
+    process.EventCounterStep3d+
     process.DiMuonAnalyzerStep3d
 )
 process.step3e = cms.Sequence(
+    process.EventCounterStep3e+
     process.DiMuonAnalyzerStep3e
 )
 process.step3f = cms.Sequence(
-    process.VertexAnalyzerStep3f*
+    process.EventCounterStep3f+
+    process.VertexAnalyzerStep3f+
     process.DiMuonAnalyzerStep3f
 )
 process.step3 = cms.Sequence(
-    process.VertexAnalyzerStep3*
-    process.MuonAnalyzerStep3*
-    process.DiMuonAnalyzerStep3*
+    process.EventCounterStep3+
+    process.VertexAnalyzerStep3+
+    process.MuonAnalyzerStep3+
+    process.DiMuonAnalyzerStep3+
     process.RunEventListingStep3
 )
 
 process.step4a = cms.Sequence(
+    process.EventCounterStep4a+
     process.JetAnalyzerStep4a
 )
 process.step4b = cms.Sequence(
+    process.EventCounterStep4b+
     process.JetAnalyzerStep4b
 )
 process.step4c = cms.Sequence(
+    process.EventCounterStep4c+
     process.JetAnalyzerStep4c
 )
 process.step4d = cms.Sequence(
+    process.EventCounterStep4d+
     process.JetAnalyzerStep4d
 )
 process.step4 = cms.Sequence(
+    process.EventCounterStep4+
     process.JetAnalyzerStep4
 )
 
 process.step5 = cms.Sequence(
-    process.MuonAnalyzerStep5*
-    process.DiMuonAnalyzerStep5*
-    process.JetAnalyzerStep5*
+    process.EventCounterStep5+
+    process.MuonAnalyzerStep5+
+    process.DiMuonAnalyzerStep5+
+    process.JetAnalyzerStep5+
     process.RunEventListingStep5
 )
 
 process.step6a = cms.Sequence(
+    process.EventCounterStep6a+
     process.MetAnalyzerStep6a
 )
 process.step6 = cms.Sequence(
-    process.MuonAnalyzerStep6*
-    process.DiMuonAnalyzerStep6*
-    process.JetAnalyzerStep6*
+    process.EventCounterStep6+
+    process.MuonAnalyzerStep6+
+    process.DiMuonAnalyzerStep6+
+    process.JetAnalyzerStep6+
     process.RunEventListingStep6
 )
 
-
 process.step7a = cms.Sequence(
+    process.EventCounterStep7a
 )
 process.step7b = cms.Sequence(
+    process.EventCounterStep7b
 )
 process.step7c = cms.Sequence(
+    process.EventCounterStep7c
 )
 process.step7 = cms.Sequence(
+    process.EventCounterStep7+
     process.RunEventListingStep7
 )
 
 
 
-## Define steps and corresponding analyzers for analysis excluding the Z mass window
-process.stepZVeto0 = cms.Sequence(
+## Define steps and corresponding analyzers for analysis excluding the Z mass window (lower sideband)
+process.stepZVetoLow0 = cms.Sequence(
 )
 
-process.stepZVeto1a = cms.Sequence(
+process.stepZVetoLow1a = cms.Sequence(
 )
-process.stepZVeto1b = cms.Sequence(
+process.stepZVetoLow1b = cms.Sequence(
 )
-process.stepZVeto1 = cms.Sequence(
-)
-
-process.stepZVeto2a = cms.Sequence(
-)
-process.stepZVeto2b = cms.Sequence(
-)
-process.stepZVeto2c = cms.Sequence(
-)
-process.stepZVeto2d = cms.Sequence(
-)
-process.stepZVeto2e = cms.Sequence(
-)
-process.stepZVeto2f = cms.Sequence(
-)
-process.stepZVeto2 = cms.Sequence(
+process.stepZVetoLow1 = cms.Sequence(
 )
 
-process.stepZVeto3a = cms.Sequence(
+process.stepZVetoLow2a = cms.Sequence(
 )
-process.stepZVeto3b = cms.Sequence(
+process.stepZVetoLow2b = cms.Sequence(
 )
-process.stepZVeto3c = cms.Sequence(
+process.stepZVetoLow2c = cms.Sequence(
 )
-process.stepZVeto3d = cms.Sequence(
+process.stepZVetoLow2d = cms.Sequence(
 )
-process.stepZVeto3e = cms.Sequence(
+process.stepZVetoLow2e = cms.Sequence(
 )
-process.stepZVeto3f = cms.Sequence(
-    process.VertexAnalyzerStepZVeto3f*
-    process.DiMuonAnalyzerStepZVeto3f
+process.stepZVetoLow2f = cms.Sequence(
 )
-process.stepZVeto3 = cms.Sequence(
-    #process.VertexAnalyzerStepZVeto3*
-    process.MuonAnalyzerStepZVeto3*
-    #process.DiMuonAnalyzerStepZVeto3*
-    process.RunEventListingStepZVeto3
+process.stepZVetoLow2 = cms.Sequence(
 )
 
-process.stepZVeto4a = cms.Sequence(
+process.stepZVetoLow3a = cms.Sequence(
 )
-process.stepZVeto4b = cms.Sequence(
+process.stepZVetoLow3b = cms.Sequence(
 )
-process.stepZVeto4c = cms.Sequence(
+process.stepZVetoLow3c = cms.Sequence(
 )
-process.stepZVeto4d = cms.Sequence(
-    process.JetAnalyzerStepZVeto4d
+process.stepZVetoLow3d = cms.Sequence(
 )
-process.stepZVeto4 = cms.Sequence(
-    process.JetAnalyzerStepZVeto4
+process.stepZVetoLow3e = cms.Sequence(
 )
-
-process.stepZVeto5 = cms.Sequence(
-    process.MuonAnalyzerStepZVeto5*
-    process.DiMuonAnalyzerStepZVeto5*
-    process.JetAnalyzerStepZVeto5*
-    process.RunEventListingStepZVeto5
+process.stepZVetoLow3f = cms.Sequence(
+    process.EventCounterStepZVetoLow3f+
+    process.VertexAnalyzerStepZVetoLow3f+
+    process.DiMuonAnalyzerStepZVetoLow3f
 )
-
-process.stepZVeto6a = cms.Sequence(
-    process.MetAnalyzerStepZVeto6a
-)
-process.stepZVeto6 = cms.Sequence(
-    process.MuonAnalyzerStepZVeto6*
-    process.DiMuonAnalyzerStepZVeto6*
-    process.JetAnalyzerStepZVeto6*
-    process.RunEventListingStepZVeto6
+process.stepZVetoLow3 = cms.Sequence(
+    process.EventCounterStepZVetoLow3+
+    #process.VertexAnalyzerStepZVetoLow3+
+    process.MuonAnalyzerStepZVetoLow3+
+    #process.DiMuonAnalyzerStepZVetoLow3+
+    process.RunEventListingStepZVetoLow3
 )
 
-
-process.stepZVeto7a = cms.Sequence(
+process.stepZVetoLow4a = cms.Sequence(
+    process.EventCounterStepZVetoLow4a
 )
-process.stepZVeto7b = cms.Sequence(
+process.stepZVetoLow4b = cms.Sequence(
+    process.EventCounterStepZVetoLow4b
 )
-process.stepZVeto7c = cms.Sequence(
+process.stepZVetoLow4c = cms.Sequence(
+    process.EventCounterStepZVetoLow4c
 )
-process.stepZVeto7 = cms.Sequence(
-    process.RunEventListingStepZVeto7
+process.stepZVetoLow4d = cms.Sequence(
+    process.EventCounterStepZVetoLow4d+
+    process.JetAnalyzerStepZVetoLow4d
+)
+process.stepZVetoLow4 = cms.Sequence(
+    process.EventCounterStepZVetoLow4+
+    process.JetAnalyzerStepZVetoLow4
+)
+
+process.stepZVetoLow5 = cms.Sequence(
+    process.EventCounterStepZVetoLow5+
+    process.MuonAnalyzerStepZVetoLow5+
+    process.DiMuonAnalyzerStepZVetoLow5+
+    process.JetAnalyzerStepZVetoLow5+
+    process.RunEventListingStepZVetoLow5
+)
+
+process.stepZVetoLow6a = cms.Sequence(
+    process.EventCounterStepZVetoLow6a+
+    process.MetAnalyzerStepZVetoLow6a
+)
+process.stepZVetoLow6 = cms.Sequence(
+    process.EventCounterStepZVetoLow6+
+    process.MuonAnalyzerStepZVetoLow6+
+    process.DiMuonAnalyzerStepZVetoLow6+
+    process.JetAnalyzerStepZVetoLow6+
+    process.RunEventListingStepZVetoLow6
+)
+
+
+process.stepZVetoLow7a = cms.Sequence(
+    process.EventCounterStepZVetoLow7a
+)
+process.stepZVetoLow7b = cms.Sequence(
+    process.EventCounterStepZVetoLow7b
+)
+process.stepZVetoLow7c = cms.Sequence(
+    process.EventCounterStepZVetoLow7c
+)
+process.stepZVetoLow7 = cms.Sequence(
+    process.EventCounterStepZVetoLow7+
+    process.RunEventListingStepZVetoLow7
 )
 
 
 
+## Define steps and corresponding analyzers for analysis excluding the Z mass window (upper sideband)
+process.stepZVetoHigh0 = cms.Sequence(
+)
+
+process.stepZVetoHigh1a = cms.Sequence(
+)
+process.stepZVetoHigh1b = cms.Sequence(
+)
+process.stepZVetoHigh1 = cms.Sequence(
+)
+
+process.stepZVetoHigh2a = cms.Sequence(
+)
+process.stepZVetoHigh2b = cms.Sequence(
+)
+process.stepZVetoHigh2c = cms.Sequence(
+)
+process.stepZVetoHigh2d = cms.Sequence(
+)
+process.stepZVetoHigh2e = cms.Sequence(
+)
+process.stepZVetoHigh2f = cms.Sequence(
+)
+process.stepZVetoHigh2 = cms.Sequence(
+)
+
+process.stepZVetoHigh3a = cms.Sequence(
+)
+process.stepZVetoHigh3b = cms.Sequence(
+)
+process.stepZVetoHigh3c = cms.Sequence(
+)
+process.stepZVetoHigh3d = cms.Sequence(
+)
+process.stepZVetoHigh3e = cms.Sequence(
+)
+process.stepZVetoHigh3f = cms.Sequence(
+    process.EventCounterStepZVetoHigh3f+
+    process.VertexAnalyzerStepZVetoHigh3f+
+    process.DiMuonAnalyzerStepZVetoHigh3f
+)
+process.stepZVetoHigh3 = cms.Sequence(
+    process.EventCounterStepZVetoHigh3+
+    #process.VertexAnalyzerStepZVetoHigh3+
+    process.MuonAnalyzerStepZVetoHigh3+
+    #process.DiMuonAnalyzerStepZVetoHigh3+
+    process.RunEventListingStepZVetoHigh3
+)
+
+process.stepZVetoHigh4a = cms.Sequence(
+    process.EventCounterStepZVetoHigh4a
+)
+process.stepZVetoHigh4b = cms.Sequence(
+    process.EventCounterStepZVetoHigh4b
+)
+process.stepZVetoHigh4c = cms.Sequence(
+    process.EventCounterStepZVetoHigh4c
+)
+process.stepZVetoHigh4d = cms.Sequence(
+    process.EventCounterStepZVetoHigh4d+
+    process.JetAnalyzerStepZVetoHigh4d
+)
+process.stepZVetoHigh4 = cms.Sequence(
+    process.EventCounterStepZVetoHigh4+
+    process.JetAnalyzerStepZVetoHigh4
+)
+
+process.stepZVetoHigh5 = cms.Sequence(
+    process.EventCounterStepZVetoHigh5+
+    process.MuonAnalyzerStepZVetoHigh5+
+    process.DiMuonAnalyzerStepZVetoHigh5+
+    process.JetAnalyzerStepZVetoHigh5+
+    process.RunEventListingStepZVetoHigh5
+)
+
+process.stepZVetoHigh6a = cms.Sequence(
+    process.EventCounterStepZVetoHigh6a+
+    process.MetAnalyzerStepZVetoHigh6a
+)
+process.stepZVetoHigh6 = cms.Sequence(
+    process.EventCounterStepZVetoHigh6+
+    process.MuonAnalyzerStepZVetoHigh6+
+    process.DiMuonAnalyzerStepZVetoHigh6+
+    process.JetAnalyzerStepZVetoHigh6+
+    process.RunEventListingStepZVetoHigh6
+)
+
+
+process.stepZVetoHigh7a = cms.Sequence(
+    process.EventCounterStepZVetoHigh7a
+)
+process.stepZVetoHigh7b = cms.Sequence(
+    process.EventCounterStepZVetoHigh7b
+)
+process.stepZVetoHigh7c = cms.Sequence(
+    process.EventCounterStepZVetoHigh7c
+)
+process.stepZVetoHigh7 = cms.Sequence(
+    process.EventCounterStepZVetoHigh7+
+    process.RunEventListingStepZVetoHigh7
+)
 
 
 
@@ -736,103 +959,209 @@ process.oppositeChargeAnalysis = cms.Path(
 
 
 
-process.zVetoOppositeChargeAnalysis = cms.Path(
-    process.stepZVeto0
+process.ZVetoLowOppositeChargeAnalysis = cms.Path(
+    process.stepZVetoLow0
     
     
     *process.seqGeneratorFilter
-    *process.stepZVeto1a
+    *process.stepZVetoLow1a
     
     *process.TriggerFilter
     *process.buildVertexCollections
-    *process.stepZVeto1b
+    *process.stepZVetoLow1b
     
     *process.oneGoodPVSelection
-    *process.stepZVeto1
+    *process.stepZVetoLow1
     
     
     *process.buildMuonCollections
-    *process.stepZVeto2a
+    *process.stepZVetoLow2a
     
     *process.oneInitialMuonSelection
-    *process.stepZVeto2b
+    *process.stepZVetoLow2b
     
     *process.oneLooseMuonSelection
-    *process.stepZVeto2c
+    *process.stepZVetoLow2c
     
     *process.oneTightMuonSelection
-    *process.stepZVeto2d
+    *process.stepZVetoLow2d
     
     *process.looseMuonSelection
-    *process.stepZVeto2e
+    *process.stepZVetoLow2e
     
     *process.tightMuonSelection
-    *process.stepZVeto2f
+    *process.stepZVetoLow2f
     
     *process.tightHltMuonSelection
-    *process.stepZVeto2
+    *process.stepZVetoLow2
     
     
-    *process.buildDimuonZVetoCollections
-    *process.stepZVeto3a
+    *process.buildDimuonZVetoLowCollections
+    *process.stepZVetoLow3a
     
     *process.selectedDimuonSelection
-    *process.stepZVeto3b
+    *process.stepZVetoLow3b
     
     *process.cleanDimuonSelection
-    *process.stepZVeto3c
+    *process.stepZVetoLow3c
     
     *process.goodDimuonSelection
-    *process.stepZVeto3d
+    *process.stepZVetoLow3d
     
     *process.isolatedDimuonSelection
-    *process.stepZVeto3e
+    *process.stepZVetoLow3e
     
-    *process.finalDimuonZVetoSelection
-    *process.stepZVeto3f
-    *process.stepZVeto3
+    *process.finalDimuonZVetoLowSelection
+    *process.stepZVetoLow3f
+    *process.stepZVetoLow3
     
     
     *process.buildJetCollections
-    *process.stepZVeto4a
+    *process.stepZVetoLow4a
     
     *process.oneCleanPatJetSelection
-    *process.stepZVeto4b
+    *process.stepZVetoLow4b
     
     *process.oneCleanJetSelection
-    *process.stepZVeto4c
+    *process.stepZVetoLow4c
     
     *process.oneGoodJetSelection
-    *process.stepZVeto4d
+    *process.stepZVetoLow4d
     
     *process.oneFinalJetSelection
-    *process.stepZVeto4
+    *process.stepZVetoLow4
     
     
     *process.oneBSsvHeMJetSelection
-    *process.stepZVeto5
+    *process.stepZVetoLow5
     
     
     *process.buildMetCollections
-    *process.stepZVeto6a
+    *process.stepZVetoLow6a
     
     *process.goodMetSelection
-    *process.stepZVeto6
+    *process.stepZVetoLow6
     
     
     *process.oneBSsvHpTJetSelection
-    *process.stepZVeto7a
+    *process.stepZVetoLow7a
     
     *process.twoFinalJetSelection
-    *process.stepZVeto7b
+    *process.stepZVetoLow7b
     
     *process.twoBSsvHeMJetSelection
-    *process.stepZVeto7c
+    *process.stepZVetoLow7c
     
     *process.twoBSsvHpTJetSelection
-    *process.stepZVeto7
+    *process.stepZVetoLow7
     
 )
+
+
+
+process.ZVetoHighOppositeChargeAnalysis = cms.Path(
+    process.stepZVetoHigh0
+    
+    
+    *process.seqGeneratorFilter
+    *process.stepZVetoHigh1a
+    
+    *process.TriggerFilter
+    *process.buildVertexCollections
+    *process.stepZVetoHigh1b
+    
+    *process.oneGoodPVSelection
+    *process.stepZVetoHigh1
+    
+    
+    *process.buildMuonCollections
+    *process.stepZVetoHigh2a
+    
+    *process.oneInitialMuonSelection
+    *process.stepZVetoHigh2b
+    
+    *process.oneLooseMuonSelection
+    *process.stepZVetoHigh2c
+    
+    *process.oneTightMuonSelection
+    *process.stepZVetoHigh2d
+    
+    *process.looseMuonSelection
+    *process.stepZVetoHigh2e
+    
+    *process.tightMuonSelection
+    *process.stepZVetoHigh2f
+    
+    *process.tightHltMuonSelection
+    *process.stepZVetoHigh2
+    
+    
+    *process.buildDimuonZVetoHighCollections
+    *process.stepZVetoHigh3a
+    
+    *process.selectedDimuonSelection
+    *process.stepZVetoHigh3b
+    
+    *process.cleanDimuonSelection
+    *process.stepZVetoHigh3c
+    
+    *process.goodDimuonSelection
+    *process.stepZVetoHigh3d
+    
+    *process.isolatedDimuonSelection
+    *process.stepZVetoHigh3e
+    
+    *process.finalDimuonZVetoHighSelection
+    *process.stepZVetoHigh3f
+    *process.stepZVetoHigh3
+    
+    
+    *process.buildJetCollections
+    *process.stepZVetoHigh4a
+    
+    *process.oneCleanPatJetSelection
+    *process.stepZVetoHigh4b
+    
+    *process.oneCleanJetSelection
+    *process.stepZVetoHigh4c
+    
+    *process.oneGoodJetSelection
+    *process.stepZVetoHigh4d
+    
+    *process.oneFinalJetSelection
+    *process.stepZVetoHigh4
+    
+    
+    *process.oneBSsvHeMJetSelection
+    *process.stepZVetoHigh5
+    
+    
+    *process.buildMetCollections
+    *process.stepZVetoHigh6a
+    
+    *process.goodMetSelection
+    *process.stepZVetoHigh6
+    
+    
+    *process.oneBSsvHpTJetSelection
+    *process.stepZVetoHigh7a
+    
+    *process.twoFinalJetSelection
+    *process.stepZVetoHigh7b
+    
+    *process.twoBSsvHeMJetSelection
+    *process.stepZVetoHigh7c
+    
+    *process.twoBSsvHpTJetSelection
+    *process.stepZVetoHigh7
+    
+)
+
+
+
+
+
+
 
 
 
