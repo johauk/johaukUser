@@ -173,9 +173,13 @@ finalDimuons = cms.EDFilter("CandViewRefSelector",
 )
 finalDimuonsSC = finalDimuons.clone(src = "isolatedDimuonsSC")
 #finalDimuonsSC = finalDimuons.clone(src = "atLeast1HltDimuonsSC")
-finalDimuonsZVeto = finalDimuons.clone(
-    cut = 'mass <= 60. | mass >= 120.',
+finalDimuonsZVetoLow = finalDimuons.clone(
+    cut = 'mass <= 60.',
 )
+finalDimuonsZVetoHigh = finalDimuons.clone(
+    cut = 'mass >= 120.',
+)
+
 
 
 # Primary vertices associated to finalDimuons
@@ -186,8 +190,11 @@ finalPVs = BestZVertexCleaner.clone(
     deltaZMuMuMax = 0.1,
     deltaZZVertexMax = 0.1,
 )
-finalPVsZVeto = finalPVs.clone(
-    dimuonSource = 'finalDimuonsZVeto',
+finalPVsZVetoLow = finalPVs.clone(
+    dimuonSource = 'finalDimuonsZVetoLow',
+)
+finalPVsZVetoHigh = finalPVs.clone(
+    dimuonSource = 'finalDimuonsZVetoHigh',
 )
 
 
@@ -252,11 +259,15 @@ finalDimuonSelection = dimuonsFilter.clone(
     minNumber = 1,
 )
 
-finalDimuonZVetoSelection = dimuonsFilter.clone(
-    src = 'finalDimuonsZVeto',
+finalDimuonZVetoLowSelection = dimuonsFilter.clone(
+    src = 'finalDimuonsZVetoLow',
     minNumber = 1,
 )
 
+finalDimuonZVetoHighSelection = dimuonsFilter.clone(
+    src = 'finalDimuonsZVetoHigh',
+    minNumber = 1,
+)
 
 
 
@@ -296,16 +307,30 @@ buildDimuonCollections = cms.Sequence(
 
 
 
-buildDimuonZVetoCollections = cms.Sequence(
+buildDimuonZVetoLowCollections = cms.Sequence(
     dimuons*
     selectedDimuons*
     cleanDimuons*
     goodDimuons*
     isolatedDimuons*
     #atLeast1HltDimuons*
-    finalDimuonsZVeto*
+    finalDimuonsZVetoLow*
     
-    finalPVsZVeto
+    finalPVsZVetoLow
+)
+
+
+
+buildDimuonZVetoHighCollections = cms.Sequence(
+    dimuons*
+    selectedDimuons*
+    cleanDimuons*
+    goodDimuons*
+    isolatedDimuons*
+    #atLeast1HltDimuons*
+    finalDimuonsZVetoHigh*
+    
+    finalPVsZVetoHigh
 )
 
 
@@ -336,13 +361,24 @@ dimuonSelection = cms.Sequence(
 
 
 
-dimuonZVetoSelection = cms.Sequence(
+dimuonZVetoLowSelection = cms.Sequence(
     selectedDimuonSelection*
     cleanDimuonSelection*
     goodDimuonSelection*
     isolatedDimuonSelection*
     #atLeast1HltDimuonSelection*
-    finalDimuonZVetoSelection
+    finalDimuonZVetoLowSelection
+)
+
+
+
+dimuonZVetoHighSelection = cms.Sequence(
+    selectedDimuonSelection*
+    cleanDimuonSelection*
+    goodDimuonSelection*
+    isolatedDimuonSelection*
+    #atLeast1HltDimuonSelection*
+    finalDimuonZVetoHighSelection
 )
 
 
