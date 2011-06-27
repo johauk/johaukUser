@@ -47,28 +47,53 @@ STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.pn
 
 
 
-
-
-STEP="ZVeto3f"
+STEP="ZVetoLow3f"
 STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
 
-STEP="ZVeto3"
+STEP="ZVetoLow3"
 STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
 
-STEP="ZVeto4d"
+STEP="ZVetoLow4d"
 STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
 
-STEP="ZVeto4"
+STEP="ZVetoLow4"
 STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
 
-STEP="ZVeto5"
+STEP="ZVetoLow5"
 STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
 
-STEP="ZVeto6a"
+STEP="ZVetoLow6a"
 STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
 
-STEP="ZVeto6"
+STEP="ZVetoLow6"
 STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
+
+
+
+
+
+STEP="ZVetoHigh3f"
+STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
+
+STEP="ZVetoHigh3"
+STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
+
+STEP="ZVetoHigh4d"
+STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
+
+STEP="ZVetoHigh4"
+STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
+
+STEP="ZVetoHigh5"
+STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
+
+STEP="ZVetoHigh6a"
+STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
+
+STEP="ZVetoHigh6"
+STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
+
+
 
 
 

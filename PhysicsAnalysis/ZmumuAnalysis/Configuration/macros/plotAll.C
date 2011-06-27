@@ -11,9 +11,14 @@ MuonPlots("Step5");
 MuonPlots("Step6");
 
 
-MuonPlots("StepZVeto3");
-MuonPlots("StepZVeto5");
-MuonPlots("StepZVeto6");
+MuonPlots("StepZVetoLow3");
+MuonPlots("StepZVetoLow5");
+MuonPlots("StepZVetoLow6");
+
+
+MuonPlots("StepZVetoHigh3");
+MuonPlots("StepZVetoHigh5");
+MuonPlots("StepZVetoHigh6");
 
 
 
@@ -28,11 +33,14 @@ DimuonPlots("Step5");
 DimuonPlots("Step6");
 
 
-DimuonPlots("StepZVeto3f");
-DimuonPlots("StepZVeto5");
-DimuonPlots("StepZVeto6");
+DimuonPlots("StepZVetoLow3f");
+DimuonPlots("StepZVetoLow5");
+DimuonPlots("StepZVetoLow6");
 
 
+DimuonPlots("StepZVetoHigh3f");
+DimuonPlots("StepZVetoHigh5");
+DimuonPlots("StepZVetoHigh6");
 
 
 
@@ -48,12 +56,16 @@ JetPlots("Step5");
 JetPlots("Step6");
 
 
-JetPlots("StepZVeto4d");
-JetPlots("StepZVeto4");
-JetPlots("StepZVeto5");
-JetPlots("StepZVeto6");
+JetPlots("StepZVetoLow4d");
+JetPlots("StepZVetoLow4");
+JetPlots("StepZVetoLow5");
+JetPlots("StepZVetoLow6");
 
 
+JetPlots("StepZVetoHigh4d");
+JetPlots("StepZVetoHigh4");
+JetPlots("StepZVetoHigh5");
+JetPlots("StepZVetoHigh6");
 
 
 
@@ -63,7 +75,10 @@ gROOT->ProcessLine(".L MetPlots.C++");
 MetPlots("Step6a");
 
 
-MetPlots("StepZVeto6a");
+MetPlots("StepZVetoLow6a");
+
+
+MetPlots("StepZVetoHigh6a");
 
 
 
