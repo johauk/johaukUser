@@ -1,7 +1,22 @@
-#include "defaultSampleStruct.h"
+#include "defaultSampleStruct.C"
+#include "allSampleStruct.C"
+
+#include "ZmumuAnalysis/Configuration/macros/Tools/printLine.h"
 
 
 
-SimulationStruct simulation("genParticle.root", 2329439);
+//void simulation(){
+  PrintLine printLine;
+  
+  SimulationStruct simulationStruct("genParticle.root", 2329439);
+  
+  
+void simulation(){ 
+  allSampleStruct.simulationStruct = &simulationStruct;
+}
+
+
+
+
 
 
