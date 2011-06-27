@@ -21,19 +21,19 @@
   const TColor* colorTtbar = new TColor(1012, 1.00, 0.00, 0.00, "ttbar");
   const TColor* colorQcd = new TColor(1013, 0.00, 0.00, 0.50, "qcd");
   
-  McStruct zmumuB("zmumuB.root", 2329439, 3048., 1., colorZmumuB);
-  McStruct zmumuUdsc("zmumuUdsc.root", 2329439, 3048., 1., colorZmumuUdsc);
-  McStruct zz("zz.root", 2108608, 7.4, 1., colorZz);
-  McStruct wz("wz.root", 110000, 0.61, 1., colorWz);
-  McStruct ww("ww.root", 110000, 4.51, 1., colorWw);
-  McStruct ztautau("ztautau.root", 2329439, 3048., 1., colorZtautau);
-  McStruct wmunu("wmunu.root", 5038640, 10438., 1., colorWmunu);
-  McStruct wtaunu("wtaunu.root", 4773750, 10438., 1., colorWtaunu);
-  McStruct singletopTw("singletopTw.root", 489417, 10.6, 1., colorSingletopTw);
-  McStruct singletopT("singletopT.root", 484060, 64.6, 1., colorSingletopT);
-  McStruct singletopS("singletopS.root", 494967, 4.21, 1., colorSingletopS);
-  McStruct ttbar("ttbar.root", 1286491, 157.5, 1., colorTtbar);
-  McStruct qcd("qcd.root", 29434562, 296600., 0.2864, colorQcd);  // real values: crossSection*1000, filterEfficiency/1000
+  McStruct zmumuB("zmumuB", 2329439, 3048., 1., colorZmumuB);
+  McStruct zmumuUdsc("zmumuUdsc", 2329439, 3048., 1., colorZmumuUdsc);
+  McStruct zz("zz", 2108608, 7.4, 1., colorZz);
+  McStruct wz("wz", 110000, 0.61, 1., colorWz);
+  McStruct ww("ww", 110000, 4.51, 1., colorWw);
+  McStruct ztautau("ztautau", 2329439, 3048., 1., colorZtautau);
+  McStruct wmunu("wmunu", 5038640, 10438., 1., colorWmunu);
+  McStruct wtaunu("wtaunu", 4773750, 10438., 1., colorWtaunu);
+  McStruct singletopTw("singletopTw", 489417, 10.6, 1., colorSingletopTw);
+  McStruct singletopT("singletopT", 484060, 64.6, 1., colorSingletopT);
+  McStruct singletopS("singletopS", 494967, 4.21, 1., colorSingletopS);
+  McStruct ttbar("ttbar", 1286491, 157.5, 1., colorTtbar);
+  McStruct qcd("qcd", 29434562, 296600., 0.2864, colorQcd);  // real values: crossSection*1000, filterEfficiency/1000
   
   
 void mc(){

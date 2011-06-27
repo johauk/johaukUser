@@ -7,7 +7,7 @@
 
 
 
-TFile* defaultStruct::openInputFile(const std::string& datasetName,const std::string& fullName, const unsigned int nEvents){
+TFile* defaultStruct::openInputFile(const std::string& datasetName, const std::string& fullName, const unsigned int nEvents){
   TFile* file(0);
   ifstream inputFileStream;
   inputFileStream.open(fullName.c_str());

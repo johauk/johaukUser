@@ -8,7 +8,7 @@
 //void data(){
   PrintLine printLine;
   
-  DataStruct dataStruct("allData.root", 1842615, 191.);
+  DataStruct dataStruct("allData", 1842615, 191.);
   
 void data(){
   allSampleStruct.dataStruct = &dataStruct;

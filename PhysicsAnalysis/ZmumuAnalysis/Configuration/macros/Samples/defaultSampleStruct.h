@@ -28,7 +28,7 @@ struct DataStruct : defaultStruct {
   
   DataStruct(const std::string datasetName, const unsigned int nEvents, const double lumi):
   datasetName_(datasetName), nEvents_(nEvents), lumi_(lumi),
-  file_(this->openInputFile(datasetName_, this->defaultPath() + datasetName_, nEvents_))
+  file_(this->openInputFile(datasetName_, this->defaultPath() + datasetName_ + ".root", nEvents_))
   {}
   
   // Full path of dataset
@@ -54,7 +54,7 @@ struct McStruct : defaultStruct {
   
   McStruct(const std::string datasetName, const unsigned int nEvents, const double crossSection, const double filterEfficiency, const TColor* color):
     datasetName_(datasetName), nEvents_(nEvents), crossSection_(crossSection), filterEfficiency_(filterEfficiency), color_(color),
-    file_(this->openInputFile(datasetName_, this->defaultPath() + datasetName_, nEvents_))
+    file_(this->openInputFile(datasetName_, this->defaultPath() + datasetName_ + ".root", nEvents_))
     {}
   
   // Full path of dataset
@@ -84,7 +84,7 @@ struct SimulationStruct : defaultStruct {
   
   SimulationStruct(const std::string datasetName, const unsigned int nEvents):
   datasetName_(datasetName), nEvents_(nEvents),
-  file_(this->openInputFile(datasetName_, this->defaultPath() + datasetName_, nEvents_))
+  file_(this->openInputFile(datasetName_, this->defaultPath() + datasetName_ + ".root", nEvents_))
   {}
   
   // Full path of dataset

@@ -8,7 +8,7 @@
 //void simulation(){
   PrintLine printLine;
   
-  SimulationStruct simulationStruct("genParticle.root", 2329439);
+  SimulationStruct simulationStruct("genParticle", 2329439);
   
   
 void simulation(){ 
