@@ -4,6 +4,8 @@
 
 
 
+double theNBackgroundWoTop(-1.);
+double theNBackgroundOnlyTop(-1.);
 double theNBackground(-1.);
 
 
@@ -15,7 +17,7 @@ void nBackground(TString pluginSuffix = ""){
   
   const std::vector<McStruct*> v_background = allSampleStruct.v_backgroundStruct;
   
-  double nBackground(0.);
+  double nBackgroundWoTop(0.), nBackgroundOnlyTop(0.);
   std::vector<McStruct*>::const_iterator i_background;
   for(i_background = v_background.begin(); i_background != v_background.end(); ++i_background){
     const McStruct& background = **i_background;
@@ -45,11 +47,16 @@ void nBackground(TString pluginSuffix = ""){
     std::cout<<"No. effective events (unweighted, weighted) for \""<<background.datasetName_<<"\": "
              <<nEffectiveEvents<<" , "<<nEffectiveWeightedEvents<<"\n";
     
-    nBackground += nEffectiveWeightedEvents;
+    if(background.datasetName_!="ttbar")nBackgroundWoTop += nEffectiveWeightedEvents;
+    else nBackgroundOnlyTop += nEffectiveWeightedEvents;
   }
-  theNBackground = nBackground;
+  theNBackgroundWoTop = nBackgroundWoTop;
+  theNBackgroundOnlyTop = nBackgroundOnlyTop;
+  theNBackground = theNBackgroundWoTop + theNBackgroundOnlyTop;
   
-  std::cout<<"No. of expected background events: "<<theNBackground<<"\n";
+  
+  std::cout<<"No. of expected background events (All, w/o ttbar, only ttbar): "
+           <<theNBackground<<" , "<<theNBackgroundWoTop<<" , "<<theNBackgroundOnlyTop<<"\n";
 }
 
 
