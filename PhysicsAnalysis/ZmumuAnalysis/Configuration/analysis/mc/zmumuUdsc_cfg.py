@@ -291,160 +291,169 @@ process.TriggerAnalyzerStep1a =  process.TriggerAnalyzer.clone(
 
 ## vertex analyzer
 process.load("ZmumuAnalysis.Analyzer.VertexAnalyzer_cfi")
-process.VertexAnalyzerStep1b = process.VertexAnalyzer.clone(
-    #vertexSource = 'offlinePrimaryVertices',
-)
-process.VertexAnalyzerStep1 = process.VertexAnalyzer.clone(
-    vertexSource = 'goodPVs',
-)
-process.VertexAnalyzerStep3f = process.VertexAnalyzer.clone(
-    vertexSource = 'finalPVs',
-)
-process.VertexAnalyzerStep3 = process.VertexAnalyzer.clone(
-    vertexSource = 'bestPV',
-)
+process.VertexAnalyzerStep1b = process.VertexAnalyzer.clone()#vertexSource = 'offlinePrimaryVertices',)
+process.VertexAnalyzerStep1 = process.VertexAnalyzer.clone(vertexSource = 'goodPVs',)
+process.VertexAnalyzerStep3f = process.VertexAnalyzer.clone(vertexSource = 'finalPVs',)
+process.VertexAnalyzerStep3 = process.VertexAnalyzer.clone(vertexSource = 'bestPV',)
 
-process.VertexAnalyzerStepZVetoLow3f = process.VertexAnalyzerStep3f.clone(
-    vertexSource = 'finalPVsZVetoLow',
-)
-process.VertexAnalyzerStepZVetoHigh3f = process.VertexAnalyzerStep3f.clone(
-    vertexSource = 'finalPVsZVetoHigh',
-)
+process.VertexAnalyzerStepZVetoLow3f = process.VertexAnalyzerStep3f.clone(vertexSource = 'finalPVsZVetoLow',)
+process.VertexAnalyzerStepZVetoHigh3f = process.VertexAnalyzerStep3f.clone(vertexSource = 'finalPVsZVetoHigh',)
 
 
 
 ## muon analizer
 process.load("ZmumuAnalysis.Analyzer.MuonAnalyzer_cfi")
-process.MuonAnalyzerStep2b = process.MuonAnalyzer.clone(
-    muonSource = 'tightMuons',
-)
-process.MuonAnalyzerStep2 = process.MuonAnalyzer.clone(
-    muonSource = 'tightMuons',
-)
-process.MuonAnalyzerStep3 = process.MuonAnalyzer.clone(
-    muonSource = 'tightMuons',
-)
-process.MuonAnalyzerStep5 = process.MuonAnalyzer.clone(
-    muonSource = 'tightMuons',
-)
-process.MuonAnalyzerStep6 = process.MuonAnalyzer.clone(
-    muonSource = 'tightMuons',
-)
+process.MuonAnalyzerStep2b = process.MuonAnalyzer.clone(muonSource = 'tightMuons',)
+process.MuonAnalyzerStep2 = process.MuonAnalyzer.clone(muonSource = 'tightMuons',)
+process.MuonAnalyzerStep3 = process.MuonAnalyzer.clone(muonSource = 'tightMuons',)
+process.MuonAnalyzerStep4 = process.MuonAnalyzer.clone(muonSource = 'tightMuons',)
+process.MuonAnalyzerStep5 = process.MuonAnalyzer.clone(muonSource = 'tightMuons',)
+process.MuonAnalyzerStep6 = process.MuonAnalyzer.clone(muonSource = 'tightMuons',)
+process.MuonAnalyzerStep7a = process.MuonAnalyzer.clone(muonSource = 'tightMuons',)
+process.MuonAnalyzerStep7b = process.MuonAnalyzer.clone(muonSource = 'tightMuons',)
+process.MuonAnalyzerStep7c = process.MuonAnalyzer.clone(muonSource = 'tightMuons',)
+process.MuonAnalyzerStep7 = process.MuonAnalyzer.clone(muonSource = 'tightMuons',)
 
 process.MuonAnalyzerStepZVetoLow3 = process.MuonAnalyzerStep3.clone()
+process.MuonAnalyzerStepZVetoLow4 = process.MuonAnalyzerStep4.clone()
 process.MuonAnalyzerStepZVetoLow5 = process.MuonAnalyzerStep5.clone()
 process.MuonAnalyzerStepZVetoLow6 = process.MuonAnalyzerStep6.clone()
+process.MuonAnalyzerStepZVetoLow7a = process.MuonAnalyzerStep7a.clone()
+process.MuonAnalyzerStepZVetoLow7b = process.MuonAnalyzerStep7b.clone()
+process.MuonAnalyzerStepZVetoLow7c = process.MuonAnalyzerStep7c.clone()
+process.MuonAnalyzerStepZVetoLow7 = process.MuonAnalyzerStep7.clone()
 process.MuonAnalyzerStepZVetoHigh3 = process.MuonAnalyzerStep3.clone()
+process.MuonAnalyzerStepZVetoHigh4 = process.MuonAnalyzerStep4.clone()
 process.MuonAnalyzerStepZVetoHigh5 = process.MuonAnalyzerStep5.clone()
 process.MuonAnalyzerStepZVetoHigh6 = process.MuonAnalyzerStep6.clone()
-
-process.MuonAnalyzerStepSC3 = process.MuonAnalyzerStep3.clone(
-)
-process.MuonAnalyzerStepSC5 = process.MuonAnalyzerStep5.clone(
-)
+process.MuonAnalyzerStepZVetoHigh7a = process.MuonAnalyzerStep7a.clone()
+process.MuonAnalyzerStepZVetoHigh7b = process.MuonAnalyzerStep7b.clone()
+process.MuonAnalyzerStepZVetoHigh7c = process.MuonAnalyzerStep7c.clone()
+process.MuonAnalyzerStepZVetoHigh7 = process.MuonAnalyzerStep7.clone()
 
 
 
 ## di-muon analyzer
 process.load("ZmumuAnalysis.Analyzer.DiMuonAnalyzer_cfi")
-process.DiMuonAnalyzerStep3d = process.DiMuonAnalyzer.clone(
-    diMuonSource = "goodDimuons",
-)
-process.DiMuonAnalyzerStep3e = process.DiMuonAnalyzer.clone(
-    diMuonSource = "isolatedDimuons",
-)
-process.DiMuonAnalyzerStep3f = process.DiMuonAnalyzer.clone(
-    diMuonSource = "finalDimuons",
-)
-process.DiMuonAnalyzerStep3 = process.DiMuonAnalyzer.clone(
-    diMuonSource = "bestDimuon",
-)
-process.DiMuonAnalyzerStep5 = process.DiMuonAnalyzer.clone(
-    diMuonSource = "finalDimuons",
-)
-process.DiMuonAnalyzerStep6 = process.DiMuonAnalyzer.clone(
-    diMuonSource = "finalDimuons",
-)
+process.DiMuonAnalyzerStep3d = process.DiMuonAnalyzer.clone(diMuonSource = "goodDimuons",)
+process.DiMuonAnalyzerStep3e = process.DiMuonAnalyzer.clone(diMuonSource = "isolatedDimuons",)
+process.DiMuonAnalyzerStep3f = process.DiMuonAnalyzer.clone(diMuonSource = "finalDimuons",)
+process.DiMuonAnalyzerStep3 = process.DiMuonAnalyzer.clone(diMuonSource = "bestDimuon",)
+process.DiMuonAnalyzerStep4 = process.DiMuonAnalyzer.clone(diMuonSource = "finalDimuons",)
+process.DiMuonAnalyzerStep5 = process.DiMuonAnalyzer.clone(diMuonSource = "finalDimuons",)
+process.DiMuonAnalyzerStep6 = process.DiMuonAnalyzer.clone(diMuonSource = "finalDimuons",)
+process.DiMuonAnalyzerStep7a = process.DiMuonAnalyzer.clone(diMuonSource = "finalDimuons",)
+process.DiMuonAnalyzerStep7b = process.DiMuonAnalyzer.clone(diMuonSource = "finalDimuons",)
+process.DiMuonAnalyzerStep7c = process.DiMuonAnalyzer.clone(diMuonSource = "finalDimuons",)
+process.DiMuonAnalyzerStep7 = process.DiMuonAnalyzer.clone(diMuonSource = "finalDimuons",)
 
-process.DiMuonAnalyzerStepZVetoLow3f = process.DiMuonAnalyzerStep3f.clone(
-    diMuonSource = "finalDimuonsZVetoLow",
-)
-process.DiMuonAnalyzerStepZVetoLow5 = process.DiMuonAnalyzerStep5.clone(
-    diMuonSource = "finalDimuonsZVetoLow",
-)
-process.DiMuonAnalyzerStepZVetoLow6 = process.DiMuonAnalyzerStep6.clone(
-    diMuonSource = "finalDimuonsZVetoLow",
-)
-process.DiMuonAnalyzerStepZVetoHigh3f = process.DiMuonAnalyzerStep3f.clone(
-    diMuonSource = "finalDimuonsZVetoHigh",
-)
-process.DiMuonAnalyzerStepZVetoHigh5 = process.DiMuonAnalyzerStep5.clone(
-    diMuonSource = "finalDimuonsZVetoHigh",
-)
-process.DiMuonAnalyzerStepZVetoHigh6 = process.DiMuonAnalyzerStep6.clone(
-    diMuonSource = "finalDimuonsZVetoHigh",
-)
-
-process.DiMuonAnalyzerStepSC3d = process.DiMuonAnalyzerStep3d.clone(
-    diMuonSource = "goodDimuonsSC",
-)
-process.DiMuonAnalyzerStepSC3e = process.DiMuonAnalyzerStep3e.clone(
-    diMuonSource = "isolatedDimuonsSC",
-)
-process.DiMuonAnalyzerStepSC3f = process.DiMuonAnalyzerStep3f.clone(
-    diMuonSource = "finalDimuonsSC",
-)
-process.DiMuonAnalyzerStepSC5 = process.DiMuonAnalyzerStep5.clone(
-    diMuonSource = "finalDimuonsSC",
-)
+process.DiMuonAnalyzerStepZVetoLow3f = process.DiMuonAnalyzerStep3f.clone(diMuonSource = "finalDimuonsZVetoLow",)
+process.DiMuonAnalyzerStepZVetoLow4 = process.DiMuonAnalyzerStep4.clone(diMuonSource = "finalDimuonsZVetoLow",)
+process.DiMuonAnalyzerStepZVetoLow5 = process.DiMuonAnalyzerStep5.clone(diMuonSource = "finalDimuonsZVetoLow",)
+process.DiMuonAnalyzerStepZVetoLow6 = process.DiMuonAnalyzerStep6.clone(diMuonSource = "finalDimuonsZVetoLow",)
+process.DiMuonAnalyzerStepZVetoLow7a = process.DiMuonAnalyzerStep7.clone(diMuonSource = "finalDimuonsZVetoLow",)
+process.DiMuonAnalyzerStepZVetoLow7b = process.DiMuonAnalyzerStep7.clone(diMuonSource = "finalDimuonsZVetoLow",)
+process.DiMuonAnalyzerStepZVetoLow7c = process.DiMuonAnalyzerStep7.clone(diMuonSource = "finalDimuonsZVetoLow",)
+process.DiMuonAnalyzerStepZVetoLow7 = process.DiMuonAnalyzerStep7.clone(diMuonSource = "finalDimuonsZVetoLow",)
+process.DiMuonAnalyzerStepZVetoHigh3f = process.DiMuonAnalyzerStep3f.clone(diMuonSource = "finalDimuonsZVetoHigh",)
+process.DiMuonAnalyzerStepZVetoHigh4 = process.DiMuonAnalyzerStep4.clone(diMuonSource = "finalDimuonsZVetoHigh",)
+process.DiMuonAnalyzerStepZVetoHigh5 = process.DiMuonAnalyzerStep5.clone(diMuonSource = "finalDimuonsZVetoHigh",)
+process.DiMuonAnalyzerStepZVetoHigh6 = process.DiMuonAnalyzerStep6.clone(diMuonSource = "finalDimuonsZVetoHigh",)
+process.DiMuonAnalyzerStepZVetoHigh7a = process.DiMuonAnalyzerStep7.clone(diMuonSource = "finalDimuonsZVetoHigh",)
+process.DiMuonAnalyzerStepZVetoHigh7b = process.DiMuonAnalyzerStep7.clone(diMuonSource = "finalDimuonsZVetoHigh",)
+process.DiMuonAnalyzerStepZVetoHigh7c = process.DiMuonAnalyzerStep7.clone(diMuonSource = "finalDimuonsZVetoHigh",)
+process.DiMuonAnalyzerStepZVetoHigh7 = process.DiMuonAnalyzerStep7.clone(diMuonSource = "finalDimuonsZVetoHigh",)
 
 
 
 ## jet analyzer
 process.load("ZmumuAnalysis.Analyzer.JetAnalyzer_cfi")
-process.JetAnalyzerStep4a = process.JetAnalyzer.clone(
-    jetSource = 'selectedPatJetsAK5PF',
-)
-process.JetAnalyzerStep4b = process.JetAnalyzer.clone(
-    jetSource = 'cleanPatJets',
-)
-process.JetAnalyzerStep4c = process.JetAnalyzer.clone(
-    jetSource = 'cleanJets',
-)
-process.JetAnalyzerStep4d = process.JetAnalyzer.clone(
-    jetSource = 'goodJets',
-)
-process.JetAnalyzerStep4 = process.JetAnalyzer.clone(
-    jetSource = 'finalJets',
-)
-process.JetAnalyzerStep5 = process.JetAnalyzer.clone(
-    jetSource = 'bSsvHeMJets',
-)
-process.JetAnalyzerStep6 = process.JetAnalyzer.clone(
-    jetSource = 'bSsvHeMJets',
-)
+process.JetAnalyzerStep4a = process.JetAnalyzer.clone(jetSource = 'selectedPatJetsAK5PF',)
+process.JetAnalyzerStep4b = process.JetAnalyzer.clone(jetSource = 'cleanPatJets',)
+process.JetAnalyzerStep4c = process.JetAnalyzer.clone(jetSource = 'cleanJets',)
+process.JetAnalyzerStep4d = process.JetAnalyzer.clone(jetSource = 'goodJets',)
+process.JetAnalyzerStep4 = process.JetAnalyzer.clone(jetSource = 'finalJets',)
+process.JetAnalyzerStep5J = process.JetAnalyzer.clone(jetSource = 'finalJets',)
+process.JetAnalyzerStep5Bhe = process.JetAnalyzer.clone(jetSource = 'bSsvHeMJets',)
+process.JetAnalyzerStep5Bhp = process.JetAnalyzer.clone(jetSource = 'bSsvHpTJets',)
+process.JetAnalyzerStep6J = process.JetAnalyzer.clone(jetSource = 'finalJets',)
+process.JetAnalyzerStep6Bhe = process.JetAnalyzer.clone(jetSource = 'bSsvHeMJets',)
+process.JetAnalyzerStep6Bhp = process.JetAnalyzer.clone(jetSource = 'bSsvHpTJets',)
+process.JetAnalyzerStep7aJ = process.JetAnalyzer.clone(jetSource = 'finalJets',)
+process.JetAnalyzerStep7aBhe = process.JetAnalyzer.clone(jetSource = 'bSsvHeMJets',)
+process.JetAnalyzerStep7aBhp = process.JetAnalyzer.clone(jetSource = 'bSsvHpTJets',)
+process.JetAnalyzerStep7bJ = process.JetAnalyzer.clone(jetSource = 'finalJets',)
+process.JetAnalyzerStep7bBhe = process.JetAnalyzer.clone(jetSource = 'bSsvHeMJets',)
+process.JetAnalyzerStep7bBhp = process.JetAnalyzer.clone(jetSource = 'bSsvHpTJets',)
+process.JetAnalyzerStep7cJ = process.JetAnalyzer.clone(jetSource = 'finalJets',)
+process.JetAnalyzerStep7cBhe = process.JetAnalyzer.clone(jetSource = 'bSsvHeMJets',)
+process.JetAnalyzerStep7cBhp = process.JetAnalyzer.clone(jetSource = 'bSsvHpTJets',)
+process.JetAnalyzerStep7J = process.JetAnalyzer.clone(jetSource = 'finalJets',)
+process.JetAnalyzerStep7Bhe = process.JetAnalyzer.clone(jetSource = 'bSsvHeMJets',)
+process.JetAnalyzerStep7Bhp = process.JetAnalyzer.clone(jetSource = 'bSsvHpTJets',)
 
 process.JetAnalyzerStepZVetoLow4d = process.JetAnalyzerStep4d.clone()
 process.JetAnalyzerStepZVetoLow4 = process.JetAnalyzerStep4.clone()
-process.JetAnalyzerStepZVetoLow5 = process.JetAnalyzerStep5.clone()
-process.JetAnalyzerStepZVetoLow6 = process.JetAnalyzerStep6.clone()
+process.JetAnalyzerStepZVetoLow5J = process.JetAnalyzerStep5J.clone()
+process.JetAnalyzerStepZVetoLow5Bhe = process.JetAnalyzerStep5Bhe.clone()
+process.JetAnalyzerStepZVetoLow5Bhp = process.JetAnalyzerStep5Bhp.clone()
+process.JetAnalyzerStepZVetoLow6J = process.JetAnalyzerStep6J.clone()
+process.JetAnalyzerStepZVetoLow6Bhe = process.JetAnalyzerStep6Bhe.clone()
+process.JetAnalyzerStepZVetoLow6Bhp = process.JetAnalyzerStep6Bhp.clone()
+process.JetAnalyzerStepZVetoLow7aJ = process.JetAnalyzerStep7aJ.clone()
+process.JetAnalyzerStepZVetoLow7aBhe = process.JetAnalyzerStep7aBhe.clone()
+process.JetAnalyzerStepZVetoLow7aBhp = process.JetAnalyzerStep7aBhp.clone()
+process.JetAnalyzerStepZVetoLow7bJ = process.JetAnalyzerStep7bJ.clone()
+process.JetAnalyzerStepZVetoLow7bBhe = process.JetAnalyzerStep7bBhe.clone()
+process.JetAnalyzerStepZVetoLow7bBhp = process.JetAnalyzerStep7bBhp.clone()
+process.JetAnalyzerStepZVetoLow7cJ = process.JetAnalyzerStep7cJ.clone()
+process.JetAnalyzerStepZVetoLow7cBhe = process.JetAnalyzerStep7cBhe.clone()
+process.JetAnalyzerStepZVetoLow7cBhp = process.JetAnalyzerStep7cBhp.clone()
+process.JetAnalyzerStepZVetoLow7J = process.JetAnalyzerStep7J.clone()
+process.JetAnalyzerStepZVetoLow7Bhe = process.JetAnalyzerStep7Bhe.clone()
+process.JetAnalyzerStepZVetoLow7Bhp = process.JetAnalyzerStep7Bhp.clone()
 process.JetAnalyzerStepZVetoHigh4d = process.JetAnalyzerStep4d.clone()
 process.JetAnalyzerStepZVetoHigh4 = process.JetAnalyzerStep4.clone()
-process.JetAnalyzerStepZVetoHigh5 = process.JetAnalyzerStep5.clone()
-process.JetAnalyzerStepZVetoHigh6 = process.JetAnalyzerStep6.clone()
+process.JetAnalyzerStepZVetoHigh5J = process.JetAnalyzerStep5J.clone()
+process.JetAnalyzerStepZVetoHigh5Bhe = process.JetAnalyzerStep5Bhe.clone()
+process.JetAnalyzerStepZVetoHigh5Bhp = process.JetAnalyzerStep5Bhp.clone()
+process.JetAnalyzerStepZVetoHigh6J = process.JetAnalyzerStep6J.clone()
+process.JetAnalyzerStepZVetoHigh6Bhe = process.JetAnalyzerStep6Bhe.clone()
+process.JetAnalyzerStepZVetoHigh6Bhp = process.JetAnalyzerStep6Bhp.clone()
+process.JetAnalyzerStepZVetoHigh7aJ = process.JetAnalyzerStep7aJ.clone()
+process.JetAnalyzerStepZVetoHigh7aBhe = process.JetAnalyzerStep7aBhe.clone()
+process.JetAnalyzerStepZVetoHigh7aBhp = process.JetAnalyzerStep7aBhp.clone()
+process.JetAnalyzerStepZVetoHigh7bJ = process.JetAnalyzerStep7bJ.clone()
+process.JetAnalyzerStepZVetoHigh7bBhe = process.JetAnalyzerStep7bBhe.clone()
+process.JetAnalyzerStepZVetoHigh7bBhp = process.JetAnalyzerStep7bBhp.clone()
+process.JetAnalyzerStepZVetoHigh7cJ = process.JetAnalyzerStep7cJ.clone()
+process.JetAnalyzerStepZVetoHigh7cBhe = process.JetAnalyzerStep7cBhe.clone()
+process.JetAnalyzerStepZVetoHigh7cBhp = process.JetAnalyzerStep7cBhp.clone()
+process.JetAnalyzerStepZVetoHigh7J = process.JetAnalyzerStep7J.clone()
+process.JetAnalyzerStepZVetoHigh7Bhe = process.JetAnalyzerStep7Bhe.clone()
+process.JetAnalyzerStepZVetoHigh7Bhp = process.JetAnalyzerStep7Bhp.clone()
 
 
 
 ## missing et analyzer
 process.load("ZmumuAnalysis.Analyzer.MetAnalyzer_cfi")
-process.MetAnalyzerStep6a = process.MetAnalyzer.clone(
-    metSource = 'patMETsPF',
-)
+process.MetAnalyzerStep6a = process.MetAnalyzer.clone(metSource = 'patMETsPF',)
+process.MetAnalyzerStep7a = process.MetAnalyzer.clone(metSource = 'patMETsPF',)
+process.MetAnalyzerStep7b = process.MetAnalyzer.clone(metSource = 'patMETsPF',)
+process.MetAnalyzerStep7c = process.MetAnalyzer.clone(metSource = 'patMETsPF',)
+process.MetAnalyzerStep7 = process.MetAnalyzer.clone(metSource = 'patMETsPF',)
 
 process.MetAnalyzerStepZVetoLow6a = process.MetAnalyzerStep6a.clone()
+process.MetAnalyzerStepZVetoLow7a = process.MetAnalyzerStep7a.clone()
+process.MetAnalyzerStepZVetoLow7b = process.MetAnalyzerStep7b.clone()
+process.MetAnalyzerStepZVetoLow7c = process.MetAnalyzerStep7c.clone()
+process.MetAnalyzerStepZVetoLow7 = process.MetAnalyzerStep7.clone()
 process.MetAnalyzerStepZVetoHigh6a = process.MetAnalyzerStep6a.clone()
+process.MetAnalyzerStepZVetoHigh7a = process.MetAnalyzerStep7a.clone()
+process.MetAnalyzerStepZVetoHigh7b = process.MetAnalyzerStep7b.clone()
+process.MetAnalyzerStepZVetoHigh7c = process.MetAnalyzerStep7c.clone()
+process.MetAnalyzerStepZVetoHigh7 = process.MetAnalyzerStep7.clone()
 
-process.MetAnalyzerStepSC6a = process.MetAnalyzerStep6a.clone()
 
 
 
@@ -603,6 +612,8 @@ process.step4d = cms.Sequence(
 )
 process.step4 = cms.Sequence(
     process.EventCounterStep4+
+    process.MuonAnalyzerStep4+
+    process.DiMuonAnalyzerStep4+
     process.JetAnalyzerStep4
 )
 
@@ -610,7 +621,9 @@ process.step5 = cms.Sequence(
     process.EventCounterStep5+
     process.MuonAnalyzerStep5+
     process.DiMuonAnalyzerStep5+
-    process.JetAnalyzerStep5+
+    process.JetAnalyzerStep5J+
+    process.JetAnalyzerStep5Bhe+
+    process.JetAnalyzerStep5Bhp+
     process.RunEventListingStep5
 )
 
@@ -622,62 +635,70 @@ process.step6 = cms.Sequence(
     process.EventCounterStep6+
     process.MuonAnalyzerStep6+
     process.DiMuonAnalyzerStep6+
-    process.JetAnalyzerStep6+
+    process.JetAnalyzerStep6J+
+    process.JetAnalyzerStep6Bhe+
+    process.JetAnalyzerStep6Bhp+
     process.RunEventListingStep6
 )
 
 process.step7a = cms.Sequence(
-    process.EventCounterStep7a
+    process.EventCounterStep7a+
+    process.MuonAnalyzerStep7a+
+    process.DiMuonAnalyzerStep7a+
+    process.JetAnalyzerStep7aJ+
+    process.JetAnalyzerStep7aBhe+
+    process.JetAnalyzerStep7aBhp+
+    process.MetAnalyzerStep7a
 )
 process.step7b = cms.Sequence(
-    process.EventCounterStep7b
+    process.EventCounterStep7b+
+    process.MuonAnalyzerStep7b+
+    process.DiMuonAnalyzerStep7b+
+    process.JetAnalyzerStep7bJ+
+    process.JetAnalyzerStep7bBhe+
+    process.JetAnalyzerStep7bBhp+
+    process.MetAnalyzerStep7b
 )
 process.step7c = cms.Sequence(
-    process.EventCounterStep7c
+    process.EventCounterStep7c+
+    process.MuonAnalyzerStep7c+
+    process.DiMuonAnalyzerStep7c+
+    process.JetAnalyzerStep7cJ+
+    process.JetAnalyzerStep7cBhe+
+    process.JetAnalyzerStep7cBhp+
+    process.MetAnalyzerStep7c
 )
 process.step7 = cms.Sequence(
     process.EventCounterStep7+
+    process.MuonAnalyzerStep7+
+    process.DiMuonAnalyzerStep7+
+    process.JetAnalyzerStep7J+
+    process.JetAnalyzerStep7Bhe+
+    process.JetAnalyzerStep7Bhp+
+    process.MetAnalyzerStep7+
     process.RunEventListingStep7
 )
 
 
 
 ## Define steps and corresponding analyzers for analysis excluding the Z mass window (lower sideband)
-process.stepZVetoLow0 = cms.Sequence(
-)
+process.stepZVetoLow0 = cms.Sequence()
+process.stepZVetoLow1a = cms.Sequence()
+process.stepZVetoLow1b = cms.Sequence()
+process.stepZVetoLow1 = cms.Sequence()
+process.stepZVetoLow2a = cms.Sequence()
+process.stepZVetoLow2b = cms.Sequence()
+process.stepZVetoLow2c = cms.Sequence()
+process.stepZVetoLow2d = cms.Sequence()
+process.stepZVetoLow2e = cms.Sequence()
+process.stepZVetoLow2f = cms.Sequence()
+process.stepZVetoLow2 = cms.Sequence()
+process.stepZVetoLow3a = cms.Sequence()
+process.stepZVetoLow3b = cms.Sequence()
+process.stepZVetoLow3c = cms.Sequence()
+process.stepZVetoLow3d = cms.Sequence()
+process.stepZVetoLow3e = cms.Sequence()
 
-process.stepZVetoLow1a = cms.Sequence(
-)
-process.stepZVetoLow1b = cms.Sequence(
-)
-process.stepZVetoLow1 = cms.Sequence(
-)
-
-process.stepZVetoLow2a = cms.Sequence(
-)
-process.stepZVetoLow2b = cms.Sequence(
-)
-process.stepZVetoLow2c = cms.Sequence(
-)
-process.stepZVetoLow2d = cms.Sequence(
-)
-process.stepZVetoLow2e = cms.Sequence(
-)
-process.stepZVetoLow2f = cms.Sequence(
-)
-process.stepZVetoLow2 = cms.Sequence(
-)
-
-process.stepZVetoLow3a = cms.Sequence(
-)
-process.stepZVetoLow3b = cms.Sequence(
-)
-process.stepZVetoLow3c = cms.Sequence(
-)
-process.stepZVetoLow3d = cms.Sequence(
-)
-process.stepZVetoLow3e = cms.Sequence(
-)
 process.stepZVetoLow3f = cms.Sequence(
     process.EventCounterStepZVetoLow3f+
     process.VertexAnalyzerStepZVetoLow3f+
@@ -706,6 +727,8 @@ process.stepZVetoLow4d = cms.Sequence(
 )
 process.stepZVetoLow4 = cms.Sequence(
     process.EventCounterStepZVetoLow4+
+    process.MuonAnalyzerStepZVetoLow4+
+    process.DiMuonAnalyzerStepZVetoLow4+
     process.JetAnalyzerStepZVetoLow4
 )
 
@@ -713,7 +736,9 @@ process.stepZVetoLow5 = cms.Sequence(
     process.EventCounterStepZVetoLow5+
     process.MuonAnalyzerStepZVetoLow5+
     process.DiMuonAnalyzerStepZVetoLow5+
-    process.JetAnalyzerStepZVetoLow5+
+    process.JetAnalyzerStepZVetoLow5J+
+    process.JetAnalyzerStepZVetoLow5Bhe+
+    process.JetAnalyzerStepZVetoLow5Bhp+
     process.RunEventListingStepZVetoLow5
 )
 
@@ -725,63 +750,70 @@ process.stepZVetoLow6 = cms.Sequence(
     process.EventCounterStepZVetoLow6+
     process.MuonAnalyzerStepZVetoLow6+
     process.DiMuonAnalyzerStepZVetoLow6+
-    process.JetAnalyzerStepZVetoLow6+
+    process.JetAnalyzerStepZVetoLow6J+
+    process.JetAnalyzerStepZVetoLow6Bhe+
+    process.JetAnalyzerStepZVetoLow6Bhp+
     process.RunEventListingStepZVetoLow6
 )
 
-
 process.stepZVetoLow7a = cms.Sequence(
-    process.EventCounterStepZVetoLow7a
+    process.EventCounterStepZVetoLow7a+
+    process.MuonAnalyzerStepZVetoLow7a+
+    process.DiMuonAnalyzerStepZVetoLow7a+
+    process.JetAnalyzerStepZVetoLow7aJ+
+    process.JetAnalyzerStepZVetoLow7aBhe+
+    process.JetAnalyzerStepZVetoLow7aBhp+
+    process.MetAnalyzerStepZVetoLow7a
 )
 process.stepZVetoLow7b = cms.Sequence(
-    process.EventCounterStepZVetoLow7b
+    process.EventCounterStepZVetoLow7b+
+    process.MuonAnalyzerStepZVetoLow7b+
+    process.DiMuonAnalyzerStepZVetoLow7b+
+    process.JetAnalyzerStepZVetoLow7bJ+
+    process.JetAnalyzerStepZVetoLow7bBhe+
+    process.JetAnalyzerStepZVetoLow7bBhp+
+    process.MetAnalyzerStepZVetoLow7b
 )
 process.stepZVetoLow7c = cms.Sequence(
-    process.EventCounterStepZVetoLow7c
+    process.EventCounterStepZVetoLow7c+
+    process.MuonAnalyzerStepZVetoLow7c+
+    process.DiMuonAnalyzerStepZVetoLow7c+
+    process.JetAnalyzerStepZVetoLow7cJ+
+    process.JetAnalyzerStepZVetoLow7cBhe+
+    process.JetAnalyzerStepZVetoLow7cBhp+
+    process.MetAnalyzerStepZVetoLow7c
 )
 process.stepZVetoLow7 = cms.Sequence(
     process.EventCounterStepZVetoLow7+
+    process.MuonAnalyzerStepZVetoLow7+
+    process.DiMuonAnalyzerStepZVetoLow7+
+    process.JetAnalyzerStepZVetoLow7J+
+    process.JetAnalyzerStepZVetoLow7Bhe+
+    process.JetAnalyzerStepZVetoLow7Bhp+
+    process.MetAnalyzerStepZVetoLow7+
     process.RunEventListingStepZVetoLow7
 )
 
 
 
 ## Define steps and corresponding analyzers for analysis excluding the Z mass window (upper sideband)
-process.stepZVetoHigh0 = cms.Sequence(
-)
+process.stepZVetoHigh0 = cms.Sequence()
+process.stepZVetoHigh1a = cms.Sequence()
+process.stepZVetoHigh1b = cms.Sequence()
+process.stepZVetoHigh1 = cms.Sequence()
+process.stepZVetoHigh2a = cms.Sequence()
+process.stepZVetoHigh2b = cms.Sequence()
+process.stepZVetoHigh2c = cms.Sequence()
+process.stepZVetoHigh2d = cms.Sequence()
+process.stepZVetoHigh2e = cms.Sequence()
+process.stepZVetoHigh2f = cms.Sequence()
+process.stepZVetoHigh2 = cms.Sequence()
+process.stepZVetoHigh3a = cms.Sequence()
+process.stepZVetoHigh3b = cms.Sequence()
+process.stepZVetoHigh3c = cms.Sequence()
+process.stepZVetoHigh3d = cms.Sequence()
+process.stepZVetoHigh3e = cms.Sequence()
 
-process.stepZVetoHigh1a = cms.Sequence(
-)
-process.stepZVetoHigh1b = cms.Sequence(
-)
-process.stepZVetoHigh1 = cms.Sequence(
-)
-
-process.stepZVetoHigh2a = cms.Sequence(
-)
-process.stepZVetoHigh2b = cms.Sequence(
-)
-process.stepZVetoHigh2c = cms.Sequence(
-)
-process.stepZVetoHigh2d = cms.Sequence(
-)
-process.stepZVetoHigh2e = cms.Sequence(
-)
-process.stepZVetoHigh2f = cms.Sequence(
-)
-process.stepZVetoHigh2 = cms.Sequence(
-)
-
-process.stepZVetoHigh3a = cms.Sequence(
-)
-process.stepZVetoHigh3b = cms.Sequence(
-)
-process.stepZVetoHigh3c = cms.Sequence(
-)
-process.stepZVetoHigh3d = cms.Sequence(
-)
-process.stepZVetoHigh3e = cms.Sequence(
-)
 process.stepZVetoHigh3f = cms.Sequence(
     process.EventCounterStepZVetoHigh3f+
     process.VertexAnalyzerStepZVetoHigh3f+
@@ -810,6 +842,8 @@ process.stepZVetoHigh4d = cms.Sequence(
 )
 process.stepZVetoHigh4 = cms.Sequence(
     process.EventCounterStepZVetoHigh4+
+    process.MuonAnalyzerStepZVetoHigh4+
+    process.DiMuonAnalyzerStepZVetoHigh4+
     process.JetAnalyzerStepZVetoHigh4
 )
 
@@ -817,7 +851,9 @@ process.stepZVetoHigh5 = cms.Sequence(
     process.EventCounterStepZVetoHigh5+
     process.MuonAnalyzerStepZVetoHigh5+
     process.DiMuonAnalyzerStepZVetoHigh5+
-    process.JetAnalyzerStepZVetoHigh5+
+    process.JetAnalyzerStepZVetoHigh5J+
+    process.JetAnalyzerStepZVetoHigh5Bhe+
+    process.JetAnalyzerStepZVetoHigh5Bhp+
     process.RunEventListingStepZVetoHigh5
 )
 
@@ -829,22 +865,47 @@ process.stepZVetoHigh6 = cms.Sequence(
     process.EventCounterStepZVetoHigh6+
     process.MuonAnalyzerStepZVetoHigh6+
     process.DiMuonAnalyzerStepZVetoHigh6+
-    process.JetAnalyzerStepZVetoHigh6+
+    process.JetAnalyzerStepZVetoHigh6J+
+    process.JetAnalyzerStepZVetoHigh6Bhe+
+    process.JetAnalyzerStepZVetoHigh6Bhp+
     process.RunEventListingStepZVetoHigh6
 )
 
-
 process.stepZVetoHigh7a = cms.Sequence(
-    process.EventCounterStepZVetoHigh7a
+    process.EventCounterStepZVetoHigh7a+
+    process.MuonAnalyzerStepZVetoHigh7a+
+    process.DiMuonAnalyzerStepZVetoHigh7a+
+    process.JetAnalyzerStepZVetoHigh7aJ+
+    process.JetAnalyzerStepZVetoHigh7aBhe+
+    process.JetAnalyzerStepZVetoHigh7aBhp+
+    process.MetAnalyzerStepZVetoHigh7a
 )
 process.stepZVetoHigh7b = cms.Sequence(
-    process.EventCounterStepZVetoHigh7b
+    process.EventCounterStepZVetoHigh7b+
+    process.MuonAnalyzerStepZVetoHigh7b+
+    process.DiMuonAnalyzerStepZVetoHigh7b+
+    process.JetAnalyzerStepZVetoHigh7bJ+
+    process.JetAnalyzerStepZVetoHigh7bBhe+
+    process.JetAnalyzerStepZVetoHigh7bBhp+
+    process.MetAnalyzerStepZVetoHigh7b
 )
 process.stepZVetoHigh7c = cms.Sequence(
-    process.EventCounterStepZVetoHigh7c
+    process.EventCounterStepZVetoHigh7c+
+    process.MuonAnalyzerStepZVetoHigh7c+
+    process.DiMuonAnalyzerStepZVetoHigh7c+
+    process.JetAnalyzerStepZVetoHigh7cJ+
+    process.JetAnalyzerStepZVetoHigh7cBhe+
+    process.JetAnalyzerStepZVetoHigh7cBhp+
+    process.MetAnalyzerStepZVetoHigh7c
 )
 process.stepZVetoHigh7 = cms.Sequence(
     process.EventCounterStepZVetoHigh7+
+    process.MuonAnalyzerStepZVetoHigh7+
+    process.DiMuonAnalyzerStepZVetoHigh7+
+    process.JetAnalyzerStepZVetoHigh7J+
+    process.JetAnalyzerStepZVetoHigh7Bhe+
+    process.JetAnalyzerStepZVetoHigh7Bhp+
+    process.MetAnalyzerStepZVetoHigh7+
     process.RunEventListingStepZVetoHigh7
 )
 
