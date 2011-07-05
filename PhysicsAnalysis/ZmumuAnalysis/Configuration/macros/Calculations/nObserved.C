@@ -1,4 +1,4 @@
-#include "efficiency.h"
+#include "ZmumuAnalysis/Configuration/macros/Tools/eventCount.h"
 
 #include "ZmumuAnalysis/Configuration/macros/Samples/allSampleStruct.C"
 
@@ -14,7 +14,7 @@ void nObserved(TString pluginSuffix = ""){
   const DataStruct& data = *allSampleStruct.dataStruct;
   
   TH1* events(0);
-  events = Efficiency::Events(data.file_, pluginSuffix);
+  events = eventCount(data.file_, pluginSuffix);
   
   if(!events){
     std::cout<<"\tMissing is histogram containing no. of data events\n"

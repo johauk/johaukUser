@@ -1,4 +1,4 @@
-#include "efficiency.h"
+#include "ZmumuAnalysis/Configuration/macros/Tools/eventCount.h"
 
 #include "ZmumuAnalysis/Configuration/macros/Samples/allSampleStruct.C"
 
@@ -14,7 +14,7 @@ void nObservedSideband(TString pluginSuffixOut1 = "", TString pluginSuffixOut2 =
   const DataStruct& data = *allSampleStruct.dataStruct;
   
   TH1* eventsOut1(0);
-  eventsOut1 = Efficiency::Events(data.file_, pluginSuffixOut1);
+  eventsOut1 = eventCount(data.file_, pluginSuffixOut1);
   
   if(!eventsOut1){
     std::cout<<"\tMissing is histogram containing no. of data events in sideband \"Out1\"\n"
@@ -25,7 +25,7 @@ void nObservedSideband(TString pluginSuffixOut1 = "", TString pluginSuffixOut2 =
   
   TH1* eventsOut2(0);
   if(pluginSuffixOut2 != ""){
-    eventsOut2 = Efficiency::Events(data.file_, pluginSuffixOut2);
+    eventsOut2 = eventCount(data.file_, pluginSuffixOut2);
     if(!eventsOut2){
       std::cout<<"\tMissing is histogram containing no. of data events in sideband \"Out2\"\n"
                <<"\t... ratioInOut calculation stopped\n";

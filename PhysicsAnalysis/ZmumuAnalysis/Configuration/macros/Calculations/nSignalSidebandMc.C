@@ -1,4 +1,4 @@
-#include "efficiency.h"
+#include "ZmumuAnalysis/Configuration/macros/Tools/eventCount.h"
 
 #include "ZmumuAnalysis/Configuration/macros/Samples/allSampleStruct.C"
 
@@ -18,7 +18,7 @@ void nSignalSidebandMc(const TString pluginSuffixOut1 = "", const TString plugin
   const McStruct& zmumuB = *allSampleStruct.signalStruct;
   
   TH1* eventsOut1(0);
-  eventsOut1 = Efficiency::Events(zmumuB.file_, pluginSuffixOut1);
+  eventsOut1 = eventCount(zmumuB.file_, pluginSuffixOut1);
   if(!eventsOut1){
     std::cout<<"\tMissing is histogram containing no. of MC events for \"Out1\": "<<zmumuB.datasetName_<<"\n"
   	     <<"\t... ratioInOut calculation stopped\n";
@@ -28,7 +28,7 @@ void nSignalSidebandMc(const TString pluginSuffixOut1 = "", const TString plugin
   
   TH1* eventsOut2(0);
   if(pluginSuffixOut2 != ""){
-    eventsOut2 = Efficiency::Events(zmumuB.file_, pluginSuffixOut2);
+    eventsOut2 = eventCount(zmumuB.file_, pluginSuffixOut2);
     if(!eventsOut2){
       std::cout<<"\tMissing is histogram containing no. of MC events for \"Out2\": "<<zmumuB.datasetName_<<"\n"
   	       <<"\t... ratioInOut calculation stopped\n";

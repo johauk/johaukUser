@@ -1,4 +1,4 @@
-#include "efficiency.h"
+#include "ZmumuAnalysis/Configuration/macros/Tools/eventCount.h"
 
 #include "ZmumuAnalysis/Configuration/macros/Samples/allSampleStruct.C"
 
@@ -21,7 +21,7 @@ void nBackgroundSideband(TString pluginSuffixOut1 = "", TString pluginSuffixOut2
     const McStruct& background = **i_background;
     
     TH1* eventsOut1(0);
-    eventsOut1 = Efficiency::Events(background.file_, pluginSuffixOut1);
+    eventsOut1 = eventCount(background.file_, pluginSuffixOut1);
     if(!eventsOut1){
       std::cout<<"\tMissing is histogram containing no. of MC events for \"Out1\": "<<background.datasetName_<<"\n"
                <<"\t... ratioInOut calculation stopped\n";
@@ -31,7 +31,7 @@ void nBackgroundSideband(TString pluginSuffixOut1 = "", TString pluginSuffixOut2
 
     TH1* eventsOut2(0);
     if(pluginSuffixOut2 != ""){
-      eventsOut2 = Efficiency::Events(background.file_, pluginSuffixOut2);
+      eventsOut2 = eventCount(background.file_, pluginSuffixOut2);
       if(!eventsOut2){
         std::cout<<"\tMissing is histogram containing no. of MC events for \"Out2\": "<<background.datasetName_<<"\n"
                  <<"\t... ratioInOut calculation stopped\n";

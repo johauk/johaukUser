@@ -1,5 +1,5 @@
-#ifndef Efficiency_h
-#define Efficiency_h
+#ifndef EventCount_h
+#define EventCount_h
 
 
 #include "TH1.h"
@@ -9,12 +9,7 @@
 
 
 
-namespace Efficiency{
-  TH1* Events(TFile*, const TString&);
-}
-
-
-TH1* Efficiency::Events(TFile* file, const TString& pluginSuffix){
+TH1* eventCount(TFile* file, const TString& pluginSuffix){
   //Specify plugin name
   TString* pluginName(0);
   pluginName = new TString("EventCounter");

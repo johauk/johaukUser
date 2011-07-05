@@ -1,13 +1,14 @@
-{
+fullAnalysis(TString recoStep = "Step6", TString simuStep = "StepB2", TString sideband1Step = "StepZVetoHigh6", TString sideband2Step = ""){
+//fullAnalysis(){
 
-
+/*
 // Only things to modify:
 const TString recoStep("Step6"); // Which selection step of reconstruction cut flow
 const TString simuStep("StepB2"); // Which selection step of simulation cut flow (generator level)
 const TString sideband1Step("StepZVetoHigh6"); // Which sideband to use
 //const TString sideband2Step("StepZVetoLow6"); // Optionally, second sideband to use
 const TString sideband2Step("");
-
+*/
 
 
 

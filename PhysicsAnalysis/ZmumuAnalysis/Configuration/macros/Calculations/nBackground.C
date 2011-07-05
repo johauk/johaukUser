@@ -1,4 +1,4 @@
-#include "efficiency.h"
+#include "ZmumuAnalysis/Configuration/macros/Tools/eventCount.h"
 
 #include "ZmumuAnalysis/Configuration/macros/Samples/allSampleStruct.C"
 
@@ -23,7 +23,7 @@ void nBackground(TString pluginSuffix = ""){
     const McStruct& background = **i_background;
     
     TH1* events(0);
-    events = Efficiency::Events(background.file_, pluginSuffix);
+    events = eventCount(background.file_, pluginSuffix);
     
     if(!events){
       std::cout<<"\tMissing is histogram containing no. of MC events for: "<<background.datasetName_<<"\n"
