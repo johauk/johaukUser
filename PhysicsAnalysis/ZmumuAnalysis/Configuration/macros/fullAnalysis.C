@@ -12,6 +12,8 @@ const TString sideband2Step("");
 
 
 
+gROOT->ProcessLine(".L Tools/printLine.C++");
+
 gROOT->ProcessLine(".L Calculations/efficiency.C++");
 gROOT->ProcessLine(".L Calculations/luminosity.C++");
 gROOT->ProcessLine(".L Calculations/nObserved.C++");
@@ -26,8 +28,11 @@ gROOT->ProcessLine(".L Calculations/nSignalSidebandMc.C++");
 gROOT->ProcessLine(".L Calculations/crossSectionIterative.C++");
 
 
+printLine("Data sample");
 gROOT->ProcessLine(".L Samples/data.C++");
+printLine("MC samples");
 gROOT->ProcessLine(".L Samples/mc.C++");
+printLine("Simulated signal sample");
 gROOT->ProcessLine(".L Samples/simulation.C++");
 
 gROOT->ProcessLine(".L Samples/allSampleStruct.C++");
@@ -40,19 +45,31 @@ simulation();
 
 
 
+printLine("Efficiency from MC");
 efficiency(recoStep, simuStep);
+printLine("Luminosity");
 luminosity();
+printLine("No. of observed events");
 nObserved(recoStep);
+printLine("No. of background events");
 nBackground(recoStep);
+printLine("No. of signal events");
 nSignal(theNObserved, theNBackground);
+printLine("Cross section");
 crossSection(theNSignal, theEfficiency, theLuminosity);
 
 // For ttbar background estimation
+printLine("Cross section from MC");
 signalSampleCrossSection();
+printLine("Ratio In/Out");
 ratioInOut(recoStep, sideband1Step, sideband2Step);
+printLine("No. of observed events (sidebands)");
 nObservedSideband(sideband1Step, sideband2Step);
+printLine("No. of background events (sidebands)");
 nBackgroundSideband(sideband1Step, sideband2Step);
+printLine("No. of signal events (sidebands)");
 nSignalSidebandMc(sideband1Step, sideband2Step);
+printLine("Cross section and ttbar contribution iterative");
 crossSectionIterative(theNObserved, theNObservedSideband, theNBackgroundWoTop, theNBackgroundWoTopSideband, theRatioInOut, theNSignalSidebandMc, theEfficiency, theLuminosity, theCrossSection, theSignalSampleCrossSection);
 //crossSectionIterative(theNObserved, theNObservedSideband, theNBackgroundWoTop, theNBackgroundWoTopSideband, theRatioInOut, theNSignalSidebandMc, theEfficiency, theLuminosity, theSignalSampleCrossSection, theSignalSampleCrossSection);
 //crossSectionIterative(theNObserved, theNObservedSideband, theNBackgroundWoTop, theNBackgroundWoTopSideband, theRatioInOut, theNSignalSidebandMc, theEfficiency, theLuminosity, 0., theSignalSampleCrossSection);
