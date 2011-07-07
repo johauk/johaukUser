@@ -11,7 +11,7 @@ double theNObserved(-1.);
 
 
 void nObserved(TString pluginSuffix = ""){
-  const DataStruct& data = *allSampleStruct.dataStruct;
+  const DataStruct& data = *allSampleStruct.dataStruct_;
   
   TH1* events(0);
   events = eventCount(data.file_, pluginSuffix);

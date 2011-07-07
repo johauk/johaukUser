@@ -10,8 +10,8 @@ double theEfficiency(-1.);
 
 
 void efficiency(TString pluginSuffixReco = "", TString pluginSuffixSimu = ""){
-  const McStruct& zmumuB = *allSampleStruct.signalStruct;
-  const SimulationStruct& simulation = *allSampleStruct.simulationStruct;
+  const McStruct& zmumuB = *allSampleStruct.signalStruct_;
+  const SimulationStruct& simulation = *allSampleStruct.simulationStruct_;
   
   // First: get the number of reconstructed signal events
   TH1* eventsReco(0);

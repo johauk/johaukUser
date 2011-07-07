@@ -11,11 +11,11 @@ double theNSignalSidebandMc(-1.);
 
 
 void nSignalSidebandMc(const TString pluginSuffixOut1 = "", const TString pluginSuffixOut2 = ""){
-  const DataStruct& data = *allSampleStruct.dataStruct;
+  const DataStruct& data = *allSampleStruct.dataStruct_;
   const double luminosity(data.lumi_);
   const double effectiveLuminosity(luminosity*data.dynamicWeight_);
   
-  const McStruct& zmumuB = *allSampleStruct.signalStruct;
+  const McStruct& zmumuB = *allSampleStruct.signalStruct_;
   
   TH1* eventsOut1(0);
   eventsOut1 = eventCount(zmumuB.file_, pluginSuffixOut1);

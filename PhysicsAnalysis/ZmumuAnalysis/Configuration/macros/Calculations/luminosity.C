@@ -15,7 +15,7 @@ double theLuminosity(-1.);
 
 
 void luminosity(){
-  const DataStruct& data = *allSampleStruct.dataStruct;
+  const DataStruct& data = *allSampleStruct.dataStruct_;
   
   const double luminosity(data.lumi_);
   const double effectiveLuminosity(luminosity*data.dynamicWeight_);

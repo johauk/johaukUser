@@ -11,11 +11,11 @@ double theNBackground(-1.);
 
 
 void nBackground(TString pluginSuffix = ""){
-  const DataStruct& data = *allSampleStruct.dataStruct;
+  const DataStruct& data = *allSampleStruct.dataStruct_;
   const double luminosity(data.lumi_);
   const double effectiveLuminosity(luminosity*data.dynamicWeight_);
   
-  const std::vector<McStruct*> v_background = allSampleStruct.v_backgroundStruct;
+  const std::vector<McStruct*> v_background = allSampleStruct.v_backgroundStruct_;
   
   double nBackgroundWoTop(0.), nBackgroundOnlyTop(0.);
   std::vector<McStruct*>::const_iterator i_background;

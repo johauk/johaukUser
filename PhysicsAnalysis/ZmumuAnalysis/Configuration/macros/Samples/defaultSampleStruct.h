@@ -31,6 +31,8 @@ struct DataStruct : defaultStruct {
   file_(this->openInputFile(datasetName_, this->defaultPath() + datasetName_ + ".root", nEvents_))
   {}
   
+  ~DataStruct(){}//file_->Close();}
+  
   // Full path of dataset
   static const std::string defaultPath(){return cmsswBase() + "/src/ZmumuAnalysis/Configuration/hists/data/";}
   // Root file name only
@@ -52,10 +54,12 @@ struct DataStruct : defaultStruct {
 // For simulated samples on reco level
 struct McStruct : defaultStruct {
   
-  McStruct(const std::string datasetName, const unsigned int nEvents, const double crossSection, const double filterEfficiency, const TColor* color):
+  McStruct(const std::string datasetName, const unsigned int nEvents, const double crossSection, const double filterEfficiency, TColor* color):
     datasetName_(datasetName), nEvents_(nEvents), crossSection_(crossSection), filterEfficiency_(filterEfficiency), color_(color),
     file_(this->openInputFile(datasetName_, this->defaultPath() + datasetName_ + ".root", nEvents_))
     {}
+  
+  ~McStruct(){}//color_->Delete(); file_->Close();}
   
   // Full path of dataset
   static const std::string defaultPath(){return cmsswBase() + "/src/ZmumuAnalysis/Configuration/hists/mc/";}
@@ -69,7 +73,7 @@ struct McStruct : defaultStruct {
   // If given cross section does not correspond exactly to the process, since a filter on generator level is applied
   const double filterEfficiency_;
   // Set the colour used for the the sample in the plots
-  const TColor* color_;
+  TColor* color_;
   
   // The root file
   TFile* file_;
@@ -86,6 +90,8 @@ struct SimulationStruct : defaultStruct {
   datasetName_(datasetName), nEvents_(nEvents),
   file_(this->openInputFile(datasetName_, this->defaultPath() + datasetName_ + ".root", nEvents_))
   {}
+  
+  ~SimulationStruct(){}//file_->Close();}
   
   // Full path of dataset
   static const std::string defaultPath(){return cmsswBase() + "/src/ZmumuAnalysis/Configuration/hists/simulation/";}

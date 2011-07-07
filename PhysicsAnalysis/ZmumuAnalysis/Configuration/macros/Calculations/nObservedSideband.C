@@ -11,7 +11,7 @@ double theNObservedSideband(-1.);
 
 
 void nObservedSideband(TString pluginSuffixOut1 = "", TString pluginSuffixOut2 = ""){
-  const DataStruct& data = *allSampleStruct.dataStruct;
+  const DataStruct& data = *allSampleStruct.dataStruct_;
   
   TH1* eventsOut1(0);
   eventsOut1 = eventCount(data.file_, pluginSuffixOut1);

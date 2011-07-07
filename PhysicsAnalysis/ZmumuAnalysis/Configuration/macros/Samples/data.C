@@ -1,11 +1,11 @@
 #include "defaultSampleStruct.C"
-#include "allSampleStruct.C"
+#include "allSampleStruct.h"
 
 
 
 DataStruct dataStruct("allData", 1842615, 191.);
 
 
-void data(){
-  allSampleStruct.dataStruct = &dataStruct;
+void data(AllSampleStruct& allSample){
+  allSample.dataStruct_ = &dataStruct;
 }

@@ -9,11 +9,11 @@ double theNBackgroundWoTopSideband(-1.);
 
 
 void nBackgroundSideband(TString pluginSuffixOut1 = "", TString pluginSuffixOut2 = ""){
-  const DataStruct& data = *allSampleStruct.dataStruct;
+  const DataStruct& data = *allSampleStruct.dataStruct_;
   const double luminosity(data.lumi_);
   const double effectiveLuminosity(luminosity*data.dynamicWeight_);
   
-  const std::vector<McStruct*> v_background = allSampleStruct.v_backgroundStruct;
+  const std::vector<McStruct*> v_background = allSampleStruct.v_backgroundStruct_;
   
   double nBackgroundSideband(0.);
   std::vector<McStruct*>::const_iterator i_background;

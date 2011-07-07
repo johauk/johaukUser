@@ -9,7 +9,7 @@
 double theRatioInOut(-1.);
 
 void ratioInOut(TString pluginSuffixIn = "", TString pluginSuffixOut1 = "", TString pluginSuffixOut2 = ""){
-  const std::vector<McStruct*> v_background = allSampleStruct.v_backgroundStruct;
+  const std::vector<McStruct*> v_background = allSampleStruct.v_backgroundStruct_;
   
   double ttbarRatioInOut(-1.);
   std::vector<McStruct*>::const_iterator i_background;
@@ -57,7 +57,7 @@ void ratioInOut(TString pluginSuffixIn = "", TString pluginSuffixOut1 = "", TStr
   }
   
   {
-    const McStruct& zmumuB = *allSampleStruct.signalStruct;
+    const McStruct& zmumuB = *allSampleStruct.signalStruct_;
     TH1* eventsIn(0);
     eventsIn = eventCount(zmumuB.file_, pluginSuffixIn);
     if(!eventsIn){

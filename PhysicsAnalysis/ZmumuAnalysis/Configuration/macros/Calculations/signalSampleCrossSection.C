@@ -9,7 +9,7 @@
 double theSignalSampleCrossSection(-1.);
 
 void signalSampleCrossSection(TString pluginSuffix = "Step1a"){
-  const McStruct& zmumuB = *allSampleStruct.signalStruct;
+  const McStruct& zmumuB = *allSampleStruct.signalStruct_;
   
   TH1* events(0);
   events = eventCount(zmumuB.file_, pluginSuffix);

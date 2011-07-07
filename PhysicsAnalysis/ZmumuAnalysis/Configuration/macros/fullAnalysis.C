@@ -28,20 +28,19 @@ gROOT->ProcessLine(".L Calculations/nSignalSidebandMc.C++");
 gROOT->ProcessLine(".L Calculations/crossSectionIterative.C++");
 
 
-printLine("Data sample");
-gROOT->ProcessLine(".L Samples/data.C++");
-printLine("MC samples");
-gROOT->ProcessLine(".L Samples/mc.C++");
-printLine("Simulated signal sample");
-gROOT->ProcessLine(".L Samples/simulation.C++");
 
 gROOT->ProcessLine(".L Samples/allSampleStruct.C++");
 
 
-
-data();
-mc();
-simulation();
+printLine("Data sample");
+gROOT->ProcessLine(".L Samples/data.C++");
+data(allSampleStruct);
+printLine("MC samples");
+gROOT->ProcessLine(".L Samples/mc.C++");
+mc(allSampleStruct);
+printLine("Simulated signal sample");
+gROOT->ProcessLine(".L Samples/simulation.C++");
+simulation(allSampleStruct);
 
 
 
