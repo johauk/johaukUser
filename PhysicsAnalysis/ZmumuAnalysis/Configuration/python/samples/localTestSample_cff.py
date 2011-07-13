@@ -6,11 +6,10 @@ source = cms.Source ("PoolSource",fileNames = readFiles )
 readFiles.extend( [
 
 
-#'file:/scratch/hh/current/cms/user/hauk/data/testPatTuple/mcpat_1_1_eXu_madgraph_D6T.root',
-#'file:/scratch/hh/current/cms/user/hauk/data/testPatTuple/mcpat_1_3_bfP_madgraph_Z2.root',
+#'file:/afs/naf.desy.de/user/j/johauk/cms/CMSSW_4_2_3/src/ZmumuAnalysis/Configuration/analysis/test.root',
 
-#'file:/scratch/hh/current/cms/user/hauk/data/testPatTupleData/datapat_12_1_wii_Run2011A_PromptReco_v1.root',
+#'file:/scratch/hh/current/cms/user/hauk/data/testPatTuple/mc2pat_1_1_ntG_Spring11_madgraph_D6T.root',
 
-'file:/scratch/hh/current/cms/user/hauk/data/testPatTuple/mc2pat_1_1_ntG_Spring11_madgraph_D6T.root',
+'file:/scratch/hh/current/cms/user/hauk/data/testPatTuple/patTuple_1_1_BQg_Summer11_madgraph_Z2.root',
 
 ] );

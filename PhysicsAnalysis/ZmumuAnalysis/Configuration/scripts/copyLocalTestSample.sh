@@ -12,14 +12,20 @@
 
 
 
-# Change from srm to dc tools, needs: >  ini dctools
+## Change from srm to dc tools
+## Needs: >  ini dctools
+## and:   >  voms-proxy-init
 
 
 #srmcp -2 -streams_num=1 "srm://dcache-se-cms.desy.de:8443//pnfs/desy.de/cms/tier2/store/user/blutz/DoubleMu/Run2011A_PromtReco_v1_413p2_mumu_PAT_May7_160404_163757/59e0dd4866f9c31fab6116dc9c2518db/datapat_12_1_wii.root" "file:////scratch/hh/current/cms/user/hauk/data/testPatTupleData/datapat_12_1_wii_Run2011A_PromptReco_v1.root"
 #dcls /pnfs/desy.de/cms/tier2/store/user/blutz/DoubleMu/Run2011A_PromtReco_v1_413p2_mumu_PAT_May7_160404_163757/59e0dd4866f9c31fab6116dc9c2518db/
 #dcget /pnfs/desy.de/cms/tier2/store/user/blutz/DoubleMu/Run2011A_PromtReco_v1_413p2_mumu_PAT_May7_160404_163757/59e0dd4866f9c31fab6116dc9c2518db/datapat_12_1_wii.root /scratch/hh/current/cms/user/hauk/data/testPatTupleData/datapat_12_1_wii_Run2011A_PromptReco_v1.root
 
-dcget /pnfs/desy.de/cms/tier2/store/user/wbehrenh/DYJetsToLL_TuneD6T_M-50_7TeV-madgraph-tauola/Spring11-PAT/6e6559812e09b52af172f27db20ae337/mc2pat_1_1_ntG.root /scratch/hh/current/cms/user/hauk/data/testPatTuple/mc2pat_1_1_ntG_Spring11_madgraph_D6T.root
+#dcget /pnfs/desy.de/cms/tier2/store/user/wbehrenh/DYJetsToLL_TuneD6T_M-50_7TeV-madgraph-tauola/Spring11-PAT/6e6559812e09b52af172f27db20ae337/mc2pat_1_1_ntG.root /scratch/hh/current/cms/user/hauk/data/testPatTuple/mc2pat_1_1_ntG_Spring11_madgraph_D6T.root
+
+dcget /pnfs/desy.de/cms/tier2/store/user/hauk/DYJetsToLL_TuneZ2_M-50_7TeV-madgraph-tauola/Summer11_DYJetsToLL_Z2_madgraph_423_PAT_July10/bbcc262b5d85210b5cbc083e60a17a9c/patTuple_1_1_BQg.root /scratch/hh/current/cms/user/hauk/data/testPatTuple/patTuple_1_1_BQg_Summer11_madgraph_Z2.root
+
+
 
 
 
