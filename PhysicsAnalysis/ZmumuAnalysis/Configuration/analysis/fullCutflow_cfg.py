@@ -2,9 +2,17 @@ import os
 
 import FWCore.ParameterSet.Config as cms
 
+
+##
+## Process definition
+##
 process = cms.Process("FullCutflow")
 
+
+
+##
 ## Message logger
+##
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'INFO'
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
@@ -111,6 +119,18 @@ else: print "Error, wrong configuration of samples"; raise KeyError("ERROR")
 
 
 ##
+## Direct use of JSON file for event preselection
+##
+#import PhysicsTools.PythonAnalysis.LumiList as LumiList
+#import FWCore.ParameterSet.Types as CfgTypes
+#myLumis = LumiList.LumiList(filename = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/crab/json/syncExercise/Cert_166512_syncExercise_1_JSON.txt').getCMSSWString().split(',')
+#myLumis = LumiList.LumiList(filename = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/crab/json/syncExercise/Cert_166841_syncExercise_2_JSON.txt').getCMSSWString().split(',')
+#process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
+#process.source.lumisToProcess.extend(myLumis) 
+
+
+
+##
 ## define maximal number of events to loop over
 ##
 process.maxEvents = cms.untracked.PSet(
@@ -126,6 +146,7 @@ if(not isTest): process.maxEvents.input = -1
 process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(True),
 )
+
 
 
 ##
