@@ -18,7 +18,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 counter = 0
 isData1 = True
 isData2 = False
-isData3 = False
+isData3 = False  # Recently only two different input files, do not set this line to true
 # MC samples
 isQcd = False
 isSingletopS = False
@@ -70,40 +70,40 @@ if(not counter == 1): print "Error, wrong configuration of samples"; raise KeyEr
 ##
 # Data
 if(isData1):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.Run2011A_PromptReco_v1_May7_160404_163757_cff")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Run2011A_May10ReReco_v1_423_July10_160404_163869_cff")
 elif(isData2):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.Run2011A_PromptReco_v2_May7_160404_163757_cff")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Run2011A_PromtReco_v4_423_July10_163870_167784_cff")
 elif(isData3):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.dilepton.Run2011A_v2_May7_to_May13_cff")
+    process.load("")
 # MC
 elif(isQcd):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_QCD_MuEnrichedPt15_pythia_F10_cff")
+    process.load("")
 elif(isSingletopS):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TToBLNu_TuneZ2_s_channel_7TeV_madgraph_cff")
+    process.load("")
 elif(isSingletopT):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TToBLNu_TuneZ2_t_channel_7TeV_madgraph_cff")
+    process.load("")
 elif(isSingletopTw):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TToBLNu_madgraph_F10_cff")
+    process.load("")
 elif(isTtbar):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_TTJets_D6T_madgraph_F10_cff")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_TTJets_Z2_madgraph_423_July10_cff")
 elif(isWmunu):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_WToMuNu_pythia_F10_cff")
+    process.load("")
 elif(isWtaunu):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_WToTauNu_pythia_F10_cff")
+    process.load("")
 elif(isZmumu):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_DYJetsToLL_M50_madgraph_F10_cff")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_423_July10_cff")
 elif(isZmumuB):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_DYJetsToLL_M50_madgraph_F10_cff")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_423_July10_cff")
 elif(isZmumuUdsc):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_DYJetsToLL_M50_madgraph_F10_cff")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_423_July10_cff")
 elif(isZtautau):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_DYJetsToLL_M50_madgraph_F10_cff")
+    process.load("")
 elif(isWw):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_WWTo2L2Nu_pythia_F10_cff")
+    process.load("")
 elif(isWz):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_WZTo3LNu_pythia_F10_cff")
+    process.load("")
 elif(isZz):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSpring11.samples.Spring11_ZZToAnything_pythia_F10_cff")
+    process.load("")
 elif(isTest):
     process.load("ZmumuAnalysis.Configuration.samples.testSample_cff")
 else: print "Error, wrong configuration of samples"; raise KeyError("ERROR")
@@ -114,7 +114,7 @@ else: print "Error, wrong configuration of samples"; raise KeyError("ERROR")
 ## define maximal number of events to loop over
 ##
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(2001)
+    input = cms.untracked.int32(1001)
 )
 if(not isTest): process.maxEvents.input = -1
 
@@ -132,8 +132,8 @@ process.options = cms.untracked.PSet(
 ## needed for access to trigger menu
 ##
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-if(isData): process.GlobalTag.globaltag = 'FT_R_311_V4A::All'
-elif(isMC): process.GlobalTag.globaltag = 'START41_V0::All'
+if(isData): process.GlobalTag.globaltag = 'GR_R_42_V14::All'
+elif(isMC): process.GlobalTag.globaltag = 'START42_V12::All'
 else: print "Error, wrong configuration of samples"; raise KeyError("ERROR")
 
 
@@ -488,7 +488,7 @@ process.RunEventListingStepZVetoHigh7 = process.RunEventListingCreateTreeOnly.cl
 # Additional statements for use with trigger REDIGI
 
 if(isData): TRIG_RESULT = "HLT"
-elif(isMC): TRIG_RESULT = "REDIGI311X"
+elif(isMC): TRIG_RESULT = "HLT"
 else: print "Error, wrong configuration of samples"; raise KeyError("ERROR")
 
 # Does this work for all files? - No, al least not for TriggerFilter

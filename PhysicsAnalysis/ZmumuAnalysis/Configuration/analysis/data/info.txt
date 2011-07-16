@@ -9,9 +9,8 @@
 
 # DATA
 
-nafJobSplitter.pl 5 run2011A_May7PromptReco_1_cfg.py
-nafJobSplitter.pl 30 run2011A_May7PromptReco_2_cfg.py
-nafJobSplitter.pl 10 run2011A_May7to13PromptReco_cfg.py
+nafJobSplitter.pl 50 run2011A_May10ReRecoV1_160404_163869_cfg.py
+nafJobSplitter.pl 100 run2011A_PromptRecoV4_163870_167784_cfg.py
 
 
 
@@ -21,15 +20,15 @@ nafJobSplitter.pl 100 qcd_cfg.py
 nafJobSplitter.pl 2 singletopS_cfg.py
 nafJobSplitter.pl 2 singletopT_cfg.py
 nafJobSplitter.pl 2 singletopTw_cfg.py
-nafJobSplitter.pl 10 ttbar_cfg.py
 nafJobSplitter.pl 20 wmunu_cfg.py
 nafJobSplitter.pl 20 wtaunu_cfg.py
 nafJobSplitter.pl 2 ww_cfg.py
 nafJobSplitter.pl 2 wz_cfg.py
-nafJobSplitter.pl 20 zmumuB_cfg.py
-nafJobSplitter.pl 20 zmumuUdsc_cfg.py
 nafJobSplitter.pl 20 ztautau_cfg.py
 nafJobSplitter.pl 20 zz_cfg.py
+nafJobSplitter.pl 40 ttbar_cfg.py
+nafJobSplitter.pl 200 zmumuB_cfg.py
+nafJobSplitter.pl 200 zmumuUdsc_cfg.py
 
 
 
@@ -37,9 +36,8 @@ nafJobSplitter.pl 20 zz_cfg.py
 ## Check status of jobs
 
 
-nafJobSplitter.pl check data/naf_run2011A_May7PromptReco_1_cfg
-nafJobSplitter.pl check data/naf_run2011A_May7PromptReco_2_cfg
-nafJobSplitter.pl check data/naf_run2011A_May7to13PromptReco_cfg
+nafJobSplitter.pl check data/naf_run2011A_May10ReRecoV1_160404_163869_cfg
+nafJobSplitter.pl check data/naf_run2011A_PromptRecoV4_163870_167784_cfg
 
 
 
@@ -47,15 +45,15 @@ nafJobSplitter.pl check mc/naf_qcd_cfg
 nafJobSplitter.pl check mc/naf_singletopS_cfg
 nafJobSplitter.pl check mc/naf_singletopT_cfg
 nafJobSplitter.pl check mc/naf_singletopTw_cfg
-nafJobSplitter.pl check mc/naf_ttbar_cfg
 nafJobSplitter.pl check mc/naf_wmunu_cfg
 nafJobSplitter.pl check mc/naf_wtaunu_cfg
 nafJobSplitter.pl check mc/naf_ww_cfg
 nafJobSplitter.pl check mc/naf_wz_cfg
-nafJobSplitter.pl check mc/naf_zmumuB_cfg
-nafJobSplitter.pl check mc/naf_zmumuUdsc_cfg
 nafJobSplitter.pl check mc/naf_ztautau_cfg
 nafJobSplitter.pl check mc/naf_zz_cfg
+nafJobSplitter.pl check mc/naf_ttbar_cfg
+nafJobSplitter.pl check mc/naf_zmumuB_cfg
+nafJobSplitter.pl check mc/naf_zmumuUdsc_cfg
 
 
 
