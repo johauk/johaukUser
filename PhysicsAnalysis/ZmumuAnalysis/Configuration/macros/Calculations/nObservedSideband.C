@@ -3,10 +3,14 @@
 #include "ZmumuAnalysis/Configuration/macros/Samples/allSampleStruct.C"
 
 #include <iostream>
+#include <cmath>
 
 
 
 double theNObservedSideband(-1.);
+
+double theNObservedSidebandRelErr2Up(-1.);
+double theNObservedSidebandRelErr2Dw(-1.);
 
 
 
@@ -40,6 +44,14 @@ void nObservedSideband(TString pluginSuffixOut1 = "", TString pluginSuffixOut2 =
   
   std::cout<<"No. observed events (candidates) in sidebands (Out1, Out2, Both): "
            <<nEventsOut1<<" , "<<nEventsOut2<<" , "<<theNObservedSideband<<"\n";
+  
+  theNObservedSidebandRelErr2Up = 1./theNObservedSideband;
+  theNObservedSidebandRelErr2Dw = 1./theNObservedSideband;
+  
+  const double nObservedAbsErrUp = theNObservedSideband*std::sqrt(theNObservedSidebandRelErr2Up);
+  const double nObservedAbsErrDw = theNObservedSideband*std::sqrt(theNObservedSidebandRelErr2Dw);
+  
+  std::cout<<"No. observed events (candidates) in sidebands: "<<theNObservedSideband<<" + "<<nObservedAbsErrUp<<" - "<<nObservedAbsErrDw<<"\n";
 }
 
 

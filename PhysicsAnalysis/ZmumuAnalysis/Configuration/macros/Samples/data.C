@@ -3,9 +3,9 @@
 
 
 
-DataStruct dataStruct("allData", 1842615, 191.);
+DataStruct dataStruct("allData", 24492880, 1092., 1092.*0.06, 1092.*0.06);
 
 
 void data(AllSampleStruct& allSample){
-  allSample.dataStruct_ = &dataStruct;
+  if(dataStruct.file_)allSample.dataStruct_ = &dataStruct;
 }

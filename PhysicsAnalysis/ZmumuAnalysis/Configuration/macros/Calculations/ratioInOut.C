@@ -3,13 +3,38 @@
 #include "ZmumuAnalysis/Configuration/macros/Samples/allSampleStruct.C"
 
 #include <iostream>
+#include <cmath>
 
 
 
+double theNInMcTtbar(-1.);
+double theNInMcZmumu(-1.);
+double theNInMcOther(-1.);
+double theNOutMcTtbar(-1.);
+double theNOutMcZmumu(-1.);
+double theNOutMcOther(-1.);
+
+double theRatioInOutTtbar(-1.);
+double theRatioInOutRelErr2UpTtbar(-1.);
+double theRatioInOutRelErr2DwTtbar(-1.);
+double theRatioInOutZmumu(-1.);
+double theRatioInOutRelErr2UpZmumu(-1.);
+double theRatioInOutRelErr2DwZmumu(-1.);
+
+
+
+// Old version, leave for compatibility
 double theRatioInOut(-1.);
 
 void ratioInOut(TString pluginSuffixIn = "", TString pluginSuffixOut1 = "", TString pluginSuffixOut2 = ""){
   const std::vector<McStruct*> v_background = allSampleStruct.v_backgroundStruct_;
+  
+  double nInTtbar(0.);
+  double nInZmumu(0.);
+  double nInOther(0.);
+  double nOutTtbar(0.);
+  double nOutZmumu(0.);
+  double nOutOther(0.);
   
   double ttbarRatioInOut(-1.);
   std::vector<McStruct*>::const_iterator i_background;
@@ -53,7 +78,19 @@ void ratioInOut(TString pluginSuffixIn = "", TString pluginSuffixOut1 = "", TStr
     std::cout<<"Ratio In/Out for \""<<background.datasetName_<<"\": "
              <<ratioInOut<<"\n";
     
-    if(background.datasetName_=="ttbar")ttbarRatioInOut = ratioInOut;
+    if(background.datasetName_=="ttbar"){
+      nInTtbar = nEventsIn;
+      nOutTtbar = nEventsOut;
+      ttbarRatioInOut = ratioInOut;
+    }
+    else if(background.datasetName_=="zmumuUdsc"){
+      nInZmumu = nEventsIn;
+      nOutZmumu = nEventsOut;
+    }
+    else{
+      nInOther = nEventsIn;
+      nOutOther = nEventsOut;
+    }
   }
   
   {
@@ -94,13 +131,47 @@ void ratioInOut(TString pluginSuffixIn = "", TString pluginSuffixOut1 = "", TStr
              <<nEventsIn<<" , "<<nEventsOut1<<" , "<<nEventsOut2<<"\n";
     std::cout<<"Ratio In/Out for \""<<zmumuB.datasetName_<<"\": "
              <<ratioInOut<<"\n";
+  
+    nInZmumu += nEventsIn;
+    nOutZmumu += nEventsOut;
   }
   
   
   theRatioInOut = ttbarRatioInOut;
-  
-  
   std::cout<<"Ratio of ttbar for background estimation: "<<theRatioInOut<<"\n";
+  
+  theNInMcTtbar = nInTtbar;
+  theNInMcZmumu = nInZmumu;
+  theNInMcOther = nInOther;
+  theNOutMcTtbar = nOutTtbar;
+  theNOutMcZmumu = nOutZmumu;
+  theNOutMcOther = nOutOther;
+  
+  const double nInRelErr2Ttbar(1./nInTtbar);
+  const double nOutRelErr2Ttbar(1./nOutTtbar);
+  const double nInRelErr2Zmumu(1./nInZmumu);
+  const double nOutRelErr2Zmumu(1./nOutZmumu);
+  
+  theRatioInOutTtbar = nInTtbar/nOutTtbar;
+  theRatioInOutRelErr2UpTtbar = nInRelErr2Ttbar + nOutRelErr2Ttbar;
+  theRatioInOutRelErr2DwTtbar = nInRelErr2Ttbar + nOutRelErr2Ttbar;
+  
+  theRatioInOutZmumu = nInZmumu/nOutZmumu;
+  theRatioInOutRelErr2UpZmumu = nInRelErr2Zmumu + nOutRelErr2Zmumu;
+  theRatioInOutRelErr2DwZmumu = nInRelErr2Zmumu + nOutRelErr2Zmumu;
+  
+  std::cout<<"\n";
+  std::cout<<"Number of events (In, Out) for ttbar: "<<theNInMcTtbar<<" , "<<theNOutMcTtbar<<"\n";
+  std::cout<<"Number of events (In, Out) for zmumu: "<<theNInMcZmumu<<" , "<<theNOutMcZmumu<<"\n";
+  std::cout<<"Number of events (In, Out) for other: "<<theNInMcOther<<" , "<<theNOutMcOther<<"\n";
+  
+  const double ratioInOutAbsErrUpTtbar = theRatioInOutTtbar*std::sqrt(theRatioInOutRelErr2UpTtbar);
+  const double ratioInOutAbsErrDwTtbar = theRatioInOutTtbar*std::sqrt(theRatioInOutRelErr2DwTtbar);
+  const double ratioInOutAbsErrUpZmumu = theRatioInOutZmumu*std::sqrt(theRatioInOutRelErr2UpZmumu);
+  const double ratioInOutAbsErrDwZmumu = theRatioInOutZmumu*std::sqrt(theRatioInOutRelErr2DwZmumu);
+  
+  std::cout<<"Ratio In/Out for ttbar: "<<theRatioInOutTtbar<<" + "<<ratioInOutAbsErrUpTtbar<<" - "<<ratioInOutAbsErrDwTtbar<<"\n";
+  std::cout<<"Ratio In/Out for zmumu: "<<theRatioInOutZmumu<<" + "<<ratioInOutAbsErrUpZmumu<<" - "<<ratioInOutAbsErrDwZmumu<<"\n";
 }
 
 

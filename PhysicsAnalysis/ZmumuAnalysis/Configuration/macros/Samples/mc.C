@@ -17,37 +17,38 @@ TColor* colorSingletopS = new TColor(1011, 0.40, 0.00, 1.00, "singletopS");
 TColor* colorTtbar = new TColor(1012, 1.00, 0.00, 0.00, "ttbar");
 TColor* colorQcd = new TColor(1013, 0.00, 0.00, 0.50, "qcd");
 
-McStruct zmumuB("zmumuB", 2329439, 3048., 1., colorZmumuB);
-McStruct zmumuUdsc("zmumuUdsc", 2329439, 3048., 1., colorZmumuUdsc);
-McStruct zz("zz", 2108608, 7.4, 1., colorZz);
-McStruct wz("wz", 110000, 0.61, 1., colorWz);
-McStruct ww("ww", 110000, 4.51, 1., colorWw);
-McStruct ztautau("ztautau", 2329439, 3048., 1., colorZtautau);
-McStruct wmunu("wmunu", 5038640, 10438., 1., colorWmunu);
-McStruct wtaunu("wtaunu", 4773750, 10438., 1., colorWtaunu);
-McStruct singletopTw("singletopTw", 489417, 10.6, 1., colorSingletopTw);
-McStruct singletopT("singletopT", 484060, 64.6, 1., colorSingletopT);
-McStruct singletopS("singletopS", 494967, 4.21, 1., colorSingletopS);
-McStruct ttbar("ttbar", 1286491, 157.5, 1., colorTtbar);
-McStruct qcd("qcd", 29434562, 296600., 0.2864, colorQcd);  // real values: crossSection*1000, filterEfficiency/1000
+McStruct zmumuB("zmumuB", 36277961, 3048., 132., 132., 1., colorZmumuB);
+McStruct zmumuUdsc("zmumuUdsc", 36277961, 3048., 132., 132., 1., colorZmumuUdsc);
+McStruct zz("zz", 0, 7.4, 0.19, 0.19, 1., colorZz);
+McStruct wz("wz", 0, 0.61, 0.02, 0.02, 1., colorWz);
+McStruct ww("ww", 0, 4.51, 0.16, 0.16, 1., colorWw);
+McStruct ztautau("ztautau", 0, 3048., 132., 132., 1., colorZtautau);
+McStruct wmunu("wmunu", 0, 10438., 519., 519., 1., colorWmunu);
+McStruct wtaunu("wtaunu", 0, 10438., 519., 519., 1., colorWtaunu);
+McStruct singletopTw("singletopTw", 0, 10.6, 0.8, 0.8, 1., colorSingletopTw);
+McStruct singletopT("singletopT", 0, 64.6, 3.4, 3.2, 1., colorSingletopT);
+McStruct singletopS("singletopS", 0, 4.21, 0.19, 0.18, 1., colorSingletopS);
+McStruct ttbar("ttbar", 3581947, 157.5, 23.2, 24.4, 1., colorTtbar);
+McStruct qcd("qcd", 0, 296600., 296600.*0.5, 296600.*0.5, 0.2864, colorQcd);  // real values: crossSection*1000, filterEfficiency/1000
 
 
 void mc(AllSampleStruct& allSample){
-  allSample.signalStruct_ = &zmumuB;
+  if(zmumuB.file_)allSample.signalStruct_ = &zmumuB;
   
-  allSample.v_backgroundStruct_.push_back(&zmumuUdsc);
-  allSample.v_backgroundStruct_.push_back(&zz);
-  allSample.v_backgroundStruct_.push_back(&wz);
-  allSample.v_backgroundStruct_.push_back(&ww);
-  allSample.v_backgroundStruct_.push_back(&ztautau);
-  allSample.v_backgroundStruct_.push_back(&wmunu);
-  allSample.v_backgroundStruct_.push_back(&wtaunu);
-  allSample.v_backgroundStruct_.push_back(&singletopTw);
-  allSample.v_backgroundStruct_.push_back(&singletopT);
-  allSample.v_backgroundStruct_.push_back(&singletopS);
-  allSample.v_backgroundStruct_.push_back(&ttbar);
-  allSample.v_backgroundStruct_.push_back(&qcd);
+  if(zmumuUdsc.file_)allSample.v_backgroundStruct_.push_back(&zmumuUdsc);
+  if(zz.file_)allSample.v_backgroundStruct_.push_back(&zz);
+  if(wz.file_)allSample.v_backgroundStruct_.push_back(&wz);
+  if(zz.file_)allSample.v_backgroundStruct_.push_back(&ww);
+  if(ztautau.file_)allSample.v_backgroundStruct_.push_back(&ztautau);
+  if(wmunu.file_)allSample.v_backgroundStruct_.push_back(&wmunu);
+  if(wtaunu.file_)allSample.v_backgroundStruct_.push_back(&wtaunu);
+  if(singletopTw.file_)allSample.v_backgroundStruct_.push_back(&singletopTw);
+  if(singletopT.file_)allSample.v_backgroundStruct_.push_back(&singletopT);
+  if(singletopS.file_)allSample.v_backgroundStruct_.push_back(&singletopS);
+  if(ttbar.file_)allSample.v_backgroundStruct_.push_back(&ttbar);
+  if(qcd.file_)allSample.v_backgroundStruct_.push_back(&qcd);
   
+  std::cout<<"\tNumber of background samples: "<<allSample.v_backgroundStruct_.size()<<"\n";
 }
 
 

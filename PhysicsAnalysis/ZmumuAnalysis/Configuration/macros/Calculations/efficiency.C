@@ -9,7 +9,24 @@
 double theEfficiency(-1.);
 
 
+
+void efficiencyDummy(TString pluginSuffixReco = "", TString pluginSuffixSimu = ""){
+  const double efficiencyDummy(1.);
+  
+  theEfficiency = efficiencyDummy;
+}
+
+
+
 void efficiency(TString pluginSuffixReco = "", TString pluginSuffixSimu = ""){
+  if(!allSampleStruct.signalStruct_ || !allSampleStruct.simulationStruct_){
+    std::cout<<"\tMissing input sample\n"
+             <<"\t... take dummy efficiency\n";
+    efficiencyDummy(pluginSuffixReco, pluginSuffixSimu);
+    std::cout<<"Efficiency: "<<theEfficiency<<"\n";
+    return;
+  }
+  
   const McStruct& zmumuB = *allSampleStruct.signalStruct_;
   const SimulationStruct& simulation = *allSampleStruct.simulationStruct_;
   
@@ -44,8 +61,6 @@ void efficiency(TString pluginSuffixReco = "", TString pluginSuffixSimu = ""){
   std::cout<<"Effective no. of simulated signal events: "<<nEffectiveEventsSimu<<"\n";
   std::cout<<"Efficiency: "<<theEfficiency<<"\n";
 }
-
-
 
 
 

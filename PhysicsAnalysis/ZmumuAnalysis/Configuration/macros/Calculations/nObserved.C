@@ -3,11 +3,14 @@
 #include "ZmumuAnalysis/Configuration/macros/Samples/allSampleStruct.C"
 
 #include <iostream>
+#include <cmath>
 
 
 
 double theNObserved(-1.);
 
+double theNObservedRelErr2Up(-1.);
+double theNObservedRelErr2Dw(-1.);
 
 
 void nObserved(TString pluginSuffix = ""){
@@ -24,8 +27,13 @@ void nObserved(TString pluginSuffix = ""){
   const double nEvents(events->GetEntries());
   
   theNObserved = nEvents;
+  theNObservedRelErr2Up = 1./theNObserved;
+  theNObservedRelErr2Dw = 1./theNObserved;
   
-  std::cout<<"No. observed events (candidates): "<<theNObserved<<"\n";
+  const double nObservedAbsErrUp = theNObserved*std::sqrt(theNObservedRelErr2Up);
+  const double nObservedAbsErrDw = theNObserved*std::sqrt(theNObservedRelErr2Dw);
+  
+  std::cout<<"No. observed events (candidates): "<<theNObserved<<" + "<<nObservedAbsErrUp<<" - "<<nObservedAbsErrDw<<"\n";
 }
 
 

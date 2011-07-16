@@ -3,11 +3,11 @@
 
 
 
-SimulationStruct simulationStruct("genParticle", 2329439);
+SimulationStruct simulationStruct("genParticle", 36277961);
 
 
 void simulation(AllSampleStruct& allSample){ 
-  allSample.simulationStruct_ = &simulationStruct;
+  if(simulationStruct.file_)allSample.simulationStruct_ = &simulationStruct;
 }
 
 

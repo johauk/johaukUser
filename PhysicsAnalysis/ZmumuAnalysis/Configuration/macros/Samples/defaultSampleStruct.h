@@ -26,8 +26,9 @@ struct defaultStruct{
 // For real data
 struct DataStruct : defaultStruct {
   
-  DataStruct(const std::string datasetName, const unsigned int nEvents, const double lumi):
-  datasetName_(datasetName), nEvents_(nEvents), lumi_(lumi),
+  DataStruct(const std::string datasetName, const unsigned int nEvents, const double lumi, const double lumiErrUp, const double lumiErrDw):
+  datasetName_(datasetName), nEvents_(nEvents),
+  lumi_(lumi), lumiErrUp_(lumiErrUp), lumiErrDw_(lumiErrDw),
   file_(this->openInputFile(datasetName_, this->defaultPath() + datasetName_ + ".root", nEvents_))
   {}
   
@@ -42,6 +43,8 @@ struct DataStruct : defaultStruct {
   const unsigned int nEvents_;
   // Luminosity corresponding to the maximum number of events in [pb-1]
   const double lumi_;
+  const double lumiErrUp_;
+  const double lumiErrDw_;
   
   // The root file
   TFile* file_;
@@ -54,8 +57,10 @@ struct DataStruct : defaultStruct {
 // For simulated samples on reco level
 struct McStruct : defaultStruct {
   
-  McStruct(const std::string datasetName, const unsigned int nEvents, const double crossSection, const double filterEfficiency, TColor* color):
-    datasetName_(datasetName), nEvents_(nEvents), crossSection_(crossSection), filterEfficiency_(filterEfficiency), color_(color),
+  McStruct(const std::string datasetName, const unsigned int nEvents, const double crossSection, const double crossSectionErrUp, const double crossSectionErrDw, const double filterEfficiency, TColor* color):
+    datasetName_(datasetName), nEvents_(nEvents),
+    crossSection_(crossSection), crossSectionErrUp_(crossSectionErrUp), crossSectionErrDw_(crossSectionErrDw),
+    filterEfficiency_(filterEfficiency), color_(color),
     file_(this->openInputFile(datasetName_, this->defaultPath() + datasetName_ + ".root", nEvents_))
     {}
   
@@ -70,6 +75,8 @@ struct McStruct : defaultStruct {
   const unsigned int nEvents_;
   // Assign cross section for normalisation to data lumi
   const double crossSection_;
+  const double crossSectionErrUp_;
+  const double crossSectionErrDw_;
   // If given cross section does not correspond exactly to the process, since a filter on generator level is applied
   const double filterEfficiency_;
   // Set the colour used for the the sample in the plots

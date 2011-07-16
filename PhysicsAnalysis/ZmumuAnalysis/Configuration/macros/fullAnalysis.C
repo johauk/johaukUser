@@ -26,6 +26,8 @@ gROOT->ProcessLine(".L Calculations/nObservedSideband.C++");
 gROOT->ProcessLine(".L Calculations/nBackgroundSideband.C++");
 gROOT->ProcessLine(".L Calculations/nSignalSidebandMc.C++");
 gROOT->ProcessLine(".L Calculations/crossSectionIterative.C++");
+//gROOT->ProcessLine(".L Calculations/nInOutIterative.C++");
+gROOT->ProcessLine(".L Calculations/nInOut.C++");
 
 
 
@@ -46,6 +48,7 @@ simulation(allSampleStruct);
 
 printLine("Efficiency from MC");
 efficiency(recoStep, simuStep);
+//efficiencyDummy(recoStep, simuStep);
 printLine("Luminosity");
 luminosity();
 printLine("No. of observed events");
@@ -72,6 +75,14 @@ printLine("Cross section and ttbar contribution iterative");
 crossSectionIterative(theNObserved, theNObservedSideband, theNBackgroundWoTop, theNBackgroundWoTopSideband, theRatioInOut, theNSignalSidebandMc, theEfficiency, theLuminosity, theCrossSection, theSignalSampleCrossSection);
 //crossSectionIterative(theNObserved, theNObservedSideband, theNBackgroundWoTop, theNBackgroundWoTopSideband, theRatioInOut, theNSignalSidebandMc, theEfficiency, theLuminosity, theSignalSampleCrossSection, theSignalSampleCrossSection);
 //crossSectionIterative(theNObserved, theNObservedSideband, theNBackgroundWoTop, theNBackgroundWoTopSideband, theRatioInOut, theNSignalSidebandMc, theEfficiency, theLuminosity, 0., theSignalSampleCrossSection);
+
+// New better version for ttbar background estimation, independent of efficiencies and cross sections
+printLine("ttbar and zmumu yields iterative");
+//nInOutIterative(theNObserved, theNObservedSideband, theNObservedRelErr2Up, theNObservedSidebandRelErr2Up, theRatioInOutTtbar, theRatioInOutZmumu, theRatioInOutRelErr2UpTtbar, theRatioInOutRelErr2UpZmumu, theNInMcOther, theNOutMcOther, theNOutMcZmumu);
+//nInOutIterative(theNObserved, theNObservedSideband, theNObservedRelErr2Up, theNObservedSidebandRelErr2Up, theRatioInOutTtbar, theRatioInOutZmumu, theRatioInOutRelErr2UpTtbar, theRatioInOutRelErr2UpZmumu, theNInMcOther, theNOutMcOther, 0.);
+printLine("ttbar and zmumu yields direct");
+nInOut(theNObserved, theNObservedSideband, theNObservedRelErr2Up, theNObservedSidebandRelErr2Up, theRatioInOutTtbar, theRatioInOutZmumu, theRatioInOutRelErr2UpTtbar, theRatioInOutRelErr2UpZmumu, theNInMcOther, theNOutMcOther, 0., 0.);
+
 
 
 }
