@@ -19,17 +19,18 @@ use constant C_RESUBMIT => 'magenta';
 ########################
 
 my %args;
-getopts('W:kJjp:q:o:m:t:', \%args);
+getopts('SsbW:kJjp:q:o:m:t:c:O:d:', \%args);
 
 if ($args{'p'}) {
-    peekIntoJob($args{'p'});    
+    peekIntoJob($args{'p'});
 } else {
     my ($numberOfJobs, $config) = @ARGV;
     syntax() unless $config;
+    die "Do not use '-' in filenames!\n" if $config =~ /-/;
     if ($numberOfJobs eq 'check') {
         check(@ARGV[1..$#ARGV]);
         exit;
-    } 
+    }
     submitNewJob($numberOfJobs, $config);
 }
 
@@ -46,8 +47,10 @@ nafJobSplitter.pl
 * Before submitting                                              *
 ******************************************************************
 
-Make sure that the name of the variable containing your cms.Process() 
+Make sure that the name of the variable containing your cms.Process()
 is "process". (process = cms.Process("whateverNameYouLike") )
+
+Also make sure that you output your histograms using process.TFileService.
 
 Please cd to the directory containing the config file.
 
@@ -56,50 +59,63 @@ Please cd to the directory containing the config file.
 * Submitting to the NAF batch farm                               *
 ******************************************************************
 
-The nafJobSplitter is easy to use: instead of running "cmsRun MyAna.py", 
+The nafJobSplitter is easy to use: instead of running "cmsRun MyAna.py",
 execute "nafJobSplitter.pl [parameters] NumberOfJobs MyAna.py"
 
-This will create a directory "naf_MyAna" with all files needed to submit 
+This will create a directory "naf_MyAna" with all files needed to submit
 many jobs. Then it will submit all jobs to the NAF batch system.
 
-The jobs will be split on a per file basis, i.e. if you run over 10 files, you cannot 
+The jobs will be split on a per file basis, i.e. if you run over 10 files, you cannot
 use more than 10 jobs. If you run over 3 files using 2 jobs, then one job will run
 over 2 files and one job will run over 1 file (ignoring file sizes).
 
-Available Parameters  
+Available Parameters
   -q: choose queue, h_cpu in hours
         default: -q 48
         to modify the default, use the environt variable NJS_QUEUE, e.g. "export NJS_QUEUE=12"
-  -o: output directory 
+  -o: output directory
         default: `pwd`
       Note: the output will always be stored in the current directory. If you specify
       the ouput directory, NJS will create a symlink to it. E.g. it might be useful
       to specify -o /scratch/hh/current/cms/user/$USER/njs
       Use NJS_OUTPUT environment variable to set a default
+  -d: directory or symlink suffix of dir/link where files are stored
+      e.g. njs -d xxx file.py will create naf_file_xxx/
+  -c: additional command line arguments to cmsRun (put after the .py file),
+      use for VarParsing
   -m: maximum number of events per job
         default: -1 (i.e. no limit)
   -J: Don't automatically join output files and sum up TrigReports
        If you forget to pass this parameter, touch 'naf_DIR/autojoin'
-       to enable automatic joining. Remove the autojoin file to 
+       to enable automatic joining. Remove the autojoin file to
        disable auto joining.
   -k: keep all source root files after hadd'ing them
-       touch/remove the file 'autoremove' to enable/disable the 
+       touch/remove the file 'autoremove' to enable/disable the
        feature at some later point in time
-  -W secs: waiting time in secs before submission (default: 2 secs)
+  -W: waiting time in secs before submission (default: 2 secs)
+  -O: alternative output file name = do not look for a TFileService,
+      rather copy output files with a given name (for production jobs)
+      WARNING: you need to save your file to the local temp dir, i.e.
+      ....fileName=cms.untracked.string(os.getenv('TMPDIR', '.') + '/file.root')
 
 ******************************************************************
 * What to do after submitting - if jobs crash / to monitor jobs  *
 ******************************************************************
 
-nafJobSplitter.pl [parameters] check naf_DIRECTORY [naf_DIRECTORY2 ...] 
+nafJobSplitter.pl [parameters] check naf_DIRECTORY [naf_DIRECTORY2 ...]
 
 The check command will automatically resubmit crashed jobs and/or
 put jobs in Eqw state back to qw.
 
 Available Parameters
   -j: join output root files, sum the TrigReports if all jobs are done
-       You only need this if you have used -n to submit the jobs
+       You only need this if you have used -J to submit the jobs
   -t mins: perform the check every mins minutes
+  -s show extended speed summary (for each job)
+  -S do not show the read speed summary (faster), default is to show
+     Timing-tstoragefile-read-totalMegabytes and
+     Timing-tstoragefile-read-totalMsecs
+  -b show speed summary in bytes / bytes per second
 
 To peek into running jobs, i.e. to show the current stdout:
   nafJobSplitter.pl -p jobid
@@ -115,31 +131,40 @@ sub submitNewJob {
     $config =~ s/\.py$//;
     my $shellScript = "j_${config}.sh";
 
-    createNJSDirectory("naf_$config");
-    
+    my $dir = $config;
+    if ($args{'d'}) {
+        $dir .= '_' . $args{'d'};
+    } else {
+        if (my $varparsing = $args{'c'}) {
+            $varparsing =~ s/\W/_/g;
+            $dir .= '_' . $varparsing;
+        }
+    }
+    createNJSDirectory("naf_$dir");
+
     my $cfgPy = getConfigTemplate();
     my $cfgSh = getBatchsystemTemplate();
-    
+
     for ($cfgPy, $cfgSh) {
         s/CONFIGFILE/$config/g;
         s/NUMBER_OF_JOBS/$numberOfJobs/g;
-        s/DIRECTORY/$config/g;
+        s/DIRECTORY/$dir/g;
     }
 
-    open my $JOB, '>', "naf_$config/$config.py" or die $!;
+    open my $JOB, '>', "naf_$dir/$config.py" or die $!;
     print $JOB $cfgPy;
-    
-    open my $BATCH, '>', "naf_$config/$shellScript" or die $!;
+
+    open my $BATCH, '>', "naf_$dir/$shellScript" or die $!;
     print $BATCH $cfgSh;
-    
+
     unless ($args{'J'}) {
-        open my $BATCH, '>', "naf_$config/autojoin" or die $!;
+        open my $BATCH, '>', "naf_$dir/autojoin" or die $!;
     }
     unless ($args{'k'}) {
-        open my $BATCH, '>', "naf_$config/autoremove" or die $!;
+        open my $BATCH, '>', "naf_$dir/autoremove" or die $!;
     }
-    #mkdir "naf_$config/$_" or die $! for 1..$numberOfJobs);
-    
+    #mkdir "naf_$dir/$_" or die $! for 1..$numberOfJobs);
+
     $_ = defined $args{'W'} ? $args{'W'} : 2;
     die "Invalid waiting time!\n" unless /^\d+$/ && $_>=0 && $_<1000;
     ++$_;
@@ -147,8 +172,8 @@ sub submitNewJob {
         print "Submitting in $_ seconds, press Ctrl-C to cancel\n";
         sleep 1;
     }
-    {open my $FH, '>', "naf_$config/exe" or die $!; print $FH $shellScript;}
-    die "Cannot submit job!\n" unless submitJob("naf_$config", 1, $numberOfJobs, $shellScript);
+    {open my $FH, '>', "naf_$dir/exe" or die $!; print $FH $shellScript;}
+    die "Cannot submit job!\n" unless submitJob("naf_$dir", 1, $numberOfJobs, $shellScript);
 }
 
 sub submitJob {
@@ -188,15 +213,15 @@ sub check {
             sleep $args{'t'}*60-10;
             print "Only 10 seconds left, don't cancel me once the check starts!\n";
         }
-    } while (!$alldone && defined $args{'t'});    
+    } while (!$alldone && defined $args{'t'});
 }
 
 sub checkJob {
     my ($dir, $qstat) = @_;
     my %jobs = getJobs($qstat, "$dir/jobids.txt"); #get arrayid => job-object
-    
+
     my ($NRunning, $NResubmitted, $NWaiting, $NDoneJobs, $NError) = (0) x 5;
-    
+
     while (my ($arrId, $job) = each %jobs) {
         if ($job) {
             my $state = $job->state();
@@ -226,7 +251,7 @@ sub checkJob {
         }
     }
     print "\n" if $NResubmitted || $NError;
-    printf " -->  %d%%  --  %d jobs", 100*$NDoneJobs / keys %jobs, scalar keys %jobs, 
+    printf " -->  %d%%  --  %d jobs", 100*$NDoneJobs / keys %jobs, scalar keys %jobs,
     my @N = (', %d queueing' => $NWaiting,
              ', %d running' => $NRunning,
              ', %d resubmitted' => $NResubmitted,
@@ -236,8 +261,11 @@ sub checkJob {
         my $str = shift @N; my $val = shift @N;
         printf $str, $val if $val;
     }
+    my @details;
+    @details = showFJRsummary($dir) unless $args{'S'};
     print ".\n";
-    
+    showFJRdetails(@details) if $args{'s'} && !$args{'S'};
+
     if ($NDoneJobs == keys %jobs) {
         open my $JOINED, '<', "$dir/joined.txt" or die "Cannot open joined.txt: $!\n";
         my $joined = <$JOINED>;
@@ -258,6 +286,65 @@ sub checkJob {
         } else {
             print colored(" - results have already been joined\n", C_OK);
         }
+    }
+}
+
+sub bytesToHuman {
+    my $bytes = shift;
+    return ($bytes, '') if $args{'b'};
+    my @PREFIX = ('', qw(k M G T P E Z Y));
+    my $index = 0;
+    while ($bytes >= 1000) {
+        $bytes /= 1000;
+        ++$index;
+    }
+    return ($bytes, $PREFIX[$index]);
+}
+
+sub readFJRFileWithRE {
+    my ($fileName, $sum) = @_;
+    open my $fh, '<', $fileName or die "Cannot open $fileName: $!\n";
+    my $file = do { local $/; <$fh> };
+    my %result;
+    my @files = $file =~ m!^.*/(.*\.root)</LFN>$!mg;
+    for (keys %$sum) {
+        $result{$_} = $1 if $file =~ m!^\s*<Metric Name="$_" Value="(.*?)"/>$!m;
+    }
+    return (\@files, %result);
+}
+
+sub showFJRsummary {
+    my $dir = shift;
+    my %sum;
+    #Timing-dcap-read-totalMegabytes Timing-dcap-read-totalMsecs
+    @sum{qw(Timing-tstoragefile-read-totalMegabytes Timing-tstoragefile-read-totalMsecs)} = (0) x 10;
+    my @files = glob("$dir/jobreport*.xml");
+    my @details;
+    for (@files) {
+        my ($filesRef, %perf) = readFJRFileWithRE($_, \%sum);
+        for (keys %sum) {
+            no warnings 'uninitialized'; #can be that the fjr is incomplete!!
+            $sum{$_} += $perf{$_};
+        }
+        push @details, [$filesRef,
+                        $perf{'Timing-tstoragefile-read-totalMegabytes'}*1e6,
+                        $perf{'Timing-tstoragefile-read-totalMegabytes'}*1e6 / ($perf{'Timing-tstoragefile-read-totalMsecs'}/1e3)
+                        ] if $perf{'Timing-tstoragefile-read-totalMsecs'};
+    }
+    if (@files) {
+        printf ", read %.2f %sB at %.2f %sB/s per job",
+            bytesToHuman($sum{'Timing-tstoragefile-read-totalMegabytes'}*1e6),
+            bytesToHuman($sum{'Timing-tstoragefile-read-totalMegabytes'}*1e6 / ($sum{'Timing-tstoragefile-read-totalMsecs'}/1e3));
+    }
+
+    return @details;
+}
+
+sub showFJRdetails {
+    my @details = @_;
+    for (sort {$b->[2] <=> $a->[2]} @details) {
+        printf "%.2f %sB/s (total %.2f %sB): ", bytesToHuman($_->[2]), bytesToHuman($_->[1]);
+        print "@{$_->[0]}\n";
     }
 }
 
@@ -304,6 +391,7 @@ sub peekIntoJob {
 
 sub getConfigTemplate {
     my $maxEvents = $args{'m'} || -1;
+    my $alternativeOutput = $args{'O'}?'True':'False';
     return <<END_OF_TEMPLATE;
 
 import os
@@ -321,15 +409,18 @@ process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32($maxEvents)
 )
 
-if jobNumber == 0:
+process.options.wantSummary = cms.untracked.bool(True)
+
+if jobNumber == 0 and not $alternativeOutput:
     fh = open('OUTPUTPATH/joined.txt', 'w')
     fh.write(eval(process.TFileService.fileName.pythonValue()))
     fh.close
 
 ## overwrite TFileService
-process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("OUTPUTPATH/CONFIGFILE-" + str(jobNumber + 1) + ".root")
-)
+if not $alternativeOutput:
+    process.TFileService = cms.Service("TFileService",
+        fileName = cms.string("OUTPUTPATH/CONFIGFILE-" + str(jobNumber + 1) + ".root")
+    )
 
 END_OF_TEMPLATE
 }
@@ -360,6 +451,9 @@ exec > $TMPDIR/stdout.txt 2>&1
 # change to scratch directory
 
 #fs flush
+echo "Running on host"
+hostname
+
 current=`pwd`
 
 perl -pe 's/OUTPUTPATH/$ENV{TMPDIR}/g' < $current/naf_DIRECTORY/CONFIGFILE.py > $TMPDIR/run.py
@@ -372,26 +466,32 @@ perl -pe 's/OUTPUTPATH/$ENV{TMPDIR}/g' < $current/naf_DIRECTORY/CONFIGFILE.py > 
 #     sleep $sleeptime
 # fi
 
-PYTHONDONTWRITEBYTECODE=1 cmsRun $TMPDIR/run.py
+PYTHONDONTWRITEBYTECODE=1 cmsRun -j $TMPDIR/jobreport.xml $TMPDIR/run.py CMSRUNPARAMETER
 
 if [ "$?" = "0" ] ; then
     if [ -e $TMPDIR/joined.txt ] ; then mv $TMPDIR/joined.txt $current/naf_DIRECTORY/ ; fi
-    mv $TMPDIR/CONFIGFILE-$SGE_TASK_ID.root $current/naf_DIRECTORY/
-    if [ -e $current/naf_DIRECTORY/autojoin ] ; then
-        NDone=`ls $current/naf_DIRECTORY/out*.txt | wc -l`
-        NDone=$(($NDone + 1))
-        if [ "$NDone" = "NUMBER_OF_JOBS" ] ; then
-            joined=`cat $current/naf_DIRECTORY/joined.txt`
-            hadd -f $current/naf_DIRECTORY/$joined.$SGE_TASK_ID $current/naf_DIRECTORY/CONFIGFILE-*.root
-            if [ "$?" = "0" ] ; then
-                mv -f $current/naf_DIRECTORY/$joined.$SGE_TASK_ID $current/naf_DIRECTORY/$joined
-                cp -f $TMPDIR/stdout.txt $current/naf_DIRECTORY/out$SGE_TASK_ID.txt
-                sumTriggerReports2.pl $current/naf_DIRECTORY/out*.txt > $current/naf_DIRECTORY/`basename $joined .root`.txt
-                if [ -e $current/naf_DIRECTORY/autoremove ] ; then
-                    rm -f $current/naf_DIRECTORY/CONFIGFILE-*.root
+    mv $TMPDIR/jobreport.xml $current/naf_DIRECTORY/jobreport$SGE_TASK_ID.xml
+    alternativeOutput=ALTERNATIVEOUTPUT
+    if [ -z "${alternativeOutput}" ]; then
+        mv $TMPDIR/CONFIGFILE-$SGE_TASK_ID.root $current/naf_DIRECTORY/
+        if [ -e $current/naf_DIRECTORY/autojoin ] ; then
+            NDone=`ls $current/naf_DIRECTORY/out*.txt | wc -l`
+            NDone=$(($NDone + 1))
+            if [ "$NDone" = "NUMBER_OF_JOBS" ] ; then
+                joined=`cat $current/naf_DIRECTORY/joined.txt`
+                hadd -f $current/naf_DIRECTORY/$joined.$SGE_TASK_ID $current/naf_DIRECTORY/CONFIGFILE-*.root
+                if [ "$?" = "0" ] ; then
+                    mv -f $current/naf_DIRECTORY/$joined.$SGE_TASK_ID $current/naf_DIRECTORY/$joined
+                    cp -f $TMPDIR/stdout.txt $current/naf_DIRECTORY/out$SGE_TASK_ID.txt
+                    sumTriggerReports2.pl $current/naf_DIRECTORY/out*.txt > $current/naf_DIRECTORY/`basename $joined .root`.txt
+                    if [ -e $current/naf_DIRECTORY/autoremove ] ; then
+                        rm -f $current/naf_DIRECTORY/CONFIGFILE-*.root
+                    fi
                 fi
             fi
         fi
+    else
+        mv $TMPDIR/${alternativeOutput} $current/naf_DIRECTORY/`basename ${alternativeOutput} .root`${SGE_TASK_ID}.root
     fi
     mv -f $TMPDIR/stdout.txt $current/naf_DIRECTORY/out$SGE_TASK_ID.txt
 else
@@ -399,12 +499,16 @@ else
 fi
 
 END_OF_BATCH_TEMPLATE
-    my $replace = $args{'q'} 
+    my $replace = $args{'q'}
         ? ($args{'q'} . ':00:00')
-        : $ENV{NJS_QUEUE} 
-            ? $ENV{NJS_QUEUE}.':00:00' 
+        : $ENV{NJS_QUEUE}
+            ? $ENV{NJS_QUEUE}.':00:00'
             : '48:00:00';
     $templ =~ s/__HCPU__/$replace/;
+    $args{'c'} ||= '';
+    $templ =~ s/CMSRUNPARAMETER/$args{'c'}/;
+    $args{'O'} ||= '';
+    $templ =~ s/ALTERNATIVEOUTPUT/$args{'O'}/;
     return $templ;
 }
 
@@ -424,8 +528,8 @@ sub peek {
     my $self = shift;
     die "Job is not running, cannot peek\n" unless $self->state() eq 'r';
     if ($self->queue() =~ /\@(.+)/) {
-        print "Please wait...\n";
-        my $jid = $self->id();
+        print "Please wait, this can take up to a few minutes...\n";
+        my $jid = $self->fullId();
         system("qrsh -l h_cpu=00:01:00 -l h=$1 -l h_vmem=400M -now n 'cat /tmp/$jid.*/stdout.txt'");
     } else {
         die "Didn't find hostname\n";
