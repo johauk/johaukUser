@@ -29,7 +29,7 @@ selectedPatMuonsTriggerMatchHltMuons = cms.EDProducer("PATTriggerMatcherDRDPtLes
     src     = cms.InputTag("selectedPatMuons"),
     matched = cms.InputTag("patTrigger"),
 #    matchedCuts = cms.string('type("TriggerMuon") & (path("HLT_Mu9") | path("HLT_Mu11") | path("HLT_Mu15_v*"))'),
-    matchedCuts = cms.string('type("TriggerMuon") & (path("HLT_DoubleMu5_v*") || path("HLT_DoubleMu6_v*"))'),
+    matchedCuts = cms.string('type("TriggerMuon") & (path("HLT_DoubleMu6_v*") || path("HLT_DoubleMu7_v*") || filter("hltSingleMu13L3Filtered13"))'),
     maxDPtRel = cms.double(0.5),
     maxDeltaR = cms.double(0.3),
     resolveAmbiguities    = cms.bool(True),
@@ -43,7 +43,7 @@ selectedPatMuonsTriggerMatch = cms.EDProducer("PATTriggerMatchMuonEmbedder",
 
 
 
-## Common loose selection for both muons
+## Loose selection
 looseMuons = selectedPatMuons.clone(
     src = 'selectedPatMuonsTriggerMatch',
     cut = 'isGlobalMuon &'
@@ -55,7 +55,7 @@ looseMuons = selectedPatMuons.clone(
 
 
 
-## Tight selection for at least one muon
+## Tight selection
 tightMuons = selectedPatMuons.clone(
     src = 'looseMuons',
     cut = 'isGlobalMuon &'

@@ -45,8 +45,29 @@ TriggerFilterDoubleMu6 = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clon
 )
 
 
+TriggerFilterMu13Mu8 = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone(
+    HLTPaths = [
+      "HLT_Mu13_Mu8_v*",  # For data
+    ],
+    throw = True,   # do not throw exception on events where not all listed triggers are in...
+)
+
+
+
+
+TriggerFilterDoubleMu = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone(
+    HLTPaths = [
+      "HLT_DoubleMu6_v*",  # For MC
+      "HLT_DoubleMu7_v*",  # For data
+      "HLT_Mu13_Mu8_v*",  # For data
+    ],
+    throw = False,   # do not throw exception on events where not all listed triggers are in...
+)
+
+
+
 ##
 ## Set the recent default here
 ##
-TriggerFilter = TriggerFilterDoubleMu6.clone()
+TriggerFilter = TriggerFilterDoubleMu.clone()
 
