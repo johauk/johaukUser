@@ -95,8 +95,8 @@ void nInOut(const double nObservedIn, const double nObservedOut,
   theNOutTtbarRel = theNOutTtbar/nObservedOut;
   theNOutZmumuRel = theNOutZmumu/nObservedOut;
   
-  std::cout<<"ttbar in, ttbar out, zmumu in, zmumu out (relative values): "
-           <<theNInTtbarRel<<" , "<<theNOutTtbarRel<<" , "<<theNInZmumuRel<<" , "<<theNOutZmumuRel<<"\n";
+  std::cout<<"ttbar in, ttbar out, zmumu in, zmumu out (relative values in %): "
+           <<theNInTtbarRel*100<<" , "<<theNOutTtbarRel*100<<" , "<<theNInZmumuRel*100<<" , "<<theNOutZmumuRel*100<<"\n";
   
   // Does the realtive error need additional error propagation??? At present, I don't think so
   theNInRelErr2UpTtbarRel = theNInRelErr2UpTtbar/std::pow(nObservedIn,2);
@@ -104,5 +104,5 @@ void nInOut(const double nObservedIn, const double nObservedOut,
   
   const double nInAbsErrTtbarRel(std::sqrt(theNInRelErr2UpTtbarRel)*theNInTtbar);
   
-  std::cout<<"ttbar in and statistical error (relative values): "<<theNInTtbarRel<<" +- "<<nInAbsErrTtbarRel<<"\n";
+  std::cout<<"ttbar in and statistical error (relative values in %): "<<theNInTtbarRel*100<<" +- "<<nInAbsErrTtbarRel*100<<"\n";
 }

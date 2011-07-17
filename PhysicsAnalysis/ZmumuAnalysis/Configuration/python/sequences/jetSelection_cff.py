@@ -30,7 +30,7 @@ cleanPatElectrons.preselection = 'electronID("simpleEleId85relIso")==7'
 
 ###########################################################################################
 #
-# JET COLLECTION CLEANING - CHECK FOR OVERLAPS, BUT DO NOT YET CLEAN CHOSEN ISOLATED LEPTONS OUT OF COLLECTION ?
+# JET COLLECTION CLEANING - CHECK FOR OVERLAPS, BUT DO NOT YET CLEAN CHOSEN ISOLATED LEPTONS OUT OF COLLECTION
 #
 ###########################################################################################
 
@@ -45,25 +45,15 @@ cleanPatJets.preselection = 'pt>15. & abs(eta)<2.4'
 
 ###########################################################################################
 #
-# JET COLLECTION CLEANING - CHECK FOR OVERLAPS BETWEEN 2 FINAL MUONS BUILDING THE Z AND THE JETS ???
+# JET COLLECTION CLEANING - DO NOT USE, WHEN USING JetZOverlapCleaner
 #
 ###########################################################################################
-
-
-import ZmumuAnalysis.Producer.JetZOverlapCleaner_cfi
-cleanJets = ZmumuAnalysis.Producer.JetZOverlapCleaner_cfi.JetZOverlapCleaner.clone(
-    jetSource = 'cleanPatJets',
-    dimuonSource = 'finalDimuons',
-    deltaRMin = 0.5,
-)
 
 # take care to check for isolation
 #cleanPatJets.checkOverlaps.muons.src  = 'looseMuons'
 #cleanPatJets.checkOverlaps.muons.preselection = 'trackIso < 3.'
 #cleanPatJets.checkOverlaps.muons.deltaR  = 0.4
 #cleanPatJets.checkOverlaps.muons.requireNoOverlaps = True 
-
-
 
 
 
@@ -76,8 +66,8 @@ cleanJets = ZmumuAnalysis.Producer.JetZOverlapCleaner_cfi.JetZOverlapCleaner.clo
 
 ## good jet ID selection
 # Either do it by hand (then, for the UN-COREECTED jets!!!)
-#goodJets = selectedPatJets.clone(
-#    src = 'cleanJets', 
+#goodIdJets = selectedPatJets.clone(
+#    src = 'cleanPatJets', 
 #    # Definition of LOOSE PFjet id
 #    # Selection needs to be done on uncorrected jets
 #    cut = 'correctedJet("Uncorrected").neutralHadronEnergyFraction < 0.99'
@@ -91,8 +81,8 @@ cleanJets = ZmumuAnalysis.Producer.JetZOverlapCleaner_cfi.JetZOverlapCleaner.clo
 
 # Or use the JetIDSelectionFunctor
 #from ZmumuAnalysis.Producer.JetIdFunctorSelector_cfi import *
-#goodJets = JetIdFunctorSelector.clone(
-#    jetSource = 'cleanJets',
+#goodIdJets = JetIdFunctorSelector.clone(
+#    jetSource = 'cleanPatJets',
 #    jetType = 'PF',
 #    version = 'FIRSTDATA',
 #    quality = 'LOOSE',
@@ -102,11 +92,23 @@ cleanJets = ZmumuAnalysis.Producer.JetZOverlapCleaner_cfi.JetZOverlapCleaner.clo
 from PhysicsTools.SelectorUtils.pfJetIDSelector_cfi import pfJetIDSelector
 pfJetIDSelector.version = 'FIRSTDATA'
 pfJetIDSelector.quality = 'LOOSE'
-goodJets = cms.EDFilter("PFJetIDSelectionFunctorFilter",
+goodIdJets = cms.EDFilter("PFJetIDSelectionFunctorFilter",
     filterParams = pfJetIDSelector.clone(),
-    src = cms.InputTag('cleanJets'),
+    src = cms.InputTag('cleanPatJets'),
     filter = cms.bool(False)
 )
+
+
+
+## Check for overlaps between (2 muons building) Z and jets
+import ZmumuAnalysis.Producer.JetZOverlapCleaner_cfi
+goodJets = ZmumuAnalysis.Producer.JetZOverlapCleaner_cfi.JetZOverlapCleaner.clone(
+    jetSource = 'goodIdJets',
+    dimuonSource = 'finalDimuons',
+    deltaRMin = 0.5,
+)
+goodJetsZVetoLow = goodJets.clone(dimuonSource = 'finalDimuonsZVetoLow',)
+goodJetsZVetoHigh = goodJets.clone(dimuonSource = 'finalDimuonsZVetoHigh',)
 
 
 
@@ -116,6 +118,9 @@ finalJets = selectedPatJets.clone(
     cut = 'abs(eta) < 2.1 &'
           'pt > 25.',
 )
+finalJetsZVetoLow = finalJets.clone(src = 'goodJetsZVetoLow',)
+finalJetsZVetoHigh = finalJets.clone(src = 'goodJetsZVetoHigh',)
+
 
 
 ## b-tagging TrackCountingHighEfficiency with Medium Working point
@@ -138,7 +143,14 @@ bSsvHpTJets = selectedPatJets.clone(
     src = 'finalJets',
     cut = 'bDiscriminator("simpleSecondaryVertexHighPurBJetTags") > 2.0',
 )
-
+bTcHeMJetsZVetoLow = bTcHeMJets.clone(src = 'finalJetsZVetoLow',)
+bTcHpTJetsZVetoLow = bTcHpTJets.clone(src = 'finalJetsZVetoLow',)
+bSsvHeMJetsZVetoLow = bSsvHeMJets.clone(src = 'finalJetsZVetoLow',)
+bSsvHpTJetsZVetoLow = bSsvHpTJets.clone(src = 'finalJetsZVetoLow',)
+bTcHeMJetsZVetoHigh = bTcHeMJets.clone(src = 'finalJetsZVetoHigh',)
+bTcHpTJetsZVetoHigh = bTcHpTJets.clone(src = 'finalJetsZVetoHigh',)
+bSsvHeMJetsZVetoHigh = bSsvHeMJets.clone(src = 'finalJetsZVetoHigh',)
+bSsvHpTJetsZVetoHigh = bSsvHpTJets.clone(src = 'finalJetsZVetoHigh',)
 
 
 
@@ -147,7 +159,7 @@ bSsvHpTJets = selectedPatJets.clone(
 ##
 
 oneCleanPatJetSelection = countPatJets.clone(src = 'cleanPatJets', minNumber = 1)
-oneCleanJetSelection = countPatJets.clone(src = 'cleanJets', minNumber = 1)
+oneGoodIdJetSelection = countPatJets.clone(src = 'goodIdJets', minNumber = 1)
 oneGoodJetSelection = countPatJets.clone(src = 'goodJets', minNumber = 1)
 oneFinalJetSelection = countPatJets.clone(src = 'finalJets', minNumber = 1)
 oneBTcHeMJetSelection = countPatJets.clone(src = 'bTcHeMJets', minNumber = 1)
@@ -160,6 +172,34 @@ twoBTcHeMJetSelection = oneBTcHeMJetSelection.clone(minNumber = 2)
 twoBTcHpTJetSelection = oneBTcHpTJetSelection.clone(minNumber = 2)
 twoBSsvHeMJetSelection = oneBSsvHeMJetSelection.clone(minNumber = 2)
 twoBSsvHpTJetSelection = oneBSsvHpTJetSelection.clone(minNumber = 2)
+
+
+oneGoodJetZVetoLowSelection = countPatJets.clone(src = 'goodJetsZVetoLow', minNumber = 1)
+oneFinalJetZVetoLowSelection = countPatJets.clone(src = 'finalJetsZVetoLow', minNumber = 1)
+oneBTcHeMJetZVetoLowSelection = countPatJets.clone(src = 'bTcHeMJetsZVetoLow', minNumber = 1)
+oneBTcHpTJetZVetoLowSelection = countPatJets.clone(src = 'bTcHpTJetsZVetoLow', minNumber = 1)
+oneBSsvHeMJetZVetoLowSelection = countPatJets.clone(src = 'bSsvHeMJetsZVetoLow', minNumber = 1)
+oneBSsvHpTJetZVetoLowSelection = countPatJets.clone(src = 'bSsvHpTJetsZVetoLow', minNumber = 1)
+
+twoFinalJetZVetoLowSelection = oneFinalJetZVetoLowSelection.clone(minNumber = 2)
+twoBTcHeMJetZVetoLowSelection = oneBTcHeMJetZVetoLowSelection.clone(minNumber = 2)
+twoBTcHpTJetZVetoLowSelection = oneBTcHpTJetZVetoLowSelection.clone(minNumber = 2)
+twoBSsvHeMJetZVetoLowSelection = oneBSsvHeMJetZVetoLowSelection.clone(minNumber = 2)
+twoBSsvHpTJetZVetoLowSelection = oneBSsvHpTJetZVetoLowSelection.clone(minNumber = 2)
+
+
+oneGoodJetZVetoHighSelection = countPatJets.clone(src = 'goodJetsZVetoHigh', minNumber = 1)
+oneFinalJetZVetoHighSelection = countPatJets.clone(src = 'finalJetsZVetoHigh', minNumber = 1)
+oneBTcHeMJetZVetoHighSelection = countPatJets.clone(src = 'bTcHeMJetsZVetoHigh', minNumber = 1)
+oneBTcHpTJetZVetoHighSelection = countPatJets.clone(src = 'bTcHpTJetsZVetoHigh', minNumber = 1)
+oneBSsvHeMJetZVetoHighSelection = countPatJets.clone(src = 'bSsvHeMJetsZVetoHigh', minNumber = 1)
+oneBSsvHpTJetZVetoHighSelection = countPatJets.clone(src = 'bSsvHpTJetsZVetoHigh', minNumber = 1)
+
+twoFinalJetZVetoHighSelection = oneFinalJetZVetoHighSelection.clone(minNumber = 2)
+twoBTcHeMJetZVetoHighSelection = oneBTcHeMJetZVetoHighSelection.clone(minNumber = 2)
+twoBTcHpTJetZVetoHighSelection = oneBTcHpTJetZVetoHighSelection.clone(minNumber = 2)
+twoBSsvHeMJetZVetoHighSelection = oneBSsvHeMJetZVetoHighSelection.clone(minNumber = 2)
+twoBSsvHpTJetZVetoHighSelection = oneBSsvHpTJetZVetoHighSelection.clone(minNumber = 2)
 
 
 
@@ -177,7 +217,7 @@ applyJetCleaning = cms.Sequence(
 
 buildJetCollections = cms.Sequence(
     applyJetCleaning
-    *cleanJets
+    *goodIdJets
     *goodJets
     *finalJets
     
@@ -188,9 +228,36 @@ buildJetCollections = cms.Sequence(
 )
 
 
+buildJetZVetoLowCollections = cms.Sequence(
+    applyJetCleaning
+    *goodIdJets
+    *goodJetsZVetoLow
+    *finalJetsZVetoLow
+    
+    #*bTcHeMJetsZVetoLow
+    #*bTcHpTJetsZVetoLow
+    *bSsvHeMJetsZVetoLow
+    *bSsvHpTJetsZVetoLow
+)
+
+
+buildJetZVetoHighCollections = cms.Sequence(
+    applyJetCleaning
+    *goodIdJets
+    *goodJetsZVetoHigh
+    *finalJetsZVetoHigh
+    
+    #*bTcHeMJetsZVetoHigh
+    #*bTcHpTJetsZVetoHigh
+    *bSsvHeMJetsZVetoHigh
+    *bSsvHpTJetsZVetoHigh
+)
+
+
+
 oneJetSelection = cms.Sequence(
     oneCleanPatJetSelection
-    *oneCleanJetSelection
+    *oneGoodIdJetSelection
     *oneGoodJetSelection
     *oneFinalJetSelection
     
@@ -198,6 +265,32 @@ oneJetSelection = cms.Sequence(
     #*oneBTcHpTJetSelection 
     *oneBSsvHeMJetSelection
     #*oneBSsvHpTJetSelection
+)
+
+
+oneJetZVetoLowSelection = cms.Sequence(
+    oneCleanPatJetSelection
+    *oneGoodIdJetSelection
+    *oneGoodJetZVetoLowSelection
+    *oneFinalJetZVetoLowSelection
+    
+    #*oneBTcHeMJetZVetoLowSelection 
+    #*oneBTcHpTJetZVetoLowSelection 
+    *oneBSsvHeMJetZVetoLowSelection
+    #*oneBSsvHpTJetZVetoLowSelection
+)
+
+
+oneJetZVetoHighSelection = cms.Sequence(
+    oneCleanPatJetSelection
+    *oneGoodIdJetSelection
+    *oneGoodJetZVetoHighSelection
+    *oneFinalJetZVetoHighSelection
+    
+    #*oneBTcHeMJetZVetoHighSelection 
+    #*oneBTcHpTJetZVetoHighSelection 
+    *oneBSsvHeMJetZVetoHighSelection
+    #*oneBSsvHpTJetZVetoHighSelection
 )
 
 
