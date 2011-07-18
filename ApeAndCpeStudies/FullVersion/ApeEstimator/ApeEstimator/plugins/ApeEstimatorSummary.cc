@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,6 2-039,+41227673512,
 //         Created:  Mon Oct 11 13:44:03 CEST 2010
-// $Id: ApeEstimatorSummary.cc,v 1.8 2011/06/07 19:49:56 hauk Exp $
+// $Id: ApeEstimatorSummary.cc,v 1.9 2011/06/22 16:08:49 hauk Exp $
 //
 //
 
@@ -78,12 +78,6 @@ class ApeEstimatorSummary : public edm::EDAnalyzer {
       TFile* inputFile_;
       
       std::map<unsigned int, TrackerSectorStruct> m_tkSector_;
-      
-      
-      TH1 *MeanX, *RmsX,
-          *FitMeanX1, *ResidualWidthX1, *CorrectionX1,
-          *FitMeanX2, *ResidualWidthX2, *CorrectionX2;
-      
 };
 
 //
@@ -138,7 +132,7 @@ ApeEstimatorSummary::openInputFile(){
 
 void
 ApeEstimatorSummary::getTrackerSectorStructs(){
-  // At present first of the plugins registered in TFileService needs to be the one containing the normalized residual histos per sector   per error bin
+  // At present first of the plugins registered in TFileService needs to be the one containing the normalized residual histos per sector per error bin
   TString pluginName(inputFile_->GetListOfKeys()->At(0)->GetName());
   //std::cout<<"\n\tPlugin Name "<<pluginName<<"\n\n";
   
@@ -171,6 +165,12 @@ ApeEstimatorSummary::getTrackerSectorStructs(){
 	  //std::cout<<"\n\tTEST2 Interval"<<iInterval<<" "<<tkSector.m_binnedHists[iInterval]["sigmaX"]<<" "<<tkSector.m_binnedHists[iInterval]["norResX"]<<"\n";
 	  //std::cout<<"\n\tSigmaX: "<<tkSector.m_binnedHists[iInterval]["sigmaX"]->GetMean()<<" "<<tkSector.m_binnedHists[iInterval]["sigmaX"]->GetRMS()<<"\n";
 	  //std::cout<<"\tNorResX: "<<tkSector.m_binnedHists[iInterval]["norResX"]->GetMean()<<" "<<tkSector.m_binnedHists[iInterval]["norResX"]->GetRMS()<<"\n";
+	  intervalDir->GetObject("h_sigmaY;1", tkSector.m_binnedHists[iInterval]["sigmaY"]);
+	  intervalDir->GetObject("h_norResY;1", tkSector.m_binnedHists[iInterval]["norResY"]);
+	  if(tkSector.m_binnedHists[iInterval]["sigmaY"] && tkSector.m_binnedHists[iInterval]["norResY"]){
+	    tkSector.isPixel = true;
+	    //std::cout<<"\n\tSector "<<iSector<<" is Pixel\n";
+	  }
 	}
 	else{
 	  intervalBool = false;
@@ -183,9 +183,10 @@ ApeEstimatorSummary::getTrackerSectorStructs(){
       fullName = fullResultName.str().c_str();
       resultsDir = (TDirectory*)inputFile_->TDirectory::GetDirectory(fullName);
       if(resultsDir){
-        resultsDir->GetObject("h_entries;1", tkSector.Entries);
+        resultsDir->GetObject("h_entriesX;1", tkSector.EntriesX);
 	//std::cout<<"\n\tTest Results "<<tkSector.Entries<<"\n";
 	//std::cout<<"\n\tEntries "<<tkSector.Entries->GetMean()<<" "<<tkSector.Entries->GetRMS()<<"\n";
+	if(tkSector.isPixel)resultsDir->GetObject("h_entriesY;1", tkSector.EntriesY);
 	TTree* rawIdTree(0);
 	resultsDir->GetObject("rawIdTree", rawIdTree);
 	//std::cout<<"\n\tTest RawId "<<rawIdTree<<"\n";
@@ -226,6 +227,17 @@ ApeEstimatorSummary::bookHists(){
     (*i_sector).second.FitMeanX2       = new TH1F("h_fitMeanX2","fitted residual mean #mu_{x};#sigma_{x}  [cm];#mu_{x}",v_binX.size()-1,&(v_binX[0]));
     (*i_sector).second.ResidualWidthX2 = new TH1F("h_residualWidthX2","residual width #Delta_{x};#sigma_{x}  [cm];#Delta_{x}",v_binX.size()-1,&(v_binX[0]));
     (*i_sector).second.CorrectionX2    = new TH1F("h_correctionX2","correction to APE_{x};#sigma_{x}  [cm];#DeltaAPE_{x}",v_binX.size()-1,&(v_binX[0]));
+  
+    if((*i_sector).second.isPixel){
+      (*i_sector).second.MeanY           = new TH1F("h_meanY","residual mean <r_{y}/#sigma_{y}>;#sigma_{y}  [cm];<r_{y}/#sigma_{y}>",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.RmsY            = new TH1F("h_rmsY","residual rms RMS(r_{y}/#sigma_{y});#sigma_{y}  [cm];RMS(r_{y}/#sigma_{y})",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.FitMeanY1       = new TH1F("h_fitMeanY1","fitted residual mean #mu_{y};#sigma_{y}  [cm];#mu_{y}",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.ResidualWidthY1 = new TH1F("h_residualWidthY1","residual width #Delta_{y};#sigma_{y}  [cm];#Delta_{y}",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.CorrectionY1    = new TH1F("h_correctionY1","correction to APE_{y};#sigma_{y}  [cm];#DeltaAPE_{y}",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.FitMeanY2       = new TH1F("h_fitMeanY2","fitted residual mean #mu_{y};#sigma_{y}  [cm];#mu_{y}",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.ResidualWidthY2 = new TH1F("h_residualWidthY2","residual width #Delta_{y};#sigma_{y}  [cm];#Delta_{y}",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.CorrectionY2    = new TH1F("h_correctionY2","correction to APE_{y};#sigma_{y}  [cm];#DeltaAPE_{y}",v_binX.size()-1,&(v_binX[0]));
+    }
   }
 }
 
@@ -234,10 +246,10 @@ ApeEstimatorSummary::bookHists(){
 std::vector<double>
 ApeEstimatorSummary::residualErrorBinning(){
   std::vector<double> v_binX;
-  TH1* Entries(m_tkSector_[1].Entries);
-  for(int iBin=1; iBin<=Entries->GetNbinsX()+1; ++iBin){
-    //std::cout<<"\n\tLower bin edge of bin"<<iBin<<" "<<Entries->GetBinLowEdge(iBin)<<"\n";
-    v_binX.push_back(Entries->GetBinLowEdge(iBin));
+  TH1* EntriesX(m_tkSector_[1].EntriesX);
+  for(int iBin=1; iBin<=EntriesX->GetNbinsX()+1; ++iBin){
+    //std::cout<<"\n\tLower bin edge of bin"<<iBin<<" "<<EntriesX->GetBinLowEdge(iBin)<<"\n";
+    v_binX.push_back(EntriesX->GetBinLowEdge(iBin));
   }
   return v_binX;
 }
@@ -257,6 +269,7 @@ ApeEstimatorSummary::writeHists(){
     dir->cd();
     
     (*i_sector).second.Name->Write();
+    
     (*i_sector).second.MeanX->Write();
     (*i_sector).second.RmsX->Write();	   
     (*i_sector).second.FitMeanX1->Write();	   
@@ -264,7 +277,18 @@ ApeEstimatorSummary::writeHists(){
     (*i_sector).second.CorrectionX1->Write();   
     (*i_sector).second.FitMeanX2->Write();	   
     (*i_sector).second.ResidualWidthX2->Write();
-    (*i_sector).second.CorrectionX2->Write();  
+    (*i_sector).second.CorrectionX2->Write();
+    
+    if((*i_sector).second.isPixel){
+      (*i_sector).second.MeanY->Write();
+      (*i_sector).second.RmsY->Write();	   
+      (*i_sector).second.FitMeanY1->Write();	   
+      (*i_sector).second.ResidualWidthY1 ->Write();
+      (*i_sector).second.CorrectionY1->Write();   
+      (*i_sector).second.FitMeanY2->Write();	   
+      (*i_sector).second.ResidualWidthY2->Write();
+      (*i_sector).second.CorrectionY2->Write();
+    }
   }
   //resultsFile->Write();
   resultsFile->Close();
@@ -277,11 +301,13 @@ void
 ApeEstimatorSummary::calculateApe(){
    // Set baseline or calculate APE value?
    const bool setBaseline(parameterSet_.getParameter<bool>("setBaseline"));
+   
    // Read in baseline file for calculation of APE value (if not setting baseline)
    // Has same format as iterationFile
    const std::string baselineFileName(parameterSet_.getParameter<std::string>("BaselineFile"));
    TFile* baselineFile(0);
-   TTree* baselineTree(0);
+   TTree* baselineTreeX(0);
+   TTree* baselineTreeY(0);
    TTree* sectorNameBaselineTree(0);
    if(!setBaseline){
      ifstream baselineFileStream;
@@ -293,13 +319,15 @@ ApeEstimatorSummary::calculateApe(){
      }
      if(baselineFile){
        edm::LogInfo("CalculateAPE")<<"Baseline file for APE values sucessfully opened";
-       baselineFile->GetObject("iterTree;1",baselineTree);
+       baselineFile->GetObject("iterTreeX;1",baselineTreeX);
+       baselineFile->GetObject("iterTreeY;1",baselineTreeY);
        baselineFile->GetObject("nameTree;1",sectorNameBaselineTree);
      }
      else{
        edm::LogWarning("CalculateAPE")<<"There is NO baseline file for APE values, so normalized residual width =1 for ideal conditions is assumed";
      }
    }
+   
    // Set up root file for iterations on APE value (or for setting baseline in setBaseline mode)
    const std::string iterationFileName(setBaseline ? baselineFileName : parameterSet_.getParameter<std::string>("IterationFile"));
    // For iterations, updates are needed to not overwrite the iterations before
@@ -307,62 +335,76 @@ ApeEstimatorSummary::calculateApe(){
    
    
    // Set up TTree for iterative APE values on first pass (first iteration) or read from file (further iterations)
-   TTree* iterationTree(0);
-   iterationFile->GetObject("iterTree;1",iterationTree);
+   TTree* iterationTreeX(0);
+   TTree* iterationTreeY(0);
+   iterationFile->GetObject("iterTreeX;1",iterationTreeX);
+   iterationFile->GetObject("iterTreeY;1",iterationTreeY);
    // The same for TTree containing the names of the sectors (no additional check, since always handled exactly as iterationTree)
    TTree* sectorNameTree(0);
    iterationFile->GetObject("nameTree;1",sectorNameTree);
    
    bool firstIter(false);
-   if(!iterationTree){ // should be always true in setBaseline mode, since file is recreated
+   if(!iterationTreeX){ // should be always true in setBaseline mode, since file is recreated
      firstIter = true;
      if(!setBaseline){
-       iterationTree = new TTree("iterTree","Tree for APE values of all iterations");
+       iterationTreeX = new TTree("iterTreeX","Tree for APE x values of all iterations");
+       iterationTreeY = new TTree("iterTreeY","Tree for APE y values of all iterations");
        edm::LogInfo("CalculateAPE")<<"First APE iteration (number 0.), create iteration file with TTree";
        sectorNameTree = new TTree("nameTree","Tree with names of sectors");
      }
      else{
-       iterationTree = new TTree("iterTree","Tree for baseline values of normalized residual width");
+       iterationTreeX = new TTree("iterTreeX","Tree for baseline x values of normalized residual width");
+       iterationTreeY = new TTree("iterTreeY","Tree for baseline y values of normalized residual width");
        edm::LogInfo("CalculateAPE")<<"Set baseline, create baseline file with TTree";
        sectorNameTree = new TTree("nameTree","Tree with names of sectors");
      }
    }
    else{
-     const unsigned int iteration(iterationTree->GetEntries());
+     const unsigned int iteration(iterationTreeX->GetEntries());
      edm::LogWarning("CalculateAPE")<<"NOT the first APE iteration (number 0.) but the "<<iteration<<". one, is this wanted or forgot to delete old iteration file with TTree?";
    }
    
    
    // Assign the information stored in the trees to arrays
-   double a_apeSector[16589];
-   double a_baselineSector[16589];
+   double a_apeSectorX[16589];
+   double a_apeSectorY[16589];
+   double a_baselineSectorX[16589];
+   double a_baselineSectorY[16589];
    std::string* a_sectorName[16589];
    std::string* a_sectorBaselineName[16589];
    for(size_t i_sector = 1; i_sector <= m_tkSector_.size(); ++i_sector){
-     a_apeSector[i_sector] = 99.;
-     a_baselineSector[i_sector] = -99.;
+     a_apeSectorX[i_sector] = 99.;
+     a_apeSectorY[i_sector] = 99.;
+     a_baselineSectorX[i_sector] = -99.;
+     a_baselineSectorY[i_sector] = -99.;
      a_sectorName[i_sector] = 0;
      a_sectorBaselineName[i_sector] = 0;
      std::stringstream ss_sector, ss_sectorSuffixed;
      ss_sector << "Ape_Sector_" << i_sector;
-     if(!setBaseline && baselineTree){
-       baselineTree->SetBranchAddress(ss_sector.str().c_str(), &a_baselineSector[i_sector]);
-       baselineTree->GetEntry(0);
+     if(!setBaseline && baselineTreeX){
+       baselineTreeX->SetBranchAddress(ss_sector.str().c_str(), &a_baselineSectorX[i_sector]);
+       baselineTreeX->GetEntry(0);
+       baselineTreeY->SetBranchAddress(ss_sector.str().c_str(), &a_baselineSectorY[i_sector]);
+       baselineTreeY->GetEntry(0);
        sectorNameBaselineTree->SetBranchAddress(ss_sector.str().c_str(), &a_sectorBaselineName[i_sector]);
        sectorNameBaselineTree->GetEntry(0);
      }
      else{
        // Set default ideal normalized residual width to 1
-       a_baselineSector[i_sector] = 1.;
+       a_baselineSectorX[i_sector] = 1.;
+       a_baselineSectorY[i_sector] = 1.;
      }
      if(firstIter){ // should be always true in setBaseline mode, since file is recreated  
        ss_sectorSuffixed << ss_sector.str() << "/D";
-       iterationTree->Branch(ss_sector.str().c_str(), &a_apeSector[i_sector], ss_sectorSuffixed.str().c_str());
+       iterationTreeX->Branch(ss_sector.str().c_str(), &a_apeSectorX[i_sector], ss_sectorSuffixed.str().c_str());
+       iterationTreeY->Branch(ss_sector.str().c_str(), &a_apeSectorY[i_sector], ss_sectorSuffixed.str().c_str());
        sectorNameTree->Branch(ss_sector.str().c_str(), &a_sectorName[i_sector], 32000, 00);
      }
      else{
-       iterationTree->SetBranchAddress(ss_sector.str().c_str(), &a_apeSector[i_sector]);
-       iterationTree->GetEntry(iterationTree->GetEntries()-1);
+       iterationTreeX->SetBranchAddress(ss_sector.str().c_str(), &a_apeSectorX[i_sector]);
+       iterationTreeX->GetEntry(iterationTreeX->GetEntries()-1);
+       iterationTreeY->SetBranchAddress(ss_sector.str().c_str(), &a_apeSectorY[i_sector]);
+       iterationTreeY->GetEntry(iterationTreeY->GetEntries()-1);
        sectorNameTree->SetBranchAddress(ss_sector.str().c_str(), &a_sectorName[i_sector]);
        sectorNameTree->GetEntry(0);
      }
@@ -436,12 +478,14 @@ ApeEstimatorSummary::calculateApe(){
    }
    for(std::map<unsigned int,TrackerSectorStruct>::iterator i_sector = m_tkSector_.begin(); i_sector != m_tkSector_.end(); ++i_sector){
      
-     typedef std::pair<double,double> ErrorX2AndResidualWidthX2PerBin;
-     typedef std::pair<double,ErrorX2AndResidualWidthX2PerBin> WeightAndResultsPerBin;
-     std::vector<WeightAndResultsPerBin> v_weightAndResultsPerBin;
+     typedef std::pair<double,double> Error2AndResidualWidth2PerBin;
+     typedef std::pair<double,Error2AndResidualWidth2PerBin> WeightAndResultsPerBin;
+     std::vector<WeightAndResultsPerBin> v_weightAndResultsPerBinX;
+     std::vector<WeightAndResultsPerBin> v_weightAndResultsPerBinY;
      
      
-     double baselineWidthX2(a_baselineSector[(*i_sector).first]);
+     double baselineWidthX2(a_baselineSectorX[(*i_sector).first]);
+     double baselineWidthY2(a_baselineSectorY[(*i_sector).first]);
      
      
      // Loop over residual error bins to calculate APE for every bin
@@ -449,139 +493,283 @@ ApeEstimatorSummary::calculateApe(){
          i_errBins != (*i_sector).second.m_binnedHists.end(); ++i_errBins){
        std::map<std::string,TH1*> mHists = (*i_errBins).second;
        
-       double entries = mHists["sigmaX"]->GetEntries();
+       double entriesX = mHists["sigmaX"]->GetEntries();
        double meanSigmaX = mHists["sigmaX"]->GetMean();
-       //double meanSigmaX = (*i_sector).second.Entries->GetBinCenter((*i_errBins).first);
+       //double meanSigmaX = (*i_sector).second.EntriesX->GetBinCenter((*i_errBins).first);
        //std::cout<<"\n\tMean1 "<<meanSigmaX<<"\n";
-       //std::cout<<"\n\tMean2 "<<(*i_sector).second.Entries->GetBinCenter((*i_errBins).first)<<"\n";
+       //std::cout<<"\n\tMean2 "<<(*i_sector).second.EntriesX->GetBinCenter((*i_errBins).first)<<"\n";
+       
        
        // Fitting Parameters
-       double xMin     = mHists["norResX"]->GetXaxis()->GetXmin(),
-              xMax     = mHists["norResX"]->GetXaxis()->GetXmax(),
-	      integral = mHists["norResX"]->Integral(),
-	      mean     = mHists["norResX"]->GetMean(),
-	      rms      = mHists["norResX"]->GetRMS(),
-	      maximum  = mHists["norResX"]->GetBinContent(mHists["norResX"]->GetMaximumBin());
+       double xMin      = mHists["norResX"]->GetXaxis()->GetXmin();
+       double xMax      = mHists["norResX"]->GetXaxis()->GetXmax();
+       double integralX = mHists["norResX"]->Integral();
+       double meanX     = mHists["norResX"]->GetMean();
+       double rmsX      = mHists["norResX"]->GetRMS();
+       double maximumX  = mHists["norResX"]->GetBinContent(mHists["norResX"]->GetMaximumBin());
        
        
        // First Gaus Fit
-       TF1 func_1("mygaus", "gaus", xMin, xMax);
-       func_1.SetParameters(maximum, mean, rms);
+       TF1 funcX_1("mygausX", "gaus", xMin, xMax);
+       funcX_1.SetParameters(maximumX, meanX, rmsX);
        TString fitOpt("ILERQ"); //TString fitOpt("IMR"); ("IRLL"); ("IRQ");
-       Int_t fitResult(0);
-       if(integral>1000.){
-         if(mHists["norResX"]->Fit(&func_1, fitOpt)){
-           edm::LogWarning("CalculateAPE")<<"Fit1 did not work: "<<mHists["norResX"]->Fit(&func_1, fitOpt);
+       Int_t fitResultX(0);
+       if(integralX>1000.){
+         if(mHists["norResX"]->Fit(&funcX_1, fitOpt)){
+           edm::LogWarning("CalculateAPE")<<"Fit1 did not work: "<<mHists["norResX"]->Fit(&funcX_1, fitOpt);
            continue;
          }
-         fitResult = mHists["norResX"]->Fit(&func_1, fitOpt);
-         //std::cout<<"FitResult1\t"<<fitResult<<"\n";
+         fitResultX = mHists["norResX"]->Fit(&funcX_1, fitOpt);
+         //std::cout<<"FitResult1\t"<<fitResultX<<"\n";
        }
-       Double_t mean_1  = func_1.GetParameter(1);
-       Double_t sigma_1 = func_1.GetParameter(2);
+       Double_t meanX_1  = funcX_1.GetParameter(1);
+       Double_t sigmaX_1 = funcX_1.GetParameter(2);
        
        
        // Second gaus fit
-       TF1 func_2("mygaus2","gaus",mean_1 - sigmaFactorFit * TMath::Abs(sigma_1),mean_1 + sigmaFactorFit * TMath::Abs(sigma_1));
-       func_2.SetParameters(func_1.GetParameter(0),mean_1,sigma_1);
-       if(integral>1000.){
-         if(mHists["norResX"]->Fit(&func_2, fitOpt)){
-           edm::LogWarning("CalculateAPE")<<"Fit2 did not work: "<<mHists["norResX"]->Fit(&func_2, fitOpt);
+       TF1 funcX_2("mygausX2","gaus",meanX_1 - sigmaFactorFit*TMath::Abs(sigmaX_1), meanX_1 + sigmaFactorFit*TMath::Abs(sigmaX_1));
+       funcX_2.SetParameters(funcX_1.GetParameter(0),meanX_1,sigmaX_1);
+       if(integralX>1000.){
+         if(mHists["norResX"]->Fit(&funcX_2, fitOpt)){
+           edm::LogWarning("CalculateAPE")<<"Fit2 did not work: "<<mHists["norResX"]->Fit(&funcX_2, fitOpt);
 	   continue;
          }
-         fitResult = mHists["norResX"]->Fit(&func_2, fitOpt);
+         fitResultX = mHists["norResX"]->Fit(&funcX_2, fitOpt);
        }
-       Double_t mean_2  = func_2.GetParameter(1);
-       Double_t sigma_2 = func_2.GetParameter(2);
-       //std::cout<<"\n\tTest "<<integral<<" "<<mean<<" "<<rms<<" "<<mean_1<<" "<<sigma_1<<" "<<mean_2<<" "<<sigma_2<<"\n";
+       Double_t meanX_2  = funcX_2.GetParameter(1);
+       Double_t sigmaX_2 = funcX_2.GetParameter(2);
+       //std::cout<<"\n\tTest "<<integralX<<" "<<meanX<<" "<<rmsX<<" "<<meanX_1<<" "<<sigmaX_1<<" "<<meanX_2<<" "<<sigmaX_2<<"\n";
+       
+       
+       // Now the same for y coordinate
+       double entriesY(0.);
+       double meanSigmaY(0.);
+       if((*i_sector).second.isPixel){
+         entriesY = mHists["sigmaY"]->GetEntries();
+         meanSigmaY = mHists["sigmaY"]->GetMean();
+       }
+       
+       Double_t meanY_1(0.);
+       Double_t sigmaY_1(0.);
+       Double_t meanY_2(0.);
+       Double_t sigmaY_2(0.);
+       double meanY(0.);
+       double rmsY(0.);
+       if((*i_sector).second.isPixel){
+         // Fitting Parameters
+         double yMin = mHists["norResY"]->GetXaxis()->GetXmin();
+         double yMax = mHists["norResY"]->GetXaxis()->GetXmax();
+         double integralY = mHists["norResY"]->Integral();
+         meanY = mHists["norResY"]->GetMean();
+         rmsY = mHists["norResY"]->GetRMS();
+         double maximumY = mHists["norResY"]->GetBinContent(mHists["norResY"]->GetMaximumBin());
+	 
+	 // First Gaus Fit
+         TF1 funcY_1("mygausY", "gaus", yMin, yMax);
+         funcY_1.SetParameters(maximumY, meanY, rmsY);
+         Int_t fitResultY(0);
+         if(integralY>1000.){
+           if(mHists["norResY"]->Fit(&funcY_1, fitOpt)){
+             edm::LogWarning("CalculateAPE")<<"Fit1 did not work: "<<mHists["norResY"]->Fit(&funcY_1, fitOpt);
+             continue;
+           }
+           fitResultY = mHists["norResY"]->Fit(&funcY_1, fitOpt);
+         }
+         meanY_1  = funcY_1.GetParameter(1);
+	 sigmaY_1 = funcY_1.GetParameter(2);
+	 
+	 // Second gaus fit
+         TF1 funcY_2("mygausY2","gaus",meanY_1 - sigmaFactorFit*TMath::Abs(sigmaY_1), meanY_1 + sigmaFactorFit*TMath::Abs(sigmaY_1));
+         funcY_2.SetParameters(funcY_1.GetParameter(0),meanY_1,sigmaY_1);
+         if(integralY>1000.){
+           if(mHists["norResY"]->Fit(&funcY_2, fitOpt)){
+             edm::LogWarning("CalculateAPE")<<"Fit2 did not work: "<<mHists["norResY"]->Fit(&funcY_2, fitOpt);
+	     continue;
+           }
+           fitResultY = mHists["norResY"]->Fit(&funcY_2, fitOpt);
+         }
+         meanY_2  = funcY_2.GetParameter(1);
+         sigmaY_2 = funcY_2.GetParameter(2);
+       }
+       
        
        
        // Fill histograms
-       double fitMean_1(mean_1), fitMean_2(mean_2);
-       double residualWidth_1(sigma_1), residualWidth_2(sigma_2);
+       double fitMeanX_1(meanX_1), fitMeanX_2(meanX_2);
+       double residualWidthX_1(sigmaX_1), residualWidthX_2(sigmaX_2);
+       double fitMeanY_1(meanY_1), fitMeanY_2(meanY_2);
+       double residualWidthY_1(sigmaY_1), residualWidthY_2(sigmaY_2);
        
-       //double baselineWidthX2(a_baselineSector[(*i_sector).first]);  // now taken out of this loop, is one value per sector
+       //double baselineWidthX2(a_baselineSectorX[(*i_sector).first]);  // now taken out of this loop, is one value per sector
        double correctionX2_1(-0.0010), correctionX2_2(-0.0010);
-       correctionX2_1 = meanSigmaX*meanSigmaX*(residualWidth_1*residualWidth_1 -baselineWidthX2);
-       correctionX2_2 = meanSigmaX*meanSigmaX*(residualWidth_2*residualWidth_2 -baselineWidthX2);
-       
+       double correctionY2_1(-0.0010), correctionY2_2(-0.0010);
+       correctionX2_1 = meanSigmaX*meanSigmaX*(residualWidthX_1*residualWidthX_1 -baselineWidthX2);
+       correctionX2_2 = meanSigmaX*meanSigmaX*(residualWidthX_2*residualWidthX_2 -baselineWidthX2);
+       if((*i_sector).second.isPixel){
+         correctionY2_1 = meanSigmaY*meanSigmaY*(residualWidthY_1*residualWidthY_1 -baselineWidthY2);
+         correctionY2_2 = meanSigmaY*meanSigmaY*(residualWidthY_2*residualWidthY_2 -baselineWidthY2);
+       }
        
        double correctionX_1 = correctionX2_1>=0. ? std::sqrt(correctionX2_1) : -std::sqrt(-correctionX2_1);
        double correctionX_2 = correctionX2_2>=0. ? std::sqrt(correctionX2_2) : -std::sqrt(-correctionX2_2);
+       double correctionY_1 = correctionY2_1>=0. ? std::sqrt(correctionY2_1) : -std::sqrt(-correctionY2_1);
+       double correctionY_2 = correctionY2_2>=0. ? std::sqrt(correctionY2_2) : -std::sqrt(-correctionY2_2);
        // Meanwhile, this got very bad default values, or? (negative corrections allowed)
        if(isnan(correctionX_1))correctionX_1 = -0.0010;
        if(isnan(correctionX_2))correctionX_2 = -0.0010;
+       if(isnan(correctionY_1))correctionY_1 = -0.0010;
+       if(isnan(correctionY_2))correctionY_2 = -0.0010;
        
-       if(entries<1000.){mean     = 0.; rms  = -0.0010;
-                         fitMean_1 = 0.; correctionX_1 = residualWidth_1 = -0.0010;
-			 fitMean_2 = 0.; correctionX_2 = residualWidth_2 = -0.0010;}
+       if(entriesX<1000.){
+         meanX = 0.; rmsX = -0.0010;
+         fitMeanX_1 = 0.; correctionX_1 = residualWidthX_1 = -0.0010;
+         fitMeanX_2 = 0.; correctionX_2 = residualWidthX_2 = -0.0010;
+       }
        
-       //(*i_sector).second.Entries       ->SetBinContent((*i_errBins).first,integral);
-       (*i_sector).second.MeanX         ->SetBinContent((*i_errBins).first,mean);
-       (*i_sector).second.RmsX          ->SetBinContent((*i_errBins).first,rms);
+       if(entriesY<1000.){
+	 meanY = 0.; rmsY = -0.0010;
+         fitMeanY_1 = 0.; correctionY_1 = residualWidthY_1 = -0.0010;
+         fitMeanY_2 = 0.; correctionY_2 = residualWidthY_2 = -0.0010;
+       }
+       
+       //(*i_sector).second.EntriesX      ->SetBinContent((*i_errBins).first,integralX);
+       (*i_sector).second.MeanX         ->SetBinContent((*i_errBins).first,meanX);
+       (*i_sector).second.RmsX          ->SetBinContent((*i_errBins).first,rmsX);
        
        //std::cout<<"\n\nSector, Bin "<<(*i_sector).first<<"\t"<<(*i_errBins).first;
-       //std::cout<<"\nEntries, MeanError, ResWidth, APE \t"<<entries<<"\t"<<meanSigmaX<<"\t"<<residualWidth<<"\t"<<ape<<"\n";
-       (*i_sector).second.FitMeanX1      ->SetBinContent((*i_errBins).first,fitMean_1);
-       (*i_sector).second.ResidualWidthX1->SetBinContent((*i_errBins).first,residualWidth_1);
+       //std::cout<<"\nEntries, MeanError, ResWidth, APE \t"<<entriesX<<"\t"<<meanSigmaX<<"\t"<<residualWidthX<<"\t"<<apeX<<"\n";
+       (*i_sector).second.FitMeanX1      ->SetBinContent((*i_errBins).first,fitMeanX_1);
+       (*i_sector).second.ResidualWidthX1->SetBinContent((*i_errBins).first,residualWidthX_1);
        (*i_sector).second.CorrectionX1   ->SetBinContent((*i_errBins).first,correctionX_1);
        
-       (*i_sector).second.FitMeanX2      ->SetBinContent((*i_errBins).first,fitMean_2);
-       (*i_sector).second.ResidualWidthX2->SetBinContent((*i_errBins).first,residualWidth_2);
+       (*i_sector).second.FitMeanX2      ->SetBinContent((*i_errBins).first,fitMeanX_2);
+       (*i_sector).second.ResidualWidthX2->SetBinContent((*i_errBins).first,residualWidthX_2);
        (*i_sector).second.CorrectionX2   ->SetBinContent((*i_errBins).first,correctionX_2);
+       
+       if((*i_sector).second.isPixel){
+         (*i_sector).second.MeanY         ->SetBinContent((*i_errBins).first,meanY);
+         (*i_sector).second.RmsY          ->SetBinContent((*i_errBins).first,rmsY);
+         
+         (*i_sector).second.FitMeanY1      ->SetBinContent((*i_errBins).first,fitMeanY_1);
+         (*i_sector).second.ResidualWidthY1->SetBinContent((*i_errBins).first,residualWidthY_1);
+         (*i_sector).second.CorrectionY1   ->SetBinContent((*i_errBins).first,correctionY_1);
+         
+         (*i_sector).second.FitMeanY2      ->SetBinContent((*i_errBins).first,fitMeanY_2);
+         (*i_sector).second.ResidualWidthY2->SetBinContent((*i_errBins).first,residualWidthY_2);
+         (*i_sector).second.CorrectionY2   ->SetBinContent((*i_errBins).first,correctionY_2);
+       }
        
        
        // Use result for bin only when entries>1000
-       if(entries<1000.)continue;
+       if(entriesX<1000. && entriesY<1000.)continue;
        
-       double weight(0.);
-       if(apeWeight==wUnity)weight = 1.;
-       else if(apeWeight==wEntries)weight = entries;
-       else if(apeWeight==wEntriesOverSigmaX2)weight = entries/(meanSigmaX*meanSigmaX);
+       double weightX(0.);
+       double weightY(0.);
+       if(apeWeight==wUnity){
+         weightX = 1.;
+	 weightY = 1.;
+       }
+       else if(apeWeight==wEntries){
+         weightX = entriesX;
+	 weightY = entriesY;
+       }
+       else if(apeWeight==wEntriesOverSigmaX2){
+         weightX = entriesX/(meanSigmaX*meanSigmaX);
+	 weightY = entriesY/(meanSigmaY*meanSigmaY);
+       }
        
-       const ErrorX2AndResidualWidthX2PerBin errorX2AndResidualWidthX2PerBin(meanSigmaX*meanSigmaX, residualWidth_1*residualWidth_1);
-       const WeightAndResultsPerBin weightAndResultsPerBin(weight, errorX2AndResidualWidthX2PerBin);
-       v_weightAndResultsPerBin.push_back(weightAndResultsPerBin);
+       const Error2AndResidualWidth2PerBin error2AndResidualWidth2PerBinX(meanSigmaX*meanSigmaX, residualWidthX_1*residualWidthX_1);
+       const WeightAndResultsPerBin weightAndResultsPerBinX(weightX, error2AndResidualWidth2PerBinX);
+       if(!(entriesX<1000.)){
+         v_weightAndResultsPerBinX.push_back(weightAndResultsPerBinX);
+       }
+       
+       const Error2AndResidualWidth2PerBin error2AndResidualWidth2PerBinY(meanSigmaY*meanSigmaY, residualWidthY_1*residualWidthY_1);
+       const WeightAndResultsPerBin weightAndResultsPerBinY(weightY, error2AndResidualWidth2PerBinY);
+       if(!(entriesY<1000.)){
+         v_weightAndResultsPerBinY.push_back(weightAndResultsPerBinY);
+       }
      }
      
      
      // Do the final calculations
      
-     if(v_weightAndResultsPerBin.size() == 0){
-       edm::LogError("CalculateAPE")<<"NO error interval of sector "<<(*i_sector).first<<" has a valid APE calculated,\n...so cannot set APE";
+     if(v_weightAndResultsPerBinX.size()==0){
+       edm::LogError("CalculateAPE")<<"NO error interval of sector "<<(*i_sector).first<<" has a valid x APE calculated,\n...so cannot set APE";
+       continue;
+     }
+     
+     if((*i_sector).second.isPixel && v_weightAndResultsPerBinY.size()==0){
+       edm::LogError("CalculateAPE")<<"NO error interval of sector "<<(*i_sector).first<<" has a valid y APE calculated,\n...so cannot set APE";
        continue;
      }
      
      double correctionX2(999.);
+     double correctionY2(999.);
      
-     // Get sum of all weights
-     double weightSum(0.);
-     std::vector<WeightAndResultsPerBin>::const_iterator i_apeBin;
-     for(i_apeBin=v_weightAndResultsPerBin.begin(); i_apeBin!=v_weightAndResultsPerBin.end(); ++i_apeBin){
-       weightSum += i_apeBin->first;
-     }
      
      if(!setBaseline){
+       // Get sum of all weights
+       double weightSumX(0.);
+       std::vector<WeightAndResultsPerBin>::const_iterator i_apeBin;
+       for(i_apeBin=v_weightAndResultsPerBinX.begin(); i_apeBin!=v_weightAndResultsPerBinX.end(); ++i_apeBin){
+         weightSumX += i_apeBin->first;
+       }
+       
        // Calculate weighted mean
-       bool firstInterval(true);
-       for(i_apeBin=v_weightAndResultsPerBin.begin(); i_apeBin!=v_weightAndResultsPerBin.end(); ++i_apeBin){
-         if(firstInterval){
+       bool firstIntervalX(true);
+       for(i_apeBin=v_weightAndResultsPerBinX.begin(); i_apeBin!=v_weightAndResultsPerBinX.end(); ++i_apeBin){
+         if(firstIntervalX){
 	   correctionX2 = i_apeBin->first*i_apeBin->second.first*(i_apeBin->second.second - baselineWidthX2);
-	   firstInterval = false;
+	   firstIntervalX = false;
 	 }
 	 else{
 	   correctionX2 += i_apeBin->first*i_apeBin->second.first*(i_apeBin->second.second - baselineWidthX2);
 	 }
        }
-       correctionX2 = correctionX2/weightSum;
+       correctionX2 = correctionX2/weightSumX;
      }
      else{
-       double numerator(0.), denominator(0.);
-       for(i_apeBin=v_weightAndResultsPerBin.begin(); i_apeBin!=v_weightAndResultsPerBin.end(); ++i_apeBin){
-         numerator += i_apeBin->first*i_apeBin->second.first*i_apeBin->second.second;
-	 denominator+= i_apeBin->first*i_apeBin->second.first;
+       double numeratorX(0.), denominatorX(0.);
+       std::vector<WeightAndResultsPerBin>::const_iterator i_apeBin;
+       for(i_apeBin=v_weightAndResultsPerBinX.begin(); i_apeBin!=v_weightAndResultsPerBinX.end(); ++i_apeBin){
+         numeratorX += i_apeBin->first*i_apeBin->second.first*i_apeBin->second.second;
+	 denominatorX += i_apeBin->first*i_apeBin->second.first;
        }
-       correctionX2 = numerator/denominator;
+       correctionX2 = numeratorX/denominatorX;
+     }
+     
+     if((*i_sector).second.isPixel){
+       if(!setBaseline){
+         // Get sum of all weights
+         double weightSumY(0.);
+         std::vector<WeightAndResultsPerBin>::const_iterator i_apeBin;
+         for(i_apeBin=v_weightAndResultsPerBinY.begin(); i_apeBin!=v_weightAndResultsPerBinY.end(); ++i_apeBin){
+           weightSumY += i_apeBin->first;
+         }
+         
+         // Calculate weighted mean
+         bool firstIntervalY(true);
+         for(i_apeBin=v_weightAndResultsPerBinY.begin(); i_apeBin!=v_weightAndResultsPerBinY.end(); ++i_apeBin){
+           if(firstIntervalY){
+	     correctionY2 = i_apeBin->first*i_apeBin->second.first*(i_apeBin->second.second - baselineWidthY2);
+	     firstIntervalY = false;
+	   }
+	   else{
+	     correctionY2 += i_apeBin->first*i_apeBin->second.first*(i_apeBin->second.second - baselineWidthY2);
+	   }
+         }
+         correctionY2 = correctionY2/weightSumY;
+       }
+       else{
+         double numeratorY(0.), denominatorY(0.);
+         std::vector<WeightAndResultsPerBin>::const_iterator i_apeBin;
+         for(i_apeBin=v_weightAndResultsPerBinY.begin(); i_apeBin!=v_weightAndResultsPerBinY.end(); ++i_apeBin){
+           numeratorY += i_apeBin->first*i_apeBin->second.first*i_apeBin->second.second;
+	   denominatorY += i_apeBin->first*i_apeBin->second.first;
+         }
+         correctionY2 = numeratorY/denominatorY;
+       }
      }
      
      
@@ -589,43 +777,75 @@ ApeEstimatorSummary::calculateApe(){
      if(!setBaseline){
        // Calculate updated squared APE of current iteration
        double apeX2(999.);
+       double apeY2(999.);
        
        // old APE value from last iteration
-       if(firstIter)apeX2 = 0.;
-       else apeX2 = a_apeSector[(*i_sector).first];
+       if(firstIter){
+         apeX2 = 0.;
+	 apeY2 = 0.;
+       }
+       else{
+         apeX2 = a_apeSectorX[(*i_sector).first];
+	 apeY2 = a_apeSectorY[(*i_sector).first];
+       }
        const double apeX2old = apeX2;
+       const double apeY2old = apeY2;
        
        // scale APE Correction with value given in cfg (not if smoothed iteration is used)
-       edm::LogInfo("CalculateAPE")<<"Unscaled correction for sector "<<(*i_sector).first<<" is "<<(correctionX2>0 ? +1 : -1)*std::sqrt(std::fabs(correctionX2));
+       edm::LogInfo("CalculateAPE")<<"Unscaled correction x for sector "<<(*i_sector).first<<" is "<<(correctionX2>0. ? +1. : -1.)*std::sqrt(std::fabs(correctionX2));
        if(!smoothIteration || firstIter)correctionX2 = correctionX2*correctionScaling*correctionScaling;
-
+       if((*i_sector).second.isPixel){
+         edm::LogInfo("CalculateAPE")<<"Unscaled correction y for sector "<<(*i_sector).first<<" is "<<(correctionY2>0. ? +1. : -1.)*std::sqrt(std::fabs(correctionY2));
+         if(!smoothIteration || firstIter)correctionY2 = correctionY2*correctionScaling*correctionScaling;
+       }
+       
        // new APE value
        // smooth iteration or not?
        if(apeX2 + correctionX2 < 0.) correctionX2 = -apeX2;
+       if(apeY2 + correctionY2 < 0.) correctionY2 = -apeY2;
        const double apeX2new(apeX2old + correctionX2);
-       if(!smoothIteration || firstIter)apeX2 = apeX2new;
-       else apeX2 = std::pow(smoothFraction*std::sqrt(apeX2new) + (1-smoothFraction)*std::sqrt(apeX2old), 2);
-       if(apeX2<0.)edm::LogError("CalculateAPE")<<"\n\n\tBad APE, but why???\n\n\n";
-       a_apeSector[(*i_sector).first] = apeX2;
+       const double apeY2new(apeY2old + correctionY2);
+       if(!smoothIteration || firstIter){
+         apeX2 = apeX2new;
+	 apeY2 = apeY2new;
+       }
+       else{
+         apeX2 = std::pow(smoothFraction*std::sqrt(apeX2new) + (1-smoothFraction)*std::sqrt(apeX2old), 2);
+	 apeY2 = std::pow(smoothFraction*std::sqrt(apeY2new) + (1-smoothFraction)*std::sqrt(apeY2old), 2);
+       }
+       if(apeX2<0. || apeY2<0.)edm::LogError("CalculateAPE")<<"\n\n\tBad APE, but why???\n\n\n";
+       a_apeSectorX[(*i_sector).first] = apeX2;
+       a_apeSectorY[(*i_sector).first] = apeY2;
        
-       // Set the calculated APE spherical for all modules of the sector
+       // Set the calculated APE spherical for all modules of strip sectors
        const double apeX(std::sqrt(apeX2));
+       const double apeY(std::sqrt(apeY2));
+       const double apeZ(std::sqrt(0.5*(apeX2+apeY2)));
        std::vector<unsigned int>::const_iterator i_rawId;
        for(i_rawId = (*i_sector).second.v_rawId.begin(); i_rawId != (*i_sector).second.v_rawId.end(); ++i_rawId){
-         //std::cout<<*i_rawId<<" "<<std::fixed<<std::setprecision(5)<<apeX<<" "<<apeX<<" "<<apeX<<"\n";
-	 apeOutputFile<<*i_rawId<<" "<<std::fixed<<std::setprecision(5)<<apeX<<" "<<apeX<<" "<<apeX<<"\n";
+         if((*i_sector).second.isPixel){
+	   //std::cout<<*i_rawId<<" "<<std::fixed<<std::setprecision(5)<<apeX<<" "<<apeY<<" "<<apeZ<<"\n";
+	   apeOutputFile<<*i_rawId<<" "<<std::fixed<<std::setprecision(5)<<apeX<<" "<<apeY<<" "<<apeZ<<"\n";
+	 }
+	 else{
+	   //std::cout<<*i_rawId<<" "<<std::fixed<<std::setprecision(5)<<apeX<<" "<<apeX<<" "<<apeX<<"\n";
+	   apeOutputFile<<*i_rawId<<" "<<std::fixed<<std::setprecision(5)<<apeX<<" "<<apeX<<" "<<apeX<<"\n";
+	 }
        }
      }
      // In setBaseline mode, just fill estimated mean value of residual width
      else{
-       a_apeSector[(*i_sector).first] = correctionX2;
+       a_apeSectorX[(*i_sector).first] = correctionX2;
+       a_apeSectorY[(*i_sector).first] = correctionY2;
      }
      
    }
    if(!setBaseline)apeOutputFile.close();
    
-   iterationTree->Fill();
-   iterationTree->Write("iterTree", TObject::kOverwrite);  // TObject::kOverwrite needed to not produce another iterTree;2
+   iterationTreeX->Fill();
+   iterationTreeX->Write("iterTreeX", TObject::kOverwrite);  // TObject::kOverwrite needed to not produce another iterTreeX;2
+   iterationTreeY->Fill();
+   iterationTreeY->Write("iterTreeY", TObject::kOverwrite);  // TObject::kOverwrite needed to not produce another iterTreeY;2
    if(firstIter){
      sectorNameTree->Fill();
      sectorNameTree->Write("nameTree");

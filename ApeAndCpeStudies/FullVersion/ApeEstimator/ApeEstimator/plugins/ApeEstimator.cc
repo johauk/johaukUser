@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.12 2011/06/22 16:08:49 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.13 2011/06/23 22:37:58 hauk Exp $
 //
 //
 
@@ -366,6 +366,22 @@ ApeEstimator::sectorBuilder(){
       }
       if(!moduleSelected)allSectors.v_rawId.push_back(rawId);
     }
+    
+    bool isPixel(false);
+    bool isStrip(false);
+    for(std::vector<unsigned int>::const_iterator i_rawId = tkSector.v_rawId.begin();
+        i_rawId != tkSector.v_rawId.end(); ++i_rawId){
+      if(m_tkTreeVar_[*i_rawId].subdetId==PixelSubdetector::PixelBarrel || m_tkTreeVar_[*i_rawId].subdetId==PixelSubdetector::PixelEndcap){
+        isPixel = true;
+      }
+      if(m_tkTreeVar_[*i_rawId].subdetId==StripSubdetector::TIB || m_tkTreeVar_[*i_rawId].subdetId==StripSubdetector::TOB ||
+         m_tkTreeVar_[*i_rawId].subdetId==StripSubdetector::TID || m_tkTreeVar_[*i_rawId].subdetId==StripSubdetector::TEC){
+        isStrip = false;
+      }
+    }
+    tkSector.isPixel = isPixel;
+    tkSector.isStrip = isStrip;
+    
     m_tkSector_[sectorCounter] = tkSector;
     edm::LogInfo("SectorBuilder")<<"There are "<<tkSector.v_rawId.size()<<" Modules in Sector "<<sectorCounter;
   }
@@ -696,6 +712,10 @@ ApeEstimator::bookSectorHistsForApeCalculation(){
       TFileDirectory intDir = secDir.mkdir(interval.str().c_str());
       (*i_sector).second.m_binnedHists[(*i_errBins).first]["sigmaX"]  = intDir.make<TH1F>("h_sigmaX","residual error #sigma_{x};#sigma_{x}  [cm];# hits",100,0.,0.01);
       (*i_sector).second.m_binnedHists[(*i_errBins).first]["norResX"] = intDir.make<TH1F>("h_norResX","normalized residual r_{x}/#sigma_{x};(x_{track}-x_{hit})'/#sigma_{x};# hits",100,-10,10);
+      if((*i_sector).second.isPixel){
+        (*i_sector).second.m_binnedHists[(*i_errBins).first]["sigmaY"]  = intDir.make<TH1F>("h_sigmaY","residual error #sigma_{y};#sigma_{y}  [cm];# hits",100,0.,0.01);
+        (*i_sector).second.m_binnedHists[(*i_errBins).first]["norResY"] = intDir.make<TH1F>("h_norResY","normalized residual r_{y}/#sigma_{y};(y_{track}-y_{hit})'/#sigma_{y};# hits",100,-10,10);
+      }
     }
     
     
@@ -712,7 +732,10 @@ ApeEstimator::bookSectorHistsForApeCalculation(){
     
     //Result plots (one hist per sector containing one bin per interval)
     std::vector<double> v_binX(parameterSet_.getParameter<std::vector<double> >("residualErrorBinning"));
-    (*i_sector).second.Entries         = resDir.make<TH1F>("h_entries","# hits used;#sigma_{x}  [cm];# hits",v_binX.size()-1,&(v_binX[0]));
+    (*i_sector).second.EntriesX = resDir.make<TH1F>("h_entriesX","# hits used;#sigma_{x}  [cm];# hits",v_binX.size()-1,&(v_binX[0]));
+    if((*i_sector).second.isPixel){
+      (*i_sector).second.EntriesY = resDir.make<TH1F>("h_entriesY","# hits used;#sigma_{y}  [cm];# hits",v_binX.size()-1,&(v_binX[0]));
+    }
   }
 }
 
@@ -966,15 +989,15 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
   const float errXHitWoApe2(positionAndError2HitWoApe.second.errX2);
   const float errXTrk2(positionAndError2Trk.second.errX2);
   const float errYHit2(positionAndError2Hit.second.errY2);
-  //const float errYHitWoApe2(positionAndError2HitWoApe.second.errY2);
+  const float errYHitWoApe2(positionAndError2HitWoApe.second.errY2);
   const float errYTrk2(positionAndError2Trk.second.errY2);
   
   const float errXHit = std::sqrt(positionAndError2Hit.second.errX2);
   const float errXHitWoApe = std::sqrt(positionAndError2HitWoApe.second.errX2);
   const float errXTrk = std::sqrt(positionAndError2Trk.second.errX2);
-  //const float errYHit = std::sqrt(positionAndError2Hit.second.errY2);
-  //const float errYHitWoApe = std::sqrt(positionAndError2HitWoApe.second.errY2);
-  //const float errYTrk = std::sqrt(positionAndError2Trk.second.errY2);
+  const float errYHit = std::sqrt(positionAndError2Hit.second.errY2);
+  const float errYHitWoApe = std::sqrt(positionAndError2HitWoApe.second.errY2);
+  const float errYTrk = std::sqrt(positionAndError2Trk.second.errY2);
   
   const float resX = xTrk - xHit;
   const float resY = yTrk - yHit;
@@ -983,8 +1006,8 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
   const float errXWoApe2 = errXHitWoApe2 + errXTrk2;
   const float errXWoApe = std::sqrt(errXWoApe2);
   const float errY = std::sqrt(errYHit2 + errYTrk2);
-  //const float errYWoApe2 = errYHitWoApe2 + errYTrk2;
-  //const float errYWoApe = std::sqrt(errYWoApe2);
+  const float errYWoApe2 = errYHitWoApe2 + errYTrk2;
+  const float errYWoApe = std::sqrt(errYWoApe2);
   
   const float norResX = resX/errX;
   const float norResY = resY/errY;
@@ -1012,19 +1035,59 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
   hitParams.errX = errX;
   hitParams.errXWoApe = errXWoApe;
 
-  hitParams.resX    = resXprime;
+  hitParams.resX = resXprime;
   hitParams.norResX = norResXprime;
   
   const float norResX2(norResXprime*norResXprime);
-  hitParams.probX   = TMath::Prob(norResX2,1);
+  hitParams.probX = TMath::Prob(norResX2,1);
+  
+  
+  hitParams.yHit = yHit;
+  hitParams.yTrk = yTrk;
+  
+  hitParams.errYHit = errYHit;
+  hitParams.errYHitWoApe = errYHitWoApe;
+  hitParams.errYTrk = errYTrk;
+  
+  hitParams.errY2 = errY*errY;
+  hitParams.errY = errY;
+  hitParams.errYWoApe = errYWoApe;
+
+  hitParams.resY = resYprime;
+  hitParams.norResY = norResYprime;
+  
+  const float norResY2(norResYprime*norResYprime);
+  hitParams.probY = TMath::Prob(norResY2,1);
   
   
   
   // Cluster parameters
   
   if(m_tkTreeVar_[rawId].subdetId==PixelSubdetector::PixelBarrel || m_tkTreeVar_[rawId].subdetId==PixelSubdetector::PixelEndcap){
-    //const SiPixelRecHit& pixelHit = dynamic_cast<const SiPixelRecHit&>(recHit);
-    //const SiPixelCluster& pixelCluster = *pixelHit.cluster();
+    const SiPixelRecHit& pixelHit = dynamic_cast<const SiPixelRecHit&>(recHit);
+    const SiPixelCluster& pixelCluster = *pixelHit.cluster();
+    
+    int widthX = pixelCluster.sizeX();
+    int widthY = pixelCluster.sizeY();
+    float baryStripX = pixelCluster.x();
+    float baryStripY = pixelCluster.y();
+    float charge = pixelCluster.charge();
+    
+//    std::cout<<"\tTest 1: "<<widthX<<" "<<widthY<<" "<<baryStripX<<" "<<baryStripY<<" "<<charge<<"\n";
+    
+    float clusterProbabilityXY = pixelHit.clusterProbability(0);
+    float clusterProbabilityQ = pixelHit.clusterProbability(2);
+    float clusterProbabilityXYQ = pixelHit.clusterProbability(1);
+    float logClusterProbability = std::log10(clusterProbabilityXY);
+    
+//    std::cout<<"\tTest 2: "<<clusterProbabilityXY<<" "<<clusterProbabilityQ<<" "<<clusterProbabilityXYQ<<" "<<logClusterProbability<<"\n";
+    
+    bool isOnEdge = pixelHit.isOnEdge();
+    bool hasBadPixels = pixelHit.hasBadPixels();
+    bool spansTwoRoc = pixelHit.spansTwoROCs();
+    int qBin = pixelHit.qBin();
+    
+//    std::cout<<"\tTest 3: "<<isOnEdge<<" "<<hasBadPixels<<" "<<spansTwoRoc<<" "<<qBin<<"\n";
   }
   else if(m_tkTreeVar_[rawId].subdetId==StripSubdetector::TIB || m_tkTreeVar_[rawId].subdetId==StripSubdetector::TOB ||
           m_tkTreeVar_[rawId].subdetId==StripSubdetector::TID || m_tkTreeVar_[rawId].subdetId==StripSubdetector::TEC){
@@ -1622,6 +1685,20 @@ ApeEstimator::fillHistsForApeCalculation(const TrackStruct& trackStruct){
 	break;
       }
       
+      if((*i_sector).second.isPixel){
+        for(std::map<unsigned int,std::pair<double,double> >::const_iterator i_errBins = m_resErrBins_.begin();
+            i_errBins != m_resErrBins_.end(); ++i_errBins){
+	  // Separate the bins for residual resolution w/o APE, to be consistent within iterations where APE will change (have same hit always in same bin)
+	  // So also fill this value in the histogram sigmaY
+	  // But of course use the normalized residual regarding the APE to have its influence in its width
+	  if((*i_hit).errYWoApe < (*i_errBins).second.first || (*i_hit).errYWoApe >= (*i_errBins).second.second){
+	    continue;
+	  }
+	  (*i_sector).second.m_binnedHists[(*i_errBins).first]["sigmaY"] ->Fill((*i_hit).errYWoApe);
+	  (*i_sector).second.m_binnedHists[(*i_errBins).first]["norResY"]->Fill((*i_hit).norResY);
+	  break;
+        }
+      }
     }
   }
 }
@@ -1642,12 +1719,16 @@ ApeEstimator::calculateAPE(){
      // Loop over residual error bins to calculate APE for every bin
      for(std::map<unsigned int, std::map<std::string,TH1*> >::const_iterator i_errBins = (*i_sector).second.m_binnedHists.begin();
          i_errBins != (*i_sector).second.m_binnedHists.end(); ++i_errBins){
-       std::map<std::string,TH1*> mHists = (*i_errBins).second;
+       std::map<std::string,TH1*> m_Hists = (*i_errBins).second;
        
        // Fitting Parameters
-       double integral = mHists["norResX"]->Integral();
+       double integralX = m_Hists["norResX"]->Integral();
+       (*i_sector).second.EntriesX->SetBinContent((*i_errBins).first, integralX);
        
-       (*i_sector).second.Entries->SetBinContent((*i_errBins).first, integral);
+       if((*i_sector).second.isPixel){
+         double integralY = m_Hists["norResY"]->Integral();
+         (*i_sector).second.EntriesY->SetBinContent((*i_errBins).first, integralY);
+       }
      }
    }
 }
