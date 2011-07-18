@@ -19,8 +19,12 @@ struct TrackStruct{
 		 resX(-999.F), norResX(-999.F), xHit(-999.F), xTrk(-999.F),
                  errXHit(-999.F), errXTrk(-999.F), errX(-999.F), errX2(-999.F),
 		 errXHitWoApe(-999.F), errXWoApe(-999.F),
-                 phiSens(-999.F), phiSensX(-999.F), phiSensY(-999.F),
-		 probX(-999.F){}
+		 probX(-999.F),
+		 resY(-999.F), norResY(-999.F), yHit(-999.F), yTrk(-999.F),
+                 errYHit(-999.F), errYTrk(-999.F), errY(-999.F), errY2(-999.F),
+		 errYHitWoApe(-999.F), errYWoApe(-999.F),
+		 probY(-999.F),
+		 phiSens(-999.F), phiSensX(-999.F), phiSensY(-999.F){}
     
     HitState hitState;
     std::vector<unsigned int> v_sector;
@@ -35,8 +39,12 @@ struct TrackStruct{
     float resX, norResX, xHit, xTrk,
           errXHit, errXTrk, errX, errX2,
 	  errXHitWoApe, errXWoApe,
-          phiSens, phiSensX, phiSensY,
 	  probX;
+    float resY, norResY, yHit, yTrk,
+          errYHit, errYTrk, errY, errY2,
+	  errYHitWoApe, errYWoApe,
+	  probY;
+    float phiSens, phiSensX, phiSensY;
   };
   
   struct TrackParameterStruct{

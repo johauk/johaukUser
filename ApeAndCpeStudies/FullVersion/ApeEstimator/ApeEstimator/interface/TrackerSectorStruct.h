@@ -87,16 +87,22 @@ class TrackerSectorStruct{
   std::map<std::string,std::vector<TH1*> > m_sigmaX;
   
   
-  //for every bin in sigmaX the needful histos to calculate the APE
+  //for every bin in sigmaX or sigmaY the needful histos to calculate the APE
   std::map<unsigned int, std::map<std::string,TH1*> > m_binnedHists;
   
   
   //for presenting results
   TTree *RawId;
-  TH1 *Entries;
+  TH1 *EntriesX;
   TH1 *MeanX, *RmsX, *FitMeanX1, *ResidualWidthX1, *CorrectionX1,
       *FitMeanX2, *ResidualWidthX2, *CorrectionX2;
+  TH1 *EntriesY;
+  TH1 *MeanY, *RmsY, *FitMeanY1, *ResidualWidthY1, *CorrectionY1,
+      *FitMeanY2, *ResidualWidthY2, *CorrectionY2;
   
+  // To book pixel-specific or strip-specific histos only
+  bool isPixel;
+  bool isStrip;
 };
 
 
@@ -115,9 +121,13 @@ TrackerSectorStruct::TrackerSectorStruct(): directory_(0),
 			 WidthVsPhiSensX(0), WidthVsWidthProjected(0), WidthDiffVsMaxStrip(0), WidthDiffVsSigmaXHit(0),
 			 PWidthVsPhiSensX(0), PWidthVsWidthProjected(0), PWidthDiffVsMaxStrip(0), PWidthDiffVsSigmaXHit(0),
 			 RawId(0),
-			 Entries(0),
+			 EntriesX(0),
 			 MeanX(0), RmsX(0), FitMeanX1(0), ResidualWidthX1(0), CorrectionX1(0),
-			 FitMeanX2(0), ResidualWidthX2(0), CorrectionX2(0){}
+			 FitMeanX2(0), ResidualWidthX2(0), CorrectionX2(0),
+			 EntriesY(0),
+			 MeanY(0), RmsY(0), FitMeanY1(0), ResidualWidthY1(0), CorrectionY1(0),
+			 FitMeanY2(0), ResidualWidthY2(0), CorrectionY2(0),
+			 isPixel(false), isStrip(false){}
 
 
 
