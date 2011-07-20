@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 ## Collection cleaner
-from PhysicsTools.PatAlgos.cleaningLayer1.cleanPatCandidates_cff import *
+#from PhysicsTools.PatAlgos.cleaningLayer1.cleanPatCandidates_cff import *
 ## jet selector
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
 ## jet count filter
@@ -13,47 +13,32 @@ from PhysicsTools.PatAlgos.selectionLayer1.jetCountFilter_cfi import *
 
 ###########################################################################################
 #
-# JET COLLECTION CLEANING - CREATE LEPTONS FOR CLEANING
-#
-###########################################################################################
-
-# These collections should be only used for cleaning of jets againgst isolated leptons
-
-# Use either preselection or final cut
-
-cleanPatMuons.preselection = 'isGlobalMuon & isTrackerMuon & (trackIso+caloIso)/pt < 0.15'
-
-cleanPatElectrons.preselection = 'electronID("simpleEleId85relIso")==7'
-
-
-
-
-###########################################################################################
-#
-# JET COLLECTION CLEANING - CHECK FOR OVERLAPS, BUT DO NOT YET CLEAN CHOSEN ISOLATED LEPTONS OUT OF COLLECTION
-#
-###########################################################################################
-
-# Clean particleFlow-jet colleciton from electrons and muons (clean out only isolated leptons)
-
-cleanPatJets.src = "selectedPatJetsAK5PF"
-cleanPatJets.preselection = 'pt>15. & abs(eta)<2.4'
-# This would clean them out
-#cleanPatJets.finalCut = '!hasOverlaps("muons") & !hasOverlaps("electrons")'
-
-
-
-###########################################################################################
-#
 # JET COLLECTION CLEANING - DO NOT USE, WHEN USING JetZOverlapCleaner
 #
 ###########################################################################################
 
-# take care to check for isolation
-#cleanPatJets.checkOverlaps.muons.src  = 'looseMuons'
-#cleanPatJets.checkOverlaps.muons.preselection = 'trackIso < 3.'
-#cleanPatJets.checkOverlaps.muons.deltaR  = 0.4
-#cleanPatJets.checkOverlaps.muons.requireNoOverlaps = True 
+### These collections should be only used for cleaning of jets againgst isolated leptons
+#
+#
+### Check for overlaps, but do not yet clean chosen isolated leptons out of collection
+## Clean particleFlow-jet colleciton from electrons and muons (only isolated leptons)
+#cleanPatJets.src = "selectedPatJetsAK5PF"
+#cleanPatJets.preselection = 'pt>15. & abs(eta)<2.4'
+#
+### Clean via predefined lepton collections
+#cleanPatMuons.preselection = 'isGlobalMuon & isTrackerMuon & (trackIso+caloIso)/pt < 0.15'
+#cleanPatElectrons.preselection = 'electronID("simpleEleId85relIso")==7'
+## This cleans them out
+#cleanPatJets.finalCut = '!hasOverlaps("muons") & !hasOverlaps("electrons")'
+#
+### Alternative: clean via jet methods
+## take care to check for isolation
+##cleanPatJets.checkOverlaps.muons.src  = 'looseMuons'
+##cleanPatJets.checkOverlaps.muons.preselection = 'trackIso < 3.'
+##cleanPatJets.checkOverlaps.muons.deltaR  = 0.4
+##cleanPatJets.checkOverlaps.muons.requireNoOverlaps = True 
+
+
 
 
 
@@ -62,6 +47,13 @@ cleanPatJets.preselection = 'pt>15. & abs(eta)<2.4'
 # JET SELECTION
 #
 ###########################################################################################
+
+cleanJets = selectedPatJets.clone(
+    src = 'selectedPatJetsAK5PF',
+    cut = 'pt>15. & abs(eta)<2.4',
+)
+
+
 
 
 ## good jet ID selection
@@ -79,22 +71,14 @@ cleanPatJets.preselection = 'pt>15. & abs(eta)<2.4'
 #	  '& correctedJet("Uncorrected").chargedMultiplicity > 0',
 #)
 
-# Or use the JetIDSelectionFunctor
-#from ZmumuAnalysis.Producer.JetIdFunctorSelector_cfi import *
-#goodIdJets = JetIdFunctorSelector.clone(
-#    jetSource = 'cleanPatJets',
-#    jetType = 'PF',
-#    version = 'FIRSTDATA',
-#    quality = 'LOOSE',
-#)
-
 # Or use directly these simple selectors
 from PhysicsTools.SelectorUtils.pfJetIDSelector_cfi import pfJetIDSelector
 pfJetIDSelector.version = 'FIRSTDATA'
 pfJetIDSelector.quality = 'LOOSE'
 goodIdJets = cms.EDFilter("PFJetIDSelectionFunctorFilter",
     filterParams = pfJetIDSelector.clone(),
-    src = cms.InputTag('cleanPatJets'),
+    src = cms.InputTag('cleanJets'),
+    #src = cms.InputTag('cleanPatJets'),  # if upper cleaning is used
     filter = cms.bool(False)
 )
 
@@ -158,7 +142,8 @@ bSsvHpTJetsZVetoHigh = bSsvHpTJets.clone(src = 'finalJetsZVetoHigh',)
 ## Count Filters
 ##
 
-oneCleanPatJetSelection = countPatJets.clone(src = 'cleanPatJets', minNumber = 1)
+#oneCleanJetSelection = countPatJets.clone(src = 'cleanPatJets', minNumber = 1)
+oneCleanJetSelection = countPatJets.clone(src = 'cleanJets', minNumber = 1)
 oneGoodIdJetSelection = countPatJets.clone(src = 'goodIdJets', minNumber = 1)
 oneGoodJetSelection = countPatJets.clone(src = 'goodJets', minNumber = 1)
 oneFinalJetSelection = countPatJets.clone(src = 'finalJets', minNumber = 1)
@@ -211,88 +196,59 @@ twoBSsvHpTJetZVetoHighSelection = oneBSsvHpTJetZVetoHighSelection.clone(minNumbe
 
 
 applyJetCleaning = cms.Sequence(
-    cleanPatCandidates
+    cleanJets  # when using JetZOverlapCleaner
+    #cleanPatCandidates  # when using overlap cleaning via cleanPat sequence
 )
 
 
 buildJetCollections = cms.Sequence(
-    applyJetCleaning
-    *goodIdJets
-    *goodJets
-    *finalJets
+    applyJetCleaning*
+    goodIdJets*
+    goodJets*
+    finalJets*
+    bSsvHeMJets*
+    bSsvHpTJets*
     
-    #*bTcHeMJets
-    #*bTcHpTJets
-    *bSsvHeMJets
-    *bSsvHpTJets
-)
-
-
-buildJetZVetoLowCollections = cms.Sequence(
-    applyJetCleaning
-    *goodIdJets
-    *goodJetsZVetoLow
-    *finalJetsZVetoLow
+    goodJetsZVetoLow*
+    finalJetsZVetoLow*
+    bSsvHeMJetsZVetoLow*
+    bSsvHpTJetsZVetoLow*
     
-    #*bTcHeMJetsZVetoLow
-    #*bTcHpTJetsZVetoLow
-    *bSsvHeMJetsZVetoLow
-    *bSsvHpTJetsZVetoLow
+    goodJetsZVetoHigh*
+    finalJetsZVetoHigh*
+    bSsvHeMJetsZVetoHigh*
+    bSsvHpTJetsZVetoHigh
 )
-
-
-buildJetZVetoHighCollections = cms.Sequence(
-    applyJetCleaning
-    *goodIdJets
-    *goodJetsZVetoHigh
-    *finalJetsZVetoHigh
-    
-    #*bTcHeMJetsZVetoHigh
-    #*bTcHpTJetsZVetoHigh
-    *bSsvHeMJetsZVetoHigh
-    *bSsvHpTJetsZVetoHigh
-)
-
 
 
 oneJetSelection = cms.Sequence(
-    oneCleanPatJetSelection
-    *oneGoodIdJetSelection
-    *oneGoodJetSelection
-    *oneFinalJetSelection
-    
-    #*oneBTcHeMJetSelection 
-    #*oneBTcHpTJetSelection 
-    *oneBSsvHeMJetSelection
-    #*oneBSsvHpTJetSelection
+    oneCleanJetSelection*
+    oneGoodIdJetSelection*
+    oneGoodJetSelection*
+    oneFinalJetSelection*
+    oneBSsvHeMJetSelection*
+    oneBSsvHpTJetSelection
 )
 
 
 oneJetZVetoLowSelection = cms.Sequence(
-    oneCleanPatJetSelection
-    *oneGoodIdJetSelection
-    *oneGoodJetZVetoLowSelection
-    *oneFinalJetZVetoLowSelection
-    
-    #*oneBTcHeMJetZVetoLowSelection 
-    #*oneBTcHpTJetZVetoLowSelection 
-    *oneBSsvHeMJetZVetoLowSelection
-    #*oneBSsvHpTJetZVetoLowSelection
+    oneCleanJetSelection*
+    oneGoodIdJetSelection*
+    oneGoodJetZVetoLowSelection*
+    oneFinalJetZVetoLowSelection*
+    oneBSsvHeMJetZVetoLowSelection*
+    oneBSsvHpTJetZVetoLowSelection
 )
 
 
 oneJetZVetoHighSelection = cms.Sequence(
-    oneCleanPatJetSelection
-    *oneGoodIdJetSelection
-    *oneGoodJetZVetoHighSelection
-    *oneFinalJetZVetoHighSelection
-    
-    #*oneBTcHeMJetZVetoHighSelection 
-    #*oneBTcHpTJetZVetoHighSelection 
-    *oneBSsvHeMJetZVetoHighSelection
-    #*oneBSsvHpTJetZVetoHighSelection
+    oneCleanJetSelection*
+    oneGoodIdJetSelection*
+    oneGoodJetZVetoHighSelection*
+    oneFinalJetZVetoHighSelection*
+    oneBSsvHeMJetZVetoHighSelection*
+    oneBSsvHpTJetZVetoHighSelection
 )
-
 
 
 twoJetSelection = cms.Sequence(
@@ -300,8 +256,6 @@ twoJetSelection = cms.Sequence(
     oneBSsvHpTJetSelection*
     twoFinalJetSelection*
     
-    #twoBTcHeMJetSelection 
-    #twoBTcHpTJetSelection 
     twoBSsvHeMJetSelection*
     twoBSsvHpTJetSelection
 )
