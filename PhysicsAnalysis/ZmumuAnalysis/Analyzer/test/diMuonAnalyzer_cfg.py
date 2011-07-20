@@ -42,15 +42,15 @@ process.selectedDimuons = dimuons.clone(
 
 ## Analyzer under test
 process.load("ZmumuAnalysis.Analyzer.DiMuonAnalyzer_cfi")
-process.DiMuonAnalyzer1 = process.DiMuonAnalyzer.clone(
-    #src = 'selectedDimuons',
+process.DimuonAnalyzer1 = process.DimuonAnalyzer.clone(
+    #dimuonSource = 'selectedDimuons',
 )
 
 
 
 ## Output File Configuration
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string(os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Analyzer/hists/test_diMuonAnalyzer.root'),
+    fileName = cms.string(os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Analyzer/hists/test_dimuonAnalyzer.root'),
     closeFileFast = cms.untracked.bool(True)
 )
 
@@ -59,5 +59,5 @@ process.TFileService = cms.Service("TFileService",
 ## Path
 process.p = cms.Path(
     process.selectedDimuons*
-    process.DiMuonAnalyzer1
+    process.DimuonAnalyzer1
 )

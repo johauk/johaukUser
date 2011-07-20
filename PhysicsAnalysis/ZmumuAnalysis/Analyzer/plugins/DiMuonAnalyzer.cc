@@ -1,9 +1,9 @@
 // -*- C++ -*-
 //
-// Package:    DiMuonAnalyzer
-// Class:      DiMuonAnalyzer
+// Package:    DimuonAnalyzer
+// Class:      DimuonAnalyzer
 // 
-/**\class DiMuonAnalyzer DiMuonAnalyzer.cc ZmumuAnalysis/Analyzer/plugins/DiMuonAnalyzer.cc
+/**\class DimuonAnalyzer DimuonAnalyzer.cc ZmumuAnalysis/Analyzer/plugins/DimuonAnalyzer.cc
 
  Description: Plotter for combined di-muon distributions
 
@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May 20 15:47:12 CEST 2010
-// $Id: DiMuonAnalyzer.cc,v 1.8 2011/05/06 11:26:36 hauk Exp $
+// $Id: DiMuonAnalyzer.cc,v 1.9 2011/06/27 00:50:09 hauk Exp $
 //
 //
 
@@ -51,52 +51,35 @@
 // class declaration
 //
 
-class DiMuonAnalyzer : public edm::EDAnalyzer {
+class DimuonAnalyzer : public edm::EDAnalyzer {
    public:
-      explicit DiMuonAnalyzer(const edm::ParameterSet&);
-      ~DiMuonAnalyzer();
+      explicit DimuonAnalyzer(const edm::ParameterSet&);
+      ~DimuonAnalyzer();
       
-      struct DiMuHists{
-        DiMuHists():NDimuon(0),
-	            EtaLow(0), EtaHigh(0), PtLow(0), PtHigh(0),
-		    DeltaEta(0), DeltaPhi(0),
-		    DeltaVz(0),
-		    DiMass(0), DiPt(0){}
-	
-	/// Number of dimuons
-        TH1* NDimuon;
-	
-        /// Properties of the two muons
-        TH1F *EtaLow, *EtaHigh, *PtLow, *PtHigh;
-	
-	/// Differences of the two muons
-        TH1F *DeltaEta, *DeltaPhi,
-	     *DeltaVz;
-	
-	/// Properties of reconstructed di-muon particle
-	TH1F *DiMass, *DiPt,
-	     *DiY;
-      };
-
 
    private:
       virtual void beginJob() ;
       virtual void analyze(const edm::Event&, const edm::EventSetup&);
       virtual void endJob() ;
       
-      void bookHists(DiMuHists&, const TFileDirectory&);
-      void fillHists(DiMuHists&, const reco::Candidate&);
 
       // ----------member data ---------------------------
       
-      
       const edm::ParameterSet parameterSet_;
       
-      /// plots for same-charge dimuon mass
-      DiMuHists histsSC_;
+      /// Number of dimuons
+      TH1* NDimuon;
       
-      /// plots for opposite-charge dimuon mass
-      DiMuHists histsOC_;
+      /// Properties of the two muons
+      TH1F *EtaLow, *EtaHigh, *PtLow, *PtHigh;
+      
+      /// Differences of the two muons
+      TH1F *DeltaEta, *DeltaPhi,
+	   *DeltaVz;
+      
+      /// Properties of reconstructed di-muon particle
+      TH1F *DiMass, *DiPt,
+	   *DiY;
       
 };
 
@@ -111,13 +94,19 @@ class DiMuonAnalyzer : public edm::EDAnalyzer {
 //
 // constructors and destructor
 //
-DiMuonAnalyzer::DiMuonAnalyzer(const edm::ParameterSet& iConfig):
-parameterSet_(iConfig)
+DimuonAnalyzer::DimuonAnalyzer(const edm::ParameterSet& iConfig):
+parameterSet_(iConfig),
+NDimuon(0),
+EtaLow(0), EtaHigh(0), PtLow(0), PtHigh(0),
+DeltaEta(0), DeltaPhi(0),
+DeltaVz(0),
+DiMass(0), DiPt(0),
+DiY(0)
 {
 }
 
 
-DiMuonAnalyzer::~DiMuonAnalyzer()
+DimuonAnalyzer::~DimuonAnalyzer()
 {
 }
 
@@ -126,116 +115,95 @@ DiMuonAnalyzer::~DiMuonAnalyzer()
 // member functions
 //
 
-
-
-void
-DiMuonAnalyzer::bookHists(DiMuHists& hists, const TFileDirectory& dir){
-  hists.NDimuon = dir.make<TH1F>("h_nDimuon","# dimuons;# dimuons; # events",20,0,20);
-  hists.EtaLow = dir.make<TH1F>("h_etaLow","muon with lower absolute value of #eta;#eta;# muons",120,-3,3);
-  hists.EtaHigh = dir.make<TH1F>("h_etaHigh","muon w/ higher absolute value of #eta;#eta;# muons",120,-3,3);
-  hists.PtLow = dir.make<TH1F>("h_ptLow","muon w/ lower p_{t};p_{t}  [GeV];# muons",100,0,200);
-  hists.PtHigh = dir.make<TH1F>("h_ptHigh","muon w/ higher p_{t};p_{t}  [GeV];# muons",100,0,200);
-  hists.DeltaEta = dir.make<TH1F>("h_deltaEta","#Delta#eta;#Delta#eta;# muon pairs",100,-5,5);
-  hists.DeltaPhi = dir.make<TH1F>("h_deltaPhi","#Delta#phi;#Delta#phi;# muon pairs",100,-200,200);
-  hists.DeltaVz = dir.make<TH1F>("h_deltaVz","#Delta v_{z};#Delta v_{z};# muon pairs",100,-1.,1.);
-  hists.DiMass = dir.make<TH1F>("h_diMass","di-muon invariant mass;M_{#mu#mu} [GeV];# muon pairs",300,0.,600.);
-  hists.DiPt = dir.make<TH1F>("h_diPt","di-muon p_{t};p_{t}  [GeV];# muon pairs",100,0,200);
-  hists.DiY = dir.make<TH1F>("h_diY","di-muon rapidity y;y;# muon pairs",120,-3,3);
-}
-
-
-
-void
-DiMuonAnalyzer::fillHists(DiMuHists& hists, const reco::Candidate& diMuon){
-  const reco::Candidate* daughter1 = diMuon.daughter(0);
-  const reco::Candidate* daughter2 = diMuon.daughter(1);
-  
-  const pat::MuonCollection::const_reference mu1 = dynamic_cast<const pat::Muon&>(*daughter1->masterClone());
-  const pat::MuonCollection::const_reference mu2 = dynamic_cast<const pat::Muon&>(*daughter2->masterClone());
-  
-  // eta and pt
-  const double etaLow = std::fabs(mu1.eta())<std::fabs(mu2.eta()) ? mu1.eta() : mu2.eta();
-  const double etaHigh = std::fabs(mu1.eta())>std::fabs(mu2.eta()) ? mu1.eta() : mu2.eta();
-  const double ptLow = mu1.pt()<mu2.pt() ? mu1.pt() : mu2.pt();
-  const double ptHigh = mu1.pt()>mu2.pt() ? mu1.pt() : mu2.pt();
-  
-  // eta, phi difference
-  const double deltaEta = mu2.eta() - mu1.eta();
-  const double deltaPhi = reco::deltaPhi(mu2.phi(),mu1.phi());
-  
-  const double deltaVz = mu2.vz() - mu1.vz();
-  
-  // dimuon invariant mass, pt and rapidity
-  const reco::Candidate::LorentzVector diMuVec = mu1.p4() + mu2.p4();
-  const double diMass = diMuon.mass();
-  const double diPt = diMuon.pt();
-  const double diY = diMuon.y();
-  
-  hists.EtaLow->Fill(etaLow);
-  hists.EtaHigh->Fill(etaHigh);
-  hists.PtLow->Fill(ptLow);
-  hists.PtHigh->Fill(ptHigh);
-  hists.DeltaEta->Fill(deltaEta);
-  hists.DeltaPhi->Fill(deltaPhi*180./M_PI);
-  hists.DeltaVz->Fill(deltaVz);
-  hists.DiMass->Fill(diMass);
-  hists.DiPt->Fill(diPt);
-  hists.DiY->Fill(diY);
-}
-
-
-
 // ------------ method called to for each event  ------------
 void
-DiMuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+DimuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   // get handle on di-muon collection
-  const edm::InputTag diMuonSource(parameterSet_.getParameter<edm::InputTag>("diMuonSource"));
-  edm::Handle<reco::CandidateView> diMuons;
-  iEvent.getByLabel(diMuonSource, diMuons);
+  const edm::InputTag dimuonSource(parameterSet_.getParameter<edm::InputTag>("dimuonSource"));
+  edm::Handle<reco::CandidateView> dimuons;
+  iEvent.getByLabel(dimuonSource, dimuons);
   
   // Event properties
-  unsigned int nDimuonOC(0), nDimuonSC(0);
+  unsigned int nDimuon(999);
+  nDimuon = dimuons->size();
+  NDimuon->Fill(nDimuon);
   
+  // Dimuon properties
   reco::CandidateView::const_iterator i_cand;
-  for(i_cand = diMuons->begin(); i_cand != diMuons->end(); ++i_cand){
-    const reco::Candidate& diMuon = *i_cand;
-    if(diMuon.charge()==0){
-      this->fillHists(histsOC_, diMuon);
-      ++nDimuonOC;
-    }
-    else{
-      this->fillHists(histsSC_, diMuon);
-      ++nDimuonSC;
-    }
+  for(i_cand = dimuons->begin(); i_cand != dimuons->end(); ++i_cand){
+    const reco::Candidate& dimuon = *i_cand;
+    
+    const reco::Candidate* daughter1 = dimuon.daughter(0);
+    const reco::Candidate* daughter2 = dimuon.daughter(1);
+    
+    const pat::MuonCollection::const_reference mu1 = dynamic_cast<const pat::Muon&>(*daughter1->masterClone());
+    const pat::MuonCollection::const_reference mu2 = dynamic_cast<const pat::Muon&>(*daughter2->masterClone());
+    
+    // eta and pt
+    const double etaLow = std::fabs(mu1.eta())<std::fabs(mu2.eta()) ? mu1.eta() : mu2.eta();
+    const double etaHigh = std::fabs(mu1.eta())>std::fabs(mu2.eta()) ? mu1.eta() : mu2.eta();
+    const double ptLow = mu1.pt()<mu2.pt() ? mu1.pt() : mu2.pt();
+    const double ptHigh = mu1.pt()>mu2.pt() ? mu1.pt() : mu2.pt();
+    
+    // eta, phi difference
+    const double deltaEta = mu2.eta() - mu1.eta();
+    const double deltaPhi = reco::deltaPhi(mu2.phi(),mu1.phi());
+    
+    const double deltaVz = mu2.vz() - mu1.vz();
+    
+    // dimuon invariant mass, pt and rapidity
+    //const reco::Candidate::LorentzVector dimuVec = mu1.p4() + mu2.p4();
+    const double diMass = dimuon.mass();
+    const double diPt = dimuon.pt();
+    const double diY = dimuon.y();
+    
+    EtaLow->Fill(etaLow);
+    EtaHigh->Fill(etaHigh);
+    PtLow->Fill(ptLow);
+    PtHigh->Fill(ptHigh);
+    DeltaEta->Fill(deltaEta);
+    DeltaPhi->Fill(deltaPhi*180./M_PI);
+    DeltaVz->Fill(deltaVz);
+    DiMass->Fill(diMass);
+    DiPt->Fill(diPt);
+    DiY->Fill(diY);
+    
   }
-  histsOC_.NDimuon->Fill(nDimuonOC);
-  histsSC_.NDimuon->Fill(nDimuonSC);
 }
 
 
 
 // ------------ method called once each job just before starting event loop  ------------
 void 
-DiMuonAnalyzer::beginJob()
+DimuonAnalyzer::beginJob()
 {
   edm::Service<TFileService> fileService;
   
-  TFileDirectory dirSC = fileService->mkdir("SameCharge");
-  this->bookHists(histsSC_,dirSC);
+  TFileDirectory dirEvent = fileService->mkdir("EventProperties");
+  NDimuon = dirEvent.make<TH1F>("h_nDimuon","# dimuons;# dimuons; # events",20,0,20);
   
-  TFileDirectory dirOC = fileService->mkdir("OppositeCharge");
-  this->bookHists(histsOC_,dirOC);
+  TFileDirectory dirDimuon = fileService->mkdir("DimuonProperties");
+  EtaLow = dirDimuon.make<TH1F>("h_etaLow","muon with lower absolute value of #eta;#eta;# muons",120,-3,3);
+  EtaHigh = dirDimuon.make<TH1F>("h_etaHigh","muon w/ higher absolute value of #eta;#eta;# muons",120,-3,3);
+  PtLow = dirDimuon.make<TH1F>("h_ptLow","muon w/ lower p_{t};p_{t}  [GeV];# muons",100,0,200);
+  PtHigh = dirDimuon.make<TH1F>("h_ptHigh","muon w/ higher p_{t};p_{t}  [GeV];# muons",100,0,200);
+  DeltaEta = dirDimuon.make<TH1F>("h_deltaEta","#Delta#eta;#Delta#eta;# muon pairs",100,-5,5);
+  DeltaPhi = dirDimuon.make<TH1F>("h_deltaPhi","#Delta#phi;#Delta#phi  [ ^{o}];# muon pairs",100,-200,200);
+  DeltaVz = dirDimuon.make<TH1F>("h_deltaVz","#Delta v_{z};#Delta v_{z};# muon pairs",100,-1.,1.);
+  DiMass = dirDimuon.make<TH1F>("h_diMass","dimuon invariant mass;M_{#mu#mu} [GeV];# muon pairs",300,0.,600.);
+  DiPt = dirDimuon.make<TH1F>("h_diPt","dimuon p_{t};p_{t}  [GeV];# muon pairs",100,0,200);
+  DiY = dirDimuon.make<TH1F>("h_diY","dimuon rapidity y;y;# muon pairs",120,-3,3);
 }
 
 
 
 // ------------ method called once each job just after ending the event loop  ------------
 void 
-DiMuonAnalyzer::endJob() {
+DimuonAnalyzer::endJob() {
 }
 
 
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(DiMuonAnalyzer);
+DEFINE_FWK_MODULE(DimuonAnalyzer);

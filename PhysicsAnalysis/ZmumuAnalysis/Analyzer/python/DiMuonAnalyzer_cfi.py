@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-DiMuonAnalyzer = cms.EDAnalyzer('DiMuonAnalyzer',
+DimuonAnalyzer = cms.EDAnalyzer('DimuonAnalyzer',
     # di-muon collection (not yet in common PAT-tuple)
-    diMuonSource = cms.InputTag("selectedDimuons"),
+    dimuonSource = cms.InputTag("selectedDimuons"),
 )
