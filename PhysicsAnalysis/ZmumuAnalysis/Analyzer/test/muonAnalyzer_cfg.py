@@ -33,6 +33,13 @@ process.load("ZmumuAnalysis.Analyzer.MuonAnalyzer_cfi")
 process.MuonAnalyzer1 = process.MuonAnalyzer.clone(
     #src = 'selectedPatMuons',
 )
+process.MuonAnalyzer2 = process.MuonAnalyzer1.clone(
+    whichHists = "basic",
+)
+process.MuonAnalyzer3 = process.MuonAnalyzer2.clone(
+    whichHists = "veryBasic",
+)
+
 
 
 
@@ -46,5 +53,7 @@ process.TFileService = cms.Service("TFileService",
 
 ## Path
 process.p = cms.Path(
-    process.MuonAnalyzer1
+    process.MuonAnalyzer1+
+    process.MuonAnalyzer2+
+    process.MuonAnalyzer3
 )

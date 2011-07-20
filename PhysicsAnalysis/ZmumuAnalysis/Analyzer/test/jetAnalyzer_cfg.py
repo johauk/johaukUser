@@ -31,13 +31,12 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
 ## Analyzer under test
 process.load("ZmumuAnalysis.Analyzer.JetAnalyzer_cfi")
 process.JetAnalyzer1 = process.JetAnalyzer.clone(
-    #jetSource = 'selectedPatJets',
-)
-process.JetAnalyzer2 = process.JetAnalyzer.clone(
+    #jetSource = 'selectedPatJets',       # not in present PAT-tuple
     jetSource = 'selectedPatJetsAK5PF',
+    #jetSource = 'selectedPatJetsAK5JPT', # not in present PAT-tuple
 )
-process.JetAnalyzer3 = process.JetAnalyzer.clone(
-    jetSource = 'selectedPatJetsAK5JPT',
+process.JetAnalyzer2 = process.JetAnalyzer1.clone(
+    whichHists = "basic",
 )
 
 
@@ -52,7 +51,6 @@ process.TFileService = cms.Service("TFileService",
 
 ## Path
 process.p = cms.Path(
-    process.JetAnalyzer1
-    *process.JetAnalyzer2
-    #*process.JetAnalyzer3  # not in present PAT-tuple, not yet implemented in CMSSW_3_6_X
+    process.JetAnalyzer1+
+    process.JetAnalyzer2
 )

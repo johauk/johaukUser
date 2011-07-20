@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu Aug 19 17:46:32 CEST 2010
-// $Id: MuonAnalyzer.cc,v 1.2 2010/10/22 12:19:33 hauk Exp $
+// $Id: MuonAnalyzer.cc,v 1.3 2011/04/28 09:35:16 hauk Exp $
 //
 //
 
@@ -58,8 +58,11 @@ class MuonAnalyzer : public edm::EDAnalyzer {
 
       // ----------member data ---------------------------
       
-
+      
       const edm::ParameterSet parameterSet_;
+      
+      enum WhichHists{major, basic, veryBasic};
+      WhichHists whichHists_;
       
       TH1* NMuon;
       
@@ -101,6 +104,13 @@ NormalizedChi2(0),
 Eta(0), Pt(0), D0Beamspot(0),
 IsoTrk(0), IsoCombRel(0)
 {
+  const std::string whichHists(parameterSet_.getParameter<std::string>("whichHists"));
+  if(whichHists=="major")whichHists_ = major;
+  else if(whichHists=="basic")whichHists_ = basic;
+  else if(whichHists=="veryBasic")whichHists_ = veryBasic;
+  else throw edm::Exception( edm::errors::Configuration,   
+                             "Invalid parameter for whichHists: \""+whichHists+ 
+                             "\"\nCandidates are \"major\", \"basic\", \"veryBasic\"\n");
 }
 
 
@@ -129,51 +139,43 @@ MuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   
   // Muon properties
   // All values taken from global muon, except for TrackerMuon: numberOfValidTrackerHits, numberOfValidPixelHits
-  bool isGlobal(false), isTracker(false);
-  unsigned int numberOfValidTrackerHits(999), numberOfValidPixelHits(999);
-  unsigned int numberOfMatches(999);
-  unsigned int numberOfValidMuonHits(999);
-  double normalizedChi2(9999.);
-  double eta(-999.), pt(-999.), d0Beamspot(-999.);
-  double isoTrk(-999.), isoCombRel(-999.);
-  
   pat::MuonCollection::const_iterator i_muon;
   for(i_muon = muons->begin(); i_muon != muons->end(); ++i_muon){
-    isGlobal = i_muon->isGlobalMuon();
-    isTracker = i_muon->isTrackerMuon();
-    if(isTracker){
-      numberOfValidTrackerHits = i_muon->track()->hitPattern().numberOfValidTrackerHits();
-      numberOfValidPixelHits = i_muon->track()->hitPattern().numberOfValidPixelHits();
-    }
-    numberOfMatches = i_muon->numberOfMatches();
-    if(isGlobal){
-      numberOfValidMuonHits = i_muon->globalTrack()->hitPattern().numberOfValidMuonHits();
-      normalizedChi2 = i_muon->globalTrack()->normalizedChi2();
-    }
-    eta = i_muon->eta();
-    pt = i_muon->pt();
-    d0Beamspot = i_muon->dB();
-    
-    isoTrk = i_muon->trackIso();
-    isoCombRel = (isoTrk + i_muon->caloIso())/pt;
-    
-    IsGlobal->Fill(isGlobal);
-    IsTracker->Fill(isTracker);
-    if(isTracker){
-      NumberOfValidTrackerHits->Fill(numberOfValidTrackerHits);
-      NumberOfValidPixelHits->Fill(numberOfValidPixelHits);
-    }
-    NumberOfMatches->Fill(numberOfMatches);
-    if(isGlobal){
-      NumberOfValidMuonHits->Fill(numberOfValidMuonHits);
-      NormalizedChi2->Fill(normalizedChi2);
-    }
+    const double eta = i_muon->eta();
+    const double pt = i_muon->pt();
+    const double d0Beamspot = i_muon->dB();
+    const double isoTrk = i_muon->trackIso();
+    const double isoCombRel = (isoTrk + i_muon->caloIso())/pt;
     Eta->Fill(eta);
     Pt->Fill(pt);
     D0Beamspot->Fill(d0Beamspot);
-    
-    IsoTrk->Fill(isoTrk);
     IsoCombRel->Fill(isoCombRel);
+    
+    if(whichHists_!=major){
+      const bool isGlobal = i_muon->isGlobalMuon();
+      const bool isTracker = i_muon->isTrackerMuon();
+      if(whichHists_==veryBasic){
+        IsGlobal->Fill(isGlobal);
+        IsTracker->Fill(isTracker);
+      }
+      
+      if(isTracker){
+        const unsigned int numberOfValidTrackerHits = i_muon->track()->hitPattern().numberOfValidTrackerHits();
+        const unsigned int numberOfValidPixelHits = i_muon->track()->hitPattern().numberOfValidPixelHits();
+        NumberOfValidTrackerHits->Fill(numberOfValidTrackerHits);
+        NumberOfValidPixelHits->Fill(numberOfValidPixelHits);
+      }
+      if(isGlobal){
+        const unsigned int numberOfValidMuonHits = i_muon->globalTrack()->hitPattern().numberOfValidMuonHits();
+        const double normalizedChi2 = i_muon->globalTrack()->normalizedChi2();
+        NumberOfValidMuonHits->Fill(numberOfValidMuonHits);
+        NormalizedChi2->Fill(normalizedChi2);
+      }
+      
+      const double numberOfMatches = i_muon->numberOfMatches();
+      NumberOfMatches->Fill(numberOfMatches);
+      IsoTrk->Fill(isoTrk);
+    }
   }
 }
 
@@ -182,25 +184,47 @@ MuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 void 
 MuonAnalyzer::beginJob()
 {
+  int nMuonMax(6);
+  double normalizedChi2Max(10);
+  double d0BeamspotMax(0.02);
+  double isoTrkMax(10);
+  double isoCombRelMax(0.15);
+  
+  if(whichHists_==veryBasic){
+    nMuonMax = 20;
+    normalizedChi2Max = 100.;
+    d0BeamspotMax = 1.;
+    isoTrkMax = 100.;
+    isoCombRelMax = 15.;
+  }
+  else if(whichHists_==basic){
+    isoTrkMax = 100.;
+    isoCombRelMax = 15.;
+  }
+  
+  
   edm::Service<TFileService> fileService;
 
   TFileDirectory dirEvent = fileService->mkdir("EventProperties");
-  NMuon = dirEvent.make<TH1F>("h_nMuon","# muons;# muons; # events",20,0,20);
+  NMuon = dirEvent.make<TH1F>("h_nMuon","# muons;# muons; # events",nMuonMax,0,nMuonMax);
   
   TFileDirectory dirMuon = fileService->mkdir("MuonProperties");
-  IsGlobal = dirMuon.make<TH1F>("h_isGlobal","global muons;is global;# muons",2,0,2);
-  IsTracker = dirMuon.make<TH1F>("h_isTracker","tracker muons;is tracker;# muons",2,0,2);
-  NumberOfValidTrackerHits = dirMuon.make<TH1F>("h_nTrackerHits","# hits (tracker fit) [tracker];# hits  [tracker];# muons",40,0,40);
-  NumberOfValidPixelHits = dirMuon.make<TH1F>("h_nPixelHits","# hits (tracker fit) [pixel];# hits  [pixel];# muons",10,0,10);
-  NumberOfMatches = dirMuon.make<TH1F>("h_nMatches","# matches [muon];#  matches  [muon];# muons",10,0,10);
-  NumberOfValidMuonHits = dirMuon.make<TH1F>("h_nMuonHitsGlobal","# hits (global fit) [muon];# hits  [muon];# muons",50,0,50);
-  NormalizedChi2 = dirMuon.make<TH1F>("h_chi2","normalized #chi^{2};#chi^{2}/ndof;# muons",50,0,100);
+  if(whichHists_==veryBasic){
+    IsGlobal = dirMuon.make<TH1F>("h_isGlobal","global muons;is global;# muons",2,0,2);
+    IsTracker = dirMuon.make<TH1F>("h_isTracker","tracker muons;is tracker;# muons",2,0,2);
+  }
+  if(whichHists_==veryBasic || whichHists_==basic){
+    NumberOfValidTrackerHits = dirMuon.make<TH1F>("h_nTrackerHits","# hits (tracker fit) [tracker];# hits  [tracker];# muons",40,0,40);
+    NumberOfValidPixelHits = dirMuon.make<TH1F>("h_nPixelHits","# hits (tracker fit) [pixel];# hits  [pixel];# muons",10,0,10);
+    NumberOfMatches = dirMuon.make<TH1F>("h_nMatches","# matches [muon];#  matches  [muon];# muons",10,0,10);
+    NumberOfValidMuonHits = dirMuon.make<TH1F>("h_nMuonHitsGlobal","# hits (global fit) [muon];# hits  [muon];# muons",50,0,50);
+    NormalizedChi2 = dirMuon.make<TH1F>("h_chi2","normalized #chi^{2};#chi^{2}/ndof;# muons",50,0,normalizedChi2Max);
+    IsoTrk = dirMuon.make<TH1F>("h_isoTrk","Isolation (tracker);I_{trk}  [GeV];# muons",100,0,isoTrkMax);
+  }
   Eta = dirMuon.make<TH1F>("h_eta","pseudorapidity #eta;#eta;# muons",60,-3,3);
   Pt = dirMuon.make<TH1F>("h_pt","transverse momentum p_{t};p_{t};# muons",100,0,200);
-  D0Beamspot = dirMuon.make<TH1F>("h_d0Beamspot","closest approach d_{0} wrt. beamspot;d_{0, BS}  [cm];# muons",100,-1,1);
-  
-  IsoTrk = dirMuon.make<TH1F>("h_isoTrk","Isolation (tracker);I_{trk}  [GeV];# muons",100,0,100);
-  IsoCombRel = dirMuon.make<TH1F>("h_isoCombRel","Isolation (relative combined);I_{comb}^{rel}  [GeV];# muons",100,0,10);
+  D0Beamspot = dirMuon.make<TH1F>("h_d0Beamspot","closest approach d_{0} wrt. beamspot;d_{0, BS}  [cm];# muons",100,-d0BeamspotMax,d0BeamspotMax);
+  IsoCombRel = dirMuon.make<TH1F>("h_isoCombRel","Isolation (relative combined);I_{comb}^{rel}  [GeV];# muons",100,0,isoCombRelMax);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
