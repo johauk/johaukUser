@@ -21,7 +21,7 @@ hadd $DIRBASE/hists/data/allData.root $DIRBASE/hists/data/*.root
 sumTriggerReports2.pl $DIRBASE/analysis/data/naf_run2011A_May10ReRecoV1_160404_163869_cfg/out*.txt > $DIRBASE/hists/data/run2011A_May10ReRecoV1_160404_163869.txt
 sumTriggerReports2.pl $DIRBASE/analysis/data/naf_run2011A_PromptRecoV4_163870_167784_cfg/out*.txt > $DIRBASE/hists/data/run2011A_PromptRecoV4_163870_167784.txt
 
-sumTriggerReports2.pl $DIRBASE/hists/data/run2011*PromptReco*.txt > $DIRBASE/hists/data/allData.txt
+sumTriggerReports2.pl $DIRBASE/hists/data/run2011*.txt > $DIRBASE/hists/data/allData.txt
 
 
 
