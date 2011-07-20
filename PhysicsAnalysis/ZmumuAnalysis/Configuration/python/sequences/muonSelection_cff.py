@@ -42,22 +42,21 @@ selectedPatMuonsTriggerMatch = cms.EDProducer("PATTriggerMatchMuonEmbedder",
 
 
 
-
-## Loose selection
-looseMuons = selectedPatMuons.clone(
-    src = 'selectedPatMuonsTriggerMatch',
-    cut = 'isGlobalMuon &'
-          'isTrackerMuon &'
-          'track.hitPattern.numberOfValidTrackerHits > 10 &'
-	  'abs(eta) < 2.4 &'
-	  'pt > 10.',
-)
+### Loose selection
+#looseMuons = selectedPatMuons.clone(
+#    src = 'selectedPatMuonsTriggerMatch',
+#    cut = 'isGlobalMuon &'
+#          'isTrackerMuon &'
+#          'track.hitPattern.numberOfValidTrackerHits > 10 &'
+#	  'abs(eta) < 2.4 &'
+#	  'pt > 10.',
+#)
 
 
 
 ## Tight selection
 tightMuons = selectedPatMuons.clone(
-    src = 'looseMuons',
+    src = 'selectedPatMuonsTriggerMatch',
     cut = 'isGlobalMuon &'
           'isTrackerMuon &'
 	  'track.hitPattern.numberOfValidTrackerHits > 10 &'
@@ -72,18 +71,27 @@ tightMuons = selectedPatMuons.clone(
 
 
 
-looseHltMuons = selectedPatMuons.clone(
-    src = 'looseMuons',
-    cut = 'triggerObjectMatches.size > 0',
-)
-tightHltMuons = selectedPatMuons.clone(
+## Isolated muon selection
+isolatedMuons = selectedPatMuons.clone(
     src = 'tightMuons',
-    cut = 'triggerObjectMatches.size > 0',
+    cut = '(trackIso + caloIso)/pt < 0.15',
 )
 
 
 
-
+## Muons matched to HLT muon object
+#looseHltMuons = selectedPatMuons.clone(
+#    src = 'looseMuons',
+#    cut = 'triggerObjectMatches.size > 0',
+#)
+#tightHltMuons = selectedPatMuons.clone(
+#    src = 'tightMuons',
+#    cut = 'triggerObjectMatches.size > 0',
+#)
+isolatedHltMuons = selectedPatMuons.clone(
+    src = 'isolatedMuons',
+    cut = 'triggerObjectMatches.size > 0',
+)
 
 
 
@@ -98,14 +106,14 @@ oneInitialMuonSelection = countPatMuons.clone(
     src = 'selectedPatMuons',
     minNumber = 1,
 )
-oneLooseMuonSelection = countPatMuons.clone(
-    src = 'looseMuons',
-    minNumber = 1,
-)
-looseMuonSelection = countPatMuons.clone(
-    src = 'looseMuons',
-    minNumber = 2,
-)
+#oneLooseMuonSelection = countPatMuons.clone(
+#    src = 'looseMuons',
+#    minNumber = 1,
+#)
+#looseMuonSelection = countPatMuons.clone(
+#    src = 'looseMuons',
+#    minNumber = 2,
+#)
 oneTightMuonSelection = countPatMuons.clone(
     src = 'tightMuons',
     minNumber = 1,
@@ -114,8 +122,20 @@ tightMuonSelection = countPatMuons.clone(
     src = 'tightMuons',
     minNumber = 2,
 )
-tightHltMuonSelection = countPatMuons.clone(
-    src = 'tightHltMuons',
+#tightHltMuonSelection = countPatMuons.clone(
+#    src = 'tightHltMuons',
+#    minNumber = 1,
+#)
+oneIsolatedMuonSelection = countPatMuons.clone(
+    src = 'isolatedMuons',
+    minNumber = 1,
+)
+isolatedMuonSelection = countPatMuons.clone(
+    src = 'isolatedMuons',
+    minNumber = 2,
+)
+isolatedHltMuonSelection = countPatMuons.clone(
+    src = 'isolatedHltMuons',
     minNumber = 1,
 )
 
@@ -139,22 +159,27 @@ patTriggerSequence = cms.Sequence(
 
 
 buildMuonCollections = cms.Sequence(
-    patTriggerSequence
-    *looseMuons
-    *tightMuons
-    #*looseHltMuons
-    *tightHltMuons
+    patTriggerSequence*
+    #looseMuons*
+    tightMuons*
+    isolatedMuons*
+    #looseHltMuons*
+    #tightHltMuons
+    isolatedHltMuons
 )
 
 
 
 muonSelection = cms.Sequence(
-    oneInitialMuonSelection
-    *oneLooseMuonSelection
-    *oneTightMuonSelection
-    *looseMuonSelection
-    *tightMuonSelection
-    *tightHltMuonSelection
+    oneInitialMuonSelection*
+    #oneLooseMuonSelection*
+    oneTightMuonSelection*
+    oneIsolatedMuonSelection*
+    #looseMuonSelection*
+    tightMuonSelection*
+    isolatedMuonSelection*
+    #tightHltMuonSelection*
+    isolatedHltMuonSelection
 )
 
 
