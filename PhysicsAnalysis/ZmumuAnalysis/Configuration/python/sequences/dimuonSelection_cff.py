@@ -207,12 +207,15 @@ dimuonSelection = cms.Sequence(
     finalDimuonSelection
 )
 
-dimuonZVetoLowSelection = cms.Sequence(
-    selectedDimuonSelection*
-    cleanDimuonSelection*
-    goodDimuonSelection*
-    finalDimuonZVetoLowSelection
-)
+
+dimuonZVetoLowSelection = dimuonSelection.copy()
+dimuonZVetoLowSelection.replace(finalDimuonSelection,finalDimuonZVetoLowSelection)
+#dimuonZVetoLowSelection = cms.Sequence(
+#    selectedDimuonSelection*
+#    cleanDimuonSelection*
+#    goodDimuonSelection*
+#    finalDimuonZVetoLowSelection
+#)
 
 dimuonZVetoHighSelection = cms.Sequence(
     selectedDimuonSelection*
