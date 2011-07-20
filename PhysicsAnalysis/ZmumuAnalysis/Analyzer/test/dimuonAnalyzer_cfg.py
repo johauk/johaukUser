@@ -3,7 +3,7 @@ import os
 import FWCore.ParameterSet.Config as cms
 
 
-process = cms.Process("DiMuonAnalyzer")
+process = cms.Process("DimuonAnalyzer")
 
 
 
@@ -41,7 +41,7 @@ process.selectedDimuons = dimuons.clone(
 
 
 ## Analyzer under test
-process.load("ZmumuAnalysis.Analyzer.DiMuonAnalyzer_cfi")
+process.load("ZmumuAnalysis.Analyzer.DimuonAnalyzer_cfi")
 process.DimuonAnalyzer1 = process.DimuonAnalyzer.clone(
     #dimuonSource = 'selectedDimuons',
 )
