@@ -6,8 +6,8 @@
 <use name="DataFormats/Common"/>
 <use name="DataFormats/PatCandidates"/>
 <use name="DataFormats/Candidate"/>
+<use name="DataFormats/Math"/>
 <use name="DataFormats/VertexReco"/>
-<use name="PhysicsTools/PatUtils"/>
 <library file="*.cc" name="ZmumuAnalysisProducerPlugins">
   <use name="ZmumuAnalysis/Producer"/>
   <flags EDM_PLUGIN="1"/>
