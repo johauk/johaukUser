@@ -225,11 +225,13 @@ DimuonAnalyzerStepZVetoHighNoMet7 = DimuonAnalyzerStepZVetoHigh7.clone()
 
 ## jet analyzer
 from ZmumuAnalysis.Analyzer.JetAnalyzer_cfi import *
-JetAnalyzerStep4a = JetAnalyzer.clone(jetSource = 'selectedPatJetsAK5PF',)
-JetAnalyzerStep4b = JetAnalyzer.clone(jetSource = 'cleanJets',)
+#JetAnalyzerStep4a = JetAnalyzer.clone(jetSource = 'selectedPatJetsAK5PF',whichHists = "basic",)
+JetAnalyzerStep4b = JetAnalyzer.clone(jetSource = 'cleanJets',whichHists = "basic",)
 JetAnalyzerStep4c = JetAnalyzer.clone(jetSource = 'goodIdJets',)
 JetAnalyzerStep4d = JetAnalyzer.clone(jetSource = 'goodJets',)
-JetAnalyzerStep4 = JetAnalyzer.clone(jetSource = 'finalJets',)
+JetAnalyzerStep4J = JetAnalyzer.clone(jetSource = 'finalJets',whichHists = "basic",)
+JetAnalyzerStep4Bhe = JetAnalyzer.clone(jetSource = 'bSsvHeMJets',whichHists = "basic",)
+JetAnalyzerStep4Bhp = JetAnalyzer.clone(jetSource = 'bSsvHpTJets',whichHists = "basic",)
 JetAnalyzerStep5J = JetAnalyzer.clone(jetSource = 'finalJets',)
 JetAnalyzerStep5Bhe = JetAnalyzer.clone(jetSource = 'bSsvHeMJets',)
 JetAnalyzerStep5Bhp = JetAnalyzer.clone(jetSource = 'bSsvHpTJets',)
@@ -249,8 +251,12 @@ JetAnalyzerStep7J = JetAnalyzer.clone(jetSource = 'finalJets',)
 JetAnalyzerStep7Bhe = JetAnalyzer.clone(jetSource = 'bSsvHeMJets',)
 JetAnalyzerStep7Bhp = JetAnalyzer.clone(jetSource = 'bSsvHpTJets',)
 
+JetAnalyzerStepZVetoLow4b = JetAnalyzerStep4b.clone(jetSource = 'goodJetsZVetoLow',)
+JetAnalyzerStepZVetoLow4c = JetAnalyzerStep4c.clone(jetSource = 'goodJetsZVetoLow',)
 JetAnalyzerStepZVetoLow4d = JetAnalyzerStep4d.clone(jetSource = 'goodJetsZVetoLow',)
-JetAnalyzerStepZVetoLow4 = JetAnalyzerStep4.clone(jetSource = 'finalJetsZVetoLow',)
+JetAnalyzerStepZVetoLow4J = JetAnalyzerStep4J.clone(jetSource = 'finalJetsZVetoLow',)
+JetAnalyzerStepZVetoLow4Bhe = JetAnalyzerStep4Bhe.clone(jetSource = 'bSsvHeMJetsZVetoLow',)
+JetAnalyzerStepZVetoLow4Bhp = JetAnalyzerStep4Bhp.clone(jetSource = 'bSsvHpTJetsZVetoLow',)
 JetAnalyzerStepZVetoLow5J = JetAnalyzerStep5J.clone(jetSource = 'finalJetsZVetoLow',)
 JetAnalyzerStepZVetoLow5Bhe = JetAnalyzerStep5Bhe.clone(jetSource = 'bSsvHeMJetsZVetoLow',)
 JetAnalyzerStepZVetoLow5Bhp = JetAnalyzerStep5Bhp.clone(jetSource = 'bSsvHpTJetsZVetoLow',)
@@ -269,8 +275,12 @@ JetAnalyzerStepZVetoLow7cBhp = JetAnalyzerStep7cBhp.clone(jetSource = 'bSsvHpTJe
 JetAnalyzerStepZVetoLow7J = JetAnalyzerStep7J.clone(jetSource = 'finalJetsZVetoLow',)
 JetAnalyzerStepZVetoLow7Bhe = JetAnalyzerStep7Bhe.clone(jetSource = 'bSsvHeMJetsZVetoLow',)
 JetAnalyzerStepZVetoLow7Bhp = JetAnalyzerStep7Bhp.clone(jetSource = 'bSsvHpTJetsZVetoLow',)
+JetAnalyzerStepZVetoHigh4b = JetAnalyzerStep4b.clone(jetSource = 'goodJetsZVetoHigh',)
+JetAnalyzerStepZVetoHigh4c = JetAnalyzerStep4c.clone(jetSource = 'goodJetsZVetoHigh',)
 JetAnalyzerStepZVetoHigh4d = JetAnalyzerStep4d.clone(jetSource = 'goodJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh4 = JetAnalyzerStep4.clone(jetSource = 'finalJetsZVetoHigh',)
+JetAnalyzerStepZVetoHigh4J = JetAnalyzerStep4J.clone(jetSource = 'finalJetsZVetoHigh',)
+JetAnalyzerStepZVetoHigh4Bhe = JetAnalyzerStep4Bhe.clone(jetSource = 'bSsvHeMJetsZVetoHigh',)
+JetAnalyzerStepZVetoHigh4Bhp = JetAnalyzerStep4Bhp.clone(jetSource = 'bSsvHpTJetsZVetoHigh',)
 JetAnalyzerStepZVetoHigh5J = JetAnalyzerStep5J.clone(jetSource = 'finalJetsZVetoHigh',)
 JetAnalyzerStepZVetoHigh5Bhe = JetAnalyzerStep5Bhe.clone(jetSource = 'bSsvHeMJetsZVetoHigh',)
 JetAnalyzerStepZVetoHigh5Bhp = JetAnalyzerStep5Bhp.clone(jetSource = 'bSsvHpTJetsZVetoHigh',)
@@ -372,22 +382,19 @@ MetAnalyzerStepZVetoHighNoMet7 = MetAnalyzerStepZVetoHigh7.clone()
 #******************************************************************************************
 
 from ZmumuAnalysis.Utils.RunEventListing_cff import *
-RunEventListingStep3 = RunEventListingCreateTreeOnly.clone()
 RunEventListingStep5 = RunEventListingCreateTreeOnly.clone()
 RunEventListingStep6 = RunEventListingCreateTreeOnly.clone()
-RunEventListingStep7 = RunEventListingCreateTreeOnly.clone()
-RunEventListingStepZVetoLow3 = RunEventListingCreateTreeOnly.clone()
+RunEventListingStep7a = RunEventListingCreateTreeOnly.clone()
 RunEventListingStepZVetoLow5 = RunEventListingCreateTreeOnly.clone()
 RunEventListingStepZVetoLow6 = RunEventListingCreateTreeOnly.clone()
-RunEventListingStepZVetoLow7 = RunEventListingCreateTreeOnly.clone()
-RunEventListingStepZVetoHigh3 = RunEventListingCreateTreeOnly.clone()
+RunEventListingStepZVetoLow7a = RunEventListingCreateTreeOnly.clone()
 RunEventListingStepZVetoHigh5 = RunEventListingCreateTreeOnly.clone()
 RunEventListingStepZVetoHigh6 = RunEventListingCreateTreeOnly.clone()
-RunEventListingStepZVetoHigh7 = RunEventListingCreateTreeOnly.clone()
+RunEventListingStepZVetoHigh7a = RunEventListingCreateTreeOnly.clone()
 
-RunEventListingStepNoMet7 = RunEventListingCreateTreeOnly.clone()
-RunEventListingStepZVetoLowNoMet7 = RunEventListingCreateTreeOnly.clone()
-RunEventListingStepZVetoHighNoMet7 = RunEventListingCreateTreeOnly.clone()
+RunEventListingStepNoMet7a = RunEventListingCreateTreeOnly.clone()
+RunEventListingStepZVetoLowNoMet7a = RunEventListingCreateTreeOnly.clone()
+RunEventListingStepZVetoHighNoMet7a = RunEventListingCreateTreeOnly.clone()
 
 
 
@@ -474,13 +481,11 @@ step3 = cms.Sequence(
     EventCounterStep3+
     VertexAnalyzerStep3+
     MuonAnalyzerStep3+
-    DimuonAnalyzerStep3+
-    RunEventListingStep3
+    DimuonAnalyzerStep3
 )
 
 step4a = cms.Sequence(
-    EventCounterStep4a+
-    JetAnalyzerStep4a
+    EventCounterStep4a
 )
 step4b = cms.Sequence(
     EventCounterStep4b+
@@ -498,7 +503,9 @@ step4 = cms.Sequence(
     EventCounterStep4+
     MuonAnalyzerStep4+
     DimuonAnalyzerStep4+
-    JetAnalyzerStep4
+    JetAnalyzerStep4J+
+    JetAnalyzerStep4Bhe+
+    JetAnalyzerStep4Bhp
 )
 
 step5 = cms.Sequence(
@@ -532,7 +539,8 @@ step7a = cms.Sequence(
     JetAnalyzerStep7aJ+
     JetAnalyzerStep7aBhe+
     JetAnalyzerStep7aBhp+
-    MetAnalyzerStep7a
+    MetAnalyzerStep7a+
+    RunEventListingStep7a
 )
 step7b = cms.Sequence(
     EventCounterStep7b+
@@ -559,8 +567,7 @@ step7 = cms.Sequence(
     JetAnalyzerStep7J+
     JetAnalyzerStep7Bhe+
     JetAnalyzerStep7Bhp+
-    MetAnalyzerStep7+
-    RunEventListingStep7
+    MetAnalyzerStep7
 )
 
 
@@ -574,19 +581,20 @@ stepZVetoLow3e = cms.Sequence(
 stepZVetoLow3 = cms.Sequence(
     EventCounterStepZVetoLow3+
     #VertexAnalyzerStepZVetoLow3+
-    MuonAnalyzerStepZVetoLow3+
-    #DimuonAnalyzerStepZVetoLow3+
-    RunEventListingStepZVetoLow3
+    MuonAnalyzerStepZVetoLow3
+    #DimuonAnalyzerStepZVetoLow3
 )
 
 stepZVetoLow4a = cms.Sequence(
     EventCounterStepZVetoLow4a
 )
 stepZVetoLow4b = cms.Sequence(
-    EventCounterStepZVetoLow4b
+    EventCounterStepZVetoLow4b+
+    JetAnalyzerStepZVetoLow4b
 )
 stepZVetoLow4c = cms.Sequence(
-    EventCounterStepZVetoLow4c
+    EventCounterStepZVetoLow4c+
+    JetAnalyzerStepZVetoLow4c
 )
 stepZVetoLow4d = cms.Sequence(
     EventCounterStepZVetoLow4d+
@@ -596,7 +604,9 @@ stepZVetoLow4 = cms.Sequence(
     EventCounterStepZVetoLow4+
     MuonAnalyzerStepZVetoLow4+
     DimuonAnalyzerStepZVetoLow4+
-    JetAnalyzerStepZVetoLow4
+    JetAnalyzerStepZVetoLow4J+
+    JetAnalyzerStepZVetoLow4Bhe+
+    JetAnalyzerStepZVetoLow4Bhp
 )
 
 stepZVetoLow5 = cms.Sequence(
@@ -630,7 +640,8 @@ stepZVetoLow7a = cms.Sequence(
     JetAnalyzerStepZVetoLow7aJ+
     JetAnalyzerStepZVetoLow7aBhe+
     JetAnalyzerStepZVetoLow7aBhp+
-    MetAnalyzerStepZVetoLow7a
+    MetAnalyzerStepZVetoLow7a+
+    RunEventListingStepZVetoLow7a
 )
 stepZVetoLow7b = cms.Sequence(
     EventCounterStepZVetoLow7b+
@@ -657,8 +668,7 @@ stepZVetoLow7 = cms.Sequence(
     JetAnalyzerStepZVetoLow7J+
     JetAnalyzerStepZVetoLow7Bhe+
     JetAnalyzerStepZVetoLow7Bhp+
-    MetAnalyzerStepZVetoLow7+
-    RunEventListingStepZVetoLow7
+    MetAnalyzerStepZVetoLow7
 )
 
 
@@ -672,19 +682,20 @@ stepZVetoHigh3e = cms.Sequence(
 stepZVetoHigh3 = cms.Sequence(
     EventCounterStepZVetoHigh3+
     #VertexAnalyzerStepZVetoHigh3+
-    MuonAnalyzerStepZVetoHigh3+
-    #DimuonAnalyzerStepZVetoHigh3+
-    RunEventListingStepZVetoHigh3
+    MuonAnalyzerStepZVetoHigh3
+    #DimuonAnalyzerStepZVetoHigh3
 )
 
 stepZVetoHigh4a = cms.Sequence(
     EventCounterStepZVetoHigh4a
 )
 stepZVetoHigh4b = cms.Sequence(
-    EventCounterStepZVetoHigh4b
+    EventCounterStepZVetoHigh4b+
+    JetAnalyzerStepZVetoHigh4b
 )
 stepZVetoHigh4c = cms.Sequence(
-    EventCounterStepZVetoHigh4c
+    EventCounterStepZVetoHigh4c+
+    JetAnalyzerStepZVetoHigh4c
 )
 stepZVetoHigh4d = cms.Sequence(
     EventCounterStepZVetoHigh4d+
@@ -694,7 +705,9 @@ stepZVetoHigh4 = cms.Sequence(
     EventCounterStepZVetoHigh4+
     MuonAnalyzerStepZVetoHigh4+
     DimuonAnalyzerStepZVetoHigh4+
-    JetAnalyzerStepZVetoHigh4
+    JetAnalyzerStepZVetoHigh4J+
+    JetAnalyzerStepZVetoHigh4Bhe+
+    JetAnalyzerStepZVetoHigh4Bhp
 )
 
 stepZVetoHigh5 = cms.Sequence(
@@ -728,7 +741,8 @@ stepZVetoHigh7a = cms.Sequence(
     JetAnalyzerStepZVetoHigh7aJ+
     JetAnalyzerStepZVetoHigh7aBhe+
     JetAnalyzerStepZVetoHigh7aBhp+
-    MetAnalyzerStepZVetoHigh7a
+    MetAnalyzerStepZVetoHigh7a+
+    RunEventListingStepZVetoHigh7a
 )
 stepZVetoHigh7b = cms.Sequence(
     EventCounterStepZVetoHigh7b+
@@ -755,8 +769,7 @@ stepZVetoHigh7 = cms.Sequence(
     JetAnalyzerStepZVetoHigh7J+
     JetAnalyzerStepZVetoHigh7Bhe+
     JetAnalyzerStepZVetoHigh7Bhp+
-    MetAnalyzerStepZVetoHigh7+
-    RunEventListingStepZVetoHigh7
+    MetAnalyzerStepZVetoHigh7
 )
 
 
@@ -769,7 +782,8 @@ stepNoMet7a = cms.Sequence(
     JetAnalyzerStepNoMet7aJ+
     JetAnalyzerStepNoMet7aBhe+
     JetAnalyzerStepNoMet7aBhp+
-    MetAnalyzerStepNoMet7a
+    MetAnalyzerStepNoMet7a+
+    RunEventListingStepNoMet7a
 )
 stepNoMet7b = cms.Sequence(
     EventCounterStepNoMet7b+
@@ -796,8 +810,7 @@ stepNoMet7 = cms.Sequence(
     JetAnalyzerStepNoMet7J+
     JetAnalyzerStepNoMet7Bhe+
     JetAnalyzerStepNoMet7Bhp+
-    MetAnalyzerStepNoMet7+
-    RunEventListingStepNoMet7
+    MetAnalyzerStepNoMet7
 )
 
 stepZVetoLowNoMet7a = cms.Sequence(
@@ -807,7 +820,8 @@ stepZVetoLowNoMet7a = cms.Sequence(
     JetAnalyzerStepZVetoLowNoMet7aJ+
     JetAnalyzerStepZVetoLowNoMet7aBhe+
     JetAnalyzerStepZVetoLowNoMet7aBhp+
-    MetAnalyzerStepZVetoLowNoMet7a
+    MetAnalyzerStepZVetoLowNoMet7a+
+    RunEventListingStepZVetoLowNoMet7a
 )
 stepZVetoLowNoMet7b = cms.Sequence(
     EventCounterStepZVetoLowNoMet7b+
@@ -834,8 +848,7 @@ stepZVetoLowNoMet7 = cms.Sequence(
     JetAnalyzerStepZVetoLowNoMet7J+
     JetAnalyzerStepZVetoLowNoMet7Bhe+
     JetAnalyzerStepZVetoLowNoMet7Bhp+
-    MetAnalyzerStepZVetoLowNoMet7+
-    RunEventListingStepZVetoLowNoMet7
+    MetAnalyzerStepZVetoLowNoMet7
 )
 
 stepZVetoHighNoMet7a = cms.Sequence(
@@ -845,7 +858,8 @@ stepZVetoHighNoMet7a = cms.Sequence(
     JetAnalyzerStepZVetoHighNoMet7aJ+
     JetAnalyzerStepZVetoHighNoMet7aBhe+
     JetAnalyzerStepZVetoHighNoMet7aBhp+
-    MetAnalyzerStepZVetoHighNoMet7a
+    MetAnalyzerStepZVetoHighNoMet7a+
+    RunEventListingStepZVetoHighNoMet7a
 )
 stepZVetoHighNoMet7b = cms.Sequence(
     EventCounterStepZVetoHighNoMet7b+
@@ -872,8 +886,7 @@ stepZVetoHighNoMet7 = cms.Sequence(
     JetAnalyzerStepZVetoHighNoMet7J+
     JetAnalyzerStepZVetoHighNoMet7Bhe+
     JetAnalyzerStepZVetoHighNoMet7Bhp+
-    MetAnalyzerStepZVetoHighNoMet7+
-    RunEventListingStepZVetoHighNoMet7
+    MetAnalyzerStepZVetoHighNoMet7
 )
 
 
