@@ -27,6 +27,9 @@ dimuons = cms.EDProducer("CandViewShallowCloneCombiner",
 
 
 # Check trigger object matching for at least one of both muons
+## Use the "CandViewSelector" and not the "CandViewRefSelector":
+## First one is a lazy parser, so knows about input type
+## Here: it is a ShallowCloneCandidate with corresponding methods and not only a Candidate*, as the plugin thinks as it is its input
 selectedDimuons = cms.EDFilter("CandViewSelector",
 src = cms.InputTag("dimuons"),
     cut = cms.string(
@@ -61,56 +64,13 @@ goodDimuons = cms.EDFilter("CandViewRefSelector",
 
 
 
-# Cut on isolation of both Muons in Dimuon system (now already done for input muon collection)
-## Do the isolation cuts by hand in simple way
-## Use the "CandViewSelector" and not the "CandViewRefSelector":
-## First one is a lazy parser, so knows about input type
-## Here: it is a ShallowCloneCandidate with corresponding methods and not only a Candidate*, as the plugin thinks as it is its input
-#isolatedDimuons = cms.EDFilter("CandViewSelector",
-#    src = cms.InputTag("goodDimuons"),
-#    cut = cms.string(
-#      '((daughter(0).masterClone.trackIso + daughter(0).masterClone.caloIso) /daughter(0).masterClone.pt < 0.15) &'
-#      '((daughter(1).masterClone.trackIso + daughter(1).masterClone.caloIso) /daughter(1).masterClone.pt < 0.15)'
-#    ),
-#)
-#isolatedDimuonsSc = isolatedDimuons.clone(src = "goodDimuonsSc")
-
-
-
-
-# Final cuts on dimuon properties
-finalDimuons = cms.EDFilter("CandViewRefSelector",
-    src = cms.InputTag("goodDimuons"),
-    #src = cms.InputTag("isolatedDimuons"),
-    cut = cms.string(
-      'mass > 60. &'
-      'mass < 120.'
-    ),
-)
-#finalDimuonsSc = finalDimuons.clone(src = "goodDimuonsSc")
-#finalDimuonsSc = finalDimuons.clone(src = "isolatedDimuonsSc")
-finalDimuonsZVetoLow = finalDimuons.clone(
-    cut = 'mass <= 60.',
-)
-finalDimuonsZVetoHigh = finalDimuons.clone(
-    cut = 'mass >= 120.',
-)
-
-
-
-# Primary vertices associated to finalDimuons
-finalPVs = BestZVertexCleaner.clone(
+# Primary vertices associated to goodDimuons
+goodDimuonPVs = BestZVertexCleaner.clone(
     product = "vertex",
     vertexSource = 'goodPVs',
-    dimuonSource = 'finalDimuons',
+    dimuonSource = 'goodDimuons',
     deltaZMuMuMax = 0.1,
     deltaZZVertexMax = 0.1,
-)
-finalPVsZVetoLow = finalPVs.clone(
-    dimuonSource = 'finalDimuonsZVetoLow',
-)
-finalPVsZVetoHigh = finalPVs.clone(
-    dimuonSource = 'finalDimuonsZVetoHigh',
 )
 
 
@@ -118,7 +78,7 @@ finalPVsZVetoHigh = finalPVs.clone(
 # Choose best dimuon
 from ZmumuAnalysis.Producer.BestZSelector_cfi import BestZSelector
 bestDimuon = BestZSelector.clone(
-    dimuonSource = 'finalDimuons',
+    dimuonSource = 'goodDimuons',
     criterion = 'zMass',
 )
 
@@ -127,11 +87,29 @@ bestDimuon = BestZSelector.clone(
 # Associated primary vertex for bestDimuon
 bestPV = BestZVertexCleaner.clone(
     product = "vertex",
-    vertexSource = 'finalPVs',
+    vertexSource = 'goodDimuonPVs',
     dimuonSource = 'bestDimuon',
     deltaZMuMuMax = 0.1,
     deltaZZVertexMax = 0.1,
 )
+
+
+
+# Final cuts on dimuon properties
+finalDimuons = cms.EDFilter("CandViewRefSelector",
+    src = cms.InputTag("bestDimuon"),
+    cut = cms.string(
+      'mass > 60. &'
+      'mass < 120.'
+    ),
+)
+finalDimuonsZVetoLow = finalDimuons.clone(
+    cut = 'mass <= 60.',
+)
+finalDimuonsZVetoHigh = finalDimuons.clone(
+    cut = 'mass >= 120.',
+)
+
 
 
 
@@ -152,10 +130,6 @@ goodDimuonSelection = dimuonsFilter.clone(
     src = 'goodDimuons',
     minNumber = 1,
 )
-#isolatedDimuonSelection = dimuonsFilter.clone(
-#    src = 'isolatedDimuons',
-#    minNumber = 1,
-#)
 finalDimuonSelection = dimuonsFilter.clone(
     src = 'finalDimuons',
     minNumber = 1,
@@ -163,9 +137,6 @@ finalDimuonSelection = dimuonsFilter.clone(
 
 finalDimuonZVetoLowSelection = finalDimuonSelection.clone(src = 'finalDimuonsZVetoLow',)
 finalDimuonZVetoHighSelection = finalDimuonSelection.clone(src = 'finalDimuonsZVetoHigh',)
-
-#goodDimuonScSelection = goodDimuonSelection.clone(src = 'goodDimuonsSc')
-#finalDimuonScSelection = finalDimuonSelection.clone(src = 'finalDimuonsSc')
 
 
 
@@ -184,18 +155,13 @@ buildDimuonCollections = cms.Sequence(
     selectedDimuons*
     cleanDimuons*
     goodDimuons*
-    finalDimuons*
-    finalPVs*
+    goodDimuonPVs*
     bestDimuon*
     bestPV*
+    finalDimuons*
     
     finalDimuonsZVetoLow*
-    finalDimuonsZVetoHigh*
-    finalPVsZVetoLow*
-    finalPVsZVetoHigh
-    
-    #goodDimuonsSc*
-    #finalDimuonsSc
+    finalDimuonsZVetoHigh
 )
 
 
@@ -210,25 +176,19 @@ dimuonSelection = cms.Sequence(
 
 dimuonZVetoLowSelection = dimuonSelection.copy()
 dimuonZVetoLowSelection.replace(finalDimuonSelection,finalDimuonZVetoLowSelection)
-#dimuonZVetoLowSelection = cms.Sequence(
-#    selectedDimuonSelection*
-#    cleanDimuonSelection*
-#    goodDimuonSelection*
-#    finalDimuonZVetoLowSelection
-#)
 
-dimuonZVetoHighSelection = cms.Sequence(
-    selectedDimuonSelection*
-    cleanDimuonSelection*
-    goodDimuonSelection*
-    finalDimuonZVetoHighSelection
-)
+dimuonZVetoHighSelection = dimuonSelection.copy()
+dimuonZVetoHighSelection.replace(finalDimuonSelection,finalDimuonZVetoHighSelection)
 
-#dimuonScSelection = cms.Sequence(
-#    selectedDimuonSelection*
-#    cleanDimuonSelection*
-#    goodDimuonScSelection*
-#    finalDimuonScSelection
-#)
+
+
+
+
+
+
+
+
+
+
 
 

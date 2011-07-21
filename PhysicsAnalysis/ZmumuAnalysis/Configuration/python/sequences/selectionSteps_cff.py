@@ -121,11 +121,12 @@ TriggerAnalyzerStep1a =  TriggerAnalyzer.clone(
 from ZmumuAnalysis.Analyzer.VertexAnalyzer_cfi import *
 VertexAnalyzerStep1b = VertexAnalyzer.clone()#vertexSource = 'offlinePrimaryVertices',)
 VertexAnalyzerStep1 = VertexAnalyzer.clone(vertexSource = 'goodPVs',)
-VertexAnalyzerStep3e = VertexAnalyzer.clone(vertexSource = 'finalPVs',)
+VertexAnalyzerStep3d = VertexAnalyzer.clone(vertexSource = 'goodDimuonPVs',)
+VertexAnalyzerStep3e = VertexAnalyzer.clone(vertexSource = 'bestPV',)
 VertexAnalyzerStep3 = VertexAnalyzer.clone(vertexSource = 'bestPV',)
 
-VertexAnalyzerStepZVetoLow3e = VertexAnalyzerStep3e.clone(vertexSource = 'finalPVsZVetoLow',)
-VertexAnalyzerStepZVetoHigh3e = VertexAnalyzerStep3e.clone(vertexSource = 'finalPVsZVetoHigh',)
+VertexAnalyzerStepZVetoLow3 = VertexAnalyzerStep3.clone()
+VertexAnalyzerStepZVetoHigh3 = VertexAnalyzerStep3.clone()
 
 
 
@@ -180,32 +181,32 @@ MuonAnalyzerStepZVetoHighNoMet7 = MuonAnalyzerStep7.clone()
 ## di-muon analyzer
 from ZmumuAnalysis.Analyzer.DimuonAnalyzer_cfi import *
 DimuonAnalyzerStep3d = DimuonAnalyzer.clone(dimuonSource = "goodDimuons",)
-DimuonAnalyzerStep3e = DimuonAnalyzer.clone(dimuonSource = "finalDimuons",)
+DimuonAnalyzerStep3e = DimuonAnalyzer.clone(dimuonSource = "bestDimuon",)
 DimuonAnalyzerStep3 = DimuonAnalyzer.clone(dimuonSource = "bestDimuon",)
-DimuonAnalyzerStep4 = DimuonAnalyzer.clone(dimuonSource = "finalDimuons",)
-DimuonAnalyzerStep5 = DimuonAnalyzer.clone(dimuonSource = "finalDimuons",)
-DimuonAnalyzerStep6 = DimuonAnalyzer.clone(dimuonSource = "finalDimuons",)
-DimuonAnalyzerStep7a = DimuonAnalyzer.clone(dimuonSource = "finalDimuons",)
-DimuonAnalyzerStep7b = DimuonAnalyzer.clone(dimuonSource = "finalDimuons",)
-DimuonAnalyzerStep7c = DimuonAnalyzer.clone(dimuonSource = "finalDimuons",)
-DimuonAnalyzerStep7 = DimuonAnalyzer.clone(dimuonSource = "finalDimuons",)
+DimuonAnalyzerStep4 = DimuonAnalyzer.clone(dimuonSource = "bestDimuon",)
+DimuonAnalyzerStep5 = DimuonAnalyzer.clone(dimuonSource = "bestDimuon",)
+DimuonAnalyzerStep6 = DimuonAnalyzer.clone(dimuonSource = "bestDimuon",)
+DimuonAnalyzerStep7a = DimuonAnalyzer.clone(dimuonSource = "bestDimuon",)
+DimuonAnalyzerStep7b = DimuonAnalyzer.clone(dimuonSource = "bestDimuon",)
+DimuonAnalyzerStep7c = DimuonAnalyzer.clone(dimuonSource = "bestDimuon",)
+DimuonAnalyzerStep7 = DimuonAnalyzer.clone(dimuonSource = "bestDimuon",)
 
-DimuonAnalyzerStepZVetoLow3e = DimuonAnalyzerStep3e.clone(dimuonSource = "finalDimuonsZVetoLow",)
-DimuonAnalyzerStepZVetoLow4 = DimuonAnalyzerStep4.clone(dimuonSource = "finalDimuonsZVetoLow",)
-DimuonAnalyzerStepZVetoLow5 = DimuonAnalyzerStep5.clone(dimuonSource = "finalDimuonsZVetoLow",)
-DimuonAnalyzerStepZVetoLow6 = DimuonAnalyzerStep6.clone(dimuonSource = "finalDimuonsZVetoLow",)
-DimuonAnalyzerStepZVetoLow7a = DimuonAnalyzerStep7a.clone(dimuonSource = "finalDimuonsZVetoLow",)
-DimuonAnalyzerStepZVetoLow7b = DimuonAnalyzerStep7b.clone(dimuonSource = "finalDimuonsZVetoLow",)
-DimuonAnalyzerStepZVetoLow7c = DimuonAnalyzerStep7c.clone(dimuonSource = "finalDimuonsZVetoLow",)
-DimuonAnalyzerStepZVetoLow7 = DimuonAnalyzerStep7.clone(dimuonSource = "finalDimuonsZVetoLow",)
-DimuonAnalyzerStepZVetoHigh3e = DimuonAnalyzerStep3e.clone(dimuonSource = "finalDimuonsZVetoHigh",)
-DimuonAnalyzerStepZVetoHigh4 = DimuonAnalyzerStep4.clone(dimuonSource = "finalDimuonsZVetoHigh",)
-DimuonAnalyzerStepZVetoHigh5 = DimuonAnalyzerStep5.clone(dimuonSource = "finalDimuonsZVetoHigh",)
-DimuonAnalyzerStepZVetoHigh6 = DimuonAnalyzerStep6.clone(dimuonSource = "finalDimuonsZVetoHigh",)
-DimuonAnalyzerStepZVetoHigh7a = DimuonAnalyzerStep7a.clone(dimuonSource = "finalDimuonsZVetoHigh",)
-DimuonAnalyzerStepZVetoHigh7b = DimuonAnalyzerStep7b.clone(dimuonSource = "finalDimuonsZVetoHigh",)
-DimuonAnalyzerStepZVetoHigh7c = DimuonAnalyzerStep7c.clone(dimuonSource = "finalDimuonsZVetoHigh",)
-DimuonAnalyzerStepZVetoHigh7 = DimuonAnalyzerStep7.clone(dimuonSource = "finalDimuonsZVetoHigh",)
+DimuonAnalyzerStepZVetoLow3 = DimuonAnalyzerStep3.clone()
+DimuonAnalyzerStepZVetoLow4 = DimuonAnalyzerStep4.clone()
+DimuonAnalyzerStepZVetoLow5 = DimuonAnalyzerStep5.clone()
+DimuonAnalyzerStepZVetoLow6 = DimuonAnalyzerStep6.clone()
+DimuonAnalyzerStepZVetoLow7a = DimuonAnalyzerStep7a.clone()
+DimuonAnalyzerStepZVetoLow7b = DimuonAnalyzerStep7b.clone()
+DimuonAnalyzerStepZVetoLow7c = DimuonAnalyzerStep7c.clone()
+DimuonAnalyzerStepZVetoLow7 = DimuonAnalyzerStep7.clone()
+DimuonAnalyzerStepZVetoHigh3 = DimuonAnalyzerStep3.clone()
+DimuonAnalyzerStepZVetoHigh4 = DimuonAnalyzerStep4.clone()
+DimuonAnalyzerStepZVetoHigh5 = DimuonAnalyzerStep5.clone()
+DimuonAnalyzerStepZVetoHigh6 = DimuonAnalyzerStep6.clone()
+DimuonAnalyzerStepZVetoHigh7a = DimuonAnalyzerStep7a.clone()
+DimuonAnalyzerStepZVetoHigh7b = DimuonAnalyzerStep7b.clone()
+DimuonAnalyzerStepZVetoHigh7c = DimuonAnalyzerStep7c.clone()
+DimuonAnalyzerStepZVetoHigh7 = DimuonAnalyzerStep7.clone()
 
 DimuonAnalyzerStepNoMet7a = DimuonAnalyzerStep7a.clone()
 DimuonAnalyzerStepNoMet7b = DimuonAnalyzerStep7b.clone()
@@ -226,8 +227,8 @@ DimuonAnalyzerStepZVetoHighNoMet7 = DimuonAnalyzerStepZVetoHigh7.clone()
 ## jet analyzer
 from ZmumuAnalysis.Analyzer.JetAnalyzer_cfi import *
 #JetAnalyzerStep4a = JetAnalyzer.clone(jetSource = 'selectedPatJetsAK5PF',whichHists = "basic",)
-JetAnalyzerStep4b = JetAnalyzer.clone(jetSource = 'cleanJets',whichHists = "basic",)
-JetAnalyzerStep4c = JetAnalyzer.clone(jetSource = 'goodIdJets',)
+JetAnalyzerStep4b = JetAnalyzer.clone(jetSource = 'selectedJets',whichHists = "basic",)
+JetAnalyzerStep4c = JetAnalyzer.clone(jetSource = 'cleanJets',whichHists = "basic",)
 JetAnalyzerStep4d = JetAnalyzer.clone(jetSource = 'goodJets',)
 JetAnalyzerStep4J = JetAnalyzer.clone(jetSource = 'finalJets',whichHists = "basic",)
 JetAnalyzerStep4Bhe = JetAnalyzer.clone(jetSource = 'bSsvHeMJets',whichHists = "basic",)
@@ -251,54 +252,54 @@ JetAnalyzerStep7J = JetAnalyzer.clone(jetSource = 'finalJets',)
 JetAnalyzerStep7Bhe = JetAnalyzer.clone(jetSource = 'bSsvHeMJets',)
 JetAnalyzerStep7Bhp = JetAnalyzer.clone(jetSource = 'bSsvHpTJets',)
 
-JetAnalyzerStepZVetoLow4b = JetAnalyzerStep4b.clone(jetSource = 'goodJetsZVetoLow',)
-JetAnalyzerStepZVetoLow4c = JetAnalyzerStep4c.clone(jetSource = 'goodJetsZVetoLow',)
-JetAnalyzerStepZVetoLow4d = JetAnalyzerStep4d.clone(jetSource = 'goodJetsZVetoLow',)
-JetAnalyzerStepZVetoLow4J = JetAnalyzerStep4J.clone(jetSource = 'finalJetsZVetoLow',)
-JetAnalyzerStepZVetoLow4Bhe = JetAnalyzerStep4Bhe.clone(jetSource = 'bSsvHeMJetsZVetoLow',)
-JetAnalyzerStepZVetoLow4Bhp = JetAnalyzerStep4Bhp.clone(jetSource = 'bSsvHpTJetsZVetoLow',)
-JetAnalyzerStepZVetoLow5J = JetAnalyzerStep5J.clone(jetSource = 'finalJetsZVetoLow',)
-JetAnalyzerStepZVetoLow5Bhe = JetAnalyzerStep5Bhe.clone(jetSource = 'bSsvHeMJetsZVetoLow',)
-JetAnalyzerStepZVetoLow5Bhp = JetAnalyzerStep5Bhp.clone(jetSource = 'bSsvHpTJetsZVetoLow',)
-JetAnalyzerStepZVetoLow6J = JetAnalyzerStep6J.clone(jetSource = 'finalJetsZVetoLow',)
-JetAnalyzerStepZVetoLow6Bhe = JetAnalyzerStep6Bhe.clone(jetSource = 'bSsvHeMJetsZVetoLow',)
-JetAnalyzerStepZVetoLow6Bhp = JetAnalyzerStep6Bhp.clone(jetSource = 'bSsvHpTJetsZVetoLow',)
-JetAnalyzerStepZVetoLow7aJ = JetAnalyzerStep7aJ.clone(jetSource = 'finalJetsZVetoLow',)
-JetAnalyzerStepZVetoLow7aBhe = JetAnalyzerStep7aBhe.clone(jetSource = 'bSsvHeMJetsZVetoLow',)
-JetAnalyzerStepZVetoLow7aBhp = JetAnalyzerStep7aBhp.clone(jetSource = 'bSsvHpTJetsZVetoLow',)
-JetAnalyzerStepZVetoLow7bJ = JetAnalyzerStep7bJ.clone(jetSource = 'finalJetsZVetoLow',)
-JetAnalyzerStepZVetoLow7bBhe = JetAnalyzerStep7bBhe.clone(jetSource = 'bSsvHeMJetsZVetoLow',)
-JetAnalyzerStepZVetoLow7bBhp = JetAnalyzerStep7bBhp.clone(jetSource = 'bSsvHpTJetsZVetoLow',)
-JetAnalyzerStepZVetoLow7cJ = JetAnalyzerStep7cJ.clone(jetSource = 'finalJetsZVetoLow',)
-JetAnalyzerStepZVetoLow7cBhe = JetAnalyzerStep7cBhe.clone(jetSource = 'bSsvHeMJetsZVetoLow',)
-JetAnalyzerStepZVetoLow7cBhp = JetAnalyzerStep7cBhp.clone(jetSource = 'bSsvHpTJetsZVetoLow',)
-JetAnalyzerStepZVetoLow7J = JetAnalyzerStep7J.clone(jetSource = 'finalJetsZVetoLow',)
-JetAnalyzerStepZVetoLow7Bhe = JetAnalyzerStep7Bhe.clone(jetSource = 'bSsvHeMJetsZVetoLow',)
-JetAnalyzerStepZVetoLow7Bhp = JetAnalyzerStep7Bhp.clone(jetSource = 'bSsvHpTJetsZVetoLow',)
-JetAnalyzerStepZVetoHigh4b = JetAnalyzerStep4b.clone(jetSource = 'goodJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh4c = JetAnalyzerStep4c.clone(jetSource = 'goodJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh4d = JetAnalyzerStep4d.clone(jetSource = 'goodJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh4J = JetAnalyzerStep4J.clone(jetSource = 'finalJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh4Bhe = JetAnalyzerStep4Bhe.clone(jetSource = 'bSsvHeMJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh4Bhp = JetAnalyzerStep4Bhp.clone(jetSource = 'bSsvHpTJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh5J = JetAnalyzerStep5J.clone(jetSource = 'finalJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh5Bhe = JetAnalyzerStep5Bhe.clone(jetSource = 'bSsvHeMJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh5Bhp = JetAnalyzerStep5Bhp.clone(jetSource = 'bSsvHpTJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh6J = JetAnalyzerStep6J.clone(jetSource = 'finalJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh6Bhe = JetAnalyzerStep6Bhe.clone(jetSource = 'bSsvHeMJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh6Bhp = JetAnalyzerStep6Bhp.clone(jetSource = 'bSsvHpTJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh7aJ = JetAnalyzerStep7aJ.clone(jetSource = 'finalJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh7aBhe = JetAnalyzerStep7aBhe.clone(jetSource = 'bSsvHeMJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh7aBhp = JetAnalyzerStep7aBhp.clone(jetSource = 'bSsvHpTJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh7bJ = JetAnalyzerStep7bJ.clone(jetSource = 'finalJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh7bBhe = JetAnalyzerStep7bBhe.clone(jetSource = 'bSsvHeMJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh7bBhp = JetAnalyzerStep7bBhp.clone(jetSource = 'bSsvHpTJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh7cJ = JetAnalyzerStep7cJ.clone(jetSource = 'finalJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh7cBhe = JetAnalyzerStep7cBhe.clone(jetSource = 'bSsvHeMJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh7cBhp = JetAnalyzerStep7cBhp.clone(jetSource = 'bSsvHpTJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh7J = JetAnalyzerStep7J.clone(jetSource = 'finalJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh7Bhe = JetAnalyzerStep7Bhe.clone(jetSource = 'bSsvHeMJetsZVetoHigh',)
-JetAnalyzerStepZVetoHigh7Bhp = JetAnalyzerStep7Bhp.clone(jetSource = 'bSsvHpTJetsZVetoHigh',)
+JetAnalyzerStepZVetoLow4b = JetAnalyzerStep4b.clone()
+JetAnalyzerStepZVetoLow4c = JetAnalyzerStep4c.clone()
+JetAnalyzerStepZVetoLow4d = JetAnalyzerStep4d.clone()
+JetAnalyzerStepZVetoLow4J = JetAnalyzerStep4J.clone()
+JetAnalyzerStepZVetoLow4Bhe = JetAnalyzerStep4Bhe.clone()
+JetAnalyzerStepZVetoLow4Bhp = JetAnalyzerStep4Bhp.clone()
+JetAnalyzerStepZVetoLow5J = JetAnalyzerStep5J.clone()
+JetAnalyzerStepZVetoLow5Bhe = JetAnalyzerStep5Bhe.clone()
+JetAnalyzerStepZVetoLow5Bhp = JetAnalyzerStep5Bhp.clone()
+JetAnalyzerStepZVetoLow6J = JetAnalyzerStep6J.clone()
+JetAnalyzerStepZVetoLow6Bhe = JetAnalyzerStep6Bhe.clone()
+JetAnalyzerStepZVetoLow6Bhp = JetAnalyzerStep6Bhp.clone()
+JetAnalyzerStepZVetoLow7aJ = JetAnalyzerStep7aJ.clone()
+JetAnalyzerStepZVetoLow7aBhe = JetAnalyzerStep7aBhe.clone()
+JetAnalyzerStepZVetoLow7aBhp = JetAnalyzerStep7aBhp.clone()
+JetAnalyzerStepZVetoLow7bJ = JetAnalyzerStep7bJ.clone()
+JetAnalyzerStepZVetoLow7bBhe = JetAnalyzerStep7bBhe.clone()
+JetAnalyzerStepZVetoLow7bBhp = JetAnalyzerStep7bBhp.clone()
+JetAnalyzerStepZVetoLow7cJ = JetAnalyzerStep7cJ.clone()
+JetAnalyzerStepZVetoLow7cBhe = JetAnalyzerStep7cBhe.clone()
+JetAnalyzerStepZVetoLow7cBhp = JetAnalyzerStep7cBhp.clone()
+JetAnalyzerStepZVetoLow7J = JetAnalyzerStep7J.clone()
+JetAnalyzerStepZVetoLow7Bhe = JetAnalyzerStep7Bhe.clone()
+JetAnalyzerStepZVetoLow7Bhp = JetAnalyzerStep7Bhp.clone()
+JetAnalyzerStepZVetoHigh4b = JetAnalyzerStep4b.clone()
+JetAnalyzerStepZVetoHigh4c = JetAnalyzerStep4c.clone()
+JetAnalyzerStepZVetoHigh4d = JetAnalyzerStep4d.clone()
+JetAnalyzerStepZVetoHigh4J = JetAnalyzerStep4J.clone()
+JetAnalyzerStepZVetoHigh4Bhe = JetAnalyzerStep4Bhe.clone()
+JetAnalyzerStepZVetoHigh4Bhp = JetAnalyzerStep4Bhp.clone()
+JetAnalyzerStepZVetoHigh5J = JetAnalyzerStep5J.clone()
+JetAnalyzerStepZVetoHigh5Bhe = JetAnalyzerStep5Bhe.clone()
+JetAnalyzerStepZVetoHigh5Bhp = JetAnalyzerStep5Bhp.clone()
+JetAnalyzerStepZVetoHigh6J = JetAnalyzerStep6J.clone()
+JetAnalyzerStepZVetoHigh6Bhe = JetAnalyzerStep6Bhe.clone()
+JetAnalyzerStepZVetoHigh6Bhp = JetAnalyzerStep6Bhp.clone()
+JetAnalyzerStepZVetoHigh7aJ = JetAnalyzerStep7aJ.clone()
+JetAnalyzerStepZVetoHigh7aBhe = JetAnalyzerStep7aBhe.clone()
+JetAnalyzerStepZVetoHigh7aBhp = JetAnalyzerStep7aBhp.clone()
+JetAnalyzerStepZVetoHigh7bJ = JetAnalyzerStep7bJ.clone()
+JetAnalyzerStepZVetoHigh7bBhe = JetAnalyzerStep7bBhe.clone()
+JetAnalyzerStepZVetoHigh7bBhp = JetAnalyzerStep7bBhp.clone()
+JetAnalyzerStepZVetoHigh7cJ = JetAnalyzerStep7cJ.clone()
+JetAnalyzerStepZVetoHigh7cBhe = JetAnalyzerStep7cBhe.clone()
+JetAnalyzerStepZVetoHigh7cBhp = JetAnalyzerStep7cBhp.clone()
+JetAnalyzerStepZVetoHigh7J = JetAnalyzerStep7J.clone()
+JetAnalyzerStepZVetoHigh7Bhe = JetAnalyzerStep7Bhe.clone()
+JetAnalyzerStepZVetoHigh7Bhp = JetAnalyzerStep7Bhp.clone()
 
 JetAnalyzerStepNoMet7aJ = JetAnalyzerStep7aJ.clone()
 JetAnalyzerStepNoMet7aBhe = JetAnalyzerStep7aBhe.clone()
@@ -325,7 +326,6 @@ JetAnalyzerStepZVetoLowNoMet7cBhp = JetAnalyzerStepZVetoLow7cBhp.clone()
 JetAnalyzerStepZVetoLowNoMet7J = JetAnalyzerStepZVetoLow7J.clone()
 JetAnalyzerStepZVetoLowNoMet7Bhe = JetAnalyzerStepZVetoLow7Bhe.clone()
 JetAnalyzerStepZVetoLowNoMet7Bhp = JetAnalyzerStepZVetoLow7Bhp.clone()
-
 JetAnalyzerStepZVetoHighNoMet7aJ = JetAnalyzerStepZVetoHigh7aJ.clone()
 JetAnalyzerStepZVetoHighNoMet7aBhe = JetAnalyzerStepZVetoHigh7aBhe.clone()
 JetAnalyzerStepZVetoHighNoMet7aBhp = JetAnalyzerStepZVetoHigh7aBhp.clone()
@@ -470,6 +470,7 @@ step3c = cms.Sequence(
 )
 step3d = cms.Sequence(
     EventCounterStep3d+
+    VertexAnalyzerStep3d+
     DimuonAnalyzerStep3d
 )
 step3e = cms.Sequence(
@@ -573,16 +574,11 @@ step7 = cms.Sequence(
 
 
 ## Define steps and corresponding analyzers for analysis excluding the Z mass window (lower sideband)
-stepZVetoLow3e = cms.Sequence(
-    EventCounterStepZVetoLow3e+
-    VertexAnalyzerStepZVetoLow3e+
-    DimuonAnalyzerStepZVetoLow3e
-)
 stepZVetoLow3 = cms.Sequence(
     EventCounterStepZVetoLow3+
-    #VertexAnalyzerStepZVetoLow3+
-    MuonAnalyzerStepZVetoLow3
-    #DimuonAnalyzerStepZVetoLow3
+    VertexAnalyzerStepZVetoLow3+
+    MuonAnalyzerStepZVetoLow3+
+    DimuonAnalyzerStepZVetoLow3
 )
 
 stepZVetoLow4a = cms.Sequence(
@@ -674,16 +670,11 @@ stepZVetoLow7 = cms.Sequence(
 
 
 ## Define steps and corresponding analyzers for analysis excluding the Z mass window (upper sideband)
-stepZVetoHigh3e = cms.Sequence(
-    EventCounterStepZVetoHigh3e+
-    VertexAnalyzerStepZVetoHigh3e+
-    DimuonAnalyzerStepZVetoHigh3e
-)
 stepZVetoHigh3 = cms.Sequence(
     EventCounterStepZVetoHigh3+
-    #VertexAnalyzerStepZVetoHigh3+
-    MuonAnalyzerStepZVetoHigh3
-    #DimuonAnalyzerStepZVetoHigh3
+    VertexAnalyzerStepZVetoHigh3+
+    MuonAnalyzerStepZVetoHigh3+
+    DimuonAnalyzerStepZVetoHigh3
 )
 
 stepZVetoHigh4a = cms.Sequence(
@@ -926,8 +917,8 @@ noMetDefaultSteps = cms.Sequence(
     zVetoDefaultSteps*
     finalDimuonSelection*
     buildJetCollections*
+    oneSelectedJetSelection*
     oneCleanJetSelection*
-    oneGoodIdJetSelection*
     oneGoodJetSelection*
     oneFinalJetSelection*
     oneBSsvHeMJetSelection*
@@ -936,16 +927,9 @@ noMetDefaultSteps = cms.Sequence(
 
 zVetoLowNoMetDefaultSteps = noMetDefaultSteps.copy()
 zVetoLowNoMetDefaultSteps.replace(finalDimuonSelection,finalDimuonZVetoLowSelection)
-zVetoLowNoMetDefaultSteps.replace(oneGoodJetSelection,oneGoodJetZVetoLowSelection)
-zVetoLowNoMetDefaultSteps.replace(oneFinalJetSelection,oneFinalJetZVetoLowSelection)
-zVetoLowNoMetDefaultSteps.replace(oneBSsvHeMJetSelection,oneBSsvHeMJetZVetoLowSelection);
 
 zVetoHighNoMetDefaultSteps = noMetDefaultSteps.copy()
 zVetoHighNoMetDefaultSteps.replace(finalDimuonSelection,finalDimuonZVetoHighSelection)
-zVetoHighNoMetDefaultSteps.replace(oneGoodJetSelection,oneGoodJetZVetoHighSelection)
-zVetoHighNoMetDefaultSteps.replace(oneFinalJetSelection,oneFinalJetZVetoHighSelection)
-zVetoHighNoMetDefaultSteps.replace(oneBSsvHeMJetSelection,oneBSsvHeMJetZVetoHighSelection);
-
 
 
 
@@ -989,15 +973,15 @@ oppositeChargeAnalysisSeq = cms.Sequence(
     step3c*
     goodDimuonSelection*
     step3d*
-    finalDimuonSelection*
     step3e*
+    finalDimuonSelection*
     step3*
     
     buildJetCollections*
     step4a*
-    oneCleanJetSelection*
+    oneSelectedJetSelection*
     step4b*
-    oneGoodIdJetSelection*
+    oneCleanJetSelection*
     step4c*
     oneGoodJetSelection*
     step4d*
@@ -1029,21 +1013,20 @@ ZVetoLowOppositeChargeAnalysisSeq = cms.Sequence(
     zVetoDefaultSteps*
     
     finalDimuonZVetoLowSelection*
-    stepZVetoLow3e*
     stepZVetoLow3*
     
     buildJetCollections*
     stepZVetoLow4a*
-    oneCleanJetSelection*
+    oneSelectedJetSelection*
     stepZVetoLow4b*
-    oneGoodIdJetSelection*
+    oneCleanJetSelection*
     stepZVetoLow4c*
-    oneGoodJetZVetoLowSelection*
+    oneGoodJetSelection*
     stepZVetoLow4d*
-    oneFinalJetZVetoLowSelection*
+    oneFinalJetSelection*
     stepZVetoLow4*
     
-    oneBSsvHeMJetZVetoLowSelection*
+    oneBSsvHeMJetSelection*
     stepZVetoLow5*
     
     buildMetCollections*
@@ -1051,13 +1034,13 @@ ZVetoLowOppositeChargeAnalysisSeq = cms.Sequence(
     goodMetSelection*
     stepZVetoLow6*
     
-    oneBSsvHpTJetZVetoLowSelection*
+    oneBSsvHpTJetSelection*
     stepZVetoLow7a*
-    twoFinalJetZVetoLowSelection*
+    twoFinalJetSelection*
     stepZVetoLow7b*
-    twoBSsvHeMJetZVetoLowSelection*
+    twoBSsvHeMJetSelection*
     stepZVetoLow7c*
-    twoBSsvHpTJetZVetoLowSelection*
+    twoBSsvHpTJetSelection*
     stepZVetoLow7
     
 )
@@ -1068,21 +1051,20 @@ ZVetoHighOppositeChargeAnalysisSeq = cms.Sequence(
     zVetoDefaultSteps*
     
     finalDimuonZVetoHighSelection*
-    stepZVetoHigh3e*
     stepZVetoHigh3*
     
     buildJetCollections*
     stepZVetoHigh4a*
-    oneCleanJetSelection*
+    oneSelectedJetSelection*
     stepZVetoHigh4b*
-    oneGoodIdJetSelection*
+    oneCleanJetSelection*
     stepZVetoHigh4c*
-    oneGoodJetZVetoHighSelection*
+    oneGoodJetSelection*
     stepZVetoHigh4d*
-    oneFinalJetZVetoHighSelection*
+    oneFinalJetSelection*
     stepZVetoHigh4*
     
-    oneBSsvHeMJetZVetoHighSelection*
+    oneBSsvHeMJetSelection*
     stepZVetoHigh5*
     
     buildMetCollections*
@@ -1091,13 +1073,13 @@ ZVetoHighOppositeChargeAnalysisSeq = cms.Sequence(
     stepZVetoHigh6*
     
     
-    oneBSsvHpTJetZVetoHighSelection*
+    oneBSsvHpTJetSelection*
     stepZVetoHigh7a*
-    twoFinalJetZVetoHighSelection*
+    twoFinalJetSelection*
     stepZVetoHigh7b*
-    twoBSsvHeMJetZVetoHighSelection*
+    twoBSsvHeMJetSelection*
     stepZVetoHigh7c*
-    twoBSsvHpTJetZVetoHighSelection*
+    twoBSsvHpTJetSelection*
     stepZVetoHigh7
 )
 
@@ -1130,13 +1112,13 @@ ZVetoLowNoMetOppositeChargeAnalysisSeq = cms.Sequence(
     #goodMetSelection*
     #stepZVetoLowNoMet6*
     
-    oneBSsvHpTJetZVetoLowSelection*
+    oneBSsvHpTJetSelection*
     stepZVetoLowNoMet7a*
-    twoFinalJetZVetoLowSelection*
+    twoFinalJetSelection*
     stepZVetoLowNoMet7b*
-    twoBSsvHeMJetZVetoLowSelection*
+    twoBSsvHeMJetSelection*
     stepZVetoLowNoMet7c*
-    twoBSsvHpTJetZVetoLowSelection*
+    twoBSsvHpTJetSelection*
     stepZVetoLowNoMet7
     
 )
@@ -1150,13 +1132,13 @@ ZVetoHighNoMetOppositeChargeAnalysisSeq = cms.Sequence(
     #goodMetSelection
     #stepZVetoHighNoMet6*
     
-    oneBSsvHpTJetZVetoHighSelection*
+    oneBSsvHpTJetSelection*
     stepZVetoHighNoMet7a*
-    twoFinalJetZVetoHighSelection*
+    twoFinalJetSelection*
     stepZVetoHighNoMet7b*
-    twoBSsvHeMJetZVetoHighSelection*
+    twoBSsvHeMJetSelection*
     stepZVetoHighNoMet7c*
-    twoBSsvHpTJetZVetoHighSelection*
+    twoBSsvHpTJetSelection*
     stepZVetoHighNoMet7
     
 )
