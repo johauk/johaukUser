@@ -1,3 +1,0 @@
-# to get cff's containing the list of data samples, type in this folder:
-
-cvs co -d samples UserCode/Bromo/TopAnalysis/Configuration/python/samples
