@@ -6,10 +6,6 @@ import FWCore.ParameterSet.Config as cms
 #   Filter & Producer Modules
 #******************************************************************************************
 
-## Filter for correct decay process
-#from ZmumuAnalysis.Configuration.filters.GeneratorZmumuFilter_cff import GeneratorZmumuDiMuFilter, GeneratorZmumuDiTauFilter
-#from ZmumuAnalysis.Configuration.filters.GeneratorBclFilter_cff import buildSignalBCollections, signalBSelection
-
 ## filter trigger
 from ZmumuAnalysis.Configuration.filters.TriggerFilter_cff import TriggerFilter
 
@@ -48,13 +44,13 @@ EventCounterStep2c = EventCounter.clone()
 EventCounterStep2d = EventCounter.clone()
 EventCounterStep2e = EventCounter.clone()
 EventCounterStep2f = EventCounter.clone()
+EventCounterStep2g = EventCounter.clone()
 EventCounterStep2 = EventCounter.clone()
 EventCounterStep3a = EventCounter.clone()
 EventCounterStep3b = EventCounter.clone()
 EventCounterStep3c = EventCounter.clone()
 EventCounterStep3d = EventCounter.clone()
 EventCounterStep3e = EventCounter.clone()
-EventCounterStep3f = EventCounter.clone()
 EventCounterStep3 = EventCounter.clone()
 EventCounterStep4a = EventCounter.clone()
 EventCounterStep4b = EventCounter.clone()
@@ -68,7 +64,7 @@ EventCounterStep7a = EventCounter.clone()
 EventCounterStep7b = EventCounter.clone()
 EventCounterStep7c = EventCounter.clone()
 EventCounterStep7 = EventCounter.clone()
-EventCounterStepZVetoLow3f = EventCounter.clone()
+EventCounterStepZVetoLow3e = EventCounter.clone()
 EventCounterStepZVetoLow3 = EventCounter.clone()
 EventCounterStepZVetoLow4a = EventCounter.clone()
 EventCounterStepZVetoLow4b = EventCounter.clone()
@@ -82,7 +78,7 @@ EventCounterStepZVetoLow7a = EventCounter.clone()
 EventCounterStepZVetoLow7b = EventCounter.clone()
 EventCounterStepZVetoLow7c = EventCounter.clone()
 EventCounterStepZVetoLow7 = EventCounter.clone()
-EventCounterStepZVetoHigh3f = EventCounter.clone()
+EventCounterStepZVetoHigh3e = EventCounter.clone()
 EventCounterStepZVetoHigh3 = EventCounter.clone()
 EventCounterStepZVetoHigh4a = EventCounter.clone()
 EventCounterStepZVetoHigh4b = EventCounter.clone()
@@ -125,26 +121,29 @@ TriggerAnalyzerStep1a =  TriggerAnalyzer.clone(
 from ZmumuAnalysis.Analyzer.VertexAnalyzer_cfi import *
 VertexAnalyzerStep1b = VertexAnalyzer.clone()#vertexSource = 'offlinePrimaryVertices',)
 VertexAnalyzerStep1 = VertexAnalyzer.clone(vertexSource = 'goodPVs',)
-VertexAnalyzerStep3f = VertexAnalyzer.clone(vertexSource = 'finalPVs',)
+VertexAnalyzerStep3e = VertexAnalyzer.clone(vertexSource = 'finalPVs',)
 VertexAnalyzerStep3 = VertexAnalyzer.clone(vertexSource = 'bestPV',)
 
-VertexAnalyzerStepZVetoLow3f = VertexAnalyzerStep3f.clone(vertexSource = 'finalPVsZVetoLow',)
-VertexAnalyzerStepZVetoHigh3f = VertexAnalyzerStep3f.clone(vertexSource = 'finalPVsZVetoHigh',)
+VertexAnalyzerStepZVetoLow3e = VertexAnalyzerStep3e.clone(vertexSource = 'finalPVsZVetoLow',)
+VertexAnalyzerStepZVetoHigh3e = VertexAnalyzerStep3e.clone(vertexSource = 'finalPVsZVetoHigh',)
 
 
 
 ## muon analizer
 from ZmumuAnalysis.Analyzer.MuonAnalyzer_cfi import *
-MuonAnalyzerStep2b = MuonAnalyzer.clone(muonSource = 'tightMuons',)
-MuonAnalyzerStep2 = MuonAnalyzer.clone(muonSource = 'tightMuons',)
-MuonAnalyzerStep3 = MuonAnalyzer.clone(muonSource = 'tightMuons',)
-MuonAnalyzerStep4 = MuonAnalyzer.clone(muonSource = 'tightMuons',)
-MuonAnalyzerStep5 = MuonAnalyzer.clone(muonSource = 'tightMuons',)
-MuonAnalyzerStep6 = MuonAnalyzer.clone(muonSource = 'tightMuons',)
-MuonAnalyzerStep7a = MuonAnalyzer.clone(muonSource = 'tightMuons',)
-MuonAnalyzerStep7b = MuonAnalyzer.clone(muonSource = 'tightMuons',)
-MuonAnalyzerStep7c = MuonAnalyzer.clone(muonSource = 'tightMuons',)
-MuonAnalyzerStep7 = MuonAnalyzer.clone(muonSource = 'tightMuons',)
+MuonAnalyzerStep2b = MuonAnalyzer.clone(muonSource = 'selectedPatMuons',whichHists = "veryBasic",)
+MuonAnalyzerStep2c = MuonAnalyzer.clone(muonSource = 'looseMuons',whichHists = "basic",)
+MuonAnalyzerStep2d = MuonAnalyzer.clone(muonSource = 'tightMuons',whichHists = "basic",)
+MuonAnalyzerStep2e = MuonAnalyzer.clone(muonSource = 'isolatedMuons',whichHists = "basic",)
+MuonAnalyzerStep2 = MuonAnalyzer.clone(muonSource = 'isolatedMuons')
+MuonAnalyzerStep3 = MuonAnalyzer.clone(muonSource = 'isolatedMuons',)
+MuonAnalyzerStep4 = MuonAnalyzer.clone(muonSource = 'isolatedMuons',)
+MuonAnalyzerStep5 = MuonAnalyzer.clone(muonSource = 'isolatedMuons',)
+MuonAnalyzerStep6 = MuonAnalyzer.clone(muonSource = 'isolatedMuons',)
+MuonAnalyzerStep7a = MuonAnalyzer.clone(muonSource = 'isolatedMuons',)
+MuonAnalyzerStep7b = MuonAnalyzer.clone(muonSource = 'isolatedMuons',)
+MuonAnalyzerStep7c = MuonAnalyzer.clone(muonSource = 'isolatedMuons',)
+MuonAnalyzerStep7 = MuonAnalyzer.clone(muonSource = 'isolatedMuons',)
 
 MuonAnalyzerStepZVetoLow3 = MuonAnalyzerStep3.clone()
 MuonAnalyzerStepZVetoLow4 = MuonAnalyzerStep4.clone()
@@ -181,8 +180,7 @@ MuonAnalyzerStepZVetoHighNoMet7 = MuonAnalyzerStep7.clone()
 ## di-muon analyzer
 from ZmumuAnalysis.Analyzer.DimuonAnalyzer_cfi import *
 DimuonAnalyzerStep3d = DimuonAnalyzer.clone(dimuonSource = "goodDimuons",)
-DimuonAnalyzerStep3e = DimuonAnalyzer.clone(dimuonSource = "isolatedDimuons",)
-DimuonAnalyzerStep3f = DimuonAnalyzer.clone(dimuonSource = "finalDimuons",)
+DimuonAnalyzerStep3e = DimuonAnalyzer.clone(dimuonSource = "finalDimuons",)
 DimuonAnalyzerStep3 = DimuonAnalyzer.clone(dimuonSource = "bestDimuon",)
 DimuonAnalyzerStep4 = DimuonAnalyzer.clone(dimuonSource = "finalDimuons",)
 DimuonAnalyzerStep5 = DimuonAnalyzer.clone(dimuonSource = "finalDimuons",)
@@ -192,7 +190,7 @@ DimuonAnalyzerStep7b = DimuonAnalyzer.clone(dimuonSource = "finalDimuons",)
 DimuonAnalyzerStep7c = DimuonAnalyzer.clone(dimuonSource = "finalDimuons",)
 DimuonAnalyzerStep7 = DimuonAnalyzer.clone(dimuonSource = "finalDimuons",)
 
-DimuonAnalyzerStepZVetoLow3f = DimuonAnalyzerStep3f.clone(dimuonSource = "finalDimuonsZVetoLow",)
+DimuonAnalyzerStepZVetoLow3e = DimuonAnalyzerStep3e.clone(dimuonSource = "finalDimuonsZVetoLow",)
 DimuonAnalyzerStepZVetoLow4 = DimuonAnalyzerStep4.clone(dimuonSource = "finalDimuonsZVetoLow",)
 DimuonAnalyzerStepZVetoLow5 = DimuonAnalyzerStep5.clone(dimuonSource = "finalDimuonsZVetoLow",)
 DimuonAnalyzerStepZVetoLow6 = DimuonAnalyzerStep6.clone(dimuonSource = "finalDimuonsZVetoLow",)
@@ -200,7 +198,7 @@ DimuonAnalyzerStepZVetoLow7a = DimuonAnalyzerStep7a.clone(dimuonSource = "finalD
 DimuonAnalyzerStepZVetoLow7b = DimuonAnalyzerStep7b.clone(dimuonSource = "finalDimuonsZVetoLow",)
 DimuonAnalyzerStepZVetoLow7c = DimuonAnalyzerStep7c.clone(dimuonSource = "finalDimuonsZVetoLow",)
 DimuonAnalyzerStepZVetoLow7 = DimuonAnalyzerStep7.clone(dimuonSource = "finalDimuonsZVetoLow",)
-DimuonAnalyzerStepZVetoHigh3f = DimuonAnalyzerStep3f.clone(dimuonSource = "finalDimuonsZVetoHigh",)
+DimuonAnalyzerStepZVetoHigh3e = DimuonAnalyzerStep3e.clone(dimuonSource = "finalDimuonsZVetoHigh",)
 DimuonAnalyzerStepZVetoHigh4 = DimuonAnalyzerStep4.clone(dimuonSource = "finalDimuonsZVetoHigh",)
 DimuonAnalyzerStepZVetoHigh5 = DimuonAnalyzerStep5.clone(dimuonSource = "finalDimuonsZVetoHigh",)
 DimuonAnalyzerStepZVetoHigh6 = DimuonAnalyzerStep6.clone(dimuonSource = "finalDimuonsZVetoHigh",)
@@ -432,16 +430,22 @@ step2b = cms.Sequence(
     MuonAnalyzerStep2b
 )
 step2c = cms.Sequence(
-    EventCounterStep2c
+    EventCounterStep2c+
+    MuonAnalyzerStep2c
 )
 step2d = cms.Sequence(
-    EventCounterStep2d
+    EventCounterStep2d+
+    MuonAnalyzerStep2d
 )
 step2e = cms.Sequence(
-    EventCounterStep2e
+    EventCounterStep2e+
+    MuonAnalyzerStep2e
 )
 step2f = cms.Sequence(
     EventCounterStep2f
+)
+step2g = cms.Sequence(
+    EventCounterStep2g
 )
 step2 = cms.Sequence(
     EventCounterStep2+
@@ -463,12 +467,8 @@ step3d = cms.Sequence(
 )
 step3e = cms.Sequence(
     EventCounterStep3e+
+    VertexAnalyzerStep3e+
     DimuonAnalyzerStep3e
-)
-step3f = cms.Sequence(
-    EventCounterStep3f+
-    VertexAnalyzerStep3f+
-    DimuonAnalyzerStep3f
 )
 step3 = cms.Sequence(
     EventCounterStep3+
@@ -566,10 +566,10 @@ step7 = cms.Sequence(
 
 
 ## Define steps and corresponding analyzers for analysis excluding the Z mass window (lower sideband)
-stepZVetoLow3f = cms.Sequence(
-    EventCounterStepZVetoLow3f+
-    VertexAnalyzerStepZVetoLow3f+
-    DimuonAnalyzerStepZVetoLow3f
+stepZVetoLow3e = cms.Sequence(
+    EventCounterStepZVetoLow3e+
+    VertexAnalyzerStepZVetoLow3e+
+    DimuonAnalyzerStepZVetoLow3e
 )
 stepZVetoLow3 = cms.Sequence(
     EventCounterStepZVetoLow3+
@@ -664,10 +664,10 @@ stepZVetoLow7 = cms.Sequence(
 
 
 ## Define steps and corresponding analyzers for analysis excluding the Z mass window (upper sideband)
-stepZVetoHigh3f = cms.Sequence(
-    EventCounterStepZVetoHigh3f+
-    VertexAnalyzerStepZVetoHigh3f+
-    DimuonAnalyzerStepZVetoHigh3f
+stepZVetoHigh3e = cms.Sequence(
+    EventCounterStepZVetoHigh3e+
+    VertexAnalyzerStepZVetoHigh3e+
+    DimuonAnalyzerStepZVetoHigh3e
 )
 stepZVetoHigh3 = cms.Sequence(
     EventCounterStepZVetoHigh3+
@@ -896,6 +896,7 @@ zVetoDefaultSteps = cms.Sequence(
     oneGoodPVSelection*
     buildMuonCollections*
     oneInitialMuonSelection*
+    oneLooseMuonSelection*
     oneTightMuonSelection*
     oneIsolatedMuonSelection*
     tightMuonSelection*
@@ -954,14 +955,16 @@ oppositeChargeAnalysisSeq = cms.Sequence(
     step2a*
     oneInitialMuonSelection*
     step2b*
-    oneTightMuonSelection*
+    oneLooseMuonSelection*
     step2c*
-    oneIsolatedMuonSelection*
+    oneTightMuonSelection*
     step2d*
-    tightMuonSelection*
+    oneIsolatedMuonSelection*
     step2e*
-    isolatedMuonSelection*
+    tightMuonSelection*
     step2f*
+    isolatedMuonSelection*
+    step2g*
     isolatedHltMuonSelection*
     step2*
     
@@ -974,7 +977,7 @@ oppositeChargeAnalysisSeq = cms.Sequence(
     goodDimuonSelection*
     step3d*
     finalDimuonSelection*
-    step3f*
+    step3e*
     step3*
     
     buildJetCollections*
@@ -1013,7 +1016,7 @@ ZVetoLowOppositeChargeAnalysisSeq = cms.Sequence(
     zVetoDefaultSteps*
     
     finalDimuonZVetoLowSelection*
-    stepZVetoLow3f*
+    stepZVetoLow3e*
     stepZVetoLow3*
     
     buildJetCollections*
@@ -1052,7 +1055,7 @@ ZVetoHighOppositeChargeAnalysisSeq = cms.Sequence(
     zVetoDefaultSteps*
     
     finalDimuonZVetoHighSelection*
-    stepZVetoHigh3f*
+    stepZVetoHigh3e*
     stepZVetoHigh3*
     
     buildJetCollections*

@@ -42,15 +42,20 @@ selectedPatMuonsTriggerMatch = cms.EDProducer("PATTriggerMatchMuonEmbedder",
 
 
 
-### Loose selection
-#looseMuons = selectedPatMuons.clone(
-#    src = 'selectedPatMuonsTriggerMatch',
-#    cut = 'isGlobalMuon &'
-#          'isTrackerMuon &'
-#          'track.hitPattern.numberOfValidTrackerHits > 10 &'
-#	  'abs(eta) < 2.4 &'
-#	  'pt > 10.',
-#)
+## Loose selection
+looseMuons = selectedPatMuons.clone(
+    src = 'selectedPatMuonsTriggerMatch',
+    cut = 'isGlobalMuon &'
+          'isTrackerMuon &'
+          'numberOfMatches > 1 &'
+	  'globalTrack.hitPattern.numberOfValidMuonHits > 0 &'
+	  'globalTrack.normalizedChi2 < 20. &'
+	  'track.hitPattern.numberOfValidTrackerHits > 10 &'
+	  'track.hitPattern.numberOfValidPixelHits > 0 &'
+	  'abs(dB) < 0.1 &'
+	  'abs(eta) < 2.5 &'
+	  'pt > 15.',
+)
 
 
 
@@ -59,11 +64,11 @@ tightMuons = selectedPatMuons.clone(
     src = 'selectedPatMuonsTriggerMatch',
     cut = 'isGlobalMuon &'
           'isTrackerMuon &'
-	  'track.hitPattern.numberOfValidTrackerHits > 10 &'
-          'track.hitPattern.numberOfValidPixelHits > 0 &'
 	  'numberOfMatches > 1 &'
 	  'globalTrack.hitPattern.numberOfValidMuonHits > 0 &'
 	  'globalTrack.normalizedChi2 < 10. &'
+	  'track.hitPattern.numberOfValidTrackerHits > 10 &'
+          'track.hitPattern.numberOfValidPixelHits > 0 &'
 	  'abs(dB) < 0.02 &'
 	  'abs(eta) < 2.1 &'
 	  'pt > 20.',
@@ -106,10 +111,10 @@ oneInitialMuonSelection = countPatMuons.clone(
     src = 'selectedPatMuons',
     minNumber = 1,
 )
-#oneLooseMuonSelection = countPatMuons.clone(
-#    src = 'looseMuons',
-#    minNumber = 1,
-#)
+oneLooseMuonSelection = countPatMuons.clone(
+    src = 'looseMuons',
+    minNumber = 1,
+)
 #looseMuonSelection = countPatMuons.clone(
 #    src = 'looseMuons',
 #    minNumber = 2,
@@ -160,7 +165,7 @@ patTriggerSequence = cms.Sequence(
 
 buildMuonCollections = cms.Sequence(
     patTriggerSequence*
-    #looseMuons*
+    looseMuons*
     tightMuons*
     isolatedMuons*
     #looseHltMuons*
@@ -172,7 +177,7 @@ buildMuonCollections = cms.Sequence(
 
 muonSelection = cms.Sequence(
     oneInitialMuonSelection*
-    #oneLooseMuonSelection*
+    oneLooseMuonSelection*
     oneTightMuonSelection*
     oneIsolatedMuonSelection*
     #looseMuonSelection*

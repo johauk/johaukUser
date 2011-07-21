@@ -232,6 +232,11 @@ process.patTrigger.triggerEvent = cms.InputTag("hltTriggerSummaryAOD::" + TRIG_R
 # Generator Filter Sequences
 #******************************************************************************************
 
+## Filter for correct decay process
+process.load("ZmumuAnalysis.Configuration.filters.GeneratorZmumuFilter_cff")
+process.load("ZmumuAnalysis.Configuration.filters.GeneratorBclFilter_cff")
+
+
 ## Apply generator filters here
 if(isZmumu):
     process.seqGeneratorFilter *= process.GeneratorZmumuDiMuFilter
