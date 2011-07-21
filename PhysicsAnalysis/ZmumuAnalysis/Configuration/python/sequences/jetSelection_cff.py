@@ -138,3 +138,29 @@ twoJetSelection = cms.Sequence(
 
 
 
+exactlyOneBSsvHeMSelection = cms.Sequence(
+    oneSelectedJetSelection*
+    oneCleanJetSelection*
+    oneGoodJetSelection*
+    oneFinalJetSelection*
+    oneBSsvHeMJetSelection*
+    ~twoBSsvHeMJetSelection
+)
+
+
+
+exactlyOneBSsvHpTSelection = cms.Sequence(
+    oneSelectedJetSelection*
+    oneCleanJetSelection*
+    oneGoodJetSelection*
+    oneFinalJetSelection*
+    oneBSsvHeMJetSelection*
+    oneBSsvHpTJetSelection*
+    ~twoBSsvHpTJetSelection
+)
+
+
+
+
+
+

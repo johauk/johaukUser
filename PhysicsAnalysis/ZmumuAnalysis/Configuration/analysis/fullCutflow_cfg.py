@@ -264,25 +264,91 @@ process.oppositeChargeAnalysis = cms.Path(
     process.oppositeChargeAnalysisSeq
 )
 
-process.ZVetoLowOppositeChargeAnalysis = cms.Path(
-    process.ZVetoLowOppositeChargeAnalysisSeq
+process.zVetoLowOppositeChargeAnalysis = cms.Path(
+    process.zVetoLowOppositeChargeAnalysisSeq
 )
 
-process.ZVetoHighOppositeChargeAnalysis = cms.Path(
-    process.ZVetoHighOppositeChargeAnalysisSeq
+process.zVetoHighOppositeChargeAnalysis = cms.Path(
+    process.zVetoHighOppositeChargeAnalysisSeq
 )
 
 process.noMetOppositeChargeAnalysis = cms.Path(
     process.noMetOppositeChargeAnalysisSeq
 )
 
-process.ZVetoLowNoMetOppositeChargeAnalysis = cms.Path(
-    process.ZVetoLowNoMetOppositeChargeAnalysisSeq
+process.zVetoLowNoMetOppositeChargeAnalysis = cms.Path(
+    process.zVetoLowNoMetOppositeChargeAnalysisSeq
 )
 
-process.ZVetoHighNoMetOppositeChargeAnalysis = cms.Path(
-    process.ZVetoHighNoMetOppositeChargeAnalysisSeq
+process.zVetoHighNoMetOppositeChargeAnalysis = cms.Path(
+    process.zVetoHighNoMetOppositeChargeAnalysisSeq
 )
+
+
+
+
+
+
+
+
+
+
+process.oneBSsvHeMJetOppositeChargeAnalysis = cms.Path(
+    process.oneBSsvHeMJetOppositeChargeAnalysisSeq
+)
+
+process.oneBSsvHpTJetOppositeChargeAnalysis = cms.Path(
+    process.oneBSsvHpTJetOppositeChargeAnalysisSeq
+)
+
+process.zVetoLowOneBSsvHeMJetOppositeChargeAnalysis = cms.Path(
+    process.zVetoLowOneBSsvHeMJetOppositeChargeAnalysisSeq
+)
+
+process.zVetoLowOneBSsvHpTJetOppositeChargeAnalysis = cms.Path(
+    process.zVetoLowOneBSsvHpTJetOppositeChargeAnalysisSeq
+)
+
+process.zVetoHighOneBSsvHeMJetOppositeChargeAnalysis = cms.Path(
+    process.zVetoHighOneBSsvHeMJetOppositeChargeAnalysisSeq
+)
+
+process.zVetoHighOneBSsvHpTJetOppositeChargeAnalysis = cms.Path(
+    process.zVetoHighOneBSsvHpTJetOppositeChargeAnalysisSeq
+)
+
+
+
+process.noMetExactlyOneBSsvHeMJetOppositeChargeAnalysis = cms.Path(
+    process.noMetExactlyOneBSsvHeMJetOppositeChargeAnalysisSeq
+)
+
+process.noMetExactlyOneBSsvHpTJetOppositeChargeAnalysis = cms.Path(
+    process.noMetExactlyOneBSsvHpTJetOppositeChargeAnalysisSeq
+)
+
+process.zVetoLowNoMetExactlyOneBSsvHeMJetOppositeChargeAnalysis = cms.Path(
+    process.zVetoLowNoMetExactlyOneBSsvHeMJetOppositeChargeAnalysisSeq
+)
+
+process.zVetoLowNoMetExactlyOneBSsvHpTJetOppositeChargeAnalysis = cms.Path(
+    process.zVetoLowNoMetExactlyOneBSsvHpTJetOppositeChargeAnalysisSeq
+)
+
+process.zVetoHighNoMetExactlyOneBSsvHeMJetOppositeChargeAnalysis = cms.Path(
+    process.zVetoHighNoMetExactlyOneBSsvHeMJetOppositeChargeAnalysisSeq
+)
+
+process.zVetoHighNoMetExactlyOneBSsvHpTJetOppositeChargeAnalysis = cms.Path(
+    process.zVetoHighNoMetExactlyOneBSsvHpTJetOppositeChargeAnalysisSeq
+)
+
+
+
+
+
+
+
 
 
 

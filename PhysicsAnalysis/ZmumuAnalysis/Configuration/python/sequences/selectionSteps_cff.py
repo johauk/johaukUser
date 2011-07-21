@@ -106,6 +106,21 @@ EventCounterStepZVetoHighNoMet7b = EventCounter.clone()
 EventCounterStepZVetoHighNoMet7c = EventCounter.clone()
 EventCounterStepZVetoHighNoMet7 = EventCounter.clone()
 
+EventCounterStepOneBSsvHeMJet7a = EventCounter.clone()
+EventCounterStepOneBSsvHpTJet7a = EventCounter.clone()
+EventCounterStepZVetoLowOneBSsvHeMJet7a = EventCounter.clone()
+EventCounterStepZVetoLowOneBSsvHpTJet7a = EventCounter.clone()
+EventCounterStepZVetoHighOneBSsvHeMJet7a = EventCounter.clone()
+EventCounterStepZVetoHighOneBSsvHpTJet7a = EventCounter.clone()
+EventCounterStepNoMetOneBSsvHeMJet7a = EventCounter.clone()
+EventCounterStepNoMetOneBSsvHpTJet7a = EventCounter.clone()
+EventCounterStepZVetoLowNoMetOneBSsvHeMJet7a = EventCounter.clone()
+EventCounterStepZVetoLowNoMetOneBSsvHpTJet7a = EventCounter.clone()
+EventCounterStepZVetoHighNoMetOneBSsvHeMJet7a = EventCounter.clone()
+EventCounterStepZVetoHighNoMetOneBSsvHpTJet7a = EventCounter.clone()
+
+
+
 
 
 ## trigger analyzer
@@ -176,6 +191,19 @@ MuonAnalyzerStepZVetoHighNoMet7b = MuonAnalyzerStep7b.clone()
 MuonAnalyzerStepZVetoHighNoMet7c = MuonAnalyzerStep7c.clone()
 MuonAnalyzerStepZVetoHighNoMet7 = MuonAnalyzerStep7.clone()
 
+MuonAnalyzerStepOneBSsvHeMJet7a = MuonAnalyzerStep7a.clone()
+MuonAnalyzerStepOneBSsvHpTJet7a = MuonAnalyzerStep7a.clone()
+MuonAnalyzerStepZVetoLowOneBSsvHeMJet7a = MuonAnalyzerStep7a.clone()
+MuonAnalyzerStepZVetoLowOneBSsvHpTJet7a = MuonAnalyzerStep7a.clone()
+MuonAnalyzerStepZVetoHighOneBSsvHeMJet7a = MuonAnalyzerStep7a.clone()
+MuonAnalyzerStepZVetoHighOneBSsvHpTJet7a = MuonAnalyzerStep7a.clone()
+MuonAnalyzerStepNoMetOneBSsvHeMJet7a = MuonAnalyzerStep7a.clone()
+MuonAnalyzerStepNoMetOneBSsvHpTJet7a = MuonAnalyzerStep7a.clone()
+MuonAnalyzerStepZVetoLowNoMetOneBSsvHeMJet7a = MuonAnalyzerStep7a.clone()
+MuonAnalyzerStepZVetoLowNoMetOneBSsvHpTJet7a = MuonAnalyzerStep7a.clone()
+MuonAnalyzerStepZVetoHighNoMetOneBSsvHeMJet7a = MuonAnalyzerStep7a.clone()
+MuonAnalyzerStepZVetoHighNoMetOneBSsvHpTJet7a = MuonAnalyzerStep7a.clone()
+
 
 
 ## di-muon analyzer
@@ -221,6 +249,18 @@ DimuonAnalyzerStepZVetoHighNoMet7b = DimuonAnalyzerStepZVetoHigh7b.clone()
 DimuonAnalyzerStepZVetoHighNoMet7c = DimuonAnalyzerStepZVetoHigh7c.clone()
 DimuonAnalyzerStepZVetoHighNoMet7 = DimuonAnalyzerStepZVetoHigh7.clone()
 
+DimuonAnalyzerStepOneBSsvHeMJet7a = DimuonAnalyzerStep7a.clone()
+DimuonAnalyzerStepOneBSsvHpTJet7a = DimuonAnalyzerStep7a.clone()
+DimuonAnalyzerStepZVetoLowOneBSsvHeMJet7a = DimuonAnalyzerStep7a.clone()
+DimuonAnalyzerStepZVetoLowOneBSsvHpTJet7a = DimuonAnalyzerStep7a.clone()
+DimuonAnalyzerStepZVetoHighOneBSsvHeMJet7a = DimuonAnalyzerStep7a.clone()
+DimuonAnalyzerStepZVetoHighOneBSsvHpTJet7a = DimuonAnalyzerStep7a.clone()
+DimuonAnalyzerStepNoMetOneBSsvHeMJet7a = DimuonAnalyzerStep7a.clone()
+DimuonAnalyzerStepNoMetOneBSsvHpTJet7a = DimuonAnalyzerStep7a.clone()
+DimuonAnalyzerStepZVetoLowNoMetOneBSsvHeMJet7a = DimuonAnalyzerStep7a.clone()
+DimuonAnalyzerStepZVetoLowNoMetOneBSsvHpTJet7a = DimuonAnalyzerStep7a.clone()
+DimuonAnalyzerStepZVetoHighNoMetOneBSsvHeMJet7a = DimuonAnalyzerStep7a.clone()
+DimuonAnalyzerStepZVetoHighNoMetOneBSsvHpTJet7a = DimuonAnalyzerStep7a.clone()
 
 
 
@@ -339,6 +379,43 @@ JetAnalyzerStepZVetoHighNoMet7J = JetAnalyzerStepZVetoHigh7J.clone()
 JetAnalyzerStepZVetoHighNoMet7Bhe = JetAnalyzerStepZVetoHigh7Bhe.clone()
 JetAnalyzerStepZVetoHighNoMet7Bhp = JetAnalyzerStepZVetoHigh7Bhp.clone()
 
+JetAnalyzerStepOneBSsvHeMJet7aJ = JetAnalyzerStep7aJ.clone()
+JetAnalyzerStepOneBSsvHeMJet7aBhe = JetAnalyzerStep7aBhe.clone()
+JetAnalyzerStepOneBSsvHeMJet7aBhp = JetAnalyzerStep7aBhp.clone()
+JetAnalyzerStepOneBSsvHpTJet7aJ = JetAnalyzerStep7aJ.clone()
+JetAnalyzerStepOneBSsvHpTJet7aBhe = JetAnalyzerStep7aBhe.clone()
+JetAnalyzerStepOneBSsvHpTJet7aBhp = JetAnalyzerStep7aBhp.clone()
+JetAnalyzerStepZVetoLowOneBSsvHeMJet7aJ = JetAnalyzerStep7aJ.clone()
+JetAnalyzerStepZVetoLowOneBSsvHeMJet7aBhe = JetAnalyzerStep7aBhe.clone()
+JetAnalyzerStepZVetoLowOneBSsvHeMJet7aBhp = JetAnalyzerStep7aBhp.clone()
+JetAnalyzerStepZVetoLowOneBSsvHpTJet7aJ = JetAnalyzerStep7aJ.clone()
+JetAnalyzerStepZVetoLowOneBSsvHpTJet7aBhe = JetAnalyzerStep7aBhe.clone()
+JetAnalyzerStepZVetoLowOneBSsvHpTJet7aBhp = JetAnalyzerStep7aBhp.clone()
+JetAnalyzerStepZVetoHighOneBSsvHeMJet7aJ = JetAnalyzerStep7aJ.clone()
+JetAnalyzerStepZVetoHighOneBSsvHeMJet7aBhe = JetAnalyzerStep7aBhe.clone()
+JetAnalyzerStepZVetoHighOneBSsvHeMJet7aBhp = JetAnalyzerStep7aBhp.clone()
+JetAnalyzerStepZVetoHighOneBSsvHpTJet7aJ = JetAnalyzerStep7aJ.clone()
+JetAnalyzerStepZVetoHighOneBSsvHpTJet7aBhe = JetAnalyzerStep7aBhe.clone()
+JetAnalyzerStepZVetoHighOneBSsvHpTJet7aBhp = JetAnalyzerStep7aBhp.clone()
+JetAnalyzerStepNoMetOneBSsvHeMJet7aJ = JetAnalyzerStep7aJ.clone()
+JetAnalyzerStepNoMetOneBSsvHeMJet7aBhe = JetAnalyzerStep7aBhe.clone()
+JetAnalyzerStepNoMetOneBSsvHeMJet7aBhp = JetAnalyzerStep7aBhp.clone()
+JetAnalyzerStepNoMetOneBSsvHpTJet7aJ = JetAnalyzerStep7aJ.clone()
+JetAnalyzerStepNoMetOneBSsvHpTJet7aBhe = JetAnalyzerStep7aBhe.clone()
+JetAnalyzerStepNoMetOneBSsvHpTJet7aBhp = JetAnalyzerStep7aBhp.clone()
+JetAnalyzerStepZVetoLowNoMetOneBSsvHeMJet7aJ = JetAnalyzerStep7aJ.clone()
+JetAnalyzerStepZVetoLowNoMetOneBSsvHeMJet7aBhe = JetAnalyzerStep7aBhe.clone()
+JetAnalyzerStepZVetoLowNoMetOneBSsvHeMJet7aBhp = JetAnalyzerStep7aBhp.clone()
+JetAnalyzerStepZVetoLowNoMetOneBSsvHpTJet7aJ = JetAnalyzerStep7aJ.clone()
+JetAnalyzerStepZVetoLowNoMetOneBSsvHpTJet7aBhe = JetAnalyzerStep7aBhe.clone()
+JetAnalyzerStepZVetoLowNoMetOneBSsvHpTJet7aBhp = JetAnalyzerStep7aBhp.clone()
+JetAnalyzerStepZVetoHighNoMetOneBSsvHeMJet7aJ = JetAnalyzerStep7aJ.clone()
+JetAnalyzerStepZVetoHighNoMetOneBSsvHeMJet7aBhe = JetAnalyzerStep7aBhe.clone()
+JetAnalyzerStepZVetoHighNoMetOneBSsvHeMJet7aBhp = JetAnalyzerStep7aBhp.clone()
+JetAnalyzerStepZVetoHighNoMetOneBSsvHpTJet7aJ = JetAnalyzerStep7aJ.clone()
+JetAnalyzerStepZVetoHighNoMetOneBSsvHpTJet7aBhe = JetAnalyzerStep7aBhe.clone()
+JetAnalyzerStepZVetoHighNoMetOneBSsvHpTJet7aBhp = JetAnalyzerStep7aBhp.clone()
+
 
 
 ## missing et analyzer
@@ -372,6 +449,19 @@ MetAnalyzerStepZVetoHighNoMet7a = MetAnalyzerStepZVetoHigh7a.clone()
 MetAnalyzerStepZVetoHighNoMet7b = MetAnalyzerStepZVetoHigh7b.clone()
 MetAnalyzerStepZVetoHighNoMet7c = MetAnalyzerStepZVetoHigh7c.clone()
 MetAnalyzerStepZVetoHighNoMet7 = MetAnalyzerStepZVetoHigh7.clone()
+
+MetAnalyzerStepOneBSsvHeMJet7a = MetAnalyzerStep7a.clone()
+MetAnalyzerStepOneBSsvHpTJet7a = MetAnalyzerStep7a.clone()
+MetAnalyzerStepZVetoLowOneBSsvHeMJet7a = MetAnalyzerStep7a.clone()
+MetAnalyzerStepZVetoLowOneBSsvHpTJet7a = MetAnalyzerStep7a.clone()
+MetAnalyzerStepZVetoHighOneBSsvHeMJet7a = MetAnalyzerStep7a.clone()
+MetAnalyzerStepZVetoHighOneBSsvHpTJet7a = MetAnalyzerStep7a.clone()
+MetAnalyzerStepNoMetOneBSsvHeMJet7a = MetAnalyzerStep7a.clone()
+MetAnalyzerStepNoMetOneBSsvHpTJet7a = MetAnalyzerStep7a.clone()
+MetAnalyzerStepZVetoLowNoMetOneBSsvHeMJet7a = MetAnalyzerStep7a.clone()
+MetAnalyzerStepZVetoLowNoMetOneBSsvHpTJet7a = MetAnalyzerStep7a.clone()
+MetAnalyzerStepZVetoHighNoMetOneBSsvHeMJet7a = MetAnalyzerStep7a.clone()
+MetAnalyzerStepZVetoHighNoMetOneBSsvHpTJet7a = MetAnalyzerStep7a.clone()
 
 
 
@@ -883,6 +973,122 @@ stepZVetoHighNoMet7 = cms.Sequence(
 
 
 
+## Define steps and corresponding analyzers for analysis requiring exactly one b-tag (MET, no MET && signal region, lower and upper sideband)
+stepOneBSsvHeMJet7a = cms.Sequence(
+    EventCounterStepOneBSsvHeMJet7a*
+    MuonAnalyzerStepOneBSsvHeMJet7a*
+    DimuonAnalyzerStepOneBSsvHeMJet7a*
+    JetAnalyzerStepOneBSsvHeMJet7aJ*
+    JetAnalyzerStepOneBSsvHeMJet7aBhe*
+    JetAnalyzerStepOneBSsvHeMJet7aBhp*
+    MetAnalyzerStepOneBSsvHeMJet7a
+)
+stepOneBSsvHpTJet7a = cms.Sequence(
+    EventCounterStepOneBSsvHpTJet7a*
+    MuonAnalyzerStepOneBSsvHpTJet7a*
+    DimuonAnalyzerStepOneBSsvHpTJet7a*
+    JetAnalyzerStepOneBSsvHpTJet7aJ*
+    JetAnalyzerStepOneBSsvHpTJet7aBhe*
+    JetAnalyzerStepOneBSsvHpTJet7aBhp*
+    MetAnalyzerStepOneBSsvHpTJet7a
+)
+stepZVetoLowOneBSsvHeMJet7a = cms.Sequence(
+    EventCounterStepZVetoLowOneBSsvHeMJet7a*
+    MuonAnalyzerStepZVetoLowOneBSsvHeMJet7a*
+    DimuonAnalyzerStepZVetoLowOneBSsvHeMJet7a*
+    JetAnalyzerStepZVetoLowOneBSsvHeMJet7aJ*
+    JetAnalyzerStepZVetoLowOneBSsvHeMJet7aBhe*
+    JetAnalyzerStepZVetoLowOneBSsvHeMJet7aBhp*
+    MetAnalyzerStepZVetoLowOneBSsvHeMJet7a
+)
+stepZVetoLowOneBSsvHpTJet7a = cms.Sequence(
+    EventCounterStepZVetoLowOneBSsvHpTJet7a*
+    MuonAnalyzerStepZVetoLowOneBSsvHpTJet7a*
+    DimuonAnalyzerStepZVetoLowOneBSsvHpTJet7a*
+    JetAnalyzerStepZVetoLowOneBSsvHpTJet7aJ*
+    JetAnalyzerStepZVetoLowOneBSsvHpTJet7aBhe*
+    JetAnalyzerStepZVetoLowOneBSsvHpTJet7aBhp*
+    MetAnalyzerStepZVetoLowOneBSsvHpTJet7a
+)
+stepZVetoHighOneBSsvHeMJet7a = cms.Sequence(
+    EventCounterStepZVetoHighOneBSsvHeMJet7a*
+    MuonAnalyzerStepZVetoHighOneBSsvHeMJet7a*
+    DimuonAnalyzerStepZVetoHighOneBSsvHeMJet7a*
+    JetAnalyzerStepZVetoHighOneBSsvHeMJet7aJ*
+    JetAnalyzerStepZVetoHighOneBSsvHeMJet7aBhe*
+    JetAnalyzerStepZVetoHighOneBSsvHeMJet7aBhp*
+    MetAnalyzerStepZVetoHighOneBSsvHeMJet7a
+)
+stepZVetoHighOneBSsvHpTJet7a = cms.Sequence(
+    EventCounterStepZVetoHighOneBSsvHpTJet7a*
+    MuonAnalyzerStepZVetoHighOneBSsvHpTJet7a*
+    DimuonAnalyzerStepZVetoHighOneBSsvHpTJet7a*
+    JetAnalyzerStepZVetoHighOneBSsvHpTJet7aJ*
+    JetAnalyzerStepZVetoHighOneBSsvHpTJet7aBhe*
+    JetAnalyzerStepZVetoHighOneBSsvHpTJet7aBhp*
+    MetAnalyzerStepZVetoHighOneBSsvHpTJet7a
+)
+
+
+stepNoMetOneBSsvHeMJet7a = cms.Sequence(
+    EventCounterStepNoMetOneBSsvHeMJet7a*
+    MuonAnalyzerStepNoMetOneBSsvHeMJet7a*
+    DimuonAnalyzerStepNoMetOneBSsvHeMJet7a*
+    JetAnalyzerStepNoMetOneBSsvHeMJet7aJ*
+    JetAnalyzerStepNoMetOneBSsvHeMJet7aBhe*
+    JetAnalyzerStepNoMetOneBSsvHeMJet7aBhp*
+    MetAnalyzerStepNoMetOneBSsvHeMJet7a
+)
+stepNoMetOneBSsvHpTJet7a = cms.Sequence(
+    EventCounterStepNoMetOneBSsvHpTJet7a*
+    MuonAnalyzerStepNoMetOneBSsvHpTJet7a*
+    DimuonAnalyzerStepNoMetOneBSsvHpTJet7a*
+    JetAnalyzerStepNoMetOneBSsvHpTJet7aJ*
+    JetAnalyzerStepNoMetOneBSsvHpTJet7aBhe*
+    JetAnalyzerStepNoMetOneBSsvHpTJet7aBhp*
+    MetAnalyzerStepNoMetOneBSsvHpTJet7a
+)
+stepZVetoLowNoMetOneBSsvHeMJet7a = cms.Sequence(
+    EventCounterStepZVetoLowNoMetOneBSsvHeMJet7a*
+    MuonAnalyzerStepZVetoLowNoMetOneBSsvHeMJet7a*
+    DimuonAnalyzerStepZVetoLowNoMetOneBSsvHeMJet7a*
+    JetAnalyzerStepZVetoLowNoMetOneBSsvHeMJet7aJ*
+    JetAnalyzerStepZVetoLowNoMetOneBSsvHeMJet7aBhe*
+    JetAnalyzerStepZVetoLowNoMetOneBSsvHeMJet7aBhp*
+    MetAnalyzerStepZVetoLowNoMetOneBSsvHeMJet7a
+)
+stepZVetoLowNoMetOneBSsvHpTJet7a = cms.Sequence(
+    EventCounterStepZVetoLowNoMetOneBSsvHpTJet7a*
+    MuonAnalyzerStepZVetoLowNoMetOneBSsvHpTJet7a*
+    DimuonAnalyzerStepZVetoLowNoMetOneBSsvHpTJet7a*
+    JetAnalyzerStepZVetoLowNoMetOneBSsvHpTJet7aJ*
+    JetAnalyzerStepZVetoLowNoMetOneBSsvHpTJet7aBhe*
+    JetAnalyzerStepZVetoLowNoMetOneBSsvHpTJet7aBhp*
+    MetAnalyzerStepZVetoLowNoMetOneBSsvHpTJet7a
+)
+stepZVetoHighNoMetOneBSsvHeMJet7a = cms.Sequence(
+    EventCounterStepZVetoHighNoMetOneBSsvHeMJet7a*
+    MuonAnalyzerStepZVetoHighNoMetOneBSsvHeMJet7a*
+    DimuonAnalyzerStepZVetoHighNoMetOneBSsvHeMJet7a*
+    JetAnalyzerStepZVetoHighNoMetOneBSsvHeMJet7aJ*
+    JetAnalyzerStepZVetoHighNoMetOneBSsvHeMJet7aBhe*
+    JetAnalyzerStepZVetoHighNoMetOneBSsvHeMJet7aBhp*
+    MetAnalyzerStepZVetoHighNoMetOneBSsvHeMJet7a
+)
+stepZVetoHighNoMetOneBSsvHpTJet7a = cms.Sequence(
+    EventCounterStepZVetoHighNoMetOneBSsvHpTJet7a*
+    MuonAnalyzerStepZVetoHighNoMetOneBSsvHpTJet7a*
+    DimuonAnalyzerStepZVetoHighNoMetOneBSsvHpTJet7a*
+    JetAnalyzerStepZVetoHighNoMetOneBSsvHpTJet7aJ*
+    JetAnalyzerStepZVetoHighNoMetOneBSsvHpTJet7aBhe*
+    JetAnalyzerStepZVetoHighNoMetOneBSsvHpTJet7aBhp*
+    MetAnalyzerStepZVetoHighNoMetOneBSsvHpTJet7a
+)
+
+
+
+
+
 
 #******************************************************************************************
 #   Analysis Paths
@@ -1009,7 +1215,7 @@ oppositeChargeAnalysisSeq = cms.Sequence(
 
 
 
-ZVetoLowOppositeChargeAnalysisSeq = cms.Sequence(
+zVetoLowOppositeChargeAnalysisSeq = cms.Sequence(
     zVetoDefaultSteps*
     
     finalDimuonZVetoLowSelection*
@@ -1047,7 +1253,7 @@ ZVetoLowOppositeChargeAnalysisSeq = cms.Sequence(
 
 
 
-ZVetoHighOppositeChargeAnalysisSeq = cms.Sequence(
+zVetoHighOppositeChargeAnalysisSeq = cms.Sequence(
     zVetoDefaultSteps*
     
     finalDimuonZVetoHighSelection*
@@ -1105,7 +1311,7 @@ noMetOppositeChargeAnalysisSeq = cms.Sequence(
 
 
 
-ZVetoLowNoMetOppositeChargeAnalysisSeq = cms.Sequence(
+zVetoLowNoMetOppositeChargeAnalysisSeq = cms.Sequence(
     zVetoLowNoMetDefaultSteps*
     
     # Do not apply MET Selection
@@ -1125,7 +1331,7 @@ ZVetoLowNoMetOppositeChargeAnalysisSeq = cms.Sequence(
 
 
 
-ZVetoHighNoMetOppositeChargeAnalysisSeq = cms.Sequence(
+zVetoHighNoMetOppositeChargeAnalysisSeq = cms.Sequence(
     zVetoHighNoMetDefaultSteps*
     
     # Do not apply MET Selection
@@ -1143,6 +1349,99 @@ ZVetoHighNoMetOppositeChargeAnalysisSeq = cms.Sequence(
     
 )
 
+
+
+oneBSsvHeMJetOppositeChargeAnalysisSeq = cms.Sequence(
+    noMetDefaultSteps*
+    goodMetSelection*
+    ~twoBSsvHeMJetSelection*
+    stepOneBSsvHeMJet7a
+)
+
+oneBSsvHpTJetOppositeChargeAnalysisSeq = cms.Sequence(
+    noMetDefaultSteps*
+    goodMetSelection*
+    oneBSsvHpTJetSelection*
+    ~twoBSsvHpTJetSelection*
+    stepOneBSsvHpTJet7a
+)
+
+zVetoLowOneBSsvHeMJetOppositeChargeAnalysisSeq = cms.Sequence(
+    zVetoLowNoMetDefaultSteps*
+    goodMetSelection*
+    ~twoBSsvHeMJetSelection*
+    stepZVetoLowOneBSsvHeMJet7a
+)
+
+zVetoLowOneBSsvHpTJetOppositeChargeAnalysisSeq = cms.Sequence(
+    zVetoLowNoMetDefaultSteps*
+    goodMetSelection*
+    oneBSsvHpTJetSelection*
+    ~twoBSsvHpTJetSelection*
+    stepZVetoLowOneBSsvHpTJet7a
+)
+
+zVetoHighOneBSsvHeMJetOppositeChargeAnalysisSeq = cms.Sequence(
+    zVetoHighNoMetDefaultSteps*
+    goodMetSelection*
+    ~twoBSsvHeMJetSelection*
+    stepZVetoHighOneBSsvHeMJet7a
+)
+
+zVetoHighOneBSsvHpTJetOppositeChargeAnalysisSeq = cms.Sequence(
+    zVetoHighNoMetDefaultSteps*
+    goodMetSelection*
+    oneBSsvHpTJetSelection*
+    ~twoBSsvHpTJetSelection*
+    stepZVetoHighOneBSsvHpTJet7a
+)
+
+
+
+noMetExactlyOneBSsvHeMJetOppositeChargeAnalysisSeq = cms.Sequence(
+    noMetDefaultSteps*
+    #goodMetSelection*
+    ~twoBSsvHeMJetSelection*
+    stepNoMetOneBSsvHeMJet7a
+)
+
+noMetExactlyOneBSsvHpTJetOppositeChargeAnalysisSeq = cms.Sequence(
+    noMetDefaultSteps*
+    #goodMetSelection*
+    oneBSsvHpTJetSelection*
+    ~twoBSsvHpTJetSelection*
+    stepNoMetOneBSsvHpTJet7a
+)
+
+zVetoLowNoMetExactlyOneBSsvHeMJetOppositeChargeAnalysisSeq = cms.Sequence(
+    zVetoLowNoMetDefaultSteps*
+    #goodMetSelection*
+    ~twoBSsvHeMJetSelection*
+    stepZVetoLowNoMetOneBSsvHeMJet7a
+)
+
+zVetoLowNoMetExactlyOneBSsvHpTJetOppositeChargeAnalysisSeq = cms.Sequence(
+    zVetoLowNoMetDefaultSteps*
+    #goodMetSelection*
+    oneBSsvHpTJetSelection*
+    ~twoBSsvHpTJetSelection*
+    stepZVetoLowNoMetOneBSsvHpTJet7a
+)
+
+zVetoHighNoMetExactlyOneBSsvHeMJetOppositeChargeAnalysisSeq = cms.Sequence(
+    zVetoHighNoMetDefaultSteps*
+    #goodMetSelection*
+    ~twoBSsvHeMJetSelection*
+    stepZVetoHighNoMetOneBSsvHeMJet7a
+)
+
+zVetoHighNoMetExactlyOneBSsvHpTJetOppositeChargeAnalysisSeq = cms.Sequence(
+    zVetoHighNoMetDefaultSteps*
+    #goodMetSelection*
+    oneBSsvHpTJetSelection*
+    ~twoBSsvHpTJetSelection*
+    stepZVetoHighNoMetOneBSsvHpTJet7a
+)
 
 
 
