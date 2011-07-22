@@ -105,7 +105,7 @@ elif(isZmumuB):
 elif(isZmumuUdsc):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_423_July10_cff")
 elif(isZtautau):
-    process.load("")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_423_July10_cff")
 elif(isWw):
     process.load("")
 elif(isWz):
