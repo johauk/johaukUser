@@ -31,11 +31,9 @@ void zTtbarFit(const TString pluginSuffix = "", const double ttbarFractionIn =0.
   
   
   //Specify plugin name
-  const TString pluginBase("DiMuonAnalyzer");
-  //const TString pluginBase("DimuonAnalyzer");
+  const TString pluginBase("DimuonAnalyzer");
   
-  const TString pluginFolder("OppositeCharge");
-  //const TString pluginFolder("DimuonProperties");
+  const TString pluginFolder("DimuonProperties");
   
   // Give name of input histogram
   const TString histName("h_diMass");
