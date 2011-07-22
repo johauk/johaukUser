@@ -1,4 +1,4 @@
-fullAnalysis(TString recoStep = "Step6", TString simuStep = "StepB2", TString sideband1Step = "StepZVetoHigh6", TString sideband2Step = ""){
+fullAnalysis(TString recoStep = "Step5", TString simuStep = "StepB2", TString sideband1Step = "StepZVetoHigh5", TString sideband2Step = ""){
 //fullAnalysis(){
 
 /*
@@ -29,7 +29,7 @@ gROOT->ProcessLine(".L Calculations/crossSectionIterative.C++");
 //gROOT->ProcessLine(".L Calculations/nInOutIterative.C++");
 gROOT->ProcessLine(".L Calculations/nInOut.C++");
 
-
+gROOT->ProcessLine(".L Drawings/zTtbarFit.C++");
 
 gROOT->ProcessLine(".L Samples/allSampleStruct.C++");
 
@@ -71,18 +71,11 @@ printLine("No. of background events (sidebands)");
 nBackgroundSideband(sideband1Step, sideband2Step);
 printLine("No. of signal events (sidebands)");
 nSignalSidebandMc(sideband1Step, sideband2Step);
-printLine("Cross section and ttbar contribution iterative");
-crossSectionIterative(theNObserved, theNObservedSideband, theNBackgroundWoTop, theNBackgroundWoTopSideband, theRatioInOut, theNSignalSidebandMc, theEfficiency, theLuminosity, theCrossSection, theSignalSampleCrossSection);
-//crossSectionIterative(theNObserved, theNObservedSideband, theNBackgroundWoTop, theNBackgroundWoTopSideband, theRatioInOut, theNSignalSidebandMc, theEfficiency, theLuminosity, theSignalSampleCrossSection, theSignalSampleCrossSection);
-//crossSectionIterative(theNObserved, theNObservedSideband, theNBackgroundWoTop, theNBackgroundWoTopSideband, theRatioInOut, theNSignalSidebandMc, theEfficiency, theLuminosity, 0., theSignalSampleCrossSection);
 
-// New better version for ttbar background estimation, independent of efficiencies and cross sections
-printLine("ttbar and zmumu yields iterative");
-//nInOutIterative(theNObserved, theNObservedSideband, theNObservedRelErr2Up, theNObservedSidebandRelErr2Up, theRatioInOutTtbar, theRatioInOutZmumu, theRatioInOutRelErr2UpTtbar, theRatioInOutRelErr2UpZmumu, theNInMcOther, theNOutMcOther, theNOutMcZmumu);
-//nInOutIterative(theNObserved, theNObservedSideband, theNObservedRelErr2Up, theNObservedSidebandRelErr2Up, theRatioInOutTtbar, theRatioInOutZmumu, theRatioInOutRelErr2UpTtbar, theRatioInOutRelErr2UpZmumu, theNInMcOther, theNOutMcOther, 0.);
 printLine("ttbar and zmumu yields direct");
 nInOut(theNObserved, theNObservedSideband, theNObservedRelErr2Up, theNObservedSidebandRelErr2Up, theRatioInOutTtbar, theRatioInOutZmumu, theRatioInOutRelErr2UpTtbar, theRatioInOutRelErr2UpZmumu, theNInMcOther, theNOutMcOther, 0., 0.);
 
-
+printLine("Plot fitted dimuon distribution");
+zTtbarFit(recoStep, theNInTtbarRel, theNInZmumuRel, theNObserved, theNInMcTtbar, theNInMcZmumu);
 
 }

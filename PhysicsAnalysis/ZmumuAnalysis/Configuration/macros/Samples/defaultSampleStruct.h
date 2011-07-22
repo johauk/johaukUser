@@ -34,6 +34,8 @@ struct DataStruct : defaultStruct {
   
   ~DataStruct(){}//file_->Close();}
   
+  double getEffectiveLuminosity()const;
+  
   // Full path of dataset
   static const std::string defaultPath(){return cmsswBase() + "/src/ZmumuAnalysis/Configuration/hists/data/";}
   // Root file name only
@@ -50,6 +52,9 @@ struct DataStruct : defaultStruct {
   TFile* file_;
 };
 
+double DataStruct::getEffectiveLuminosity()const{
+  return lumi_*dynamicWeight_;
+}
 
 
 
@@ -65,6 +70,10 @@ struct McStruct : defaultStruct {
     {}
   
   ~McStruct(){}//color_->Delete(); file_->Close();}
+  
+  double getCorrespondingLuminosity()const;
+  double getWeight(const double)const;
+  double getEffectiveWeight(const double)const;
   
   // Full path of dataset
   static const std::string defaultPath(){return cmsswBase() + "/src/ZmumuAnalysis/Configuration/hists/mc/";}
@@ -86,7 +95,24 @@ struct McStruct : defaultStruct {
   TFile* file_;
 };
 
+double McStruct::getCorrespondingLuminosity()const{
+  const double nEventsSample(nEvents_);
+  const double effectiveCrossSection(crossSection_*filterEfficiency_);
+  const double correspondingLuminosity(nEventsSample/effectiveCrossSection);
+  return correspondingLuminosity;
+}
 
+// The weight if full sample is reprocessed
+double McStruct::getWeight(const double effectiveLuminosity)const{
+  const double correspondingLuminosity(this->getCorrespondingLuminosity());
+  return effectiveLuminosity/correspondingLuminosity;
+}
+
+// The weight including dynamic weighting if only subsample is reprocessed
+double McStruct::getEffectiveWeight(const double effectiveLuminosity)const{
+  const double weight(this->getWeight(effectiveLuminosity));
+  return weight/dynamicWeight_;
+}
 
 
 
