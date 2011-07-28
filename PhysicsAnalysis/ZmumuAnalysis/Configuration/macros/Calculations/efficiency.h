@@ -22,7 +22,7 @@ void FullAnalysis::setEfficiency(){
   
   // First: get the number of reconstructed signal events
   TH1* eventsReco(0);
-  eventsReco = eventCount(zmumuB.file(), this->recoSelectionStep());
+  eventsReco = Tools::eventCount(zmumuB.file(), this->recoSelectionStep());
   if(!eventsReco){
     std::cout<<"\tMissing is histogram containing no. of reconstructed signal events\n"
              <<"\t... efficiency calculation stopped\n";
@@ -34,7 +34,7 @@ void FullAnalysis::setEfficiency(){
   
   // Second: get the number of simulated signal events
   TH1* eventsSimu(0);
-  eventsSimu = eventCount(simulation.file(), this->simuSelectionStep());
+  eventsSimu = Tools::eventCount(simulation.file(), this->simuSelectionStep());
   if(!eventsSimu){
     std::cout<<"\tMissing is histogram containing no. of simulated signal events\n"
              <<"\t... efficiency calculation stopped\n";

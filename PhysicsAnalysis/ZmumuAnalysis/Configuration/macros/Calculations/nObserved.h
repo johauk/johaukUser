@@ -21,7 +21,7 @@ void FullAnalysis::setNObserved(){
   
   
   TH1* events(0);
-  events = eventCount(data.file(), this->recoSelectionStep());
+  events = Tools::eventCount(data.file(), this->recoSelectionStep());
   if(!events){
     std::cout<<"\tMissing is histogram containing no. of data events\n"
              <<"\t... nObserved calculation stopped\n";

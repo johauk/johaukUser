@@ -23,7 +23,6 @@
 #include "ZmumuAnalysis/Configuration/macros/Calculations/ratioInOut.h"
 #include "ZmumuAnalysis/Configuration/macros/Calculations/nObservedSideband.h"
 #include "ZmumuAnalysis/Configuration/macros/Calculations/nBackgroundSideband.h"
-//#include "ZmumuAnalysis/Configuration/macros/Calculations/nSignalSideband.h"
 #include "ZmumuAnalysis/Configuration/macros/Calculations/ttbarFraction.h"
 #include "ZmumuAnalysis/Configuration/macros/Drawings/zTtbarFit.h"
 
@@ -72,8 +71,11 @@ void FullAnalysis::ttbarFromSideband(const Sideband& sideband){
   this->setNObservedSideband(sideband);
   Tools::printLine("No. of background events (sidebands)");
   this->setNBackgroundSideband(sideband);
-  //Tools::printLine("No. of signal events (sidebands)");
-  //this->setNSignalSideband(sideband);
+  
+  //nBackgroundOther_.setValue(nObserved().value()*0.03);
+  //nBackgroundOtherSideband_.setValue(nObservedSideband().value()*0.03);
+  
+  
   Tools::printLine("ttbar and zmumu yields");
   this->setTtbarFraction();
   Tools::printLine("Plot fitted dimuon distribution");

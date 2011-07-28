@@ -18,7 +18,7 @@ void FullAnalysis::setCrossSectionFromMc(){
   const McSample& zmumuB = *this->signalSample();
   
   TH1* events(0);
-  events = eventCount(zmumuB.file(), "Step1a");
+  events = Tools::eventCount(zmumuB.file(), "Step1a");
   if(!events){
     std::cout<<"\tMissing is histogram containing no. of signal events\n"
              <<"\t... crossSectionFromMc calculation stopped\n";

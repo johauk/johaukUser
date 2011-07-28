@@ -31,7 +31,7 @@ void FullAnalysis::setNBackgroundSideband(const Sideband& sideband){
     if(sideband==upper || sideband==both){
       TString pluginSuffix(this->recoSelectionStep());
       pluginSuffix.Insert(4,"ZVetoHigh");
-      eventsOut1 = eventCount(background.file(), pluginSuffix);
+      eventsOut1 = Tools::eventCount(background.file(), pluginSuffix);
       if(!eventsOut1){
         std::cout<<"\tMissing is histogram containing no. of MC events for \"Out1\": "<<background.datasetName()<<"\n"
                  <<"\t... ratioInOut calculation stopped\n";
@@ -43,7 +43,7 @@ void FullAnalysis::setNBackgroundSideband(const Sideband& sideband){
     if(sideband==lower || sideband==both){
       TString pluginSuffix(this->recoSelectionStep());
       pluginSuffix.Insert(4,"ZVetoLow");
-      eventsOut2 = eventCount(background.file(), pluginSuffix);
+      eventsOut2 = Tools::eventCount(background.file(), pluginSuffix);
       if(!eventsOut2){
         std::cout<<"\tMissing is histogram containing no. of MC events for \"Out2\": "<<background.datasetName()<<"\n"
                  <<"\t... ratioInOut calculation stopped\n";

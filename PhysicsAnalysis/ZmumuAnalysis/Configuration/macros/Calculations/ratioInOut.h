@@ -32,7 +32,7 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
     const McSample& background = **i_background;
     
     TH1* eventsIn(0);
-    eventsIn = eventCount(background.file(), this->recoSelectionStep());
+    eventsIn = Tools::eventCount(background.file(), this->recoSelectionStep());
     if(!eventsIn){
       std::cout<<"\tMissing is histogram containing no. of MC events for \"In\": "<<background.datasetName()<<"\n"
                <<"\t... ratioInOut calculation stopped\n";
@@ -43,7 +43,7 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
     if(sideband==upper || sideband==both){
       TString pluginSuffix(this->recoSelectionStep());
       pluginSuffix.Insert(4,"ZVetoHigh");
-      eventsOut1 = eventCount(background.file(), pluginSuffix);
+      eventsOut1 = Tools::eventCount(background.file(), pluginSuffix);
       if(!eventsOut1){
         std::cout<<"\tMissing is histogram containing no. of MC events for \"Out1\": "<<background.datasetName()<<"\n"
                  <<"\t... ratioInOut calculation stopped\n";
@@ -55,7 +55,7 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
     if(sideband==lower || sideband==both){
       TString pluginSuffix(this->recoSelectionStep());
       pluginSuffix.Insert(4,"ZVetoLow");
-      eventsOut2 = eventCount(background.file(), pluginSuffix);
+      eventsOut2 = Tools::eventCount(background.file(), pluginSuffix);
       if(!eventsOut2){
         std::cout<<"\tMissing is histogram containing no. of MC events for \"Out2\": "<<background.datasetName()<<"\n"
                  <<"\t... ratioInOut calculation stopped\n";
@@ -89,7 +89,7 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
   double nOutZmumuB(0.);
   {
     TH1* eventsIn(0);
-    eventsIn = eventCount(zmumuB.file(), this->recoSelectionStep());
+    eventsIn = Tools::eventCount(zmumuB.file(), this->recoSelectionStep());
     if(!eventsIn){
       std::cout<<"\tMissing is histogram containing no. of MC events for \"In\": "<<zmumuB.datasetName()<<"\n"
                <<"\t... ratioInOut calculation stopped\n";
@@ -100,7 +100,7 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
     if(sideband==upper || sideband==both){
       TString pluginSuffix(this->recoSelectionStep());
       pluginSuffix.Insert(4,"ZVetoHigh");
-      eventsOut1 = eventCount(zmumuB.file(), pluginSuffix);
+      eventsOut1 = Tools::eventCount(zmumuB.file(), pluginSuffix);
       if(!eventsOut1){
         std::cout<<"\tMissing is histogram containing no. of MC events for \"Out1\": "<<zmumuB.datasetName()<<"\n"
                  <<"\t... ratioInOut calculation stopped\n";
@@ -112,7 +112,7 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
     if(sideband==lower || sideband==both){
       TString pluginSuffix(this->recoSelectionStep());
       pluginSuffix.Insert(4,"ZVetoLow");
-      eventsOut2 = eventCount(zmumuB.file(), pluginSuffix);
+      eventsOut2 = Tools::eventCount(zmumuB.file(), pluginSuffix);
       if(!eventsOut2){
         std::cout<<"\tMissing is histogram containing no. of MC events for \"Out2\": "<<zmumuB.datasetName()<<"\n"
                  <<"\t... ratioInOut calculation stopped\n";

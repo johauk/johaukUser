@@ -24,7 +24,7 @@ void FullAnalysis::setNObservedSideband(const Sideband& sideband){
   if(sideband==upper || sideband==both){
     TString pluginSuffix(this->recoSelectionStep());
     pluginSuffix.Insert(4,"ZVetoHigh");
-    eventsOut1 = eventCount(data.file(), pluginSuffix);
+    eventsOut1 = Tools::eventCount(data.file(), pluginSuffix);
     if(!eventsOut1){
       std::cout<<"\tMissing is histogram containing no. of data events in sideband \"Out1\"\n"
                <<"\t... nObserved calculation stopped\n";
@@ -36,7 +36,7 @@ void FullAnalysis::setNObservedSideband(const Sideband& sideband){
   if(sideband==lower || sideband==both){
     TString pluginSuffix(this->recoSelectionStep());
     pluginSuffix.Insert(4,"ZVetoLow");
-    eventsOut2 = eventCount(data.file(), pluginSuffix);
+    eventsOut2 = Tools::eventCount(data.file(), pluginSuffix);
     if(!eventsOut2){
       std::cout<<"\tMissing is histogram containing no. of data events in sideband \"Out2\"\n"
                <<"\t... ratioInOut calculation stopped\n";

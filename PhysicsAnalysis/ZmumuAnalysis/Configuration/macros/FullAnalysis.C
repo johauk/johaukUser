@@ -1,5 +1,7 @@
 {
 gROOT->ProcessLine(".L Tools/printLine.C++");
+gROOT->ProcessLine(".L Tools/eventCount.C++");
+gROOT->ProcessLine(".L Tools/signalAndSidebandCombined.C++");
 
 gROOT->ProcessLine(".L Tools/ValueAndError.C++");
 gROOT->ProcessLine(".L Samples/DefaultSample.C++");

@@ -27,7 +27,7 @@ void FullAnalysis::setNBackground(){
     const McSample& background = **i_background;
     
     TH1* events(0);
-    events = eventCount(background.file(), this->recoSelectionStep());
+    events = Tools::eventCount(background.file(), this->recoSelectionStep());
     if(!events){
       std::cout<<"\tMissing is histogram containing no. of MC events for: "<<background.datasetName_<<"\n"
                <<"\t... nObserved calculation stopped\n";

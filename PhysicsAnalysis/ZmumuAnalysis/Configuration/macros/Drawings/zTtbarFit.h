@@ -38,10 +38,10 @@ void FullAnalysis::zTtbarFit(){
   const TString histName("h_diMass");
   
   TH1* dimuonMassData(0);
-  dimuonMassData = signalAndSidebandCombined(data.file(), this->recoSelectionStep(), pluginBase, pluginFolder, histName);
+  dimuonMassData = Tools::signalAndSidebandCombined(data.file(), this->recoSelectionStep(), pluginBase, pluginFolder, histName);
   
   TH1* dimuonMassZmumuB(0);
-  dimuonMassZmumuB = signalAndSidebandCombined(zmumuB.file(), this->recoSelectionStep(), pluginBase, pluginFolder, histName);
+  dimuonMassZmumuB = Tools::signalAndSidebandCombined(zmumuB.file(), this->recoSelectionStep(), pluginBase, pluginFolder, histName);
   
   TH1* dimuonMassZmumuUdsc(0);
   TH1* dimuonMassTtbar(0);
@@ -51,12 +51,12 @@ void FullAnalysis::zTtbarFit(){
   for(i_background = v_background.begin(); i_background != v_background.end(); ++i_background){
     const McSample& background = **i_background;
     if(background.datasetName()=="ttbar"){
-      dimuonMassTtbar = signalAndSidebandCombined(background.file(), this->recoSelectionStep(), pluginBase, pluginFolder, histName);
+      dimuonMassTtbar = Tools::signalAndSidebandCombined(background.file(), this->recoSelectionStep(), pluginBase, pluginFolder, histName);
       dimuonMassTtbar->SetFillColor(background.color()->GetNumber());
       ttbar = &background;
     }
     else if(background.datasetName()=="zmumuUdsc"){
-      dimuonMassZmumuUdsc = signalAndSidebandCombined(background.file(), this->recoSelectionStep(), pluginBase, pluginFolder, histName);
+      dimuonMassZmumuUdsc = Tools::signalAndSidebandCombined(background.file(), this->recoSelectionStep(), pluginBase, pluginFolder, histName);
       //dimuonMassZmumuUdsc->SetFillColor(background.color()->GetNumber());
     }
   }
