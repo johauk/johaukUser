@@ -1,4 +1,4 @@
-#include "ZmumuAnalysis/Configuration/macros/Calculations/FullAnalysis.h"
+#include "ZmumuAnalysis/Configuration/macros/Tools/FullAnalysis.h"
 
 
 void FullAnalysis::setMcSamples(){

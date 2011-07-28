@@ -5,7 +5,7 @@
 // .L ../Samples/mc.C++
 //  mc(allSampleStruct);
 // zTtbarFit("Step5");
-#include "ZmumuAnalysis/Configuration/macros/Calculations/FullAnalysis.h"
+#include "ZmumuAnalysis/Configuration/macros/Tools/FullAnalysis.h"
 
 
 #include "ZmumuAnalysis/Configuration/macros/Tools/signalAndSidebandCombined.h"
