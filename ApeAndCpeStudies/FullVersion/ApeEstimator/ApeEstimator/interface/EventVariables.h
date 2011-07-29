@@ -11,7 +11,8 @@ struct TrackStruct{
   struct HitParameterStruct{
     
     HitParameterStruct(): hitState(ok),
-                 isModuleUsable(true),
+                 isPixelHit(false),
+		 isModuleUsable(true),
 		 width(0), charge(0), maxStrip(0), maxStripInv(0), maxCharge(0), maxIndex(0),
 		 chargeOnEdges(-999.F), chargeAsymmetry(-999.F), 
 		 baryStrip(-999.F), sOverN(-999.F),
@@ -27,6 +28,7 @@ struct TrackStruct{
 		 phiSens(-999.F), phiSensX(-999.F), phiSensY(-999.F){}
     
     HitState hitState;
+    bool isPixelHit;
     std::vector<unsigned int> v_sector;
     // cluster parameters
     bool isModuleUsable;

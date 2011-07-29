@@ -182,8 +182,15 @@ process.ApeEstimator1 = ApeEstimator.clone(
     applyTrackCuts = False,
     Sectors = SubdetSectors,
     #Sectors = TIDTEC,
+    #Sectors = TIBTOB,
+    #Sectors = TIBTOBQuarters,
+    #Sectors = TIBTOBPitchAnd2DSeparation,
     #Sectors = TIBTOBLayerAndOrientationSeparation,
+    #Sectors = TIDTECSideAndRingSeparation,
     #Sectors = TIDTECSideAndRingAndOrientationSeparation,
+    #Sectors = BPIXLayerAndOrientationSeparation,
+    #Sectors = FPIXSideAndLayerAndOrientationSeparation,
+    #Sectors = RecentSectors,
     analyzerMode = False,
 )
 process.ApeEstimator1.HitSelector.width = []

@@ -14,7 +14,13 @@ struct TrackerDetectorStruct{
 			   Eta(0), Theta(0), Phi(0), D0Beamspot(0), Dz(0),
 			   P(0), Pt(0), MeanAngle(0),
 			   HitsGoodVsHitsValid(0), MeanAngleVsHits(0),
-			   PHitsGoodVsHitsValid(0), PMeanAngleVsHits(0){}
+			   HitsPixelVsEta(0), HitsPixelVsTheta(0),
+			   HitsStripVsEta(0), HitsStripVsTheta(0),
+			   PtVsEta(0), PtVsTheta(0),
+			   PHitsGoodVsHitsValid(0), PMeanAngleVsHits(0),
+			   PHitsPixelVsEta(0), PHitsPixelVsTheta(0),
+			   PHitsStripVsEta(0), PHitsStripVsTheta(0),
+			   PPtVsEta(0), PPtVsTheta(0){}
   
   TH1 *TrkSize, *TrkSizeGood,
       *HitsSize, *HitsValid, *HitsInvalid, *Hits2D,
@@ -24,9 +30,15 @@ struct TrackerDetectorStruct{
       *Eta, *Theta, *Phi, *D0Beamspot, *Dz,
       *P, *Pt, *MeanAngle;
   
-  TH2 *HitsGoodVsHitsValid, *MeanAngleVsHits;
+  TH2 *HitsGoodVsHitsValid, *MeanAngleVsHits,
+      *HitsPixelVsEta, *HitsPixelVsTheta,
+      *HitsStripVsEta, *HitsStripVsTheta,
+      *PtVsEta, *PtVsTheta;
   
-  TProfile *PHitsGoodVsHitsValid, *PMeanAngleVsHits;
+  TProfile *PHitsGoodVsHitsValid, *PMeanAngleVsHits,
+           *PHitsPixelVsEta, *PHitsPixelVsTheta,
+           *PHitsStripVsEta, *PHitsStripVsTheta,
+           *PPtVsEta, *PPtVsTheta;
   
 };
 

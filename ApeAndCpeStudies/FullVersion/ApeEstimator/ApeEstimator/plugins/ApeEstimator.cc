@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.13 2011/06/23 22:37:58 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.14 2011/07/18 21:42:32 hauk Exp $
 //
 //
 
@@ -788,9 +788,21 @@ ApeEstimator::bookTrackHists(){
   
   tkDetector_.MeanAngleVsHits     = trkDir.make<TH2F>("h2_meanAngleVsHits","<#phi_{module}> vs. # hits;# hits;<#phi_{module}>  [ ^{o}]",51,-1,50,50,-5,95);
   tkDetector_.HitsGoodVsHitsValid = trkDir.make<TH2F>("h2_hitsGoodVsHitsValid","# hits  [good] vs. # hits  [valid];# hits  [valid];# hits  [good]",51,-1,50,51,-1,50);
+  tkDetector_.HitsPixelVsEta      = trkDir.make<TH2F>("h2_hitsPixelVsEta","# hits  [pixel] vs. #eta;#eta;# hits  [pixel]",60,-3,3,11,-1,10);
+  tkDetector_.HitsPixelVsTheta    = trkDir.make<TH2F>("h2_hitsPixelVsTheta","# hits  [pixel] vs. #theta;#theta;# hits  [pixel]",100,-10,190,11,-1,10);
+  tkDetector_.HitsStripVsEta      = trkDir.make<TH2F>("h2_hitsStripVsEta","# hits  [strip] vs. #eta;#eta;# hits  [strip]",60,-3,3,31,-1,30);
+  tkDetector_.HitsStripVsTheta    = trkDir.make<TH2F>("h2_hitsStripVsTheta","# hits  [strip] vs. #theta;#theta;# hits  [strip]",100,-10,190,31,-1,30);
+  tkDetector_.PtVsEta             = trkDir.make<TH2F>("h2_ptVsEta","p_{t} vs. #eta;#eta;p_{t}  [GeV]",60,-3,3,100,0,pMax);
+  tkDetector_.PtVsTheta           = trkDir.make<TH2F>("h2_ptVsTheta","p_{t} vs. #theta;#theta;p_{t}  [GeV]",100,-10,190,100,0,pMax);
   
   tkDetector_.PMeanAngleVsHits     = trkDir.make<TProfile>("p_meanAngleVsHits","<#phi_{module}> vs. # hits;# hits;<#phi_{module}>  [ ^{o}]",51,-1,50);
   tkDetector_.PHitsGoodVsHitsValid = trkDir.make<TProfile>("p_hitsGoodVsHitsValid","# hits  [good] vs. # hits  [valid];# hits  [valid];# hits  [good]",51,-1,50);
+  tkDetector_.PHitsPixelVsEta      = trkDir.make<TProfile>("p_hitsPixelVsEta","# hits  [pixel] vs. #eta;#eta;# hits  [pixel]",60,-3,3);
+  tkDetector_.PHitsPixelVsTheta    = trkDir.make<TProfile>("p_hitsPixelVsTheta","# hits  [pixel] vs. #theta;#theta;# hits  [pixel]",100,-10,190);
+  tkDetector_.PHitsStripVsEta      = trkDir.make<TProfile>("p_hitsStripVsEta","# hits  [strip] vs. #eta;#eta;# hits  [strip]",60,-3,3);
+  tkDetector_.PHitsStripVsTheta    = trkDir.make<TProfile>("p_hitsStripVsTheta","# hits  [strip] vs. #theta;#theta;# hits  [strip]",100,-10,190);
+  tkDetector_.PPtVsEta             = trkDir.make<TProfile>("p_ptVsEta","p_{t} vs. #eta;#eta;p_{t}  [GeV]",60,-3,3);
+  tkDetector_.PPtVsTheta           = trkDir.make<TProfile>("p_ptVsTheta","p_{t} vs. #theta;#theta;p_{t}  [GeV]",100,-10,190);
 }
 
 
@@ -967,12 +979,13 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
   }
   else if(stateHit==TrackStruct::negativeError || stateHitWoApe==TrackStruct::negativeError || stateTrk==TrackStruct::negativeError){
     ++counter1;
-    std::stringstream ss_error;
-    ss_error<<"Upper values belong to: ";
-    if(stateHit==TrackStruct::negativeError)ss_error<<"Hit without APE, ";
-    if(stateHitWoApe==TrackStruct::negativeError)ss_error<<"Hit with APE, ";
-    if(stateTrk==TrackStruct::negativeError)ss_error<<"Track,";
-    edm::LogError("Negative error Value")<<"@SUB=ApeEstimator::fillHitVariables"<<ss_error.str();
+    // Do not print error message by default
+    //std::stringstream ss_error;
+    //ss_error<<"Upper values belong to: ";
+    //if(stateHit==TrackStruct::negativeError)ss_error<<"Hit without APE, ";
+    //if(stateHitWoApe==TrackStruct::negativeError)ss_error<<"Hit with APE, ";
+    //if(stateTrk==TrackStruct::negativeError)ss_error<<"Track,";
+    //edm::LogError("Negative error Value")<<"@SUB=ApeEstimator::fillHitVariables"<<ss_error.str();
     hitParams.hitState = TrackStruct::negativeError;
     return hitParams;
   }
@@ -1088,6 +1101,8 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
     int qBin = pixelHit.qBin();
     
 //    std::cout<<"\tTest 3: "<<isOnEdge<<" "<<hasBadPixels<<" "<<spansTwoRoc<<" "<<qBin<<"\n";
+    
+    hitParams.isPixelHit = true;
   }
   else if(m_tkTreeVar_[rawId].subdetId==StripSubdetector::TIB || m_tkTreeVar_[rawId].subdetId==StripSubdetector::TOB ||
           m_tkTreeVar_[rawId].subdetId==StripSubdetector::TID || m_tkTreeVar_[rawId].subdetId==StripSubdetector::TEC){
@@ -1219,10 +1234,11 @@ ApeEstimator::positionAndError2(const LocalPoint& localPoint, const LocalError& 
   const UInt_t& subdetId(m_tkTreeVar_[rawId].subdetId);
   
   if(localError.xx()<0. || localError.yy()<0.){
-    edm::LogError("Negative error Value")<<"@SUB=ApeEstimator::fillHitVariables"
-                                         <<"One of the squared error methods gives negative result\n"
-                                         <<"\tSubdetector\tlocalError.xx()\tlocalError.yy()\n"
-                                         <<"\t"<<subdetId<<"\t\t"<<localError.xx()<<"\t"<<localError.yy();
+    // Do not print error message by default
+    //edm::LogError("Negative error Value")<<"@SUB=ApeEstimator::fillHitVariables"
+    //                                     <<"One of the squared error methods gives negative result\n"
+    //                                     <<"\tSubdetector\tlocalError.xx()\tlocalError.yy()\n"
+    //                                     <<"\t"<<subdetId<<"\t\t"<<localError.xx()<<"\t"<<localError.yy();
     vPE2.first = TrackStruct::negativeError;
     return vPE2;
   }
@@ -1242,14 +1258,15 @@ ApeEstimator::positionAndError2(const LocalPoint& localPoint, const LocalError& 
     
     MeasurementError measError = topol.measurementError(localPoint,localError);
     if(measError.uu()<0. || measError.vv()<0.){
-      edm::LogError("Negative error Value")<<"@SUB=ApeEstimator::fillHitVariables"
-                                           <<"One of the squared error methods gives negative result\n"
-                                           <<"\tmeasError.uu()\tmeasError.vv()\n"
-	                                   <<"\t"<<measError.uu()<<"\t"<<measError.vv()
-					   <<"\n\nOriginalValues:\n"
-					   <<localPoint.x()<<" "<<localPoint.y()<<"\n"
-					   <<localError.xx()<<" "<<localError.yy()<<"\n"
-					   <<"Subdet: "<<subdetId;
+      // Do not print error message by default
+      //edm::LogError("Negative error Value")<<"@SUB=ApeEstimator::fillHitVariables"
+      //                                     <<"One of the squared error methods gives negative result\n"
+      //                                     <<"\tmeasError.uu()\tmeasError.vv()\n"
+      //                                     <<"\t"<<measError.uu()<<"\t"<<measError.vv()
+      //                                     <<"\n\nOriginalValues:\n"
+      //                                     <<localPoint.x()<<" "<<localPoint.y()<<"\n"
+      //                                     <<localError.xx()<<" "<<localError.yy()<<"\n"
+      //                                     <<"Subdet: "<<subdetId;
       vPE2.first = TrackStruct::negativeError;
       return vPE2;
     }
@@ -1445,6 +1462,10 @@ ApeEstimator::hitSelected(const TrackStruct::HitParameterStruct& hitParams)const
   if(hitParams.hitState == TrackStruct::notInTracker)return false;
   if(hitParams.hitState == TrackStruct::invalid || hitParams.hitState == TrackStruct::negativeError)return false;
   if(0==m_hitSelection_.size())return true;
+  
+  // FIXME: Dirty quick hack, no selection on pixel hits
+  if(hitParams.isPixelHit)return true;
+  
   for(std::map<std::string, std::vector<double> >::const_iterator i_hitSelection = m_hitSelection_.begin(); i_hitSelection != m_hitSelection_.end(); ++i_hitSelection){
     if(0==(*i_hitSelection).second.size())continue;
     float variable(999.F);
@@ -1539,9 +1560,22 @@ ApeEstimator::fillHistsForAnalyzerMode(const TrackStruct& trackStruct){
   tkDetector_.Pt          ->Fill(trackStruct.trkParams.pt);
   tkDetector_.MeanAngle   ->Fill(trackStruct.trkParams.meanPhiSensToNorm*180./M_PI);
   
-  tkDetector_.MeanAngleVsHits->Fill(trackStruct.trkParams.hitsSize,trackStruct.trkParams.meanPhiSensToNorm*180./M_PI);
+  tkDetector_.MeanAngleVsHits ->Fill(trackStruct.trkParams.hitsSize,trackStruct.trkParams.meanPhiSensToNorm*180./M_PI);
+  tkDetector_.HitsPixelVsEta  ->Fill(trackStruct.trkParams.eta,trackStruct.trkParams.hitsPixel);
+  tkDetector_.HitsPixelVsTheta->Fill(trackStruct.trkParams.theta*180./M_PI,trackStruct.trkParams.hitsPixel);
+  tkDetector_.HitsStripVsEta  ->Fill(trackStruct.trkParams.eta,trackStruct.trkParams.hitsStrip);
+  tkDetector_.HitsStripVsTheta->Fill(trackStruct.trkParams.theta*180./M_PI,trackStruct.trkParams.hitsStrip);
+  tkDetector_.PtVsEta	      ->Fill(trackStruct.trkParams.eta,trackStruct.trkParams.pt);
+  tkDetector_.PtVsTheta	      ->Fill(trackStruct.trkParams.theta*180./M_PI,trackStruct.trkParams.pt);
   
-  tkDetector_.PMeanAngleVsHits->Fill(trackStruct.trkParams.hitsSize,trackStruct.trkParams.meanPhiSensToNorm*180./M_PI);
+  tkDetector_.PMeanAngleVsHits ->Fill(trackStruct.trkParams.hitsSize,trackStruct.trkParams.meanPhiSensToNorm*180./M_PI);
+  tkDetector_.PHitsPixelVsEta  ->Fill(trackStruct.trkParams.eta,trackStruct.trkParams.hitsPixel);
+  tkDetector_.PHitsPixelVsTheta->Fill(trackStruct.trkParams.theta*180./M_PI,trackStruct.trkParams.hitsPixel);
+  tkDetector_.PHitsStripVsEta  ->Fill(trackStruct.trkParams.eta,trackStruct.trkParams.hitsStrip);
+  tkDetector_.PHitsStripVsTheta->Fill(trackStruct.trkParams.theta*180./M_PI,trackStruct.trkParams.hitsStrip);
+  tkDetector_.PPtVsEta	       ->Fill(trackStruct.trkParams.eta,trackStruct.trkParams.pt);
+  tkDetector_.PPtVsTheta       ->Fill(trackStruct.trkParams.theta*180./M_PI,trackStruct.trkParams.pt);
+  
   
   for(std::vector<TrackStruct::HitParameterStruct>::const_iterator i_hit = trackStruct.v_hitParams.begin();
       i_hit != trackStruct.v_hitParams.end(); ++i_hit){
