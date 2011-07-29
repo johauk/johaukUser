@@ -13,9 +13,15 @@ struct TrackStruct{
     HitParameterStruct(): hitState(ok),
                  isPixelHit(false),
 		 isModuleUsable(true),
-		 width(0), charge(0), maxStrip(0), maxStripInv(0), maxCharge(0), maxIndex(0),
+		 charge(0),
+		 widthX(0),
+		 baryStripX(-999.F),
+		 widthY(0),
+		 baryStripY(-999.F),
+		 maxStrip(0), maxStripInv(0), maxCharge(0), maxIndex(0),
 		 chargeOnEdges(-999.F), chargeAsymmetry(-999.F), 
-		 baryStrip(-999.F), sOverN(-999.F),
+		 chargeLRplus(-999.F), chargeLRminus(-999.F),
+		 sOverN(-999.F),
 		 projWidth(-999.F),
 		 resX(-999.F), norResX(-999.F), xHit(-999.F), xTrk(-999.F),
                  errXHit(-999.F), errXTrk(-999.F), errX(-999.F), errX2(-999.F),
@@ -30,13 +36,24 @@ struct TrackStruct{
     HitState hitState;
     bool isPixelHit;
     std::vector<unsigned int> v_sector;
-    // cluster parameters
+    
+    // Cluster parameters
+    // pixel+strip
     bool isModuleUsable;
-    unsigned int width, charge, maxStrip, maxStripInv, maxCharge, maxIndex;
+    unsigned int charge;
+    unsigned int widthX;
+    float baryStripX;
+    unsigned int widthY;
+    float baryStripY;
+    // pixel only
+    
+    // strip only
+    unsigned int maxStrip, maxStripInv, maxCharge, maxIndex;
     float chargeOnEdges, chargeAsymmetry,
           chargeLRplus, chargeLRminus;
-    float baryStrip, sOverN;
+    float sOverN;
     float projWidth;
+    
     // trackFit results
     float resX, norResX, xHit, xTrk,
           errXHit, errXTrk, errX, errX2,
