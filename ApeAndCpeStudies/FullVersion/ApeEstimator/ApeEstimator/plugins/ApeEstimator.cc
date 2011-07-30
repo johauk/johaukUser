@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.15 2011/07/29 19:07:49 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.16 2011/07/29 22:12:46 hauk Exp $
 //
 //
 
@@ -546,7 +546,8 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     bool zoomHists(parameterSet_.getParameter<bool>("zoomHists"));
     
     double widthMax = zoomHists ? 20. : 200.;
-    double chargeMax = zoomHists ? 1000. : 10000.;
+    double chargePixelMax = zoomHists ? 200000. : 2000000.;
+    double chargeStripMax = zoomHists ? 1000. : 10000.;
     double sOverNMax = zoomHists? 200. : 2000.;
     
     double resXAbsMax = zoomHists ? 0.5 : 5.;
@@ -585,7 +586,7 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
       noModule = secDir.make<TH1F>("NoModuleInSector","",1,0,1);
       continue;
     }
-    // Set values for correlationHists
+    // Set parameters for correlationHists
     (*i_sector).second.setCorrHistParams(&secDir,norResXAbsMax,sigmaXHitMax,sigmaXMax);
     
     
@@ -594,13 +595,36 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     
     
     // Cluster Parameters
-    if(pixelSector){
+    (*i_sector).second.m_correlationHistsX["WidthX"] = (*i_sector).second.bookCorrHistsX("WidthX","cluster width","w_{x,cl}","[# strips]",200,20,0.,widthMax,"nph");
+    (*i_sector).second.m_correlationHistsX["BaryStripX"] = (*i_sector).second.bookCorrHistsX("BaryStripX","barycenter of cluster charge","b_{x,cl}","[# strips]",800,100,-10.,790.,"nph");
     
+    if(pixelSector){
+    (*i_sector).second.m_correlationHistsY["WidthY"] = (*i_sector).second.bookCorrHistsY("WidthY","cluster width","w_{y,cl}","[# strips]",200,20,0.,widthMax,"nph");
+    (*i_sector).second.m_correlationHistsY["BaryStripY"] = (*i_sector).second.bookCorrHistsY("BaryStripY","barycenter of cluster charge","b_{y,cl}","[# strips]",800,100,-10.,790.,"nph");
+    
+    (*i_sector).second.m_correlationHistsX["ChargePixel"] = (*i_sector).second.bookCorrHistsX("ChargePixel","cluster charge","c_{cl}","[xxx]",100,50,0.,chargePixelMax,"nph");
+    (*i_sector).second.m_correlationHistsX["ClusterProbXY"] = (*i_sector).second.bookCorrHistsX("ClusterProbXY","cluster probability xy","prob_{xy,cl}","",100,50,0.,1.,"nph");
+    (*i_sector).second.m_correlationHistsX["ClusterProbQ"] = (*i_sector).second.bookCorrHistsX("ClusterProbQ","cluster probability q","prob_{q,cl}","",100,50,0.,1.,"nph");
+    (*i_sector).second.m_correlationHistsX["ClusterProbXYQ"] = (*i_sector).second.bookCorrHistsX("ClusterProbXYQ","cluster probability xyq","prob_{xyq,cl}","",100,50,0.,1.,"nph");
+    (*i_sector).second.m_correlationHistsX["LogClusterProb"] = (*i_sector).second.bookCorrHistsX("LogClusterProb","cluster probability xy","log(prob_{xy,cl})","",100,50,-20.,0.,"nph");
+    (*i_sector).second.m_correlationHistsX["IsOnEdge"] = (*i_sector).second.bookCorrHistsX("IsOnEdge","IsOnEdge","isOnEdge","",2,2,0,2,"nph");
+    (*i_sector).second.m_correlationHistsX["HasBadPixels"] = (*i_sector).second.bookCorrHistsX("HasBadPixels","HasBadPixels","hasBadPixels","",2,2,0,2,"nph");
+    (*i_sector).second.m_correlationHistsX["SpansTwoRoc"] = (*i_sector).second.bookCorrHistsX("SpansTwoRoc","SpansTwoRoc","spansTwoRoc","",2,2,0,2,"nph");
+    (*i_sector).second.m_correlationHistsX["QBin"] = (*i_sector).second.bookCorrHistsX("QBin","q bin","q bin","",8,8,0,8,"nph");
+    
+    (*i_sector).second.m_correlationHistsY["ChargePixel"] = (*i_sector).second.bookCorrHistsY("ChargePixel","cluster charge","c_{cl}","[xxx]",100,50,0.,chargePixelMax,"nph");
+    (*i_sector).second.m_correlationHistsY["ClusterProbXY"] = (*i_sector).second.bookCorrHistsY("ClusterProbXY","cluster probability xy","prob_{xy,cl}","",100,50,0.,1.,"nph");
+    (*i_sector).second.m_correlationHistsY["ClusterProbQ"] = (*i_sector).second.bookCorrHistsY("ClusterProbQ","cluster probability q","prob_{q,cl}","",100,50,0.,1.,"nph");
+    (*i_sector).second.m_correlationHistsY["ClusterProbXYQ"] = (*i_sector).second.bookCorrHistsY("ClusterProbXYQ","cluster probability xyq","prob_{xyq,cl}","",100,50,0.,1.,"nph");
+    (*i_sector).second.m_correlationHistsY["LogClusterProb"] = (*i_sector).second.bookCorrHistsY("LogClusterProb","cluster probability xy","log(prob_{xy,cl})","",100,50,-20.,0.,"nph");
+    (*i_sector).second.m_correlationHistsY["IsOnEdge"] = (*i_sector).second.bookCorrHistsY("IsOnEdge","IsOnEdge","isOnEdge","",2,2,0,2,"nph");
+    (*i_sector).second.m_correlationHistsY["HasBadPixels"] = (*i_sector).second.bookCorrHistsY("HasBadPixels","HasBadPixels","hasBadPixels","",2,2,0,2,"nph");
+    (*i_sector).second.m_correlationHistsY["SpansTwoRoc"] = (*i_sector).second.bookCorrHistsY("SpansTwoRoc","SpansTwoRoc","spansTwoRoc","",2,2,0,2,"nph");
+    (*i_sector).second.m_correlationHistsY["QBin"] = (*i_sector).second.bookCorrHistsY("QBin","q bin","q bin","",8,8,0,8,"nph");
     }
     
     else{
-    (*i_sector).second.m_correlationHistsX["Width"] = (*i_sector).second.bookCorrHistsX("Width","cluster width","w_{cl}","[# strips]",200,20,0.,widthMax,"nph");
-    (*i_sector).second.m_correlationHistsX["Charge"] = (*i_sector).second.bookCorrHistsX("Charge","cluster charge","c_{cl}","[APV counts]",100,50,0.,chargeMax,"nph");
+    (*i_sector).second.m_correlationHistsX["ChargeStrip"] = (*i_sector).second.bookCorrHistsX("ChargeStrip","cluster charge","c_{cl}","[APV counts]",100,50,0.,chargeStripMax,"nph");
     (*i_sector).second.m_correlationHistsX["MaxStrip"] = (*i_sector).second.bookCorrHistsX("MaxStrip","strip with max. charge","n_{cl,max}","[# strips]",800,800,-10.,790.,"npht");
     (*i_sector).second.m_correlationHistsX["MaxCharge"] = (*i_sector).second.bookCorrHistsX("MaxCharge","charge of strip with max. charge","c_{cl,max}","[APV counts]",300,75,-10.,290.,"nph");
     (*i_sector).second.m_correlationHistsX["MaxIndex"] = (*i_sector).second.bookCorrHistsX("MaxIndex","cluster-index of strip with max. charge","i_{cl,max}","[# strips]",10,10,0.,10.,"nph");
@@ -608,22 +632,21 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     (*i_sector).second.m_correlationHistsX["ChargeAsymmetry"] = (*i_sector).second.bookCorrHistsX("ChargeAsymmetry","asymmetry of charge on edge strips","(c_{st,L}-c_{st,R})/c_{cl}","",110,55,-1.1,1.1,"nph");
     (*i_sector).second.m_correlationHistsX["ChargeLRplus"] = (*i_sector).second.bookCorrHistsX("ChargeLRplus","fraction of charge not on maxStrip","(c_{cl,L}+c_{cl,R})/c_{cl}","",60,60,-0.1,1.1,"nph");
     (*i_sector).second.m_correlationHistsX["ChargeLRminus"] = (*i_sector).second.bookCorrHistsX("ChargeLRminus","asymmetry of charge L and R of maxStrip","(c_{cl,L}-c_{cl,R})/c_{cl}","",110,55,-1.1,1.1,"nph");
-    (*i_sector).second.m_correlationHistsX["BaryStrip"] = (*i_sector).second.bookCorrHistsX("BaryStrip","barycenter of cluster charge","b_{cl}","[# strips]",800,100,-10.,790.,"nph");
     (*i_sector).second.m_correlationHistsX["SOverN"] = (*i_sector).second.bookCorrHistsX("SOverN","signal over noise","s/N","",100,50,0,sOverNMax,"nph");
     (*i_sector).second.m_correlationHistsX["WidthProj"] = (*i_sector).second.bookCorrHistsX("WidthProj","projected width","w_{p}","[# strips]",200,20,0.,widthMax,"nph");
-    (*i_sector).second.m_correlationHistsX["WidthDiff"] = (*i_sector).second.bookCorrHistsX("WidthDiff","width difference","w_{p} - w_{cl}","[# strips]",200,20,-widthMax/2.,widthMax/2.,"nph");
+    (*i_sector).second.m_correlationHistsX["WidthDiff"] = (*i_sector).second.bookCorrHistsX("WidthDiff","width difference","w_{p} - w_{x,cl}","[# strips]",200,20,-widthMax/2.,widthMax/2.,"nph");
     
-    (*i_sector).second.WidthVsWidthProjected = secDir.make<TH2F>("h2_widthVsWidthProj","w_{cl} vs. w_{p};w_{p}  [# strips];w_{cl}  [# strips]",static_cast<int>(widthMax),0,widthMax,static_cast<int>(widthMax),0,widthMax);
-    (*i_sector).second.PWidthVsWidthProjected = secDir.make<TProfile>("p_widthVsWidthProj","w_{cl} vs. w_{p};w_{p}  [# strips];w_{cl}  [# strips]",static_cast<int>(widthMax),0,widthMax);
+    (*i_sector).second.WidthVsWidthProjected = secDir.make<TH2F>("h2_widthVsWidthProj","w_{x,cl} vs. w_{p};w_{p}  [# strips];w_{x,cl}  [# strips]",static_cast<int>(widthMax),0,widthMax,static_cast<int>(widthMax),0,widthMax);
+    (*i_sector).second.PWidthVsWidthProjected = secDir.make<TProfile>("p_widthVsWidthProj","w_{x,cl} vs. w_{p};w_{p}  [# strips];w_{x,cl}  [# strips]",static_cast<int>(widthMax),0,widthMax);
     
-    (*i_sector).second.WidthDiffVsMaxStrip = secDir.make<TH2F>("h2_widthDiffVsMaxStrip","(w_{p} - w_{cl}) vs. n_{cl,max};n_{cl,max};w_{p} - w_{cl}  [# strips]",800,-10.,790.,static_cast<int>(widthMax),-widthMax/2.,widthMax/2.);
-    (*i_sector).second.PWidthDiffVsMaxStrip = secDir.make<TProfile>("p_widthDiffVsMaxStrip","(w_{p} - w_{cl}) vs. n_{cl,max};n_{cl,max};w_{p} - w_{cl}  [# strips]",800,-10.,790.);
+    (*i_sector).second.WidthDiffVsMaxStrip = secDir.make<TH2F>("h2_widthDiffVsMaxStrip","(w_{p} - w_{x,cl}) vs. n_{cl,max};n_{cl,max};w_{p} - w_{x,cl}  [# strips]",800,-10.,790.,static_cast<int>(widthMax),-widthMax/2.,widthMax/2.);
+    (*i_sector).second.PWidthDiffVsMaxStrip = secDir.make<TProfile>("p_widthDiffVsMaxStrip","(w_{p} - w_{x,cl}) vs. n_{cl,max};n_{cl,max};w_{p} - w_{x,cl}  [# strips]",800,-10.,790.);
     
-    (*i_sector).second.WidthDiffVsSigmaXHit = secDir.make<TH2F>("h2_widthDiffVsSigmaXHit","(w_{p} - w_{cl}) vs. #sigma_{x,hit};#sigma_{x,hit}  [cm];w_{p} - w_{cl}  [# strips]",100,0.,sigmaXMax,100,-10.,10.);
-    (*i_sector).second.PWidthDiffVsSigmaXHit = secDir.make<TProfile>("p_widthDiffVsSigmaXHit","(w_{p} - w_{cl}) vs. #sigma_{x,hit};#sigma_{x,hit}  [cm];w_{p} - w_{cl}  [# strips]",100,0.,sigmaXMax);
+    (*i_sector).second.WidthDiffVsSigmaXHit = secDir.make<TH2F>("h2_widthDiffVsSigmaXHit","(w_{p} - w_{x,cl}) vs. #sigma_{x,hit};#sigma_{x,hit}  [cm];w_{p} - w_{x,cl}  [# strips]",100,0.,sigmaXMax,100,-10.,10.);
+    (*i_sector).second.PWidthDiffVsSigmaXHit = secDir.make<TProfile>("p_widthDiffVsSigmaXHit","(w_{p} - w_{x,cl}) vs. #sigma_{x,hit};#sigma_{x,hit}  [cm];w_{p} - w_{x,cl}  [# strips]",100,0.,sigmaXMax);
     
-    (*i_sector).second.WidthVsPhiSensX = secDir.make<TH2F>("h2_widthVsPhiSensX","w_{cl} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];w_{cl}  [# strips]",92,-92,92,static_cast<int>(widthMax),0,widthMax);
-    (*i_sector).second.PWidthVsPhiSensX = secDir.make<TProfile>("p_widthVsPhiSensX","w_{cl} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];w_{cl}  [# strips]",92,-92,92);
+    (*i_sector).second.WidthVsPhiSensX = secDir.make<TH2F>("h2_widthVsPhiSensX","w_{x,cl} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];w_{x,cl}  [# strips]",92,-92,92,static_cast<int>(widthMax),0,widthMax);
+    (*i_sector).second.PWidthVsPhiSensX = secDir.make<TProfile>("p_widthVsPhiSensX","w_{x,cl} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];w_{x,cl}  [# strips]",92,-92,92);
     }
     
     
@@ -1137,27 +1160,26 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
     const SiPixelRecHit& pixelHit = dynamic_cast<const SiPixelRecHit&>(recHit);
     const SiPixelCluster& pixelCluster = *pixelHit.cluster();
     
-    int widthX = pixelCluster.sizeX();
-    int widthY = pixelCluster.sizeY();
-    float baryStripX = pixelCluster.x();
-    float baryStripY = pixelCluster.y();
-    float charge = pixelCluster.charge();
+    hitParams.chargePixel = pixelCluster.charge();
+    hitParams.widthX = pixelCluster.sizeX();
+    hitParams.baryStripX = pixelCluster.x();
+    hitParams.widthY = pixelCluster.sizeY();
+    hitParams.baryStripY = pixelCluster.y();
+    //std::cout<<"\tTest 1: "<<hitParams.widthX<<" "<<hitParams.widthY<<" "<<hitParams.baryStripX<<" "<<hitParams.baryStripY<<" "<<hitParams.chargePixel<<"\n";
     
-//    std::cout<<"\tTest 1: "<<widthX<<" "<<widthY<<" "<<baryStripX<<" "<<baryStripY<<" "<<charge<<"\n";
+    hitParams.clusterProbabilityXY = pixelHit.clusterProbability(0);
+    hitParams.clusterProbabilityQ = pixelHit.clusterProbability(2);
+    hitParams.clusterProbabilityXYQ = pixelHit.clusterProbability(1);
+    hitParams.logClusterProbability = std::log10(hitParams.clusterProbabilityXY);
+    //std::cout<<"\tTest 2: "<<hitParams.clusterProbabilityXY<<" "<<hitParams.clusterProbabilityQ<<" "<<hitParams.clusterProbabilityXYQ<<" "<<hitParams.logClusterProbability<<"\n";
     
-    float clusterProbabilityXY = pixelHit.clusterProbability(0);
-    float clusterProbabilityQ = pixelHit.clusterProbability(2);
-    float clusterProbabilityXYQ = pixelHit.clusterProbability(1);
-    float logClusterProbability = std::log10(clusterProbabilityXY);
+    hitParams.isOnEdge = pixelHit.isOnEdge();
+    hitParams.hasBadPixels = pixelHit.hasBadPixels();
+    hitParams.spansTwoRoc = pixelHit.spansTwoROCs();
+    hitParams.qBin = pixelHit.qBin();
+    //std::cout<<"\tTest 3: "<<hitParams.isOnEdge<<" "<<hitParams.hasBadPixels<<" "<<hitParams.spansTwoRoc<<" "<<hitParams.qBin<<"\n";
     
-//    std::cout<<"\tTest 2: "<<clusterProbabilityXY<<" "<<clusterProbabilityQ<<" "<<clusterProbabilityXYQ<<" "<<logClusterProbability<<"\n";
     
-    bool isOnEdge = pixelHit.isOnEdge();
-    bool hasBadPixels = pixelHit.hasBadPixels();
-    bool spansTwoRoc = pixelHit.spansTwoROCs();
-    int qBin = pixelHit.qBin();
-    
-//    std::cout<<"\tTest 3: "<<isOnEdge<<" "<<hasBadPixels<<" "<<spansTwoRoc<<" "<<qBin<<"\n";
     
     hitParams.isPixelHit = true;
   }
@@ -1194,18 +1216,18 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
     const std::vector<uint8_t>::const_iterator stripChargeR(--(clusterInfo.stripCharges().end()));
     const std::pair<uint16_t, uint16_t> stripChargeLR = std::make_pair(*stripChargeL,*stripChargeR);
     
+    hitParams.chargeStrip      = clusterInfo.charge();
+    hitParams.widthX           = clusterInfo.width();
+    hitParams.baryStripX       = clusterInfo.baryStrip() +1.;
     hitParams.isModuleUsable   = clusterInfo.IsModuleUsable();
-    hitParams.width            = clusterInfo.width();
     hitParams.maxStrip         = clusterInfo.maxStrip() +1;
     hitParams.maxStripInv      = m_tkTreeVar_[rawId].nStrips - hitParams.maxStrip +1;
-    hitParams.charge           = clusterInfo.charge();
     hitParams.maxCharge        = clusterInfo.maxCharge();
     hitParams.maxIndex         = clusterInfo.maxIndex();
-    hitParams.chargeOnEdges    = static_cast<float>(stripChargeLR.first + stripChargeLR.second)/static_cast<float>(hitParams.charge);
+    hitParams.chargeOnEdges    = static_cast<float>(stripChargeLR.first + stripChargeLR.second)/static_cast<float>(hitParams.chargeStrip);
     hitParams.chargeAsymmetry  = static_cast<float>(stripChargeLR.first - stripChargeLR.second)/static_cast<float>(stripChargeLR.first + stripChargeLR.second);
-    hitParams.chargeLRplus     = static_cast<float>(clusterInfo.chargeLR().first + clusterInfo.chargeLR().second)/static_cast<float>(hitParams.charge);
-    hitParams.chargeLRminus    = static_cast<float>(clusterInfo.chargeLR().first - clusterInfo.chargeLR().second)/static_cast<float>(hitParams.charge);
-    hitParams.baryStrip        = clusterInfo.baryStrip() +1.;
+    hitParams.chargeLRplus     = static_cast<float>(clusterInfo.chargeLR().first + clusterInfo.chargeLR().second)/static_cast<float>(hitParams.chargeStrip);
+    hitParams.chargeLRminus    = static_cast<float>(clusterInfo.chargeLR().first - clusterInfo.chargeLR().second)/static_cast<float>(hitParams.chargeStrip);
     hitParams.sOverN           = clusterInfo.signalOverNoise();
     
     // Calculate projection length corrected by drift
@@ -1528,8 +1550,8 @@ ApeEstimator::hitSelected(const TrackStruct::HitParameterStruct& hitParams)const
     float variable(999.F);
     
     if     ((*i_hitSelection).first == "widthProj")       variable = hitParams.projWidth;
-    else if((*i_hitSelection).first == "widthDiff")       variable = hitParams.projWidth-static_cast<float>(hitParams.width);
-    else if((*i_hitSelection).first == "charge")          variable = hitParams.charge;
+    else if((*i_hitSelection).first == "widthDiff")       variable = hitParams.projWidth-static_cast<float>(hitParams.widthX);
+    else if((*i_hitSelection).first == "charge")          variable = hitParams.chargeStrip;
     else if((*i_hitSelection).first == "maxCharge")       variable = hitParams.maxCharge;
     else if((*i_hitSelection).first == "chargeOnEdges")   variable = hitParams.chargeOnEdges;
     else if((*i_hitSelection).first == "chargeAsymmetry") variable = hitParams.chargeAsymmetry;
@@ -1561,7 +1583,7 @@ ApeEstimator::hitSelected(const TrackStruct::HitParameterStruct& hitParams)const
     if(0==(*i_hitSelection).second.size())continue;
     unsigned int variable(999), variable2(999);
     
-    if     ((*i_hitSelection).first == "width")      variable = hitParams.width;
+    if     ((*i_hitSelection).first == "width")      variable = hitParams.widthX;
     else if((*i_hitSelection).first == "edgeStrips"){variable = hitParams.maxStrip; variable2 = hitParams.maxStripInv;}
     else if((*i_hitSelection).first == "maxIndex")   variable = hitParams.maxIndex;
     
@@ -1652,12 +1674,36 @@ ApeEstimator::fillHistsForAnalyzerMode(const TrackStruct& trackStruct){
       
       
       // Cluster Parameters
-      if(pixelSector){
+      (*i_sector).second.m_correlationHistsX["WidthX"].fillCorrHistsX(*i_hit,(*i_hit).widthX);
+      (*i_sector).second.m_correlationHistsX["BaryStripX"].fillCorrHistsX(*i_hit,(*i_hit).baryStripX);
       
+      if(pixelSector){
+      (*i_sector).second.m_correlationHistsY["WidthY"].fillCorrHistsY(*i_hit,(*i_hit).widthY);
+      (*i_sector).second.m_correlationHistsY["BaryStripY"].fillCorrHistsY(*i_hit,(*i_hit).baryStripY);
+      
+      (*i_sector).second.m_correlationHistsX["ChargePixel"].fillCorrHistsX(*i_hit,(*i_hit).chargePixel);
+      (*i_sector).second.m_correlationHistsX["ClusterProbXY"].fillCorrHistsX(*i_hit,(*i_hit).clusterProbabilityXY);
+      (*i_sector).second.m_correlationHistsX["ClusterProbQ"].fillCorrHistsX(*i_hit,(*i_hit).clusterProbabilityQ);
+      (*i_sector).second.m_correlationHistsX["ClusterProbXYQ"].fillCorrHistsX(*i_hit,(*i_hit).clusterProbabilityXYQ);
+      (*i_sector).second.m_correlationHistsX["LogClusterProb"].fillCorrHistsX(*i_hit,(*i_hit).logClusterProbability);
+      (*i_sector).second.m_correlationHistsX["IsOnEdge"].fillCorrHistsX(*i_hit,(*i_hit).isOnEdge);
+      (*i_sector).second.m_correlationHistsX["HasBadPixels"].fillCorrHistsX(*i_hit,(*i_hit).hasBadPixels);
+      (*i_sector).second.m_correlationHistsX["SpansTwoRoc"].fillCorrHistsX(*i_hit,(*i_hit).spansTwoRoc);
+      (*i_sector).second.m_correlationHistsX["QBin"].fillCorrHistsX(*i_hit,(*i_hit).qBin);
+      
+      (*i_sector).second.m_correlationHistsY["ChargePixel"].fillCorrHistsY(*i_hit,(*i_hit).chargePixel);
+      (*i_sector).second.m_correlationHistsY["ClusterProbXY"].fillCorrHistsY(*i_hit,(*i_hit).clusterProbabilityXY);
+      (*i_sector).second.m_correlationHistsY["ClusterProbQ"].fillCorrHistsY(*i_hit,(*i_hit).clusterProbabilityQ);
+      (*i_sector).second.m_correlationHistsY["ClusterProbXYQ"].fillCorrHistsY(*i_hit,(*i_hit).clusterProbabilityXYQ);
+      (*i_sector).second.m_correlationHistsY["LogClusterProb"].fillCorrHistsY(*i_hit,(*i_hit).logClusterProbability);
+      (*i_sector).second.m_correlationHistsY["IsOnEdge"].fillCorrHistsY(*i_hit,(*i_hit).isOnEdge);
+      (*i_sector).second.m_correlationHistsY["HasBadPixels"].fillCorrHistsY(*i_hit,(*i_hit).hasBadPixels);
+      (*i_sector).second.m_correlationHistsY["SpansTwoRoc"].fillCorrHistsY(*i_hit,(*i_hit).spansTwoRoc);
+      (*i_sector).second.m_correlationHistsY["QBin"].fillCorrHistsY(*i_hit,(*i_hit).qBin);
       }
+      
       else{
-      (*i_sector).second.m_correlationHistsX["Width"].fillCorrHistsX(*i_hit,(*i_hit).width);
-      (*i_sector).second.m_correlationHistsX["Charge"].fillCorrHistsX(*i_hit,(*i_hit).charge);
+      (*i_sector).second.m_correlationHistsX["ChargeStrip"].fillCorrHistsX(*i_hit,(*i_hit).chargeStrip);
       (*i_sector).second.m_correlationHistsX["MaxStrip"].fillCorrHistsX(*i_hit,(*i_hit).maxStrip);
       (*i_sector).second.m_correlationHistsX["MaxCharge"].fillCorrHistsX(*i_hit,(*i_hit).maxCharge);
       (*i_sector).second.m_correlationHistsX["MaxIndex"].fillCorrHistsX(*i_hit,(*i_hit).maxIndex);
@@ -1665,22 +1711,21 @@ ApeEstimator::fillHistsForAnalyzerMode(const TrackStruct& trackStruct){
       (*i_sector).second.m_correlationHistsX["ChargeAsymmetry"].fillCorrHistsX(*i_hit,(*i_hit).chargeAsymmetry);
       (*i_sector).second.m_correlationHistsX["ChargeLRplus"].fillCorrHistsX(*i_hit,(*i_hit).chargeLRplus);
       (*i_sector).second.m_correlationHistsX["ChargeLRminus"].fillCorrHistsX(*i_hit,(*i_hit).chargeLRminus);
-      (*i_sector).second.m_correlationHistsX["BaryStrip"].fillCorrHistsX(*i_hit,(*i_hit).baryStrip);
       (*i_sector).second.m_correlationHistsX["SOverN"].fillCorrHistsX(*i_hit,(*i_hit).sOverN);
       (*i_sector).second.m_correlationHistsX["WidthProj"].fillCorrHistsX(*i_hit,(*i_hit).projWidth);
-      (*i_sector).second.m_correlationHistsX["WidthDiff"].fillCorrHistsX(*i_hit,(*i_hit).projWidth-static_cast<float>((*i_hit).width));
+      (*i_sector).second.m_correlationHistsX["WidthDiff"].fillCorrHistsX(*i_hit,(*i_hit).projWidth-static_cast<float>((*i_hit).widthX));
       
-      (*i_sector).second.WidthVsWidthProjected->Fill((*i_hit).projWidth,(*i_hit).width);
-      (*i_sector).second.PWidthVsWidthProjected->Fill((*i_hit).projWidth,(*i_hit).width);
+      (*i_sector).second.WidthVsWidthProjected->Fill((*i_hit).projWidth,(*i_hit).widthX);
+      (*i_sector).second.PWidthVsWidthProjected->Fill((*i_hit).projWidth,(*i_hit).widthX);
       
-      (*i_sector).second.WidthDiffVsMaxStrip->Fill((*i_hit).maxStrip,(*i_hit).projWidth-static_cast<float>((*i_hit).width));
-      (*i_sector).second.PWidthDiffVsMaxStrip->Fill((*i_hit).maxStrip,(*i_hit).projWidth-static_cast<float>((*i_hit).width));
+      (*i_sector).second.WidthDiffVsMaxStrip->Fill((*i_hit).maxStrip,(*i_hit).projWidth-static_cast<float>((*i_hit).widthX));
+      (*i_sector).second.PWidthDiffVsMaxStrip->Fill((*i_hit).maxStrip,(*i_hit).projWidth-static_cast<float>((*i_hit).widthX));
       
-      (*i_sector).second.WidthDiffVsSigmaXHit->Fill((*i_hit).errXHit,(*i_hit).projWidth-static_cast<float>((*i_hit).width));
-      (*i_sector).second.PWidthDiffVsSigmaXHit->Fill((*i_hit).errXHit,(*i_hit).projWidth-static_cast<float>((*i_hit).width));
+      (*i_sector).second.WidthDiffVsSigmaXHit->Fill((*i_hit).errXHit,(*i_hit).projWidth-static_cast<float>((*i_hit).widthX));
+      (*i_sector).second.PWidthDiffVsSigmaXHit->Fill((*i_hit).errXHit,(*i_hit).projWidth-static_cast<float>((*i_hit).widthX));
       
-      (*i_sector).second.WidthVsPhiSensX->Fill((*i_hit).phiSensX*180./M_PI,(*i_hit).width);
-      (*i_sector).second.PWidthVsPhiSensX->Fill((*i_hit).phiSensX*180./M_PI,(*i_hit).width);
+      (*i_sector).second.WidthVsPhiSensX->Fill((*i_hit).phiSensX*180./M_PI,(*i_hit).widthX);
+      (*i_sector).second.PWidthVsPhiSensX->Fill((*i_hit).phiSensX*180./M_PI,(*i_hit).widthX);
       }
       
       

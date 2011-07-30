@@ -188,7 +188,28 @@ TrackerSectorStruct::bookCorrHists(TString xY,TString varName,TString varTitle,T
   if(!directory)return correlationHists;
   
   
-  if(isX)correlationHists.Variable = directory->make<TH1F>("h_"+varName,varTitle+" "+labelX+";"+labelX+"  "+unitX+";# hits",nBinX1D,minBinX,maxBinX);
+  if(isX){
+    bool alreadyBooked(false);
+    std::map<std::string,CorrelationHists>::const_iterator i_correlationHistsY;
+    for(i_correlationHistsY = m_correlationHistsY.begin(); i_correlationHistsY != m_correlationHistsY.end(); ++i_correlationHistsY){
+      if(i_correlationHistsY->first == varName){
+        alreadyBooked = true;
+	break;
+      }
+    }
+    if(!alreadyBooked)correlationHists.Variable = directory->make<TH1F>("h_"+varName,varTitle+" "+labelX+";"+labelX+"  "+unitX+";# hits",nBinX1D,minBinX,maxBinX);
+  }
+  else{
+    bool alreadyBooked(false);
+    std::map<std::string,CorrelationHists>::const_iterator i_correlationHistsX;
+    for(i_correlationHistsX = m_correlationHistsX.begin(); i_correlationHistsX != m_correlationHistsX.end(); ++i_correlationHistsX){
+      if(i_correlationHistsX->first == varName){
+        alreadyBooked = true;
+	break;
+      }
+    }
+    if(!alreadyBooked)correlationHists.Variable = directory->make<TH1F>("h_"+varName,varTitle+" "+labelX+";"+labelX+"  "+unitX+";# hits",nBinX1D,minBinX,maxBinX);
+  }
   
   if(options.find("n") != std::string::npos)
   correlationHists.NorResXVsVar = directory->make<TH2F>("h2_norRes"+xY+"Vs"+varName,"r_{"+xy+"}/#sigma_{"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";("+xy+"_{track}-"+xy+"_{hit})'/#sigma_{"+xy+"}",nBinX2D,minBinX,maxBinX,25,-norResXMax,norResXMax);
@@ -285,7 +306,6 @@ TrackerSectorStruct::CorrelationHists::fillCorrHistsY(const TrackStruct::HitPara
 }
 void
 TrackerSectorStruct::CorrelationHists::fillCorrHists(const TString xY, const TrackStruct::HitParameterStruct& hitParameterStruct, double variable){
-  bool isX(true);
   float norRes(999.);
   float prob(999.);
   float errHit(999.);
@@ -304,10 +324,9 @@ TrackerSectorStruct::CorrelationHists::fillCorrHists(const TString xY, const Tra
     errHit = hitParameterStruct.errYHit;
     errTrk = hitParameterStruct.errYTrk;
     err = hitParameterStruct.errY;
-    isX = false;
   }
   
-  if(isX){if(Variable){Variable->Fill(variable);}}
+  if(Variable){Variable->Fill(variable);}
   
   if(NorResXVsVar){
     NorResXVsVar->Fill(variable,norRes);

@@ -12,12 +12,17 @@ struct TrackStruct{
     
     HitParameterStruct(): hitState(ok),
                  isPixelHit(false),
-		 isModuleUsable(true),
-		 charge(0),
 		 widthX(0),
 		 baryStripX(-999.F),
 		 widthY(0),
 		 baryStripY(-999.F),
+		 chargePixel(-999.F),
+		 clusterProbabilityXY(-999.F), clusterProbabilityQ(-999.F),
+		 clusterProbabilityXYQ(-999.F), logClusterProbability(-999.F),
+		 isOnEdge(false), hasBadPixels(false), spansTwoRoc(false),
+		 qBin(-1),
+		 isModuleUsable(true),
+		 chargeStrip(0),
 		 maxStrip(0), maxStripInv(0), maxCharge(0), maxIndex(0),
 		 chargeOnEdges(-999.F), chargeAsymmetry(-999.F), 
 		 chargeLRplus(-999.F), chargeLRminus(-999.F),
@@ -39,15 +44,19 @@ struct TrackStruct{
     
     // Cluster parameters
     // pixel+strip
-    bool isModuleUsable;
-    unsigned int charge;
     unsigned int widthX;
     float baryStripX;
+    // pixel only
     unsigned int widthY;
     float baryStripY;
-    // pixel only
-    
+    float chargePixel;
+    float clusterProbabilityXY, clusterProbabilityQ,
+          clusterProbabilityXYQ, logClusterProbability;
+    bool isOnEdge, hasBadPixels, spansTwoRoc;
+    int qBin;
     // strip only
+    bool isModuleUsable;
+    unsigned int chargeStrip;
     unsigned int maxStrip, maxStripInv, maxCharge, maxIndex;
     float chargeOnEdges, chargeAsymmetry,
           chargeLRplus, chargeLRminus;
