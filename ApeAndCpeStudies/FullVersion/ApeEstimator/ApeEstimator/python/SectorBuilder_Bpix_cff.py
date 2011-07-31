@@ -13,6 +13,10 @@ Bpix = EmptySector.clone(
     subdetId = [1],
 )
 
+BPIX = cms.VPSet(
+    Bpix,
+)
+
 
 
 ##
@@ -30,6 +34,12 @@ BpixLayer2 = Bpix.clone(
 BpixLayer3 = Bpix.clone(
     name = 'BpixLayer3',
     layer = [3],
+)
+
+BPIXLayerSeparation = cms.VPSet(
+    BpixLayer1,
+    BpixLayer2,
+    BpixLayer3,
 )
 
 
@@ -63,6 +73,14 @@ BpixLayer3In = BpixLayer3.clone(
     wDirection = [-1],
 )
 
+BPIXLayerAndOrientationSeparation = cms.VPSet(
+    BpixLayer1Out,
+    BpixLayer1In,
+    BpixLayer2Out,
+    BpixLayer2In,
+    BpixLayer3Out,
+    BpixLayer3In,
+)
 
 
 

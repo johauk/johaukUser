@@ -13,6 +13,10 @@ Tec = EmptySector.clone(
     subdetId = [6],
 )
 
+TEC = cms.VPSet(
+    Tec,
+)
+
 
 
 ##
@@ -26,6 +30,11 @@ TecMinus = Tec.clone(
 TecPlus = Tec.clone(
     name = 'TecPlus',
     side = [2],
+)
+
+TECSideSeparation = cms.VPSet(
+    TecMinus,
+    TecPlus,
 )
 
 
@@ -91,6 +100,23 @@ TecPlusRing7 = TecPlus.clone(
     ring = [7],
 )
 
+TECSideAndPureRingSeparation = cms.VPSet(
+    TecMinusRing1,
+    TecMinusRing2,
+    TecMinusRing3,
+    TecMinusRing4,
+    TecMinusRing5,
+    TecMinusRing6,
+    TecMinusRing7,
+    TecPlusRing1,
+    TecPlusRing2,
+    TecPlusRing3,
+    TecPlusRing4,
+    TecPlusRing5,
+    TecPlusRing6,
+    TecPlusRing7,
+)
+
 
 
 ##
@@ -144,6 +170,30 @@ TecPlusRing5Rphi = TecPlusRing5.clone(
 TecPlusRing5Stereo = TecPlusRing5.clone(
     name = 'TecPlusRing5Stereo',
     isRPhi = [2],
+)
+
+TECSideAndRingSeparation = cms.VPSet(
+    TecMinusRing1Rphi,
+    TecMinusRing1Stereo,
+    TecMinusRing2Rphi,
+    TecMinusRing2Stereo,
+    TecMinusRing3,
+    TecMinusRing4,
+    TecMinusRing5Rphi,
+    TecMinusRing5Stereo,
+    TecMinusRing6,
+    TecMinusRing7,
+    
+    TecPlusRing1Rphi,
+    TecPlusRing1Stereo,
+    TecPlusRing2Rphi,
+    TecPlusRing2Stereo,
+    TecPlusRing3,
+    TecPlusRing4,
+    TecPlusRing5Rphi,
+    TecPlusRing5Stereo,
+    TecPlusRing6,
+    TecPlusRing7,
 )
 
 
@@ -314,6 +364,51 @@ TecPlusRing7In = TecPlusRing7.clone(
     wDirection = [-1],
 )
 
+# All RPhi modules within a ring point in same w direction. Same is valid for Stereo modules, but with opposite sign
+
+TECSideAndRingAndOrientationSeparation = cms.VPSet(
+    TecMinusRing1RphiOut,
+    #TecMinusRing1StereoOut,
+    #TecMinusRing1RphiIn,
+    TecMinusRing1StereoIn,
+    #TecMinusRing2RphiOut,
+    TecMinusRing2StereoOut,
+    TecMinusRing2RphiIn,
+    #TecMinusRing2StereoIn,
+    #TecMinusRing3Out,
+    TecMinusRing3In,
+    TecMinusRing4Out,
+    #TecMinusRing4In,
+    TecMinusRing5RphiOut,
+    #TecMinusRing5StereoOut,
+    #TecMinusRing5RphiIn,
+    TecMinusRing5StereoIn,
+    TecMinusRing6Out,
+    #TecMinusRing6In,
+    #TecMinusRing7Out,
+    TecMinusRing7In,
+    
+    TecPlusRing1RphiOut,
+    #TecPlusRing1StereoOut,
+    #TecPlusRing1RphiIn,
+    TecPlusRing1StereoIn,
+    #TecPlusRing2RphiOut,
+    TecPlusRing2StereoOut,
+    TecPlusRing2RphiIn,
+    #TecPlusRing2StereoIn,
+    #TecPlusRing3Out,
+    TecPlusRing3In,
+    TecPlusRing4Out,
+    #TecPlusRing4In,
+    TecPlusRing5RphiOut,
+    #TecPlusRing5StereoOut,
+    #TecPlusRing5RphiIn,
+    TecPlusRing5StereoIn,
+    TecPlusRing6Out,
+    #TecPlusRing6In,
+    #TecPlusRing7Out,
+    TecPlusRing7In,
+)
 
 
 

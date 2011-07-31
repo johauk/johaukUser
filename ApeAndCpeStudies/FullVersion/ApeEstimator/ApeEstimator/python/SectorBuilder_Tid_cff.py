@@ -13,6 +13,10 @@ Tid = EmptySector.clone(
     subdetId = [4],
 )
 
+TID = cms.VPSet(
+    Tid,
+)
+
 
 
 ##
@@ -26,6 +30,11 @@ TidMinus = Tid.clone(
 TidPlus = Tid.clone(
     name = 'TidPlus',
     side = [2],
+)
+
+TIDSideSeparation = cms.VPSet(
+    TidMinus,
+    TidPlus,
 )
 
 
@@ -57,6 +66,15 @@ TidPlusRing2 = TidPlus.clone(
 TidPlusRing3 = TidPlus.clone(
     name = 'TidPlusRing3',
     ring = [3],
+)
+
+TIDSideAndPureRingSeparation = cms.VPSet(
+    TidMinusRing1,
+    TidMinusRing2,
+    TidMinusRing3,
+    TidPlusRing1,
+    TidPlusRing2,
+    TidPlusRing3,
 )
 
 
@@ -96,6 +114,20 @@ TidPlusRing2Rphi = TidPlusRing2.clone(
 TidPlusRing2Stereo = TidPlusRing2.clone(
     name = 'TidPlusRing2Stereo',
     isRPhi = [2],
+)
+
+TIDSideAndRingSeparation = cms.VPSet(
+    TidMinusRing1Rphi,
+    TidMinusRing1Stereo,
+    TidMinusRing2Rphi,
+    TidMinusRing2Stereo,
+    TidMinusRing3,
+    
+    TidPlusRing1Rphi,
+    TidPlusRing1Stereo,
+    TidPlusRing2Rphi,
+    TidPlusRing2Stereo,
+    TidPlusRing3,
 )
 
 
@@ -186,6 +218,29 @@ TidPlusRing3In = TidPlusRing3.clone(
     wDirection = [-1],
 )
 
+TIDSideAndRingAndOrientationSeparation = cms.VPSet(
+    TidMinusRing1RphiOut,
+    TidMinusRing1StereoOut,
+    TidMinusRing1RphiIn,
+    TidMinusRing1StereoIn,
+    TidMinusRing2RphiOut,
+    TidMinusRing2StereoOut,
+    TidMinusRing2RphiIn,
+    TidMinusRing2StereoIn,
+    TidMinusRing3Out,
+    TidMinusRing3In,
+    
+    TidPlusRing1RphiOut,
+    TidPlusRing1StereoOut,
+    TidPlusRing1RphiIn,
+    TidPlusRing1StereoIn,
+    TidPlusRing2RphiOut,
+    TidPlusRing2StereoOut,
+    TidPlusRing2RphiIn,
+    TidPlusRing2StereoIn,
+    TidPlusRing3Out,
+    TidPlusRing3In,
+)
 
 
 

@@ -13,6 +13,10 @@ Fpix = EmptySector.clone(
     subdetId = [2],
 )
 
+FPIX = cms.VPSet(
+    Fpix,
+)
+
 
 
 ##
@@ -26,6 +30,11 @@ FpixMinus = Fpix.clone(
 FpixPlus = Fpix.clone(
     name = 'FpixPlus',
     side = [2],
+)
+
+FPIXSideSeparation = cms.VPSet(
+    FpixMinus,
+    FpixPlus,
 )
 
 
@@ -49,6 +58,13 @@ FpixPlusLayer1 = FpixPlus.clone(
 FpixPlusLayer2 = FpixPlus.clone(
     name = 'FpixPlusLayer2',
     layer = [2],
+)
+
+FPIXSideAndLayerSeparation = cms.VPSet(
+    FpixMinusLayer1,
+    FpixMinusLayer2,
+    FpixPlusLayer1,
+    FpixPlusLayer2,
 )
 
 
@@ -89,6 +105,18 @@ FpixPlusLayer2In = FpixPlusLayer2.clone(
     name = 'FpixPlusLayer1In',
     wDirection = [-1],
 )
+
+FPIXSideAndLayerAndOrientationSeparation = cms.VPSet(
+    FpixMinusLayer1Out,
+    FpixMinusLayer1In,
+    FpixMinusLayer2Out,
+    FpixMinusLayer2In,
+    FpixPlusLayer1Out,
+    FpixPlusLayer1In,
+    FpixPlusLayer2Out,
+    FpixPlusLayer2In,
+)
+
 
 
 

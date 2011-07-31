@@ -13,6 +13,10 @@ Tob = EmptySector.clone(
     subdetId = [5],
 )
 
+TOB = cms.VPSet(
+    Tob,
+)
+
 
 
 ##
@@ -36,6 +40,13 @@ TobRight = Tob.clone(
     posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
 )
 
+TOBQuarters = cms.VPSet(
+    TobUp,
+    TobDown,
+    TobLeft,
+    TobRight,
+)
+
 
 
 ##
@@ -53,6 +64,12 @@ TobLayer34 = Tob.clone(
 TobLayer56 = Tob.clone(
     name = 'TobLayer56',
     layer = [5,6],
+)
+
+TOBPitchAnd2DSeparation = cms.VPSet(
+    TobLayer12,
+    TobLayer34,
+    TobLayer56,
 )
 
 
@@ -86,6 +103,15 @@ TobLayer6 = Tob.clone(
     layer = [6],
 )
 
+TOBPureLayerSeparation = cms.VPSet(
+    TobLayer1,
+    TobLayer2,
+    TobLayer3,
+    TobLayer4,
+    TobLayer5,
+    TobLayer6,
+)
+
 
 
 ##
@@ -107,6 +133,17 @@ TobLayer2Rphi = TobLayer2.clone(
 TobLayer2Stereo = TobLayer2.clone(
     name = 'TobLayer2Stereo',
     isRPhi = [2],
+)
+
+TOBLayerSeparation = cms.VPSet(
+    TobLayer1Rphi,
+    TobLayer1Stereo,
+    TobLayer2Rphi,
+    TobLayer2Stereo,
+    TobLayer3,
+    TobLayer4,
+    TobLayer5,
+    TobLayer6,
 )
 
 
@@ -179,6 +216,28 @@ TobLayer6In = TobLayer6.clone(
     name = 'TobLayer6In',
     wDirection = [-1],
 )
+
+# All RPhi modules within a layer point in same w direction. Same is valid for Stereo modules, but with opposite sign
+
+TOBLayerAndOrientationSeparation = cms.VPSet(
+    #TobLayer1RphiOut,      # no modules contained
+    TobLayer1StereoOut,
+    TobLayer1RphiIn,
+    #TobLayer1StereoIn,     # no modules contained
+    TobLayer2RphiOut,
+    #TobLayer2StereoOut,    # no modules contained
+    #TobLayer2RphiIn,       # no modules contained
+    TobLayer2StereoIn,
+    TobLayer3Out,
+    TobLayer3In,
+    TobLayer4Out,
+    TobLayer4In,
+    TobLayer5Out,
+    TobLayer5In,
+    TobLayer6Out,
+    TobLayer6In,
+)
+
 
 
 

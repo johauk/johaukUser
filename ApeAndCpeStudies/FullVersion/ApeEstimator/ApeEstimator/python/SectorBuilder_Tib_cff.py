@@ -13,6 +13,10 @@ Tib = EmptySector.clone(
     subdetId = [3],
 )
 
+TIB = cms.VPSet(
+    Tib,
+)
+
 
 
 ##
@@ -36,6 +40,13 @@ TibRight = Tib.clone(
     posPhi = [-3.5,-2.3562,2.3562,3.5],   # [135,-135] degree
 )
 
+TIBQuarters = cms.VPSet(
+    TibUp,
+    TibDown,
+    TibLeft,
+    TibRight,
+)
+
 
 
 ##
@@ -49,6 +60,11 @@ TibLayer12 = Tib.clone(
 TibLayer34 = Tib.clone(
     name = 'TibLayer34',
     layer = [3,4],
+)
+
+TIBPitchAnd2DSeparation = cms.VPSet(
+    TibLayer12,
+    TibLayer34,
 )
 
 
@@ -74,6 +90,13 @@ TibLayer4 = Tib.clone(
     layer = [4],
 )
 
+TIBPureLayerSeparation = cms.VPSet(
+    TibLayer1,
+    TibLayer2,
+    TibLayer3,
+    TibLayer4,
+)
+
 
 
 ##
@@ -95,6 +118,15 @@ TibLayer2Rphi = TibLayer2.clone(
 TibLayer2Stereo = TibLayer2.clone(
     name = 'TibLayer2Stereo',
     isRPhi = [2],
+)
+
+TIBLayerSeparation = cms.VPSet(
+    TibLayer1Rphi,
+    TibLayer1Stereo,
+    TibLayer2Rphi,
+    TibLayer2Stereo,
+    TibLayer3,
+    TibLayer4,
 )
 
 
@@ -151,6 +183,22 @@ TibLayer4In = TibLayer4.clone(
     name = 'TibLayer4In',
     wDirection = [-1],
 )
+
+TIBLayerAndOrientationSeparation = cms.VPSet(
+    TibLayer1RphiOut,
+    TibLayer1StereoOut,
+    TibLayer1RphiIn,
+    TibLayer1StereoIn,
+    TibLayer2RphiOut,
+    TibLayer2StereoOut,
+    TibLayer2RphiIn,
+    TibLayer2StereoIn,
+    TibLayer3Out,
+    TibLayer3In,
+    TibLayer4Out,
+    TibLayer4In,
+)
+
 
 
 
