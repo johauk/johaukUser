@@ -116,10 +116,15 @@ void DrawIteration::drawIteration(unsigned int iSectorLow, unsigned int iSectorH
       if(m_sectorValueX_.count(iSector)!=0)apeY = std::sqrt(*(--(m_sectorValueY_[iSector].end())));
       
       std::cout<<"Sector no., APE x, APE y, name:\t"<<iSector<<"\t, "<<std::fixed<<std::setprecision(5)<<apeX<<" , "<<apeY<<" , "<<*name<<"\n";
-  
     }
   }
-  
+  m_sectorName_.clear();
+  m_sectorValueX_.clear();
+  m_sectorValueY_.clear();
+  v_graphApeX_.clear();
+  v_graphCorrectionX_.clear();
+  v_graphApeY_.clear();
+  v_graphCorrectionY_.clear();
 }
 
 
@@ -206,10 +211,6 @@ void DrawIteration::getSectorValues(){
       m_sectorValueY_[i_branch->first].push_back(value); 
     }
   }
-  
-  nameTree->Delete();
-  treeX->Delete();
-  treeY->Delete();
 }
 
 
@@ -301,7 +302,6 @@ void DrawIteration::drawCorrections(const std::string& xOrY, const ExtremeValues
     graph->GetYaxis()->SetTitle(yAxisTitle);
     if(firstGraph){
       graph->Draw("AL*");
-      
       firstGraph = false;
     }
     else{
@@ -330,7 +330,6 @@ void DrawIteration::drawCorrections(const std::string& xOrY, const ExtremeValues
     graph->GetYaxis()->SetTitle(yAxisTitle);
     if(firstGraph){
       graph->Draw("AL*");
-      
       firstGraph = false;
     }
     else{
