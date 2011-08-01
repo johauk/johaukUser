@@ -88,12 +88,16 @@ class TrackerSectorStruct{
   
   TH1 *ResX, *NorResX, *XHit, *XTrk,
       *SigmaX2, *ProbX;
-  TH2 *WidthVsPhiSensX, *WidthVsWidthProjected, *WidthDiffVsMaxStrip, *WidthDiffVsSigmaXHit;
-  TProfile *PWidthVsPhiSensX, *PWidthVsWidthProjected, *PWidthDiffVsMaxStrip, *PWidthDiffVsSigmaXHit;
+  TH2 *WidthVsPhiSensX, *WidthVsWidthProjected, *WidthDiffVsMaxStrip, *WidthDiffVsSigmaXHit,
+      *PhiSensXVsBarycentreX;
+  TProfile *PWidthVsPhiSensX, *PWidthVsWidthProjected, *PWidthDiffVsMaxStrip, *PWidthDiffVsSigmaXHit,
+      *PPhiSensXVsBarycentreX;
   std::map<std::string,std::vector<TH1*> > m_sigmaX;
   
   TH1 *ResY, *NorResY, *YHit, *YTrk,
       *SigmaY2, *ProbY;
+  TH2 *PhiSensYVsBarycentreY;
+  TProfile *PPhiSensYVsBarycentreY; 
   std::map<std::string,std::vector<TH1*> > m_sigmaY;
   
   
@@ -128,9 +132,13 @@ TrackerSectorStruct::TrackerSectorStruct(): directory_(0),
 			 ResX(0), NorResX(0), XHit(0), XTrk(0),
 			 SigmaX2(0), ProbX(0),
 			 WidthVsPhiSensX(0), WidthVsWidthProjected(0), WidthDiffVsMaxStrip(0), WidthDiffVsSigmaXHit(0),
+			 PhiSensXVsBarycentreX(0),
 			 PWidthVsPhiSensX(0), PWidthVsWidthProjected(0), PWidthDiffVsMaxStrip(0), PWidthDiffVsSigmaXHit(0),
+			 PPhiSensXVsBarycentreX(0),
 			 ResY(0), NorResY(0), YHit(0), YTrk(0),
 			 SigmaY2(0), ProbY(0),
+			 PhiSensYVsBarycentreY(0),
+			 PPhiSensYVsBarycentreY(0),
 			 RawId(0),
 			 EntriesX(0),
 			 MeanX(0), RmsX(0), FitMeanX1(0), ResidualWidthX1(0), CorrectionX1(0),
@@ -166,14 +174,15 @@ TrackerSectorStruct::bookCorrHistsY(TString varName,TString varTitle,TString lab
 }
 TrackerSectorStruct::CorrelationHists
 TrackerSectorStruct::bookCorrHists(TString xY,TString varName,TString varTitle,TString labelX,TString unitX,int nBinX1D,int nBinX2D,double minBinX,double maxBinX,std::string options){
-  bool isX(true);
   TString xy;
+  TString suffix;
   if(xY=="X"){
     xy = "x";
+    suffix = "";
   }
   if(xY=="Y"){
     xy = "y";
-    isX = false;
+    suffix = "_y";
   }
   
   std::string o(options);
@@ -188,28 +197,7 @@ TrackerSectorStruct::bookCorrHists(TString xY,TString varName,TString varTitle,T
   if(!directory)return correlationHists;
   
   
-  if(isX){
-    bool alreadyBooked(false);
-    std::map<std::string,CorrelationHists>::const_iterator i_correlationHistsY;
-    for(i_correlationHistsY = m_correlationHistsY.begin(); i_correlationHistsY != m_correlationHistsY.end(); ++i_correlationHistsY){
-      if(i_correlationHistsY->first == varName){
-        alreadyBooked = true;
-	break;
-      }
-    }
-    if(!alreadyBooked)correlationHists.Variable = directory->make<TH1F>("h_"+varName,varTitle+" "+labelX+";"+labelX+"  "+unitX+";# hits",nBinX1D,minBinX,maxBinX);
-  }
-  else{
-    bool alreadyBooked(false);
-    std::map<std::string,CorrelationHists>::const_iterator i_correlationHistsX;
-    for(i_correlationHistsX = m_correlationHistsX.begin(); i_correlationHistsX != m_correlationHistsX.end(); ++i_correlationHistsX){
-      if(i_correlationHistsX->first == varName){
-        alreadyBooked = true;
-	break;
-      }
-    }
-    if(!alreadyBooked)correlationHists.Variable = directory->make<TH1F>("h_"+varName,varTitle+" "+labelX+";"+labelX+"  "+unitX+";# hits",nBinX1D,minBinX,maxBinX);
-  }
+  correlationHists.Variable = directory->make<TH1F>("h_"+varName+suffix,varTitle+" "+labelX+";"+labelX+"  "+unitX+";# hits",nBinX1D,minBinX,maxBinX);
   
   if(options.find("n") != std::string::npos)
   correlationHists.NorResXVsVar = directory->make<TH2F>("h2_norRes"+xY+"Vs"+varName,"r_{"+xy+"}/#sigma_{"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";("+xy+"_{track}-"+xy+"_{hit})'/#sigma_{"+xy+"}",nBinX2D,minBinX,maxBinX,25,-norResXMax,norResXMax);

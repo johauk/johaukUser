@@ -17,8 +17,9 @@ ApeEstimatorTemplate = cms.EDAnalyzer('ApeEstimator',
     
     # Selection of useful hits for analysis
     HitSelector = cms.PSet(
+      # FIXME: create own PSets for Pixel and Strip?
       
-      #Parameters for Cuts on Clusters (independent of track reconstruction, but associated to a track's hit)
+      #Parameters for Cuts on Strip Clusters (independent of track reconstruction, but associated to a track's hit)
       width = cms.vuint32(),        #interval, needs even number of arguments. for int specify one number n as interval (n,n)
       widthProj = cms.vdouble(),
       widthDiff = cms.vdouble(),
@@ -32,7 +33,15 @@ ApeEstimatorTemplate = cms.EDAnalyzer('ApeEstimator',
       maxIndex = cms.vuint32(),
       sOverN = cms.vdouble(),
       
-      #Parameters for Cuts on Hits (depending on track reconstruction)
+      #Parameters for Cuts on Pixel Clusters (independent of track reconstruction, but associated to a track's hit)
+      chargePixel = cms.vdouble(),
+      widthX = cms.vuint32(),
+      widthY = cms.vuint32(),
+      
+      #Parameters for Cuts on Pixel+Strip Hits (depending on track reconstruction)
+      phiSens = cms.vdouble(), #trajectory angle on module
+      phiSensX = cms.vdouble(),
+      phiSensY = cms.vdouble(),
       resX = cms.vdouble(),
       norResX = cms.vdouble(),
       probX = cms.vdouble(),
@@ -40,9 +49,15 @@ ApeEstimatorTemplate = cms.EDAnalyzer('ApeEstimator',
       errXTrk = cms.vdouble(),
       errX = cms.vdouble(),
       errX2 = cms.vdouble(),   #squared error of residuals(X)
-      phiSens = cms.vdouble(), #trajectory angle on module
-      phiSensX = cms.vdouble(),
-      phiSensY = cms.vdouble()
+      
+      #Additional parameters for Cuts on Pixel Hits (depending on track reconstruction)
+      resY = cms.vdouble(),
+      norResY = cms.vdouble(),
+      probY = cms.vdouble(),
+      errYHit = cms.vdouble(),
+      errYTrk = cms.vdouble(),
+      errY = cms.vdouble(),
+      errY2 = cms.vdouble(),   #squared error of residuals(Y)
     ),
     
     #Define minimum number of selected hits for track selection (choose only tracks with enough good hits)

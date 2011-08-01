@@ -205,6 +205,10 @@ process.ApeEstimator1.HitSelector.probX = []
 process.ApeEstimator1.HitSelector.phiSensX = []
 process.ApeEstimator1.HitSelector.phiSensY = []
 process.ApeEstimator1.HitSelector.errXHit = []
+process.ApeEstimator1.HitSelector.chargePixel = []
+process.ApeEstimator1.HitSelector.widthX = []
+process.ApeEstimator1.HitSelector.widthY = []
+
 
 process.ApeEstimator2 = process.ApeEstimator1.clone(
     analyzerMode = True,

@@ -12,6 +12,7 @@ struct TrackerDetectorStruct{
 			   HitsPixel(0), HitsStrip(0),
 			   Charge(0), Chi2(0), Ndof(0), NorChi2(0),
 			   Eta(0), Theta(0), Phi(0), D0Beamspot(0), Dz(0),
+			   D0BeamspotErr(0), D0BeamspotSig(0),
 			   P(0), Pt(0), MeanAngle(0),
 			   HitsGoodVsHitsValid(0), MeanAngleVsHits(0),
 			   HitsPixelVsEta(0), HitsPixelVsTheta(0),
@@ -28,6 +29,7 @@ struct TrackerDetectorStruct{
       *HitsPixel, *HitsStrip,
       *Charge, *Chi2, *Ndof, *NorChi2,
       *Eta, *Theta, *Phi, *D0Beamspot, *Dz,
+      *D0BeamspotErr, *D0BeamspotSig,
       *P, *Pt, *MeanAngle;
   
   TH2 *HitsGoodVsHitsValid, *MeanAngleVsHits,

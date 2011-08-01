@@ -12,6 +12,8 @@ struct TrackStruct{
     
     HitParameterStruct(): hitState(ok),
                  isPixelHit(false),
+		 goodXMeasurement(false),
+		 goodYMeasurement(false),
 		 widthX(0),
 		 baryStripX(-999.F),
 		 widthY(0),
@@ -40,6 +42,7 @@ struct TrackStruct{
     
     HitState hitState;
     bool isPixelHit;
+    bool goodXMeasurement, goodYMeasurement;
     std::vector<unsigned int> v_sector;
     
     // Cluster parameters
@@ -84,6 +87,7 @@ struct TrackStruct{
 		   chi2(-999.F), ndof(-999.F), norChi2(-999.F),
                    eta(-999.F), theta(-999.F), phi(-999.F), d0(-999.F), dz(-999.F),
 		   d0Beamspot(-999.F), dzBeamspot(-999.F),
+		   d0BeamspotErr(-999.F),
                    p(-999.F), pt(-999.F), meanPhiSensToNorm(-999.F){}
     
     int hitsSize, hitsValid, hitsInvalid,
@@ -93,6 +97,7 @@ struct TrackStruct{
     float chi2, ndof, norChi2,
           eta, theta, phi, d0, dz,
 	  d0Beamspot, dzBeamspot,
+	  d0BeamspotErr,
 	  p, pt, meanPhiSensToNorm;
   };
   
