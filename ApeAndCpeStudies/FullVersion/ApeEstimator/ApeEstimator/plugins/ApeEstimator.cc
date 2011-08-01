@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.17 2011/07/30 01:08:39 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.18 2011/08/01 00:09:56 hauk Exp $
 //
 //
 
@@ -1568,7 +1568,6 @@ ApeEstimator::hitSelected(TrackStruct::HitParameterStruct& hitParams)const{
   //if(hitParams.hitState == TrackStruct::notInTracker || hitParams.hitState == TrackStruct::notAssignedToSectors)return false;
   if(hitParams.hitState == TrackStruct::notInTracker)return false;
   if(hitParams.hitState == TrackStruct::invalid || hitParams.hitState == TrackStruct::negativeError)return false;
-  if(m_hitSelection_.size()==0)return true;
   
   bool isGoodHit(true);
   bool isGoodHitX(true);
@@ -1594,6 +1593,7 @@ ApeEstimator::hitSelected(TrackStruct::HitParameterStruct& hitParams)const{
     
     // For pixel only
     if(hitParams.isPixelHit){
+    if     (hitSelection == "chargePixel")    {if(!this->inDoubleInterval(v_hitSelection, hitParams.chargePixel))isGoodHit = false;}
     if     (hitSelection == "resY")           {if(!this->inDoubleInterval(v_hitSelection, hitParams.resY))isGoodHitY = false;}
     else if(hitSelection == "norResY")        {if(!this->inDoubleInterval(v_hitSelection, hitParams.norResY))isGoodHitY = false;}
     else if(hitSelection == "probY")          {if(!this->inDoubleInterval(v_hitSelection, hitParams.probY))isGoodHitY = false;}
@@ -1626,9 +1626,8 @@ ApeEstimator::hitSelected(TrackStruct::HitParameterStruct& hitParams)const{
     
     // For pixel only
     if(hitParams.isPixelHit){
-    if     (hitSelection == "chargePixel"){if(!this->inUintInterval(v_hitSelection, hitParams.chargePixel))isGoodHit = false;}
-    else if(hitSelection == "widthX")     {if(!this->inUintInterval(v_hitSelection, hitParams.widthX))isGoodHitX = false;}
-    else if(hitSelection == "widthY")     {if(!this->inUintInterval(v_hitSelection, hitParams.widthY))isGoodHitY = false;}
+    if(hitSelection == "widthX")         {if(!this->inUintInterval(v_hitSelection, hitParams.widthX))isGoodHitX = false;}
+    else if(hitSelection == "widthY")    {if(!this->inUintInterval(v_hitSelection, hitParams.widthY))isGoodHitY = false;}
     }
     
     // For strip only
