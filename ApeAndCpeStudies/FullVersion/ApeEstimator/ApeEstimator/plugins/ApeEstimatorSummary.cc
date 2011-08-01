@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,6 2-039,+41227673512,
 //         Created:  Mon Oct 11 13:44:03 CEST 2010
-// $Id: ApeEstimatorSummary.cc,v 1.9 2011/06/22 16:08:49 hauk Exp $
+// $Id: ApeEstimatorSummary.cc,v 1.10 2011/07/18 21:42:32 hauk Exp $
 //
 //
 
@@ -372,40 +372,50 @@ ApeEstimatorSummary::calculateApe(){
    double a_baselineSectorY[16589];
    std::string* a_sectorName[16589];
    std::string* a_sectorBaselineName[16589];
-   for(size_t i_sector = 1; i_sector <= m_tkSector_.size(); ++i_sector){
-     a_apeSectorX[i_sector] = 99.;
-     a_apeSectorY[i_sector] = 99.;
-     a_baselineSectorX[i_sector] = -99.;
-     a_baselineSectorY[i_sector] = -99.;
-     a_sectorName[i_sector] = 0;
-     a_sectorBaselineName[i_sector] = 0;
+   //for(size_t i_sector = 1; i_sector <= m_tkSector_.size(); ++i_sector){
+   std::map<unsigned int, TrackerSectorStruct>::const_iterator i_sector;
+   for(i_sector = m_tkSector_.begin(); i_sector != m_tkSector_.end(); ++i_sector){
+     const unsigned int iSector(i_sector->first);
+     const bool pixelSector(i_sector->second.isPixel);
+     a_apeSectorX[iSector] = 99.;
+     a_apeSectorY[iSector] = 99.;
+     a_baselineSectorX[iSector] = -99.;
+     a_baselineSectorY[iSector] = -99.;
+     a_sectorName[iSector] = 0;
+     a_sectorBaselineName[iSector] = 0;
      std::stringstream ss_sector, ss_sectorSuffixed;
-     ss_sector << "Ape_Sector_" << i_sector;
+     ss_sector << "Ape_Sector_" << iSector;
      if(!setBaseline && baselineTreeX){
-       baselineTreeX->SetBranchAddress(ss_sector.str().c_str(), &a_baselineSectorX[i_sector]);
+       baselineTreeX->SetBranchAddress(ss_sector.str().c_str(), &a_baselineSectorX[iSector]);
        baselineTreeX->GetEntry(0);
-       baselineTreeY->SetBranchAddress(ss_sector.str().c_str(), &a_baselineSectorY[i_sector]);
+       if(pixelSector){
+       baselineTreeY->SetBranchAddress(ss_sector.str().c_str(), &a_baselineSectorY[iSector]);
        baselineTreeY->GetEntry(0);
-       sectorNameBaselineTree->SetBranchAddress(ss_sector.str().c_str(), &a_sectorBaselineName[i_sector]);
+       }
+       sectorNameBaselineTree->SetBranchAddress(ss_sector.str().c_str(), &a_sectorBaselineName[iSector]);
        sectorNameBaselineTree->GetEntry(0);
      }
      else{
        // Set default ideal normalized residual width to 1
-       a_baselineSectorX[i_sector] = 1.;
-       a_baselineSectorY[i_sector] = 1.;
+       a_baselineSectorX[iSector] = 1.;
+       a_baselineSectorY[iSector] = 1.;
      }
      if(firstIter){ // should be always true in setBaseline mode, since file is recreated  
        ss_sectorSuffixed << ss_sector.str() << "/D";
-       iterationTreeX->Branch(ss_sector.str().c_str(), &a_apeSectorX[i_sector], ss_sectorSuffixed.str().c_str());
-       iterationTreeY->Branch(ss_sector.str().c_str(), &a_apeSectorY[i_sector], ss_sectorSuffixed.str().c_str());
-       sectorNameTree->Branch(ss_sector.str().c_str(), &a_sectorName[i_sector], 32000, 00);
+       iterationTreeX->Branch(ss_sector.str().c_str(), &a_apeSectorX[iSector], ss_sectorSuffixed.str().c_str());
+       if(pixelSector){
+       iterationTreeY->Branch(ss_sector.str().c_str(), &a_apeSectorY[iSector], ss_sectorSuffixed.str().c_str());
+       }
+       sectorNameTree->Branch(ss_sector.str().c_str(), &a_sectorName[iSector], 32000, 00);
      }
      else{
-       iterationTreeX->SetBranchAddress(ss_sector.str().c_str(), &a_apeSectorX[i_sector]);
+       iterationTreeX->SetBranchAddress(ss_sector.str().c_str(), &a_apeSectorX[iSector]);
        iterationTreeX->GetEntry(iterationTreeX->GetEntries()-1);
-       iterationTreeY->SetBranchAddress(ss_sector.str().c_str(), &a_apeSectorY[i_sector]);
+       if(pixelSector){
+       iterationTreeY->SetBranchAddress(ss_sector.str().c_str(), &a_apeSectorY[iSector]);
        iterationTreeY->GetEntry(iterationTreeY->GetEntries()-1);
-       sectorNameTree->SetBranchAddress(ss_sector.str().c_str(), &a_sectorName[i_sector]);
+       }
+       sectorNameTree->SetBranchAddress(ss_sector.str().c_str(), &a_sectorName[iSector]);
        sectorNameTree->GetEntry(0);
      }
    }
