@@ -118,9 +118,9 @@ ApeOverview::eventAndTrackHistos(){
   histLevel_ = event;
   std::cout<<"List of event histograms to print:\n";
   
-  if(!onlyZoomedHists_){
   this->drawHistToPad("h_trackSize",true);  //logScale only for 1d-hists? Also for Profiles, but not TH2?
-  }
+  this->drawHistToPad("h_trackSizeGood",true);  //logScale only for 1d-hists? Also for Profiles, but not TH2?
+  
   
   histDir_ = "TrackVariables/";
   histLevel_ = track;
@@ -152,11 +152,20 @@ ApeOverview::eventAndTrackHistos(){
   this->drawHistToPad("h_d0Beamspot");
   this->drawHistToPad("h_dz");
   this->drawHistToPad("h_p");
+  this->drawHistToPad("h_d0BeamspotErr");
+  this->drawHistToPad("h_d0BeamspotSig");
   if(!onlyZoomedHists_){
   this->drawHistToPad("h_charge",false);
   this->drawHistToPad("h_meanAngle");
   }
   this->setNewCanvas(dim1);
+  
+  this->drawHistToPad("h2_hitsPixelVsEta",false);
+  this->drawHistToPad("h2_hitsStripVsEta",false);
+  this->drawHistToPad("h2_ptVsEta",false);
+  this->drawHistToPad("h2_hitsPixelVsTheta",false);
+  this->drawHistToPad("h2_hitsStripVsTheta",false);
+  this->drawHistToPad("h2_ptVsTheta",false);
   
   if(!onlyZoomedHists_){
   this->drawHistToPad("h2_hitsGoodVsHitsValid",false);
@@ -199,23 +208,58 @@ ApeOverview::eventAndTrackHistos(){
       
       this->drawHistToPad("sectorTitleSheet");
       
-      this->drawHistToPad("h_Width");
+      
+      // Cluster Parameters 1D
+      
+      this->drawHistToPad("h_WidthX");
       this->drawHistToPad("h_WidthProj");
       this->drawHistToPad("h_WidthDiff");
       if(!onlyZoomedHists_){
       this->drawHistToPad("h_MaxStrip",false);
       this->drawHistToPad("h_MaxIndex");
-      this->drawHistToPad("h_BaryStrip",false);
+      this->drawHistToPad("h_BaryStripX",false);
       }
-      this->drawHistToPad("h_Charge");
+      this->drawHistToPad("h_ChargeStrip");
+      this->drawHistToPad("h_ChargePixel");
       this->drawHistToPad("h_SOverN");
       if(!onlyZoomedHists_){
       this->drawHistToPad("h_MaxCharge");
+      this->drawHistToPad("h_IsOnEdge");
+      this->drawHistToPad("h_HasBadPixels");
+      this->drawHistToPad("h_SpansTwoRoc");
+      this->setNewCanvas(dim1);
       this->drawHistToPad("h_ChargeOnEdges");
       this->drawHistToPad("h_ChargeAsymmetry");
-      //this->drawHistToPad("h_IsModuleUsable");  // not filled anymore, hits already deselected
+      this->drawHistToPad("h_ChargeLRminus");
+      this->drawHistToPad("h_ChargeLRplus");
+      this->drawHistToPad("h_ClusterProbXY");
+      this->drawHistToPad("h_ClusterProbQ");
+      this->drawHistToPad("h_ClusterProbXYQ");
+      this->drawHistToPad("h_LogClusterProb");
+      this->drawHistToPad("h_QBin");
       }
       this->setNewCanvas(dim1);
+      
+      this->drawHistToPad("h_WidthY_y");
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h_BaryStripY_y",false);
+      }
+      this->drawHistToPad("h_ChargePixel_y");
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h_IsOnEdge_y");
+      this->drawHistToPad("h_HasBadPixels_y");
+      this->drawHistToPad("h_SpansTwoRoc_y");
+      this->setNewCanvas(dim1);
+      this->drawHistToPad("h_ClusterProbXY_y");
+      this->drawHistToPad("h_ClusterProbQ_y");
+      this->drawHistToPad("h_ClusterProbXYQ_y");
+      this->drawHistToPad("h_LogClusterProb_y");
+      this->drawHistToPad("h_QBin_y");
+      }
+      this->setNewCanvas(dim1);
+      
+      
+      // Hit parameters 1D
       
       this->drawHistToPad("h_ResX");
       this->drawHistToPad("h_NorResX");
@@ -240,7 +284,37 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h_PhiSensX");
       this->drawHistToPad("h_PhiSensY");
       }
+      this->setNewCanvas(dim1);
       
+      this->drawHistToPad("h_ResY");
+      this->drawHistToPad("h_NorResY");
+      this->drawHistToPad("h_ProbY",false);
+      this->drawHistToPad("h_SigmaYHit_y");
+      this->drawHistToPad("h_SigmaYTrk_y");
+      this->drawHistToPad("h_SigmaY_y");
+      for(unsigned int iUint = 1;;++iUint){
+        std::stringstream sigmaXHit, sigmaXTrk, sigmaX;
+        sigmaXHit << "h_sigmaYHit_" << iUint;
+        sigmaXTrk << "h_sigmaYTrk_" << iUint;
+        sigmaX    << "h_sigmaY_"    << iUint;
+	if(this->drawHistToPad(sigmaXHit.str().c_str()) == -1){this->setNewCanvas(dim1); break;}
+	this->drawHistToPad(sigmaXTrk.str().c_str());
+	this->drawHistToPad(sigmaX.str().c_str());
+      }
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h_YHit");
+      this->drawHistToPad("h_YTrk");
+      this->setNewCanvas(dim1);
+      this->drawHistToPad("h_PhiSens_y");
+      this->drawHistToPad("h_PhiSensX_y");
+      this->drawHistToPad("h_PhiSensY_y");
+      }
+      this->setNewCanvas(dim1);
+      
+      
+      // Track, Cluster, and Hit parameters 2D
+      
+      // vs. hit, track or residual error
       if(!onlyZoomedHists_){
       this->drawHistToPad("h2_sigmaXTrkVsHitsValid",false);
       this->drawHistToPad("h2_sigmaXTrkVsHitsGood",false);
@@ -250,6 +324,7 @@ ApeOverview::eventAndTrackHistos(){
       if(!onlyZoomedHists_){
       this->drawHistToPad("h2_sigmaXTrkVsHitsInvalid",false);
       this->drawHistToPad("h2_sigmaXTrkVsLayersMissed",false);
+      this->drawHistToPad("h2_sigmaXTrkVsHits2D",false);
       this->drawHistToPad("h2_sigmaXTrkVsHitsPixel",false);
       this->drawHistToPad("h2_sigmaXTrkVsHitsStrip",false);
       }
@@ -268,20 +343,33 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_sigmaXVsNorChi2",false);
       this->setNewCanvas(dim2);
       
-      this->drawHistToPad("h2_sigmaXHitVsWidth",false);
+      this->drawHistToPad("h2_sigmaXHitVsWidthX",false);
       this->drawHistToPad("h2_sigmaXHitVsWidthProj",false);
       this->drawHistToPad("h2_sigmaXHitVsWidthDiff",false);
       if(!onlyZoomedHists_){
       this->drawHistToPad("h2_sigmaXHitVsMaxStrip",false);
       this->drawHistToPad("h2_sigmaXHitVsMaxIndex",false);
-      this->drawHistToPad("h2_sigmaXHitVsBaryStrip",false);
+      this->drawHistToPad("h2_sigmaXHitVsBaryStripX",false);
       }
-      this->drawHistToPad("h2_sigmaXHitVsCharge",false);
+      this->drawHistToPad("h2_sigmaXHitVsChargeStrip",false);
       this->drawHistToPad("h2_sigmaXHitVsSOverN",false);
+      this->drawHistToPad("h2_sigmaXHitVsChargePixel",false);
       if(!onlyZoomedHists_){
       this->drawHistToPad("h2_sigmaXHitVsMaxCharge",false);
       this->drawHistToPad("h2_sigmaXHitVsChargeOnEdges",false);
       this->drawHistToPad("h2_sigmaXHitVsChargeAsymmetry",false);
+      this->drawHistToPad("h2_sigmaXHitVsChargeLRplus",false);
+      this->drawHistToPad("h2_sigmaXHitVsChargeLRminus",false);
+      this->setNewCanvas(dim2);
+      this->drawHistToPad("h2_sigmaXHitVsIsOnEdge",false);
+      this->drawHistToPad("h2_sigmaXHitVsHasBadPixels",false);
+      this->drawHistToPad("h2_sigmaXHitVsSpansTwoRoc",false);
+      this->setNewCanvas(dim2);
+      this->drawHistToPad("h2_sigmaXHitVsClusterProbXY",false);
+      this->drawHistToPad("h2_sigmaXHitVsClusterProbQ",false);
+      this->drawHistToPad("h2_sigmaXHitVsClusterProbXYQ",false);
+      this->drawHistToPad("h2_sigmaXHitVsLogClusterProb",false);
+      this->drawHistToPad("h2_sigmaXHitVsQBin",false);
       }
       this->setNewCanvas(dim2);
       
@@ -297,12 +385,14 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_sigmaXVsPhiSensY",false);
       }
       
+      // vs. normalised residual
       if(!onlyZoomedHists_){
       this->drawHistToPad("h2_norResXVsHitsValid",false);
       this->drawHistToPad("h2_norResXVsHitsGood",false);
       this->drawHistToPad("h2_norResXVsMeanAngle",false);
       this->drawHistToPad("h2_norResXVsHitsInvalid",false);
       this->drawHistToPad("h2_norResXVsLayersMissed",false);
+      this->drawHistToPad("h2_norResXVsHits2D",false);
       this->drawHistToPad("h2_norResXVsHitsPixel",false);
       this->drawHistToPad("h2_norResXVsHitsStrip",false);
       }
@@ -321,20 +411,33 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_norResXVsDz",false);
       this->drawHistToPad("h2_norResXVsPt",false);
       
-      this->drawHistToPad("h2_norResXVsWidth",false);
+      this->drawHistToPad("h2_norResXVsWidthX",false);
       this->drawHistToPad("h2_norResXVsWidthProj",false);
       this->drawHistToPad("h2_norResXVsWidthDiff",false);
       if(!onlyZoomedHists_){
       this->drawHistToPad("h2_norResXVsMaxStrip",false);
       this->drawHistToPad("h2_norResXVsMaxIndex",false);
-      this->drawHistToPad("h2_norResXVsBaryStrip",false);
+      this->drawHistToPad("h2_norResXVsBaryStripX",false);
       }
-      this->drawHistToPad("h2_norResXVsCharge",false);
+      this->drawHistToPad("h2_norResXVsChargeStrip",false);
       this->drawHistToPad("h2_norResXVsSOverN",false);
+      this->drawHistToPad("h2_norResXVsChargePixel",false);
       if(!onlyZoomedHists_){
       this->drawHistToPad("h2_norResXVsMaxCharge",false);
       this->drawHistToPad("h2_norResXVsChargeOnEdges",false);
       this->drawHistToPad("h2_norResXVsChargeAsymmetry",false);
+      this->drawHistToPad("h2_norResXVsChargeLRplus",false);
+      this->drawHistToPad("h2_norResXVsChargeLRminus",false);
+      this->setNewCanvas(dim2);
+      this->drawHistToPad("h2_norResXVsIsOnEdge",false);
+      this->drawHistToPad("h2_norResXVsHasBadPixels",false);
+      this->drawHistToPad("h2_norResXVsSpansTwoRoc",false);
+      this->setNewCanvas(dim2);
+      this->drawHistToPad("h2_norResXVsClusterProbXY",false);
+      this->drawHistToPad("h2_norResXVsClusterProbQ",false);
+      this->drawHistToPad("h2_norResXVsClusterProbXYQ",false);
+      this->drawHistToPad("h2_norResXVsLogClusterProb",false);
+      this->drawHistToPad("h2_norResXVsQBin",false);
       }
       this->setNewCanvas(dim2);
       
@@ -349,13 +452,14 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_norResXVsSigmaX",false);
       this->setNewCanvas(dim2);
       
-      
+      // vs. probability
       if(!onlyZoomedHists_){
       this->drawHistToPad("h2_probXVsHitsValid",false);
       this->drawHistToPad("h2_probXVsHitsGood",false);
       this->drawHistToPad("h2_probXVsMeanAngle",false);
       this->drawHistToPad("h2_probXVsHitsInvalid",false);
       this->drawHistToPad("h2_probXVsLayersMissed",false);
+      this->drawHistToPad("h2_probXVsHits2D",false);
       this->drawHistToPad("h2_probXVsHitsPixel",false);
       this->drawHistToPad("h2_probXVsHitsStrip",false);
       }
@@ -374,20 +478,33 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_probXVsDz",false);
       this->drawHistToPad("h2_probXVsPt",false);
       
-      this->drawHistToPad("h2_probXVsWidth",false);
+      this->drawHistToPad("h2_probXVsWidthX",false);
       this->drawHistToPad("h2_probXVsWidthProj",false);
       this->drawHistToPad("h2_probXVsWidthDiff",false);
       if(!onlyZoomedHists_){
       this->drawHistToPad("h2_probXVsMaxStrip",false);
       this->drawHistToPad("h2_probXVsMaxIndex",false);
-      this->drawHistToPad("h2_probXVsBaryStrip",false);
+      this->drawHistToPad("h2_probXVsBaryStripX",false);
       }
-      this->drawHistToPad("h2_probXVsCharge",false);
+      this->drawHistToPad("h2_probXVsChargeStrip",false);
       this->drawHistToPad("h2_probXVsSOverN",false);
+      this->drawHistToPad("h2_probXVsChargePixel",false);
       if(!onlyZoomedHists_){
       this->drawHistToPad("h2_probXVsMaxCharge",false);
       this->drawHistToPad("h2_probXVsChargeOnEdges",false);
       this->drawHistToPad("h2_probXVsChargeAsymmetry",false);
+      this->drawHistToPad("h2_probXVsChargeLRplus",false);
+      this->drawHistToPad("h2_probXVsChargeLRminus",false);
+      this->setNewCanvas(dim2);
+      this->drawHistToPad("h2_probXVsIsOnEdge",false);
+      this->drawHistToPad("h2_probXVsHasBadPixels",false);
+      this->drawHistToPad("h2_probXVsSpansTwoRoc",false);
+      this->setNewCanvas(dim2);
+      this->drawHistToPad("h2_probXVsClusterProbXY",false);
+      this->drawHistToPad("h2_probXVsClusterProbQ",false);
+      this->drawHistToPad("h2_probXVsClusterProbXYQ",false);
+      this->drawHistToPad("h2_probXVsLogClusterProb",false);
+      this->drawHistToPad("h2_probXVsQBin",false);
       }
       this->setNewCanvas(dim2);
       
@@ -402,17 +519,236 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_probXVsSigmaX",false);
       this->setNewCanvas(dim2);
       
-      
+      // other
       this->drawHistToPad("h2_widthVsPhiSensX",false);
       this->drawHistToPad("h2_widthVsWidthProj",false);
+      this->setNewCanvas(dim2);
       this->drawHistToPad("h2_widthDiffVsMaxStrip",false);
+      this->drawHistToPad("h2_widthDiffVsSigmaXHit",false);
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_phiSensXVsBarycentreX",false);
+      }
       this->setNewCanvas(dim2);
       
+      
+      // vs. hit, track or residual error (y coordinate)
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_sigmaYTrkVsHitsValid",false);
+      this->drawHistToPad("h2_sigmaYTrkVsHitsGood",false);
+      this->drawHistToPad("h2_sigmaYTrkVsMeanAngle",false);
+      this->setNewCanvas(dim2);
+      }
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_sigmaYTrkVsHitsInvalid",false);
+      this->drawHistToPad("h2_sigmaYTrkVsLayersMissed",false);
+      this->drawHistToPad("h2_sigmaYTrkVsHits2D",false);
+      this->drawHistToPad("h2_sigmaYTrkVsHitsPixel",false);
+      this->drawHistToPad("h2_sigmaYTrkVsHitsStrip",false);
+      }
+      this->drawHistToPad("h2_sigmaYTrkVsP",false);
+      this->setNewCanvas(dim2);
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_sigmaYTrkVsTheta",false);
+      this->drawHistToPad("h2_sigmaYTrkVsPhi",false);
+      this->drawHistToPad("h2_sigmaYTrkVsMaxStrip",false);
+      this->setNewCanvas(dim2);
+      }
+      this->drawHistToPad("h2_sigmaYTrkVsD0Beamspot",false);
+      this->drawHistToPad("h2_sigmaYTrkVsDz",false);
+      this->drawHistToPad("h2_sigmaYTrkVsPt",false);
+      this->drawHistToPad("h2_sigmaYTrkVsInvP",false);
+      this->drawHistToPad("h2_sigmaYVsNorChi2",false);
+      this->setNewCanvas(dim2);
+      
+      this->drawHistToPad("h2_sigmaYHitVsWidthY",false);
+      this->drawHistToPad("h2_sigmaYHitVsWidthProj",false);
+      this->drawHistToPad("h2_sigmaYHitVsWidthDiff",false);
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_sigmaYHitVsMaxStrip",false);
+      this->drawHistToPad("h2_sigmaYHitVsMaxIndex",false);
+      this->drawHistToPad("h2_sigmaYHitVsBaryStripY",false);
+      }
+      this->drawHistToPad("h2_sigmaYHitVsChargeStrip",false);
+      this->drawHistToPad("h2_sigmaYHitVsSOverN",false);
+      this->drawHistToPad("h2_sigmaYHitVsChargePixel",false);
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_sigmaYHitVsMaxCharge",false);
+      this->drawHistToPad("h2_sigmaYHitVsChargeOnEdges",false);
+      this->drawHistToPad("h2_sigmaYHitVsChargeAsymmetry",false);
+      this->drawHistToPad("h2_sigmaYHitVsChargeLRplus",false);
+      this->drawHistToPad("h2_sigmaYHitVsChargeLRminus",false);
+      this->setNewCanvas(dim2);
+      this->drawHistToPad("h2_sigmaYHitVsIsOnEdge",false);
+      this->drawHistToPad("h2_sigmaYHitVsHasBadPixels",false);
+      this->drawHistToPad("h2_sigmaYHitVsSpansTwoRoc",false);
+      this->setNewCanvas(dim2);
+      this->drawHistToPad("h2_sigmaYHitVsClusterProbXY",false);
+      this->drawHistToPad("h2_sigmaYHitVsClusterProbQ",false);
+      this->drawHistToPad("h2_sigmaYHitVsClusterProbXYQ",false);
+      this->drawHistToPad("h2_sigmaYHitVsLogClusterProb",false);
+      this->drawHistToPad("h2_sigmaYHitVsQBin",false);
+      }
+      this->setNewCanvas(dim2);
+      
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_sigmaYHitVsPhiSens",false);
+      this->drawHistToPad("h2_sigmaYHitVsPhiSensX",false);
+      this->drawHistToPad("h2_sigmaYHitVsPhiSensY",false);
+      this->drawHistToPad("h2_sigmaYTrkVsPhiSens",false);
+      this->drawHistToPad("h2_sigmaYTrkVsPhiSensX",false);
+      this->drawHistToPad("h2_sigmaYTrkVsPhiSensY",false);
+      this->drawHistToPad("h2_sigmaYVsPhiSens",false);
+      this->drawHistToPad("h2_sigmaYVsPhiSensX",false);
+      this->drawHistToPad("h2_sigmaYVsPhiSensY",false);
+      }
+      
+      // vs. normalised residual (y coordinate)
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_norResYVsHitsValid",false);
+      this->drawHistToPad("h2_norResYVsHitsGood",false);
+      this->drawHistToPad("h2_norResYVsMeanAngle",false);
+      this->drawHistToPad("h2_norResYVsHitsInvalid",false);
+      this->drawHistToPad("h2_norResYVsLayersMissed",false);
+      this->drawHistToPad("h2_norResYVsHits2D",false);
+      this->drawHistToPad("h2_norResYVsHitsPixel",false);
+      this->drawHistToPad("h2_norResYVsHitsStrip",false);
+      }
+      this->drawHistToPad("h2_norResYVsP",false);
+      if(!onlyZoomedHists_){
+      this->setNewCanvas(dim2);
+      }
+      
+      this->drawHistToPad("h2_norResYVsNorChi2",false);
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_norResYVsTheta",false);
+      this->drawHistToPad("h2_norResYVsPhi",false);
+      }
+      this->setNewCanvas(dim2);
+      this->drawHistToPad("h2_norResYVsD0Beamspot",false);
+      this->drawHistToPad("h2_norResYVsDz",false);
+      this->drawHistToPad("h2_norResYVsPt",false);
+      
+      this->drawHistToPad("h2_norResYVsWidthY",false);
+      this->drawHistToPad("h2_norResYVsWidthProj",false);
+      this->drawHistToPad("h2_norResYVsWidthDiff",false);
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_norResYVsMaxStrip",false);
+      this->drawHistToPad("h2_norResYVsMaxIndex",false);
+      this->drawHistToPad("h2_norResYVsBaryStripY",false);
+      }
+      this->drawHistToPad("h2_norResYVsChargeStrip",false);
+      this->drawHistToPad("h2_norResYVsSOverN",false);
+      this->drawHistToPad("h2_norResYVsChargePixel",false);
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_norResYVsMaxCharge",false);
+      this->drawHistToPad("h2_norResYVsChargeOnEdges",false);
+      this->drawHistToPad("h2_norResYVsChargeAsymmetry",false);
+      this->drawHistToPad("h2_norResYVsChargeLRplus",false);
+      this->drawHistToPad("h2_norResYVsChargeLRminus",false);
+      this->setNewCanvas(dim2);
+      this->drawHistToPad("h2_norResYVsIsOnEdge",false);
+      this->drawHistToPad("h2_norResYVsHasBadPixels",false);
+      this->drawHistToPad("h2_norResYVsSpansTwoRoc",false);
+      this->setNewCanvas(dim2);
+      this->drawHistToPad("h2_norResYVsClusterProbXY",false);
+      this->drawHistToPad("h2_norResYVsClusterProbQ",false);
+      this->drawHistToPad("h2_norResYVsClusterProbXYQ",false);
+      this->drawHistToPad("h2_norResYVsLogClusterProb",false);
+      this->drawHistToPad("h2_norResYVsQBin",false);
+      }
+      this->setNewCanvas(dim2);
+      
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_norResYVsPhiSens",false);
+      this->drawHistToPad("h2_norResYVsPhiSensX",false);
+      this->drawHistToPad("h2_norResYVsPhiSensY",false);
+      }
+      
+      this->drawHistToPad("h2_norResYVsSigmaYHit",false);
+      this->drawHistToPad("h2_norResYVsSigmaYTrk",false);
+      this->drawHistToPad("h2_norResYVsSigmaY",false);
+      this->setNewCanvas(dim2);
+      
+      // vs. probability (y coordinate)
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_probYVsHitsValid",false);
+      this->drawHistToPad("h2_probYVsHitsGood",false);
+      this->drawHistToPad("h2_probYVsMeanAngle",false);
+      this->drawHistToPad("h2_probYVsHitsInvalid",false);
+      this->drawHistToPad("h2_probYVsLayersMissed",false);
+      this->drawHistToPad("h2_probYVsHits2D",false);
+      this->drawHistToPad("h2_probYVsHitsPixel",false);
+      this->drawHistToPad("h2_probYVsHitsStrip",false);
+      }
+      this->drawHistToPad("h2_probYVsP",false);
+      if(!onlyZoomedHists_){
+      this->setNewCanvas(dim2);
+      }
+      
+      this->drawHistToPad("h2_probYVsNorChi2",false);
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_probYVsTheta",false);
+      this->drawHistToPad("h2_probYVsPhi",false);
+      }
+      this->setNewCanvas(dim2);
+      this->drawHistToPad("h2_probYVsD0Beamspot",false);
+      this->drawHistToPad("h2_probYVsDz",false);
+      this->drawHistToPad("h2_probYVsPt",false);
+      
+      this->drawHistToPad("h2_probYVsWidthY",false);
+      this->drawHistToPad("h2_probYVsWidthProj",false);
+      this->drawHistToPad("h2_probYVsWidthDiff",false);
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_probYVsMaxStrip",false);
+      this->drawHistToPad("h2_probYVsMaxIndex",false);
+      this->drawHistToPad("h2_probYVsBaryStripY",false);
+      }
+      this->drawHistToPad("h2_probYVsChargeStrip",false);
+      this->drawHistToPad("h2_probYVsSOverN",false);
+      this->drawHistToPad("h2_probYVsChargePixel",false);
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_probYVsMaxCharge",false);
+      this->drawHistToPad("h2_probYVsChargeOnEdges",false);
+      this->drawHistToPad("h2_probYVsChargeAsymmetry",false);
+      this->drawHistToPad("h2_probYVsChargeLRplus",false);
+      this->drawHistToPad("h2_probYVsChargeLRminus",false);
+      this->setNewCanvas(dim2);
+      this->drawHistToPad("h2_probYVsIsOnEdge",false);
+      this->drawHistToPad("h2_probYVsHasBadPixels",false);
+      this->drawHistToPad("h2_probYVsSpansTwoRoc",false);
+      this->setNewCanvas(dim2);
+      this->drawHistToPad("h2_probYVsClusterProbXY",false);
+      this->drawHistToPad("h2_probYVsClusterProbQ",false);
+      this->drawHistToPad("h2_probYVsClusterProbXYQ",false);
+      this->drawHistToPad("h2_probYVsLogClusterProb",false);
+      this->drawHistToPad("h2_probYVsQBin",false);
+      }
+      this->setNewCanvas(dim2);
+      
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_probYVsPhiSens",false);
+      this->drawHistToPad("h2_probYVsPhiSensX",false);
+      this->drawHistToPad("h2_probYVsPhiSensY",false);
+      }
+      
+      this->drawHistToPad("h2_probYVsSigmaYHit",false);
+      this->drawHistToPad("h2_probYVsSigmaYTrk",false);
+      this->drawHistToPad("h2_probYVsSigmaY",false);
+      this->setNewCanvas(dim2);
+      
+      // other (y coordinate)
+      if(!onlyZoomedHists_){
+      this->drawHistToPad("h2_phiSensYVsBarycentreY",false);
+      }
+      this->setNewCanvas(dim2);
+      
+      
+      // Additional 1D histograms
+      
       this->setNewCanvas(dim1);
-      TDirectory* intDir(0);
-      bool intervalBool(true);
-      for(unsigned int iBin(1);intervalBool;++iBin){
-        std::stringstream intervalName, fullDirectoryName2;
+      for(unsigned int iBin(1); ; ++iBin){
+        TDirectory* intDir(0);
+	std::stringstream intervalName, fullDirectoryName2;
         intervalName << "Interval_" << iBin << "/";
 	fullDirectoryName2 << fullDirectoryName.str() << intervalName.str();
         TString fullName2(fullDirectoryName2.str().c_str());
@@ -424,7 +760,25 @@ ApeOverview::eventAndTrackHistos(){
 	  this->drawHistToPad("h_norResX",false);
 	  }
 	}
-	else intervalBool = false;
+	else break;
+      }
+      
+      this->setNewCanvas(dim1);
+      for(unsigned int iBin(1); ; ++iBin){
+        TDirectory* intDir(0);
+	std::stringstream intervalName, fullDirectoryName2;
+        intervalName << "Interval_" << iBin << "/";
+	fullDirectoryName2 << fullDirectoryName.str() << intervalName.str();
+        TString fullName2(fullDirectoryName2.str().c_str());
+	inputFile_->cd();
+        intDir = (TDirectory*)inputFile_->TDirectory::GetDirectory(fullName2);
+	if(intDir){
+	  histDir_  = (sectorName.str() + intervalName.str()).c_str();
+	  if(!onlyZoomedHists_){
+	  this->drawHistToPad("h_norResY",false);
+	  }
+	}
+	else break;
       }
       
       if(!onlyZoomedHists_){
@@ -435,9 +789,8 @@ ApeOverview::eventAndTrackHistos(){
       std::stringstream fullDirectoryName3;
       fullDirectoryName3 << fullDirectoryName.str() << resultName;
       resDir = (TDirectory*)inputFile_->TDirectory::GetDirectory(fullDirectoryName3.str().c_str());
-      if(resDir){
-      this->drawHistToPad("h_entries");
-      }
+      if(resDir)
+      this->drawHistToPad("h_entriesX");
       resultName = "";
       histDir_  = (sectorName.str() + resultName).c_str();
       this->drawHistToPad("h_meanX",false);
@@ -448,6 +801,28 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h_residualWidthX2",false);
       this->drawHistToPad("h_correctionX1",false);
       this->drawHistToPad("h_correctionX2",false);
+      }
+      
+      if(!onlyZoomedHists_){
+      this->setNewCanvas(dim1);
+      TDirectory* resDir(0);
+      std::string resultName("Results/");
+      histDir_  = (sectorName.str() + resultName).c_str();
+      std::stringstream fullDirectoryName3;
+      fullDirectoryName3 << fullDirectoryName.str() << resultName;
+      resDir = (TDirectory*)inputFile_->TDirectory::GetDirectory(fullDirectoryName3.str().c_str());
+      if(resDir)
+      this->drawHistToPad("h_entriesY");
+      resultName = "";
+      histDir_  = (sectorName.str() + resultName).c_str();
+      this->drawHistToPad("h_meanY",false);
+      this->drawHistToPad("h_fitMeanY1",false);
+      this->drawHistToPad("h_fitMeanY2",false);
+      this->drawHistToPad("h_rmsY",false);
+      this->drawHistToPad("h_residualWidthY1",false);
+      this->drawHistToPad("h_residualWidthY2",false);
+      this->drawHistToPad("h_correctionY1",false);
+      this->drawHistToPad("h_correctionY2",false);
       }
     }
     else sectorBool = false;
