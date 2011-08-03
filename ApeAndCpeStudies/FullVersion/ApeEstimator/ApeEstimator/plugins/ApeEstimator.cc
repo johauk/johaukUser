@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.18 2011/08/01 00:09:56 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.19 2011/08/01 00:50:20 hauk Exp $
 //
 //
 
@@ -696,7 +696,7 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     // Track Parameters
     (*i_sector).second.m_correlationHistsX["HitsValid"] = (*i_sector).second.bookCorrHistsX("HitsValid","# hits","[valid]",50,0,50,"npt");
     (*i_sector).second.m_correlationHistsX["HitsInvalid"] = (*i_sector).second.bookCorrHistsX("HitsInvalid","# hits","[invalid]",20,0,20,"npt");
-    (*i_sector).second.m_correlationHistsX["Hits2D"] = (*i_sector).second.bookCorrHistsX("Hits2D","# hits","[2D]",20,0,20,"npth");
+    (*i_sector).second.m_correlationHistsX["Hits2D"] = (*i_sector).second.bookCorrHistsX("Hits2D","# hits","[2D]",20,0,20,"npt");
     (*i_sector).second.m_correlationHistsX["LayersMissed"] = (*i_sector).second.bookCorrHistsX("LayersMissed","# layers","[missed]",10,0,10,"npt");
     (*i_sector).second.m_correlationHistsX["HitsPixel"] = (*i_sector).second.bookCorrHistsX("HitsPixel","# hits","[pixel]",10,0,10,"npt");
     (*i_sector).second.m_correlationHistsX["HitsStrip"] = (*i_sector).second.bookCorrHistsX("HitsStrip","# hits","[strip]",40,0,40,"npt");
@@ -715,7 +715,7 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     if(pixelSector){
     (*i_sector).second.m_correlationHistsY["HitsValid"] = (*i_sector).second.bookCorrHistsY("HitsValid","# hits","[valid]",50,0,50,"npt");
     (*i_sector).second.m_correlationHistsY["HitsInvalid"] = (*i_sector).second.bookCorrHistsY("HitsInvalid","# hits","[invalid]",20,0,20,"npt");
-    (*i_sector).second.m_correlationHistsY["Hits2D"] = (*i_sector).second.bookCorrHistsY("Hits2D","# hits","[2D]",20,0,20,"npth");
+    (*i_sector).second.m_correlationHistsY["Hits2D"] = (*i_sector).second.bookCorrHistsY("Hits2D","# hits","[2D]",20,0,20,"npt");
     (*i_sector).second.m_correlationHistsY["LayersMissed"] = (*i_sector).second.bookCorrHistsY("LayersMissed","# layers","[missed]",10,0,10,"npt");
     (*i_sector).second.m_correlationHistsY["HitsPixel"] = (*i_sector).second.bookCorrHistsY("HitsPixel","# hits","[pixel]",10,0,10,"npt");
     (*i_sector).second.m_correlationHistsY["HitsStrip"] = (*i_sector).second.bookCorrHistsY("HitsStrip","# hits","[strip]",40,0,40,"npt");
