@@ -1,18 +1,15 @@
+#include "DrawIteration.h"
+
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 
-#include <vector>
-#include <map>
-
 #include <cmath>
 
-#include "TString.h"
-#include "TFile.h"
 #include "TTree.h"
 #include "TBranch.h"
 #include "TCanvas.h"
-#include "TGraph.h"
 #include "TAxis.h"
 
 #include "TROOT.h"
@@ -20,40 +17,6 @@
 #include "TGaxis.h"
 
 
-
-class DrawIteration{
-  public:
-    DrawIteration(unsigned int =0);
-    ~DrawIteration();
-    
-    void drawIteration(unsigned int =0, unsigned int =99999);
-  private:
-    struct ExtremeValues{
-      ExtremeValues(const double minApe, const double maxApe, const double maxAbsCorr):
-      minimumApe(minApe), maximumApe(maxApe), maxAbsCorrection(maxAbsCorr){}
-      const double minimumApe;
-      const double maximumApe;
-      const double maxAbsCorrection;
-    };
-    
-    void setStyle();
-    void getSectorValues();
-    ExtremeValues getGraphs(const std::string, unsigned int, unsigned int);
-    void drawCorrections(const std::string&, const ExtremeValues&, const std::string&);
-    
-    const TString* outpath_;
-    TFile* file_;
-    
-    std::map<unsigned int, std::string*> m_sectorName_;
-    std::map<unsigned int, std::vector<double> > m_sectorValueX_;
-    std::map<unsigned int, std::vector<double> > m_sectorValueY_;
-    
-    std::vector<TGraph*> v_graphApeX_;
-    std::vector<TGraph*> v_graphCorrectionX_;
-    std::vector<TGraph*> v_graphApeY_;
-    std::vector<TGraph*> v_graphCorrectionY_;
-    
-};
 
 
 
@@ -112,8 +75,8 @@ void DrawIteration::drawIteration(unsigned int iSectorLow, unsigned int iSectorH
     if(iSector>=iSectorLow && iSector<=iSectorHigh){
       const std::string* name(i_sectorValue->second);
       const double apeX = std::sqrt(*(--(m_sectorValueX_[iSector].end())));
-      double apeY(-99.);
-      if(m_sectorValueX_.count(iSector)!=0)apeY = std::sqrt(*(--(m_sectorValueY_[iSector].end())));
+      double apeY(-9.);
+      if(m_sectorValueY_.count(iSector)!=0)apeY = std::sqrt(*(--(m_sectorValueY_[iSector].end())));
       
       std::cout<<"Sector no., APE x, APE y, name:\t"<<iSector<<"\t, "<<std::fixed<<std::setprecision(5)<<apeX<<" , "<<apeY<<" , "<<*name<<"\n";
     }
@@ -291,6 +254,8 @@ void DrawIteration::drawCorrections(const std::string& xOrY, const ExtremeValues
     std::cout<<"Wrong parameter for getGraphs(...)\n";
   }
   
+  if(v_graphApe->size()==0 || v_graphCorrection->size()==0)return;
+  
   TCanvas* canvas(0);
   canvas = new TCanvas("canvas");
   bool firstGraph(true);
@@ -318,6 +283,7 @@ void DrawIteration::drawCorrections(const std::string& xOrY, const ExtremeValues
   for(std::vector<TGraph*>::const_iterator i_graph = v_graphApe->begin(); i_graph != v_graphApe->end(); ++i_graph){
     (*i_graph)->Delete();
   }
+  v_graphApe->clear();
   canvas->Close();
   
   firstGraph = true;
@@ -344,6 +310,7 @@ void DrawIteration::drawCorrections(const std::string& xOrY, const ExtremeValues
   for(std::vector<TGraph*>::const_iterator i_graph = v_graphCorrection->begin(); i_graph != v_graphCorrection->end(); ++i_graph){
     (*i_graph)->Delete();
   }
+  v_graphCorrection->clear();
   canvas->Close();
 }
 

@@ -1,7 +1,7 @@
 {
 
 
-gROOT->ProcessLine(".L drawIteration.C+");
+gROOT->ProcessLine(".L DrawIteration.C+");
 
 DrawIteration a1(7);
 //a1.drawIteration();
