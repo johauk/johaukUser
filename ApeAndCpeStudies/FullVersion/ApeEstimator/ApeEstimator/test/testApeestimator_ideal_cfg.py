@@ -211,6 +211,7 @@ process.ApeEstimator1.HitSelector.widthY = []
 
 
 process.ApeEstimator2 = process.ApeEstimator1.clone(
+    Sectors = BPIXLayerAndOrientationSeparation + FPIXSideAndLayerAndOrientationSeparation,
     analyzerMode = True,
     calculateApe = False,
 )

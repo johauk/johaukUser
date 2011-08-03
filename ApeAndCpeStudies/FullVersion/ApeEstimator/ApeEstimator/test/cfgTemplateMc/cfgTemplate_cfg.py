@@ -143,11 +143,7 @@ process.ApeEstimator1 = ApeEstimator.clone(
     analyzerMode = False,
 )
 
-process.ApeEstimator2 = process.ApeEstimator1.clone(
-    analyzerMode = True,
-    calculateApe = False,
-)
-
+process.ApeEstimator2 = ApeAnalyzer.clone()
 process.ApeEstimator3 = process.ApeEstimator2.clone(
     zoomHists = False,
 )

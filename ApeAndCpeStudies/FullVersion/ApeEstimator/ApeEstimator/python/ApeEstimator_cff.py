@@ -45,4 +45,19 @@ ApeEstimator.HitSelector.chargeOnEdges = [0.,0.5]
 
 #ApeEstimator.HitSelector.errXHit = cms.vdouble(0.,0.0060)  # 60um, to exclude very large clusters
 
- 
+
+
+
+
+
+ApeAnalyzer = ApeEstimator.clone(
+    Sectors = BPIXLayerAndOrientationSeparation + FPIXSideAndLayerAndOrientationSeparation,
+    analyzerMode = True,
+    calculateApe = False,
+)
+
+
+
+
+
+
