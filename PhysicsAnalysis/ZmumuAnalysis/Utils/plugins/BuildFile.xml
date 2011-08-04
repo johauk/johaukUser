@@ -3,8 +3,12 @@
 <use name="FWCore/ParameterSet"/>
 <use name="FWCore/MessageLogger"/>
 <use name="FWCore/ServiceRegistry"/>
+<use name="FWCore/Utilities"/>
 <use name="CommonTools/UtilAlgos"/>
 <use name="CommonTools/Utils"/>
+<use name="SimDataFormats/PileupSummaryInfo"/>
+<use name="PhysicsTools/Utilities"/>
+<use name="DataFormats/Common"/>
 <use name="root"/>
 <library file="*.cc" name="ZmumuAnalysisUtilsPlugins">
   <use name="ZmumuAnalysis/Utils"/>
