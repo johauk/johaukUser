@@ -6,6 +6,10 @@ import FWCore.ParameterSet.Config as cms
 #   Filter & Producer Modules
 #******************************************************************************************
 
+
+## Event weight producer
+from ZmumuAnalysis.Configuration.sequences.eventWeight_cff import *
+
 ## filter trigger
 from ZmumuAnalysis.Configuration.filters.TriggerFilter_cff import TriggerFilter
 
@@ -1098,6 +1102,7 @@ stepZVetoHighNoMetOneBSsvHpTJet7a = cms.Sequence(
 ## Gathering of common sequences
 
 zVetoDefaultSteps = cms.Sequence(
+    EventWeight*
     seqGeneratorFilter*
     TriggerFilter*
     buildVertexCollections*
@@ -1142,6 +1147,7 @@ zVetoHighNoMetDefaultSteps.replace(finalDimuonSelection,finalDimuonZVetoHighSele
 ## Analysis Paths
 
 oppositeChargeAnalysisSeq = cms.Sequence(
+    EventWeight*
     step0*
     
     seqGeneratorFilter*
