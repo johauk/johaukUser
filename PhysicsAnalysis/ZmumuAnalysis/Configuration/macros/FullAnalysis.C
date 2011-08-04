@@ -9,14 +9,14 @@ gROOT->ProcessLine(".L Samples/Sample.C++");
 gROOT->ProcessLine(".L Tools/FullAnalysis.C++");
 
 
-FullAnalysis fullAnalysis;
+FullAnalysis fullAnalysis1;
 
-fullAnalysis.setRecoSelectionStep("Step5");
-fullAnalysis.setSimuSelectionStep("StepB2");
+fullAnalysis1.setRecoSelectionStep("Step5");
+fullAnalysis1.setSimuSelectionStep("StepB2");
 
-fullAnalysis.defaultAnalysis();
+fullAnalysis1.defaultAnalysis();
 
-fullAnalysis.ttbarFromSideband(FullAnalysis::upper);
+fullAnalysis1.ttbarFromSideband(FullAnalysis::upper);
 
 
 }
