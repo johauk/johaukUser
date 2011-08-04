@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May 20 15:47:12 CEST 2010
-// $Id: DiMuonAnalyzer.cc,v 1.10 2011/07/20 14:01:10 hauk Exp $
+// $Id: DimuonAnalyzer.cc,v 1.1 2011/07/20 14:04:32 hauk Exp $
 //
 //
 
@@ -45,8 +45,9 @@
 
 #include "DataFormats/Math/interface/deltaPhi.h"
 
-#include "TH1.h"
+#include "ZmumuAnalysis/Utils/interface/eventWeight.h"
 
+#include "TH1.h"
 //
 // class declaration
 //
@@ -119,6 +120,10 @@ DimuonAnalyzer::~DimuonAnalyzer()
 void
 DimuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+  // Get event weight
+  const  edm::InputTag eventWeightSource(parameterSet_.getParameter<edm::InputTag>("eventWeightSource"));
+  const double eventWeight = Weights::eventWeight(iEvent, eventWeightSource);
+  
   // get handle on di-muon collection
   const edm::InputTag dimuonSource(parameterSet_.getParameter<edm::InputTag>("dimuonSource"));
   edm::Handle<reco::CandidateView> dimuons;
@@ -127,7 +132,7 @@ DimuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   // Event properties
   unsigned int nDimuon(999);
   nDimuon = dimuons->size();
-  NDimuon->Fill(nDimuon);
+  NDimuon->Fill(nDimuon, eventWeight);
   
   // Dimuon properties
   reco::CandidateView::const_iterator i_cand;
@@ -158,16 +163,16 @@ DimuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     const double diPt = dimuon.pt();
     const double diY = dimuon.y();
     
-    EtaLow->Fill(etaLow);
-    EtaHigh->Fill(etaHigh);
-    PtLow->Fill(ptLow);
-    PtHigh->Fill(ptHigh);
-    DeltaEta->Fill(deltaEta);
-    DeltaPhi->Fill(deltaPhi*180./M_PI);
-    DeltaVz->Fill(deltaVz);
-    DiMass->Fill(diMass);
-    DiPt->Fill(diPt);
-    DiY->Fill(diY);
+    EtaLow->Fill(etaLow, eventWeight);
+    EtaHigh->Fill(etaHigh, eventWeight);
+    PtLow->Fill(ptLow, eventWeight);
+    PtHigh->Fill(ptHigh, eventWeight);
+    DeltaEta->Fill(deltaEta, eventWeight);
+    DeltaPhi->Fill(deltaPhi*180./M_PI, eventWeight);
+    DeltaVz->Fill(deltaVz, eventWeight);
+    DiMass->Fill(diMass, eventWeight);
+    DiPt->Fill(diPt, eventWeight);
+    DiY->Fill(diY, eventWeight);
     
   }
 }

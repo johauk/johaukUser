@@ -40,6 +40,11 @@ process.selectedDimuons = dimuons.clone(
 
 
 
+## Event Weight
+process.load("ZmumuAnalysis.Utils.EventWeight_cfi")
+
+
+
 ## Analyzer under test
 process.load("ZmumuAnalysis.Analyzer.DimuonAnalyzer_cfi")
 process.DimuonAnalyzer1 = process.DimuonAnalyzer.clone(
@@ -58,6 +63,7 @@ process.TFileService = cms.Service("TFileService",
 
 ## Path
 process.p = cms.Path(
+    process.EventWeight*
     process.selectedDimuons*
     process.DimuonAnalyzer1
 )

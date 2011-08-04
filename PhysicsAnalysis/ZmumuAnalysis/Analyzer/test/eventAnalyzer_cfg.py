@@ -40,10 +40,16 @@ process.selectedDimuons = dimuons.clone(
 
 
 
+## Event Weight
+process.load("ZmumuAnalysis.Utils.EventWeight_cfi")
+
+
+
 ## Analyzer under test
 process.load("ZmumuAnalysis.Analyzer.EventAnalyzer_cfi")
 process.EventAnalyzer1 = process.EventAnalyzer.clone(
-    #src = 'selectedPatMuons',
+    jetSource = "selectedPatJetsAK5PF",
+    metSource = "patMETsPF",
 )
 process.EventAnalyzer2 = process.EventAnalyzer1.clone(
     analyzeDiMuons = True,
@@ -62,7 +68,8 @@ process.TFileService = cms.Service("TFileService",
 
 ## Path
 process.p = cms.Path(
-    process.EventAnalyzer1
-    *process.selectedDimuons
-    *process.EventAnalyzer2
+    process.EventWeight*
+    process.EventAnalyzer1*
+    process.selectedDimuons*
+    process.EventAnalyzer2
 )

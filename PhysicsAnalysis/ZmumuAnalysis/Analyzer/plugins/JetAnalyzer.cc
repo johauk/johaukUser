@@ -14,7 +14,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Wed Oct 20 16:37:05 CEST 2010
-// $Id: JetAnalyzer.cc,v 1.5 2011/05/13 20:26:26 hauk Exp $
+// $Id: JetAnalyzer.cc,v 1.6 2011/07/20 16:51:07 hauk Exp $
 //
 //
 
@@ -38,6 +38,8 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "CommonTools/Utils/interface/TFileDirectory.h"
+
+#include "ZmumuAnalysis/Utils/interface/eventWeight.h"
 
 #include "TH1.h"
 //
@@ -120,6 +122,10 @@ JetAnalyzer::~JetAnalyzer()
 void
 JetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+  // Get event weight
+  const  edm::InputTag eventWeightSource(parameterSet_.getParameter<edm::InputTag>("eventWeightSource"));
+  const double eventWeight = Weights::eventWeight(iEvent, eventWeightSource);
+  
   const edm::InputTag jetSource(parameterSet_.getParameter<edm::InputTag>("jetSource"));
   edm::Handle<pat::JetCollection> jets;
   iEvent.getByLabel(jetSource, jets);
@@ -127,7 +133,7 @@ JetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   // Event properties
   unsigned int nJet(999);
   nJet = jets->size();
-  NJet->Fill(nJet);
+  NJet->Fill(nJet, eventWeight);
   
   // Jet properties
   //std::cout<<"\n\t\tNEXT EVENT\n";
@@ -143,18 +149,18 @@ JetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     const double eta = i_jet->eta();
     const double pt = i_jet->pt();
-    Eta->Fill(eta);
-    Pt->Fill(pt);
+    Eta->Fill(eta, eventWeight);
+    Pt->Fill(pt, eventWeight);
     
     // b-tag jet properties
     const float bDiscriminatorSsvHe = i_jet->bDiscriminator("simpleSecondaryVertexHighEffBJetTags");
     const float bDiscriminatorSsvHp = i_jet->bDiscriminator("simpleSecondaryVertexHighPurBJetTags");
-    BDiscriminatorSsvHe->Fill(bDiscriminatorSsvHe);
-    BDiscriminatorSsvHp->Fill(bDiscriminatorSsvHp);
+    BDiscriminatorSsvHe->Fill(bDiscriminatorSsvHe, eventWeight);
+    BDiscriminatorSsvHp->Fill(bDiscriminatorSsvHp, eventWeight);
     
     if(whichHists_!=major){
       const int nConstituent = i_jet->nConstituents();
-      NConstituent->Fill(nConstituent);
+      NConstituent->Fill(nConstituent, eventWeight);
       
       // jet-algorithm specific properties
       if(i_jet->isPFJet() || i_jet->isJPTJet()){
@@ -164,11 +170,11 @@ JetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         const float chargedEmEnergyFraction = i_jet->chargedEmEnergyFraction();
         const float neutralEmEnergyFraction = i_jet->neutralEmEnergyFraction();
         
-        ChargedMultiplicity->Fill(chargedMultiplicity);
-        ChargedHadronEnergyFraction->Fill(chargedHadronEnergyFraction);
-        NeutralHadronEnergyFraction->Fill(neutralHadronEnergyFraction);
-        ChargedEmEnergyFraction->Fill(chargedEmEnergyFraction);
-        NeutralEmEnergyFraction->Fill(neutralEmEnergyFraction);
+        ChargedMultiplicity->Fill(chargedMultiplicity, eventWeight);
+        ChargedHadronEnergyFraction->Fill(chargedHadronEnergyFraction, eventWeight);
+        NeutralHadronEnergyFraction->Fill(neutralHadronEnergyFraction, eventWeight);
+        ChargedEmEnergyFraction->Fill(chargedEmEnergyFraction, eventWeight);
+        NeutralEmEnergyFraction->Fill(neutralEmEnergyFraction, eventWeight);
       }
     }
   }

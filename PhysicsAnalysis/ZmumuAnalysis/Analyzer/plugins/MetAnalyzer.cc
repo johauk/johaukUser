@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Wed Nov 10 11:48:47 CET 2010
-// $Id$
+// $Id: MetAnalyzer.cc,v 1.1 2010/12/09 16:18:53 hauk Exp $
 //
 //
 
@@ -41,6 +41,8 @@
 #include "CommonTools/Utils/interface/TFileDirectory.h"
 
 #include "FWCore/Utilities/interface/EDMException.h"
+
+#include "ZmumuAnalysis/Utils/interface/eventWeight.h"
 
 #include "TH1.h"
 //
@@ -96,6 +98,10 @@ MetAnalyzer::~MetAnalyzer()
 void
 MetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+  // Get event weight
+  const  edm::InputTag eventWeightSource(parameterSet_.getParameter<edm::InputTag>("eventWeightSource"));
+  const double eventWeight = Weights::eventWeight(iEvent, eventWeightSource);
+  
   const edm::InputTag metSource(parameterSet_.getParameter<edm::InputTag>("metSource"));
   edm::Handle<pat::METCollection> mets;
   iEvent.getByLabel(metSource, mets);
@@ -107,7 +113,7 @@ MetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   
   
   float met = (mets->begin())->et();
-  MissingEt->Fill(met);
+  MissingEt->Fill(met, eventWeight);
 }
 
 

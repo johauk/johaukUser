@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu Jun  3 17:42:24 CEST 2010
-// $Id: EventAnalyzer.cc,v 1.3 2010/08/18 15:43:48 hauk Exp $
+// $Id: EventAnalyzer.cc,v 1.4 2010/08/20 11:50:44 hauk Exp $
 //
 //
 
@@ -46,6 +46,7 @@
 
 #include "FWCore/Utilities/interface/EDMException.h"
 
+#include "ZmumuAnalysis/Utils/interface/eventWeight.h"
 
 #include "TH1.h"
 #include "TH2.h"
@@ -118,6 +119,10 @@ EventAnalyzer::~EventAnalyzer()
 void
 EventAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+  // Get event weight
+  const  edm::InputTag eventWeightSource(parameterSet_.getParameter<edm::InputTag>("eventWeightSource"));
+  const double eventWeight = Weights::eventWeight(iEvent, eventWeightSource);
+  
   // get handle on collections
   const edm::InputTag muonSource(parameterSet_.getParameter<edm::InputTag>("muonSource"));
   edm::Handle<pat::MuonCollection> muons; 
@@ -135,19 +140,19 @@ EventAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                                         <<"\n...skipping event";
   }
   
-  MuonSize->Fill(muons->size());
-  JetSize->Fill(jets->size());
+  MuonSize->Fill(muons->size(), eventWeight);
+  JetSize->Fill(jets->size(), eventWeight);
   //float met = (mets->begin())->corSumEt();  // do not understand, what this is...
   float met = (mets->begin())->et();
-  MissingEt->Fill(met);
+  MissingEt->Fill(met, eventWeight);
   
   if(analyzeDiMuons_){
     const edm::InputTag diMuonSource(parameterSet_.getParameter<edm::InputTag>("diMuonSource"));
     edm::Handle<reco::CandidateView> diMuons;
     iEvent.getByLabel(diMuonSource, diMuons);
     
-    DiMuonSize->Fill(diMuons->size());
-    MuonVsDiMuonSize->Fill(muons->size(),diMuons->size());
+    DiMuonSize->Fill(diMuons->size(), eventWeight);
+    MuonVsDiMuonSize->Fill(muons->size(),diMuons->size(), eventWeight);
   }
   
 }

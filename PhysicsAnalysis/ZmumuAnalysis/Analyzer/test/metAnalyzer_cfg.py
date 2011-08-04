@@ -28,16 +28,17 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
 
 
 
+## Event Weight
+process.load("ZmumuAnalysis.Utils.EventWeight_cfi")
+
+
+
 ## Analyzer under test
 process.load("ZmumuAnalysis.Analyzer.MetAnalyzer_cfi")
-process.MetAnalyzerCalo = process.MetAnalyzer.clone(
-    #metSource = 'patMETs',
-)
-process.MetAnalyzerPf = process.MetAnalyzer.clone(
+process.MetAnalyzer1 = process.MetAnalyzer.clone(
+    #metSource = 'patMETs',  # not in present PAT-tuple
     metSource = 'patMETsPF',
-)
-process.MetAnalyzerJpt = process.MetAnalyzer.clone(
-    metSource = 'patMETsJPT',
+    #metSource = 'patMETsJPT',  # not in present PAT-tuple
 )
 
 
@@ -52,7 +53,6 @@ process.TFileService = cms.Service("TFileService",
 
 ## Path
 process.p = cms.Path(
-    process.MetAnalyzerCalo
-    *process.MetAnalyzerPf
-    #*process.MetAnalyzerJpt  # not in present PAT-tuple, not yet implemented in CMSSW_3_6_X
+    process.EventWeight*
+    process.MetAnalyzer1
 )

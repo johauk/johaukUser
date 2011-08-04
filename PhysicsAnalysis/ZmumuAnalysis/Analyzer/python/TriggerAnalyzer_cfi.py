@@ -1,6 +1,9 @@
 import FWCore.ParameterSet.Config as cms
 
 TriggerAnalyzer = cms.EDAnalyzer('TriggerAnalyzer',
+    # Event weight source
+    eventWeightSource = cms.InputTag("EventWeight"),
+    
     # trigger results
     triggerResults = cms.InputTag('TriggerResults','','HLT'),
     # selection of HLT paths

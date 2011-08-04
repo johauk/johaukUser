@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Tue Jun  8 11:21:18 CEST 2010
-// $Id: TriggerAnalyzer.cc,v 1.3 2010/08/20 11:51:28 hauk Exp $
+// $Id: TriggerAnalyzer.cc,v 1.4 2011/05/22 21:45:49 hauk Exp $
 //
 //
 
@@ -42,6 +42,8 @@
 #include "CommonTools/Utils/interface/TFileDirectory.h"
 
 #include "FWCore/Utilities/interface/EDMException.h"
+
+#include "ZmumuAnalysis/Utils/interface/eventWeight.h"
 
 #include "TH1.h"
 #include "TH2.h"
@@ -128,6 +130,10 @@ TriggerAnalyzer::binomialError(const double& numerator, const double& denominato
 void
 TriggerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+  // Get event weight
+  const  edm::InputTag eventWeightSource(parameterSet_.getParameter<edm::InputTag>("eventWeightSource"));
+  const double eventWeight = Weights::eventWeight(iEvent, eventWeightSource);
+  
   // get handle on collections
   const edm::InputTag triggerResults(parameterSet_.getParameter<edm::InputTag>("triggerResults"));
   edm::Handle<edm::TriggerResults> trigResults; 
@@ -151,13 +157,13 @@ TriggerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     for(size_t iTrigPath=0; iTrigPath<nTrigPath; ++iTrigPath){
       if(trigNames.triggerName(iTrig)!=hltPaths_[iTrigPath])continue;
       trigFired = true;
-      TrigsFired->Fill(iTrigPath);
+      TrigsFired->Fill(iTrigPath, eventWeight);
       
       for(size_t iTrig2=0; iTrig2<nTrig; ++iTrig2){
         if(!trigResults.product()->accept(iTrig2))continue;
 	for(size_t iTrigPath2=0; iTrigPath2<iTrigPath; ++iTrigPath2){
 	  if(trigNames.triggerName(iTrig2)!=hltPaths_[iTrigPath2])continue;
-	  Correlations->Fill(iTrigPath,iTrigPath2);
+	  Correlations->Fill(iTrigPath,iTrigPath2, eventWeight);
 	  break;
 	}
       }
@@ -166,7 +172,7 @@ TriggerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     }
   }
   
-  TrigSelPassed->Fill(trigFired);
+  TrigSelPassed->Fill(trigFired, eventWeight);
   
   ++n_events_;
 }

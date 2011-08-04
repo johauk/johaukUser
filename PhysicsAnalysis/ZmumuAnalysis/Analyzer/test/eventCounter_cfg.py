@@ -28,6 +28,11 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
 
 
 
+## Event Weight
+process.load("ZmumuAnalysis.Utils.EventWeight_cfi")
+
+
+
 ## Analyzer under test
 process.load("ZmumuAnalysis.Analyzer.EventCounter_cfi")
 process.EventCounter1 = process.EventCounter.clone(
@@ -45,5 +50,6 @@ process.TFileService = cms.Service("TFileService",
 
 ## Path
 process.p = cms.Path(
+    process.EventWeight*
     process.EventCounter1
 )

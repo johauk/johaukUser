@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu Apr 28 13:28:10 CEST 2011
-// $Id$
+// $Id: EventCounter.cc,v 1.1 2011/04/28 12:34:05 hauk Exp $
 //
 //
 
@@ -30,9 +30,14 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
+#include "FWCore/Utilities/interface/InputTag.h"
+#include "DataFormats/Common/interface/Handle.h"
+
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "CommonTools/Utils/interface/TFileDirectory.h"
+
+#include "ZmumuAnalysis/Utils/interface/eventWeight.h"
 
 #include "TH1.h"
 //
@@ -52,7 +57,10 @@ class EventCounter : public edm::EDAnalyzer {
 
       // ----------member data ---------------------------
       
+      const edm::ParameterSet parameterSet_;
+      
       TH1* EventCount;
+      TH1* EventCountWeighted;
 };
 
 //
@@ -67,7 +75,8 @@ class EventCounter : public edm::EDAnalyzer {
 // constructors and destructor
 //
 EventCounter::EventCounter(const edm::ParameterSet& iConfig):
-EventCount(0)
+parameterSet_(iConfig), 
+EventCount(0), EventCountWeighted(0)
 {
 }
 
@@ -85,7 +94,12 @@ EventCounter::~EventCounter()
 void
 EventCounter::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-  EventCount->SetBinContent(1, EventCount->GetBinContent(1)+1.);
+  // Get event weight
+  const  edm::InputTag eventWeightSource(parameterSet_.getParameter<edm::InputTag>("eventWeightSource"));
+  const double eventWeight = Weights::eventWeight(iEvent, eventWeightSource);
+  
+  EventCount->SetBinContent(1, EventCount->GetBinContent(1) + 1.);
+  EventCountWeighted->SetBinContent(1, EventCount->GetBinContent(1) + eventWeight);
 }
 
 
@@ -98,6 +112,7 @@ EventCounter::beginJob(){
   TFileDirectory dirEvt(*fileService);
   
   EventCount = dirEvt.make<TH1F>("h_eventCount","Event counts;;# events",1,0,1);
+  EventCountWeighted = dirEvt.make<TH1F>("h_eventCountWeighted","Event counts [weighted];;# events [weighted]",1,0,1);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------

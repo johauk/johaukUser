@@ -1,6 +1,9 @@
 import FWCore.ParameterSet.Config as cms
 
 EventAnalyzer = cms.EDAnalyzer('EventAnalyzer',
+    # Event weight source
+    eventWeightSource = cms.InputTag("EventWeight"),
+    
     # muon collection
     muonSource = cms.InputTag("selectedPatMuons"),
     # jet collection

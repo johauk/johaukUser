@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Fri May 13 18:24:03 CEST 2011
-// $Id$
+// $Id: VertexAnalyzer.cc,v 1.1 2011/05/13 20:28:04 hauk Exp $
 //
 //
 
@@ -42,6 +42,7 @@
 
 #include "TH1.h"
 
+#include "ZmumuAnalysis/Utils/interface/eventWeight.h"
 //
 // class declaration
 //
@@ -116,13 +117,17 @@ VertexAnalyzer::~VertexAnalyzer()
 void
 VertexAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+  // Get event weight
+  const  edm::InputTag eventWeightSource(parameterSet_.getParameter<edm::InputTag>("eventWeightSource"));
+  const double eventWeight = Weights::eventWeight(iEvent, eventWeightSource);
+  
   // Get handle on input vertex collection
   const edm::InputTag vertexSource(parameterSet_.getParameter<edm::InputTag>("vertexSource"));
   edm::Handle<reco::VertexCollection> vertices;
   iEvent.getByLabel(vertexSource, vertices);
   
   const unsigned int nVertex(vertices->size());
-  NVertex->Fill(nVertex);
+  NVertex->Fill(nVertex, eventWeight);
   
   reco::VertexCollection::const_iterator i_vertex;
   for(i_vertex=vertices->begin(); i_vertex!=vertices->end(); ++i_vertex){
@@ -139,18 +144,18 @@ VertexAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     const double yError(i_vertex->yError());
     const double zError(i_vertex->zError());
     
-    IsFake->Fill(isFake);
-    NTracks->Fill(nTracks);
-    Chi2->Fill(chi2);
-    Ndof->Fill(ndof);
-    NormalizedChi2->Fill(normalizedChi2);
-    Rho->Fill(rho);
-    X->Fill(x);
-    Y->Fill(y);
-    Z->Fill(z);
-    XError->Fill(xError);
-    YError->Fill(yError);
-    ZError->Fill(zError);
+    IsFake->Fill(isFake, eventWeight);
+    NTracks->Fill(nTracks, eventWeight);
+    Chi2->Fill(chi2, eventWeight);
+    Ndof->Fill(ndof, eventWeight);
+    NormalizedChi2->Fill(normalizedChi2, eventWeight);
+    Rho->Fill(rho, eventWeight);
+    X->Fill(x, eventWeight);
+    Y->Fill(y, eventWeight);
+    Z->Fill(z, eventWeight);
+    XError->Fill(xError, eventWeight);
+    YError->Fill(yError, eventWeight);
+    ZError->Fill(zError, eventWeight);
   }
 }
 

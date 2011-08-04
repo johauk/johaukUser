@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu Aug 19 17:46:32 CEST 2010
-// $Id: MuonAnalyzer.cc,v 1.3 2011/04/28 09:35:16 hauk Exp $
+// $Id: MuonAnalyzer.cc,v 1.4 2011/07/20 16:51:11 hauk Exp $
 //
 //
 
@@ -39,6 +39,8 @@
 #include "CommonTools/Utils/interface/TFileDirectory.h"
 
 #include "FWCore/Utilities/interface/EDMException.h"
+
+#include "ZmumuAnalysis/Utils/interface/eventWeight.h"
 
 #include "TH1.h"
 //
@@ -127,6 +129,10 @@ MuonAnalyzer::~MuonAnalyzer()
 void
 MuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+  // Get event weight
+  const  edm::InputTag eventWeightSource(parameterSet_.getParameter<edm::InputTag>("eventWeightSource"));
+  const double eventWeight = Weights::eventWeight(iEvent, eventWeightSource);
+  
   // get handle on muon collection
   const edm::InputTag muonSource(parameterSet_.getParameter<edm::InputTag>("muonSource"));
   edm::Handle<pat::MuonCollection> muons;
@@ -135,7 +141,7 @@ MuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   // Event properties
   unsigned int nMuon(999);
   nMuon = muons->size();
-  NMuon->Fill(nMuon);
+  NMuon->Fill(nMuon, eventWeight);
   
   // Muon properties
   // All values taken from global muon, except for TrackerMuon: numberOfValidTrackerHits, numberOfValidPixelHits
@@ -146,35 +152,35 @@ MuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     const double d0Beamspot = i_muon->dB();
     const double isoTrk = i_muon->trackIso();
     const double isoCombRel = (isoTrk + i_muon->caloIso())/pt;
-    Eta->Fill(eta);
-    Pt->Fill(pt);
-    D0Beamspot->Fill(d0Beamspot);
-    IsoCombRel->Fill(isoCombRel);
+    Eta->Fill(eta, eventWeight);
+    Pt->Fill(pt, eventWeight);
+    D0Beamspot->Fill(d0Beamspot, eventWeight);
+    IsoCombRel->Fill(isoCombRel, eventWeight);
     
     if(whichHists_!=major){
       const bool isGlobal = i_muon->isGlobalMuon();
       const bool isTracker = i_muon->isTrackerMuon();
       if(whichHists_==veryBasic){
-        IsGlobal->Fill(isGlobal);
-        IsTracker->Fill(isTracker);
+        IsGlobal->Fill(isGlobal, eventWeight);
+        IsTracker->Fill(isTracker, eventWeight);
       }
       
       if(isTracker){
         const unsigned int numberOfValidTrackerHits = i_muon->track()->hitPattern().numberOfValidTrackerHits();
         const unsigned int numberOfValidPixelHits = i_muon->track()->hitPattern().numberOfValidPixelHits();
-        NumberOfValidTrackerHits->Fill(numberOfValidTrackerHits);
-        NumberOfValidPixelHits->Fill(numberOfValidPixelHits);
+        NumberOfValidTrackerHits->Fill(numberOfValidTrackerHits, eventWeight);
+        NumberOfValidPixelHits->Fill(numberOfValidPixelHits, eventWeight);
       }
       if(isGlobal){
         const unsigned int numberOfValidMuonHits = i_muon->globalTrack()->hitPattern().numberOfValidMuonHits();
         const double normalizedChi2 = i_muon->globalTrack()->normalizedChi2();
-        NumberOfValidMuonHits->Fill(numberOfValidMuonHits);
-        NormalizedChi2->Fill(normalizedChi2);
+        NumberOfValidMuonHits->Fill(numberOfValidMuonHits, eventWeight);
+        NormalizedChi2->Fill(normalizedChi2, eventWeight);
       }
       
       const double numberOfMatches = i_muon->numberOfMatches();
-      NumberOfMatches->Fill(numberOfMatches);
-      IsoTrk->Fill(isoTrk);
+      NumberOfMatches->Fill(numberOfMatches, eventWeight);
+      IsoTrk->Fill(isoTrk, eventWeight);
     }
   }
 }

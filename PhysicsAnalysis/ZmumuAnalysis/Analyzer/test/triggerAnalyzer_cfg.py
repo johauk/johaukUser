@@ -27,16 +27,22 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
 
 
 
+## Event Weight
+process.load("ZmumuAnalysis.Utils.EventWeight_cfi")
+
+
+
 ## Analyzer under test
 process.load("ZmumuAnalysis.Analyzer.TriggerAnalyzer_cfi")
 process.TriggerAnalyzer1 = process.TriggerAnalyzer.clone(
-    triggerResults = cms.InputTag('TriggerResults','','REDIGI311X'),
+    #triggerResults = cms.InputTag('TriggerResults','','REDIGI311X'),
     printTriggerNames = True,
 )
 process.TriggerAnalyzer2 = process.TriggerAnalyzer1.clone(
     hltPaths = [
-      'HLT_DoubleMu3',
-      'HLT_Mu9',
+      'HLT_DoubleMu7_v*',
+      'HLT_IsoMu17_v*',
+      'HLT_Mu30_v*',
     ],
     printTriggerNames = False,
 )
@@ -53,6 +59,8 @@ process.TFileService = cms.Service("TFileService",
 
 ## Path
 process.p = cms.Path(
-    process.TriggerAnalyzer1
-    +process.TriggerAnalyzer2
+    process.EventWeight*(
+    process.TriggerAnalyzer1+
+    process.TriggerAnalyzer2
+    )
 )
