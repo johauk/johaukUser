@@ -14,39 +14,39 @@
 #    to appear in the table
 
 # integrated luminosity of data in /pb
-my $lumi = 191.0;
+my $lumi = 1091.0;
 
 # input files (last file is for data)
-my @files = ("mc/qcd.txt",
-             "mc/singletopS.txt",
-	     "mc/singletopT.txt",
-	     "mc/singletopTw.txt",
+my @files = (#"mc/qcd.txt",
+             #"mc/singletopS.txt",
+	     #"mc/singletopT.txt",
+	     #"mc/singletopTw.txt",
 	     "mc/ttbar.txt",
-	     "mc/wmunu.txt",
-	     "mc/wtaunu.txt",
-	     "mc/ww.txt",
-	     "mc/wz.txt",
-	     "mc/zz.txt",
-	     "mc/ztautau.txt",
-	     #"mc/zmumu.txt",
+	     #"mc/wmunu.txt",
+	     #"mc/wtaunu.txt",
+	     #"mc/ww.txt",
+	     #"mc/wz.txt",
+	     #"mc/zz.txt",
+	     #"mc/ztautau.txt",
+	     ##"mc/zmumu.txt",
 	     "mc/zmumuUdsc.txt",
 	     "mc/zmumuB.txt",
 	     "data/allData.txt",
 	    );
 
 # cross section over number of events	    
-my @weights = (1.,
-               1.,
-	       1.,
-	       1.,
-	       1.,
-	       1.,
-	       1.,
-	       1.,
-	       1.,
-	       1.,
+my @weights = (#1.,
+               #1.,
+	       #1.,
+	       #1.,
 	       1.,
 	       #1.,
+	       #1.,
+	       #1.,
+	       #1.,
+	       #1.,
+	       #1.,
+	       ##1.,
 	       1.,
 	       1.,
 	      ); #for data no weight is needed so 
@@ -55,29 +55,89 @@ my @weights = (1.,
 # modules which you want to appear in cutflow
 my @modules = ("EventCounterStep0",
 	       "EventCounterStep1a",
-	       "TriggerFilter",
-	       "oneGoodPVSelection",
-	       "oneInitialMuonSelection",
-	       "oneLooseMuonSelection",
-	       "oneTightMuonSelection",
-	       "looseMuonSelection",
-	       "tightMuonSelection",
-	       "tightHltMuonSelection",
-	       "selectedDimuonSelection",
-	       "cleanDimuonSelection",
-	       "goodDimuonSelection",
-	       "isolatedDimuonSelection",
-	       "finalDimuonSelection",
-	       "oneCleanPatJetSelection",
-	       "oneCleanJetSelection",
-	       "oneGoodJetSelection",
-	       "oneFinalJetSelection",
-	       "oneBSsvHeMJetSelection",
-	       "goodMetSelection",
-	       "oneBSsvHpTJetSelection",
-	       "twoFinalJetSelection",
-	       "twoBSsvHeMJetSelection",
-	       "twoBSsvHpTJetSelection"
+	       "EventCounterStep1b",
+	       "EventCounterStep1",
+	       "EventCounterStep2a",
+	       "EventCounterStep2b",
+	       "EventCounterStep2c",
+	       "EventCounterStep2d",
+	       "EventCounterStep2e",
+	       "EventCounterStep2f",
+	       "EventCounterStep2g",
+	       "EventCounterStep2",
+	       "EventCounterStep3a",
+	       "EventCounterStep3b",
+	       "EventCounterStep3c",
+	       "EventCounterStep3d",
+	       "EventCounterStep3e",
+	       "EventCounterStep3",
+	       "EventCounterStep4a",
+	       "EventCounterStep4b",
+	       "EventCounterStep4c",
+	       "EventCounterStep4d",
+	       "EventCounterStep4",
+	       "EventCounterStep5",
+	       "EventCounterStep6a",
+	       "EventCounterStep6",
+	       "EventCounterStep7a",
+	       "EventCounterStep7b",
+	       "EventCounterStep7c",
+	       "EventCounterStep7",
+	       
+	       "EventCounterStepZVetoLow3",
+	       "EventCounterStepZVetoLow4a",
+	       "EventCounterStepZVetoLow4b",
+	       "EventCounterStepZVetoLow4c",
+	       "EventCounterStepZVetoLow4d",
+	       "EventCounterStepZVetoLow4",
+	       "EventCounterStepZVetoLow5",
+	       "EventCounterStepZVetoLow6a",
+	       "EventCounterStepZVetoLow6",
+	       "EventCounterStepZVetoLow7a",
+	       "EventCounterStepZVetoLow7b",
+	       "EventCounterStepZVetoLow7c",
+	       "EventCounterStepZVetoLow7",
+	       "EventCounterStepZVetoHigh3",
+	       "EventCounterStepZVetoHigh4a",
+	       "EventCounterStepZVetoHigh4b",
+	       "EventCounterStepZVetoHigh4c",
+	       "EventCounterStepZVetoHigh4d",
+	       "EventCounterStepZVetoHigh4",
+	       "EventCounterStepZVetoHigh5",
+	       "EventCounterStepZVetoHigh6a",
+	       "EventCounterStepZVetoHigh6",
+	       "EventCounterStepZVetoHigh7a",
+	       "EventCounterStepZVetoHigh7b",
+	       "EventCounterStepZVetoHigh7c",
+	       "EventCounterStepZVetoHigh7",
+	       
+	       "EventCounterStepNoMet7a",
+	       "EventCounterStepNoMet7b",
+	       "EventCounterStepNoMet7c",
+	       "EventCounterStepNoMet7",
+	       
+	       "EventCounterStepZVetoLowNoMet7a",
+	       "EventCounterStepZVetoLowNoMet7b",
+	       "EventCounterStepZVetoLowNoMet7c",
+	       "EventCounterStepZVetoLowNoMet7",
+	       "EventCounterStepZVetoHighNoMet7a",
+	       "EventCounterStepZVetoHighNoMet7b",
+	       "EventCounterStepZVetoHighNoMet7c",
+	       "EventCounterStepZVetoHighNoMet7",
+	       
+	       "EventCounterStepOneBSsvHeMJet7a",
+	       "EventCounterStepOneBSsvHpTJet7a",
+	       "EventCounterStepZVetoLowOneBSsvHeMJet7a",
+	       "EventCounterStepZVetoLowOneBSsvHpTJet7a",
+	       "EventCounterStepZVetoHighOneBSsvHeMJet7a",
+	       "EventCounterStepZVetoHighOneBSsvHpTJet7a",
+	       
+	       "EventCounterStepNoMetOneBSsvHeMJet7a",
+	       "EventCounterStepNoMetOneBSsvHpTJet7a",
+	       "EventCounterStepZVetoLowNoMetOneBSsvHeMJet7a",
+	       "EventCounterStepZVetoLowNoMetOneBSsvHpTJet7a",
+	       "EventCounterStepZVetoHighNoMetOneBSsvHeMJet7a",
+	       "EventCounterStepZVetoHighNoMetOneBSsvHpTJet7a",
               );
 	      	      	    
 # counter for summed stats	     
@@ -152,7 +212,7 @@ for( my $i=0; $i<@files-1; $i++) { #files-1 because it is not looped over datafi
     my $module = $modules[$j];    
   
     # find lines in summary table
-    my @modline = `grep TrigReport $file | grep $module`;
+    my @modline = `grep TrigReport $file | grep -w $module`;
     # extract number from line
     if($modline[0] =~ /TrigReport\s+\d+\s+\d+\s+\d+\s+(\d+).*/) {
       my $passed = $1;
@@ -205,7 +265,7 @@ if(-e $files[-1]){
   for( my $i=0; $i<@modules; $i++) {
     my $module = $modules[$i];      
     # find lines in summary table
-    my @modline = `grep TrigReport $file | grep $module`;
+    my @modline = `grep TrigReport $file | grep -w $module`;
     # extract number from line
     if($modline[0] =~ /TrigReport\s+\d+\s+\d+\s+\d+\s+(\d+).*/) {
       my $passed = $1;
