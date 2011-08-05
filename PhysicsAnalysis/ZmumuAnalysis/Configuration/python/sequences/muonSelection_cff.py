@@ -22,14 +22,14 @@ from PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cfi import *
 
 
 ## Muons matched to HLT object (same collection w/o reduction, only information of HLT matching added)
-#process.patTrigger.processName = "HLT"
+#patTrigger.processName = "HLT"
 #patTrigger.triggerResults = cms.InputTag("TriggerResults::HLT")
 #patTrigger.triggerEvent = cms.InputTag("hltTriggerSummaryAOD::HLT")
 selectedPatMuonsTriggerMatchHltMuons = cms.EDProducer("PATTriggerMatcherDRDPtLessByR",
     src     = cms.InputTag("selectedPatMuons"),
     matched = cms.InputTag("patTrigger"),
 #    matchedCuts = cms.string('type("TriggerMuon") & (path("HLT_Mu9") | path("HLT_Mu11") | path("HLT_Mu15_v*"))'),
-    matchedCuts = cms.string('type("TriggerMuon") & (path("HLT_DoubleMu6_v*") || path("HLT_DoubleMu7_v*") || filter("hltSingleMu13L3Filtered13"))'),
+    matchedCuts = cms.string('type("TriggerMuon") & (path("HLT_DoubleMu6_v*",1,0) | path("HLT_DoubleMu7_v*",1,0) | filter("hltSingleMu13L3Filtered13"))'),
     maxDPtRel = cms.double(0.5),
     maxDeltaR = cms.double(0.3),
     resolveAmbiguities    = cms.bool(True),
