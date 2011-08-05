@@ -153,8 +153,8 @@ process.options = cms.untracked.PSet(
 ## needed for access to trigger menu
 ##
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-if(isData): process.GlobalTag.globaltag = 'GR_R_42_V14::All'
-elif(isMC): process.GlobalTag.globaltag = 'START42_V12::All'
+if(isData): process.GlobalTag.globaltag = 'GR_R_42_V19::All'
+elif(isMC): process.GlobalTag.globaltag = 'START42_V13::All'
 else: print "Error, wrong configuration of samples"; raise KeyError("ERROR")
 
 

@@ -79,9 +79,9 @@ process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1001) )
 process.load("Configuration.StandardSequences.Geometry_cff")
 process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-process.GlobalTag.globaltag = 'GR_R_42_V14::All'
-#process.GlobalTag.globaltag = 'START42_V12::All'
-#process.GlobalTag.globaltag = 'MC_42_V12::All'
+process.GlobalTag.globaltag = 'GR_R_42_V19::All'
+#process.GlobalTag.globaltag = 'START42_V13::All'
+#process.GlobalTag.globaltag = 'MC_42_V13::All'
 
 
 
@@ -186,7 +186,7 @@ removeMCMatching(process, ['All'])
 
 # Calculate d0 wrt the beam spot
 process.patMuons.usePV = False
-#process.patElectrons.usePV = False  # Do not know why, but it crashes
+process.patElectrons.usePV = False
 
 # Electron ID
 process.load("RecoLocalCalo/EcalRecAlgos/EcalSeverityLevelESProducer_cfi")
@@ -199,16 +199,16 @@ process.patElectrons.electronIDSources = cms.PSet(
     #simpleEleId80relIso = cms.InputTag("simpleEleId80relIso"),
     #simpleEleId70relIso = cms.InputTag("simpleEleId70relIso"),
     #simpleEleId60relIso = cms.InputTag("simpleEleId60relIso"),
-    #simpleEleId95cIso   = cms.InputTag("simpleEleId95cIso"),
-    #simpleEleId90cIso   = cms.InputTag("simpleEleId90cIso"),
-    #simpleEleId85cIso   = cms.InputTag("simpleEleId85cIso"),
+    simpleEleId95cIso   = cms.InputTag("simpleEleId95cIso"),
+    simpleEleId90cIso   = cms.InputTag("simpleEleId90cIso"),
+    simpleEleId85cIso   = cms.InputTag("simpleEleId85cIso"),
     #simpleEleId80cIso   = cms.InputTag("simpleEleId80cIso"),
     #simpleEleId70cIso   = cms.InputTag("simpleEleId70cIso"),
     #simpleEleId60cIso   = cms.InputTag("simpleEleId60cIso"),
 )
 process.patElectronIDs = cms.Sequence(process.simpleEleIdSequence)
-process.makePatElectrons = cms.Sequence(process.patElectronIsolation*process.patElectrons)
-#process.makePatElectrons = cms.Sequence(process.patElectronIsolation*process.electronMatch*process.patElectrons)
+#process.makePatElectrons = cms.Sequence(process.patElectronIsolation*process.electronMatch*process.patElectrons)  # For MC
+process.makePatElectrons = cms.Sequence(process.patElectronIsolation*process.patElectrons)  # For data
 
 # Embed Tracks
 process.patMuons.embedTrack = True
@@ -232,54 +232,17 @@ process.pgenjets = cms.Sequence(
     process.ak5GenJetsNoNuBSM
 )
 
-# Add PF Jets and JPT Jets to the event content
+# Add PF Jets to the event content
 from PhysicsTools.PatAlgos.tools.jetTools import *
-
-# Like Top Group
-# Use the correct jet energy corrections
-#process.patJetCorrFactors.flavorType = "T"
-# Jet energy corrections to use:
-#inputJetCorrLabel = ('AK5PF', ['L1Offset', 'L2Relative', 'L3Absolute', 'L2L3Residual'])  # For data
-#inputJetCorrLabel = ('AK5PF', ['L1Offset', 'L2Relative', 'L3Absolute'])  # For MC
-# Add ak5JPTJets
-#addJetCollection(process, cms.InputTag('JetPlusTrackZSPCorJetAntiKt5'), 'AK5', 'JPT',
-#    doJTA        = True,
-#    doBTagging   = True,
-#    jetCorrLabel = inputJetCorrLabel,
-#    doType1MET   = False,
-#    doL1Cleaning = False,
-#    doL1Counters = False,
-#    genJetCollection = cms.InputTag("ak5GenJets"),
-#    doJetID      = True
-#)
-# Add particle flow jets
-#addJetCollection(process, cms.InputTag('ak5PFJets'), 'AK5','PF',
-#    doJTA        = True,
-#    doBTagging   = True,
-#    jetCorrLabel = inputJetCorrLabel,
-#    doType1MET   = False,
-#    doL1Cleaning = False,
-#    doL1Counters = False,
-#    genJetCollection=cms.InputTag("ak5GenJets"),
-#    doJetID      = True
-#)
-# Add L1 offset corrections to MC Calo Jets
-#process.patJetCorrFactors.levels=['L1Offset', 'L2Relative','L3Absolute', 'L2L3Residual']  # For data
-#process.patJetCorrFactors.levels=['L1Offset', 'L2Relative','L3Absolute']  # For MC
-# remove TagInfos from jets
-#process.patJets.addTagInfos       = False
-#process.patJetsAK5JPT.addTagInfos = False
-#process.patJetsAK5PF.addTagInfos  = False
-
-# Like VHF Groub
 process.load('JetMETCorrections.Configuration.DefaultJEC_cff')
 process.load('RecoJets.Configuration.RecoPFJets_cff')
 # Turn-on the FastJet density calculation
 process.kt6PFJets.doRhoFastjet = True
 # Turn-on the FastJet jet area calculation for your favorite algorithm
 process.ak5PFJets.doAreaFastjet = True
-# Jet energy corrections to use:
-inputJetCorrLabel = ('AK5PF',['L1FastJet', 'L2Relative', 'L3Absolute','L5Flavor','L7Parton'])  # With FastJet correction
+# Jet energy corrections to use (with FastJet correction):
+#inputJetCorrLabel = ('AK5PF',['L1FastJet', 'L2Relative', 'L3Absolute'])  # For MC
+inputJetCorrLabel = ('AK5PF',['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])  # For data
 #switchJetCollection(process,cms.InputTag('ak5PFJets'),
 #    doJTA = True,
 #    doBTagging = True,
@@ -304,6 +267,9 @@ addJetCollection(process, cms.InputTag('ak5PFJets'), 'AK5','PF',
 )
 process.patJets.addTagInfos = cms.bool(True)
 process.patJetsAK5PF.addTagInfos = cms.bool(True)
+# With FastJet correction need to be true
+#process.patJetCorrFactors.useRho = True
+process.patJetCorrFactorsAK5PF.useRho = True
 
 
 ## MET

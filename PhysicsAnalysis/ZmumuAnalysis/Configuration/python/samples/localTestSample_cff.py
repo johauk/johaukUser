@@ -10,6 +10,10 @@ readFiles.extend( [
 
 #'file:/scratch/hh/current/cms/user/hauk/data/testPatTuple/mc2pat_1_1_ntG_Spring11_madgraph_D6T.root',
 
-'file:/scratch/hh/current/cms/user/hauk/data/testPatTuple/patTuple_1_1_BQg_Summer11_madgraph_Z2.root',
+#'file:/scratch/hh/current/cms/user/hauk/data/testPatTuple/patTuple_1_1_BQg_Summer11_madgraph_Z2.root',
+
+#'file:/scratch/hh/current/cms/user/hauk/data/testPatTuple/patTuple_data.root',
+'file:/scratch/hh/current/cms/user/hauk/data/testPatTuple/patTuple_mc.root',
+
 
 ] );
