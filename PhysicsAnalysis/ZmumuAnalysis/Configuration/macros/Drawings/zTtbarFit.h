@@ -70,33 +70,45 @@ void FullAnalysis::zTtbarFit(){
   dimuonMassTtbar->Scale(overallScaleFactorTtbar);
   
   
+  
   // Set plotting parameters and make final plot
   double maxScaleFactor = overallScaleFactorZmumu>overallScaleFactorTtbar ? overallScaleFactorZmumu : overallScaleFactorTtbar;
-
+  
+  {
+  TH1* dimuonMassZmumuB_rebin = (TH1*)dimuonMassZmumuB->Clone("dimuonMassZmumuB_rebin");
+  TH1* dimuonMassTtbar_rebin = (TH1*)dimuonMassTtbar->Clone("dimuonMassTtbar_rebin");
+  TH1* dimuonMassData_rebin = (TH1*)dimuonMassData->Clone("dimuonMassData_rebin");
+  
+  dimuonMassZmumuB_rebin->Rebin(10);
+  dimuonMassTtbar_rebin->Rebin(10);
+  dimuonMassData_rebin->Rebin(10);
+  
   double yMin(0.), yMax(0.);
   double yMinTemp(0.), yMaxTemp(0.);
   THStack* mcStack = new THStack("stack","stack");
-  mcStack->Add(dimuonMassTtbar);
+  mcStack->Add(dimuonMassTtbar_rebin);
   yMin = mcStack->GetMinimum();
-  mcStack->Add(dimuonMassZmumuB);
+  mcStack->Add(dimuonMassZmumuB_rebin);
   yMinTemp = mcStack->GetMinimum();
   if(yMin>yMinTemp)yMin=yMinTemp;
   yMax = mcStack->GetMaximum();
   
-  yMinTemp = dimuonMassData->GetMinimum();
-  yMaxTemp = dimuonMassData->GetMaximum();
+  yMinTemp = dimuonMassData_rebin->GetMinimum();
+  yMaxTemp = dimuonMassData_rebin->GetMaximum();
   if(yMin>yMinTemp)yMin=yMinTemp;
   if(yMax<yMaxTemp)yMax=yMaxTemp;
   
   TCanvas* canvas = new TCanvas("plot", "plot", 800, 800);
   mcStack->Draw();
+  // Does not work for y, but works for x !?
   //if(yMax>yMin)mcStack->GetYaxis()->SetRangeUser(0., 1.1*yMax);
   mcStack->SetMaximum(1.1*yMax);
   mcStack->SetMinimum(0.);
+  //mcStack->GetXaxis()->SetRangeUser(60., 200.);
   
   canvas->Clear();
   mcStack->Draw();
-  dimuonMassData->Draw("same,e1");
+  dimuonMassData_rebin->Draw("same,e1");
   
   canvas->Modified();
   canvas->Update();
@@ -123,66 +135,54 @@ void FullAnalysis::zTtbarFit(){
   canvas->Print(plotName + ".eps");
   canvas->Print(plotName + ".png");
   canvas->Close();
+  }
   
   
-  // Just for information: scaleFactor relative to the one taken from data luminosity scaling
-  ValueAndErrorStatSystLumi weightZmumu = zmumuB.effectiveWeight(this->luminosity());
-  ValueAndErrorStatSystLumi weightTtbar = ttbar->effectiveWeight(this->luminosity());
-  double scaleFactorZmumuLumi = overallScaleFactorZmumu/weightZmumu.value();
-  double scaleFactorTtbarLumi = overallScaleFactorTtbar/weightTtbar.value();
-  std::cout<<"Scale factor for zmumu: "<<scaleFactorZmumuLumi<<"\n";
-  std::cout<<"Scale factor for ttbar: "<<scaleFactorTtbarLumi<<"\n";
-}
-
-
-
-
-
-
-
-/*
-
-void zTtbarFit(const TString pluginSuffix = "", const double ttbarFractionIn =0., const double zmumuFractionIn =0., const double nObservedIn=0., const double nInTtbar=0., const double nInZmumu=0.){
-  
-  
-  
-  
+  {
+  TH1* dimuonMassZmumuB_zoom = (TH1*)dimuonMassZmumuB->Clone("dimuonMassZmumuB_zoom");
+  TH1* dimuonMassTtbar_zoom = (TH1*)dimuonMassTtbar->Clone("dimuonMassTtbar_zoom");
+  TH1* dimuonMassData_zoom = (TH1*)dimuonMassData->Clone("dimuonMassData_zoom");
   
   double yMin(0.), yMax(0.);
   double yMinTemp(0.), yMaxTemp(0.);
   THStack* mcStack = new THStack("stack","stack");
-  mcStack->Add(dimuonMassTtbar);
+  mcStack->Add(dimuonMassTtbar_zoom);
   yMin = mcStack->GetMinimum();
-  mcStack->Add(dimuonMassZmumuB);
+  mcStack->Add(dimuonMassZmumuB_zoom);
   yMinTemp = mcStack->GetMinimum();
   if(yMin>yMinTemp)yMin=yMinTemp;
   yMax = mcStack->GetMaximum();
   
-  yMinTemp = dimuonMassData->GetMinimum();
-  yMaxTemp = dimuonMassData->GetMaximum();
+  yMinTemp = dimuonMassData_zoom->GetMinimum();
+  yMaxTemp = dimuonMassData_zoom->GetMaximum();
   if(yMin>yMinTemp)yMin=yMinTemp;
   if(yMax<yMaxTemp)yMax=yMaxTemp;
   
   TCanvas* canvas = new TCanvas("plot", "plot", 800, 800);
   mcStack->Draw();
+  // Does not work for y, but works for x !?
   //if(yMax>yMin)mcStack->GetYaxis()->SetRangeUser(0., 1.1*yMax);
   mcStack->SetMaximum(1.1*yMax);
   mcStack->SetMinimum(0.);
+  mcStack->GetXaxis()->SetRangeUser(40., 200.);
   
   canvas->Clear();
   mcStack->Draw();
-  dimuonMassData->Draw("same,e1");
+  dimuonMassData_zoom->Draw("same,e1");
   
   canvas->Modified();
   canvas->Update();
   
   TString outputDirectory("plots/");
-  TString plotName(outputDirectory + "zTtbarFit" + pluginSuffix);
+  TString plotName(outputDirectory + "zTtbarFit" + this->recoSelectionStep());
+  
+  plotName += "_zoom";
   
   canvas->Print(plotName + ".eps");
   canvas->Print(plotName + ".png");
   
-  double yMinHist(yMin<maxScaleFactor ? 0.5*maxScaleFactor : 0.5*yMin);
+  //double yMinHist(yMin<maxScaleFactor ? 0.5*maxScaleFactor : 0.5*yMin);
+  double yMinHist(0.5);
   double yMaxHist(pow(yMax,1.1)/pow(yMinHist,0.1));
   //if(yMax>yMin)mcStack->GetYaxis()->SetRangeUser(yMinHist, yMaxHist);
   mcStack->SetMaximum(yMaxHist);
@@ -198,10 +198,24 @@ void zTtbarFit(const TString pluginSuffix = "", const double ttbarFractionIn =0.
   canvas->Print(plotName + ".eps");
   canvas->Print(plotName + ".png");
   canvas->Close();
+  }
+  
+  
+  // FIXME: delete stacks and histos...
+  
+  
+  // Just for information: scaleFactor relative to the one taken from data luminosity scaling
+  ValueAndErrorStatSystLumi weightZmumu = zmumuB.effectiveWeight(this->luminosity());
+  ValueAndErrorStatSystLumi weightTtbar = ttbar->effectiveWeight(this->luminosity());
+  double scaleFactorZmumuLumi = overallScaleFactorZmumu/weightZmumu.value();
+  double scaleFactorTtbarLumi = overallScaleFactorTtbar/weightTtbar.value();
+  std::cout<<"Scale factor for zmumu: "<<scaleFactorZmumuLumi<<"\n";
+  std::cout<<"Scale factor for ttbar: "<<scaleFactorTtbarLumi<<"\n";
 }
 
 
-*/
+
+
 
 
 
