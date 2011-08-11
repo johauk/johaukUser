@@ -28,8 +28,8 @@ from PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cfi import *
 selectedPatMuonsTriggerMatchHltMuons = cms.EDProducer("PATTriggerMatcherDRDPtLessByR",
     src     = cms.InputTag("selectedPatMuons"),
     matched = cms.InputTag("patTrigger"),
-#    matchedCuts = cms.string('type("TriggerMuon") & (path("HLT_Mu9") | path("HLT_Mu11") | path("HLT_Mu15_v*"))'),
-    matchedCuts = cms.string('type("TriggerMuon") & (path("HLT_DoubleMu6_v*",1,0) | path("HLT_DoubleMu7_v*",1,0) | filter("hltSingleMu13L3Filtered13"))'),
+    #matchedCuts = cms.string('type("TriggerMuon") & (path("HLT_DoubleMu6_v*",1,0) | path("HLT_DoubleMu7_v*",1,0) | filter("hltSingleMu13L3Filtered13"))'),
+    matchedCuts = cms.string('type("TriggerMuon") & (path("HLT_DoubleMu7_v*",1,0) | path("HLT_Mu13_Mu8_v*",1,0))'),
     maxDPtRel = cms.double(0.5),
     maxDeltaR = cms.double(0.3),
     resolveAmbiguities    = cms.bool(True),
@@ -141,7 +141,7 @@ isolatedMuonSelection = countPatMuons.clone(
 )
 isolatedHltMuonSelection = countPatMuons.clone(
     src = 'isolatedHltMuons',
-    minNumber = 1,
+    minNumber = 2,
 )
 
 

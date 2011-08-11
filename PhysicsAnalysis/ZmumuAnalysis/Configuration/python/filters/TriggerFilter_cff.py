@@ -57,7 +57,6 @@ TriggerFilterMu13Mu8 = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone(
 
 TriggerFilterDoubleMu = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone(
     HLTPaths = [
-      "HLT_DoubleMu6_v*",  # For MC
       "HLT_DoubleMu7_v*",  # For data
       "HLT_Mu13_Mu8_v*",  # For data
     ],
@@ -70,4 +69,7 @@ TriggerFilterDoubleMu = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone
 ## Set the recent default here
 ##
 TriggerFilter = TriggerFilterDoubleMu.clone()
+
+
+seqTriggerFilter = cms.Sequence(TriggerFilter)
 
