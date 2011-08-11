@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May 20 15:47:12 CEST 2010
-// $Id: DimuonAnalyzer.cc,v 1.1 2011/07/20 14:04:32 hauk Exp $
+// $Id: DimuonAnalyzer.cc,v 1.2 2011/08/04 11:42:07 hauk Exp $
 //
 //
 
@@ -44,6 +44,7 @@
 #include "FWCore/Utilities/interface/EDMException.h"
 
 #include "DataFormats/Math/interface/deltaPhi.h"
+#include "DataFormats/Math/interface/deltaR.h"
 
 #include "ZmumuAnalysis/Utils/interface/eventWeight.h"
 
@@ -72,10 +73,11 @@ class DimuonAnalyzer : public edm::EDAnalyzer {
       TH1* NDimuon;
       
       /// Properties of the two muons
-      TH1F *EtaLow, *EtaHigh, *PtLow, *PtHigh;
+      TH1F *EtaLow, *EtaHigh, *PtLow, *PtHigh,
+           *IsoLow, *IsoHigh;
       
       /// Differences of the two muons
-      TH1F *DeltaEta, *DeltaPhi,
+      TH1F *DeltaEta, *DeltaPhi, *DeltaR,
 	   *DeltaVz;
       
       /// Properties of reconstructed di-muon particle
@@ -99,7 +101,8 @@ DimuonAnalyzer::DimuonAnalyzer(const edm::ParameterSet& iConfig):
 parameterSet_(iConfig),
 NDimuon(0),
 EtaLow(0), EtaHigh(0), PtLow(0), PtHigh(0),
-DeltaEta(0), DeltaPhi(0),
+IsoLow(0), IsoHigh(0),
+DeltaEta(0), DeltaPhi(0), DeltaR(0),
 DeltaVz(0),
 DiMass(0), DiPt(0),
 DiY(0)
@@ -151,9 +154,15 @@ DimuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     const double ptLow = mu1.pt()<mu2.pt() ? mu1.pt() : mu2.pt();
     const double ptHigh = mu1.pt()>mu2.pt() ? mu1.pt() : mu2.pt();
     
+    const double iso1 = (mu1.trackIso() + mu1.caloIso())/mu1.pt();
+    const double iso2 = (mu2.trackIso() + mu2.caloIso())/mu2.pt();
+    const double isoLow = iso1<iso2 ? iso1 : iso2;
+    const double isoHigh = iso1>iso2 ? iso1 : iso2;
+    
     // eta, phi difference
     const double deltaEta = mu2.eta() - mu1.eta();
     const double deltaPhi = reco::deltaPhi(mu2.phi(),mu1.phi());
+    const double deltaR = reco::deltaR(mu1, mu2);
     
     const double deltaVz = mu2.vz() - mu1.vz();
     
@@ -167,8 +176,11 @@ DimuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     EtaHigh->Fill(etaHigh, eventWeight);
     PtLow->Fill(ptLow, eventWeight);
     PtHigh->Fill(ptHigh, eventWeight);
+    IsoLow->Fill(isoLow, eventWeight);
+    IsoHigh->Fill(isoHigh, eventWeight);
     DeltaEta->Fill(deltaEta, eventWeight);
     DeltaPhi->Fill(deltaPhi*180./M_PI, eventWeight);
+    DeltaR->Fill(deltaR, eventWeight);
     DeltaVz->Fill(deltaVz, eventWeight);
     DiMass->Fill(diMass, eventWeight);
     DiPt->Fill(diPt, eventWeight);
@@ -193,8 +205,11 @@ DimuonAnalyzer::beginJob()
   EtaHigh = dirDimuon.make<TH1F>("h_etaHigh","muon w/ higher absolute value of #eta;#eta;# muons",120,-3,3);
   PtLow = dirDimuon.make<TH1F>("h_ptLow","muon w/ lower p_{t};p_{t}  [GeV];# muons",100,0,200);
   PtHigh = dirDimuon.make<TH1F>("h_ptHigh","muon w/ higher p_{t};p_{t}  [GeV];# muons",100,0,200);
+  IsoLow = dirDimuon.make<TH1F>("h_isoLow","muon w/ better isolation I_{comb}^{rel};I_{comb}^{rel};# muons",100,0,0.15);
+  IsoHigh = dirDimuon.make<TH1F>("h_isoHigh","muon w/ worse isolation I_{comb}^{rel};I_{comb}^{rel};# muons",100,0,0.15);
   DeltaEta = dirDimuon.make<TH1F>("h_deltaEta","#Delta#eta;#Delta#eta;# muon pairs",100,-5,5);
   DeltaPhi = dirDimuon.make<TH1F>("h_deltaPhi","#Delta#phi;#Delta#phi  [ ^{o}];# muon pairs",100,-200,200);
+  DeltaR =  dirDimuon.make<TH1F>("h_deltaR","#Delta R;#Delta R;# muon pairs",100,0,10);
   DeltaVz = dirDimuon.make<TH1F>("h_deltaVz","#Delta v_{z};#Delta v_{z};# muon pairs",100,-1.,1.);
   DiMass = dirDimuon.make<TH1F>("h_diMass","dimuon invariant mass;M_{#mu#mu} [GeV];# muon pairs",300,0.,600.);
   DiPt = dirDimuon.make<TH1F>("h_diPt","dimuon p_{t};p_{t}  [GeV];# muon pairs",100,0,200);

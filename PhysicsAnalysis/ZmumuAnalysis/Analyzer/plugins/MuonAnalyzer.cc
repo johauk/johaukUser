@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu Aug 19 17:46:32 CEST 2010
-// $Id: MuonAnalyzer.cc,v 1.4 2011/07/20 16:51:11 hauk Exp $
+// $Id: MuonAnalyzer.cc,v 1.5 2011/08/04 11:42:07 hauk Exp $
 //
 //
 
@@ -43,6 +43,8 @@
 #include "ZmumuAnalysis/Utils/interface/eventWeight.h"
 
 #include "TH1.h"
+#include "TH2.h"
+#include "TProfile.h"
 //
 // class declaration
 //
@@ -82,6 +84,9 @@ class MuonAnalyzer : public edm::EDAnalyzer {
       TH1* IsoTrk;
       TH1* IsoCombRel;
       
+      TH1* PtZoom;
+      TH2* IsoCombRelVsPtZoom;
+      TProfile* PIsoCombRelVsPtZoom;
 };
 
 //
@@ -104,7 +109,8 @@ NumberOfMatches(0),
 NumberOfValidMuonHits(0),
 NormalizedChi2(0),
 Eta(0), Pt(0), D0Beamspot(0),
-IsoTrk(0), IsoCombRel(0)
+IsoTrk(0), IsoCombRel(0),
+PtZoom(0), IsoCombRelVsPtZoom(0)
 {
   const std::string whichHists(parameterSet_.getParameter<std::string>("whichHists"));
   if(whichHists=="major")whichHists_ = major;
@@ -156,6 +162,10 @@ MuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     Pt->Fill(pt, eventWeight);
     D0Beamspot->Fill(d0Beamspot, eventWeight);
     IsoCombRel->Fill(isoCombRel, eventWeight);
+    
+    PtZoom->Fill(pt, eventWeight);
+    IsoCombRelVsPtZoom->Fill(pt, isoCombRel, eventWeight);
+    PIsoCombRelVsPtZoom->Fill(pt, isoCombRel, eventWeight);
     
     if(whichHists_!=major){
       const bool isGlobal = i_muon->isGlobalMuon();
@@ -228,9 +238,12 @@ MuonAnalyzer::beginJob()
     IsoTrk = dirMuon.make<TH1F>("h_isoTrk","Isolation (tracker);I_{trk}  [GeV];# muons",100,0,isoTrkMax);
   }
   Eta = dirMuon.make<TH1F>("h_eta","pseudorapidity #eta;#eta;# muons",60,-3,3);
-  Pt = dirMuon.make<TH1F>("h_pt","transverse momentum p_{t};p_{t};# muons",100,0,200);
+  Pt = dirMuon.make<TH1F>("h_pt","transverse momentum p_{t};p_{t}  [GeV];# muons",100,0,200);
   D0Beamspot = dirMuon.make<TH1F>("h_d0Beamspot","closest approach d_{0} wrt. beamspot;d_{0, BS}  [cm];# muons",100,-d0BeamspotMax,d0BeamspotMax);
-  IsoCombRel = dirMuon.make<TH1F>("h_isoCombRel","Isolation (relative combined);I_{comb}^{rel}  [GeV];# muons",100,0,isoCombRelMax);
+  IsoCombRel = dirMuon.make<TH1F>("h_isoCombRel","Isolation (relative combined);I_{comb}^{rel};# muons",100,0,isoCombRelMax);
+  PtZoom = dirMuon.make<TH1F>("h_ptZoom","transverse momentum p_{t};p_{t}  [GeV];# muons",10,20,120);
+  IsoCombRelVsPtZoom = dirMuon.make<TH2F>("h2_isoCombRelVsPtZoom","I_{comb}^{rel} vs. p_{t};p_{t}  [GeV];I_{comb}^{rel}",10,20,120,10,0,0.3);
+  PIsoCombRelVsPtZoom = dirMuon.make<TProfile>("p_isoCombRelVsPtZoom","I_{comb}^{rel} vs. p_{t};p_{t}  [GeV];I_{comb}^{rel}",10,20,120);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
