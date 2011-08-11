@@ -3,6 +3,38 @@ import os
 import FWCore.ParameterSet.Config as cms
 
 
+
+##
+## Setup command line options
+##
+import FWCore.ParameterSet.VarParsing as VarParsing
+import sys
+options = VarParsing.VarParsing ('standard')
+options.register('sample', 'test', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Input sample")
+options.register('metCut', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "Apply MET cut")
+options.register('firstBtag', 'HeM', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Requirement for first b-tag")
+options.register('secondBtag', 'HeM', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Requirement for second b-tag")
+options.register('systematics', 'default', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Default analysis or systematic study")
+
+# get and parse the command line arguments
+if( hasattr(sys, "argv") ):
+    for args in sys.argv :
+        arg = args.split(',')
+        for val in arg:
+            val = val.split('=')
+            if(len(val)==2):
+                setattr(options,val[0], val[1])
+
+if options.firstBtag=='HeMExcl'  or options.firstBtag=='HpTExcl': options.secondBtag = ''
+
+print "Input sample: ", options.sample
+print "Apply MET cut: ", options.metCut
+print "1st b-tag: ", options.firstBtag
+print "2nd b-tag: ", options.secondBtag
+print "Systematic study: ", options.systematics
+
+
+
 ##
 ## Process definition
 ##
@@ -22,35 +54,47 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 ##
 ## Specify whether is MC or data, and which conrete type
 ##
+isMumu1 = isMumu2 = isMumu3 = False
+isElel1 = isElel2 = isElel3 = False
+isQcd = isSingletopS = isSingletopT = isSingletopTw = isTtbar = isWmunu = isWtaunu = isZmumu = isZmumuB = isZmumuUdsc = isZtautau = isWw = isWz = isZz = False
+isTest = False
 # Data samples
-counter = 0
-isData1 = False
-isData2 = False
-isData3 = False  # Recently only two different input files, do not set this line to true
+if options.sample == 'mumu1': isMumu1 = True
+elif options.sample == 'mumu2': isMumu2 = True
+elif options.sample == 'mumu3': isMumu3 = True
+elif options.sample == 'elel1': isElel1 = True
+elif options.sample == 'elel2': isElel2 = True
+elif options.sample == 'elel3': isElel3 = True
 # MC samples
-isQcd = False
-isSingletopS = False
-isSingletopT = False
-isSingletopTw = False
-isTtbar = False
-isWmunu = False
-isWtaunu = False
-isZmumu = False
-isZmumuB = False
-isZmumuUdsc = False
-isZtautau = False
-isWw = False
-isWz = False
-isZz = False
-isTest = True
+elif options.sample == 'qcd': isQcd = True
+elif options.sample == 'singletopS': isSingletopS = True
+elif options.sample == 'singletopT': isSingletopT = True
+elif options.sample == 'singletopTw': isSingletopTw = True
+elif options.sample == 'ttbar': isTtbar = True
+elif options.sample == 'wmunu': isWmunu = True
+elif options.sample == 'wtaunu': isWtaunu = True
+elif options.sample == 'zmumu': isZmumu = True
+elif options.sample == 'zmumuB': isZmumuB = True
+elif options.sample == 'zmumuUdsc': isZmumuUdsc = True
+elif options.sample == 'ztautau': isZtautau = True
+elif options.sample == 'ww': isWw = True
+elif options.sample == 'wz': isWz = True
+elif options.sample == 'zz': isZz = True
+elif options.sample == 'test': isTest = True
 
 ## Just list here all data and MC samples
+counter = 0
+isMumu = False
+isElel = False
 isData = False
 isMC = False
 # Data
-if(isData1): counter += 1; isData = True
-if(isData2): counter += 1; isData = True
-if(isData3): counter += 1; isData = True
+if(isMumu1): counter += 1; isMumu = True
+if(isMumu2): counter += 1; isMumu = True
+if(isMumu3): counter += 1; isMumu = True
+if(isElel1): counter += 1; isElel = True
+if(isElel2): counter += 1; isElel = True
+if(isElel3): counter += 1; isElel = True
 # MC
 if(isQcd): counter += 1; isMC = True
 if(isSingletopS): counter += 1; isMC = True
@@ -68,20 +112,30 @@ if(isWz): counter += 1; isMC = True
 if(isZz): counter += 1; isMC = True
 if(isTest): counter += 1; isMC = True
 
+if(isMumu or isElel): isData = True
+
 #print counter
 if(not counter == 1): print "Error, wrong configuration of samples"; raise KeyError("ERROR")
-    
+
+
+
 
 
 ##
 ## Sources
 ##
 # Data
-if(isData1):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Run2011A_May10ReReco_v1_423_July10_160404_163869_cff")
-elif(isData2):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Run2011A_PromtReco_v4_423_July10_163870_167784_cff")
-elif(isData3):
+if(isMumu1):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Run2011A_May10ReReco_v1_425_mumu_Aug05_160404_163869_cff")
+elif(isMumu2):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Run2011A_PromtReco_v4_425_mumu_Aug05_163870_167784_cff")
+elif(isMumu3):
+    process.load("")
+elif(isElel1):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Run2011A_May10ReReco_v1_425_ee_Aug05_160404_163869_cff")
+elif(isElel2):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Run2011A_PromtReco_v4_425_ee_Aug05_163870_167784_cff")
+elif(isElel3):
     process.load("")
 # MC
 elif(isQcd):
@@ -93,19 +147,19 @@ elif(isSingletopT):
 elif(isSingletopTw):
     process.load("")
 elif(isTtbar):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_TTJets_Z2_madgraph_423_July10_cff")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_TTJets_Z2_madgraph_425_Aug05_cff")
 elif(isWmunu):
     process.load("")
 elif(isWtaunu):
     process.load("")
 elif(isZmumu):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_423_July10_cff")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_425_Aug08_cff")
 elif(isZmumuB):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_423_July10_cff")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_425_Aug08_cff")
 elif(isZmumuUdsc):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_423_July10_cff")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_425_Aug08_cff")
 elif(isZtautau):
-    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_423_July10_cff")
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_425_Aug08_cff")
 elif(isWw):
     process.load("")
 elif(isWz):
@@ -165,9 +219,12 @@ else: print "Error, wrong configuration of samples"; raise KeyError("ERROR")
 fileBase = os.environ['CMSSW_BASE'] + '/src/ZmumuAnalysis/Configuration/hists/'
 fileName = ''
 # Data
-if(isData1): fileName = 'run2011A_May10ReRecoV1_160404_163869.root'  # 'data/run2011A_May10ReRecoV1_160404_163869.root'
-elif(isData2): fileName = 'run2011A_PromptRecoV4_163870_167784.root'  # 'data/run2011A_PromptRecoV4_163870_167784.root'
-elif(isData3): fileName = ''  # 'data/'
+if(isMumu1): fileName = 'mumu_run2011A_May10ReRecoV1_160404_163869.root'  # 'data/mumu_run2011A_May10ReRecoV1_160404_163869.root'
+elif(isMumu2): fileName = 'mumu_run2011A_PromptRecoV4_163870_167784.root'  # 'data/mumu_run2011A_PromptRecoV4_163870_167784.root'
+elif(isMumu3): fileName = ''  # 'data/'
+elif(isElel1): fileName = 'elel_run2011A_May10ReRecoV1_160404_163869.root'  # 'data/elel_run2011A_May10ReRecoV1_160404_163869.root'
+elif(isElel2): fileName = 'elel_run2011A_PromptRecoV4_163870_167784.root'  # 'data/elel_run2011A_PromptRecoV4_163870_167784.root'
+elif(isElel3): fileName = ''  # 'data/'
 # MC
 elif(isQcd): fileName = 'qcd.root'  # 'mc/qcd.root'
 elif(isSingletopS): fileName = 'singletopS.root'  # 'mc/singletopS.root'
@@ -203,6 +260,10 @@ process.TFileService = cms.Service("TFileService",
 process.load("ZmumuAnalysis.Configuration.sequences.selectionSteps_cff")
 
 
+# For now remove vertex association
+process.cleanDimuonSelection.minNumber = 0
+process.goodDimuons.src = 'selectedDimuons'
+
 
 
 
@@ -217,14 +278,18 @@ if(isData): TRIG_RESULT = "HLT"
 elif(isMC): TRIG_RESULT = "HLT"
 else: print "Error, wrong configuration of samples"; raise KeyError("ERROR")
 
-# Does this work for all files? - No, al least not for TriggerFilter
-#TRIG_RESULT = "PAT"
-
 process.TriggerAnalyzerStep1a.triggerResults = cms.InputTag('TriggerResults','',TRIG_RESULT)
 process.TriggerFilter.TriggerResultsTag = cms.InputTag('TriggerResults','',TRIG_RESULT)
 process.patTrigger.processName = TRIG_RESULT
 process.patTrigger.triggerResults = cms.InputTag("TriggerResults::" + TRIG_RESULT)
 process.patTrigger.triggerEvent = cms.InputTag("hltTriggerSummaryAOD::" + TRIG_RESULT)
+
+
+# Remove trigger selection and muon trigger matching for MC
+if isMC:
+    process.seqTriggerFilter.remove(process.TriggerFilter)
+    process.isolatedHltMuonSelection.minNumber = 0
+    process.selectedDimuons.cut = ''
 
 
 
@@ -253,6 +318,72 @@ if(isZtautau):
 
 
 
+#******************************************************************************************
+# Dynamic changes for command line parameters
+#******************************************************************************************
+
+if options.firstBtag=='HeM':
+    process.oneBtagSelection *= process.oneBSsvHeMJetSelection
+elif options.firstBtag=='HpT':
+    process.oneBtagSelection *= process.oneBSsvHpTJetSelection
+elif options.firstBtag=='HeMExcl':
+    process.oneBtagSelection *= process.oneBSsvHeMJetSelection * ~process.twoBSsvHeMJetSelection
+elif options.firstBtag=='HpTExcl':
+    process.oneBtagSelection *= process.oneBSsvHpTJetSelection * ~process.twoBSsvHpTJetSelection
+else:
+    print 'ERROR --- incorrect b-tag type for first b-tag: ', options.firstBtag, '\nuse \'HeM\', \'HpT\', \'HeMExcl\', \'HpTExcl\''
+    exit(8888)
+
+
+if options.secondBtag=='HeM':
+    process.twoBtagSelection *= process.twoBSsvHeMJetSelection
+elif options.secondBtag=='HpT':
+    process.twoBtagSelection *= process.twoBSsvHpTJetSelection
+elif options.secondBtag=='':
+    pass
+else:
+    print 'ERROR --- incorrect b-tag type for second b-tag: ', options.secondBtag, '\nuse \'HeM\', \'HpT\', \'\''
+    exit(8888)
+
+
+if options.metCut:
+    process.metSelection *= process.goodMetSelection
+
+
+
+if options.secondBtag != '':
+    process.analysisSeq *= process.analysisTwoJetSeq
+    process.zVetoLowAnalysisSeq *= process.zVetoLowAnalysisTwoJetSeq
+    process.zVetoHighAnalysisSeq *= process.zVetoHighAnalysisTwoJetSeq
+
+
+
+#******************************************************************************************
+# Dynamic changes for command line parameters - Systematic studies
+#******************************************************************************************
+
+if options.systematics=='default':
+    pass
+elif options.systematics=='pileup14':
+    process.oneGoodPVSelection.minNumber = 1
+    process.oneGoodPVSelection.maxNumber = 4
+elif options.systematics=='pileup57':
+    process.oneGoodPVSelection.minNumber = 5
+    process.oneGoodPVSelection.maxNumber = 7
+elif options.systematics=='pileup8plus':
+    process.oneGoodPVSelection.minNumber = 8
+    process.oneGoodPVSelection.maxNumber = 99999
+elif options.systematics=='sideband140':
+    process.finalDimuonsZVetoHigh.cut = 'mass >= 140.'
+elif options.systematics=='sideband160':
+    process.finalDimuonsZVetoHigh.cut = 'mass >= 160.'
+elif options.systematics=='sideband200':
+    process.finalDimuonsZVetoHigh.cut = 'mass >= 120. & mass < 200.'
+else:
+    print 'ERROR --- systematic study not defined: ', options.systematics,
+    exit(8888)
+
+
 
 #******************************************************************************************
 #   Analysis Path
@@ -260,87 +391,17 @@ if(isZtautau):
 
 
 
-process.oppositeChargeAnalysis = cms.Path(
-    process.oppositeChargeAnalysisSeq
+
+process.analysis = cms.Path(
+    process.analysisSeq
 )
 
-process.zVetoLowOppositeChargeAnalysis = cms.Path(
-    process.zVetoLowOppositeChargeAnalysisSeq
+process.zVetoLowAnalysis = cms.Path(
+    process.zVetoLowAnalysisSeq
 )
 
-process.zVetoHighOppositeChargeAnalysis = cms.Path(
-    process.zVetoHighOppositeChargeAnalysisSeq
-)
-
-process.noMetOppositeChargeAnalysis = cms.Path(
-    process.noMetOppositeChargeAnalysisSeq
-)
-
-process.zVetoLowNoMetOppositeChargeAnalysis = cms.Path(
-    process.zVetoLowNoMetOppositeChargeAnalysisSeq
-)
-
-process.zVetoHighNoMetOppositeChargeAnalysis = cms.Path(
-    process.zVetoHighNoMetOppositeChargeAnalysisSeq
-)
-
-
-
-
-
-
-
-
-
-
-process.oneBSsvHeMJetOppositeChargeAnalysis = cms.Path(
-    process.oneBSsvHeMJetOppositeChargeAnalysisSeq
-)
-
-process.oneBSsvHpTJetOppositeChargeAnalysis = cms.Path(
-    process.oneBSsvHpTJetOppositeChargeAnalysisSeq
-)
-
-process.zVetoLowOneBSsvHeMJetOppositeChargeAnalysis = cms.Path(
-    process.zVetoLowOneBSsvHeMJetOppositeChargeAnalysisSeq
-)
-
-process.zVetoLowOneBSsvHpTJetOppositeChargeAnalysis = cms.Path(
-    process.zVetoLowOneBSsvHpTJetOppositeChargeAnalysisSeq
-)
-
-process.zVetoHighOneBSsvHeMJetOppositeChargeAnalysis = cms.Path(
-    process.zVetoHighOneBSsvHeMJetOppositeChargeAnalysisSeq
-)
-
-process.zVetoHighOneBSsvHpTJetOppositeChargeAnalysis = cms.Path(
-    process.zVetoHighOneBSsvHpTJetOppositeChargeAnalysisSeq
-)
-
-
-
-process.noMetExactlyOneBSsvHeMJetOppositeChargeAnalysis = cms.Path(
-    process.noMetExactlyOneBSsvHeMJetOppositeChargeAnalysisSeq
-)
-
-process.noMetExactlyOneBSsvHpTJetOppositeChargeAnalysis = cms.Path(
-    process.noMetExactlyOneBSsvHpTJetOppositeChargeAnalysisSeq
-)
-
-process.zVetoLowNoMetExactlyOneBSsvHeMJetOppositeChargeAnalysis = cms.Path(
-    process.zVetoLowNoMetExactlyOneBSsvHeMJetOppositeChargeAnalysisSeq
-)
-
-process.zVetoLowNoMetExactlyOneBSsvHpTJetOppositeChargeAnalysis = cms.Path(
-    process.zVetoLowNoMetExactlyOneBSsvHpTJetOppositeChargeAnalysisSeq
-)
-
-process.zVetoHighNoMetExactlyOneBSsvHeMJetOppositeChargeAnalysis = cms.Path(
-    process.zVetoHighNoMetExactlyOneBSsvHeMJetOppositeChargeAnalysisSeq
-)
-
-process.zVetoHighNoMetExactlyOneBSsvHpTJetOppositeChargeAnalysis = cms.Path(
-    process.zVetoHighNoMetExactlyOneBSsvHpTJetOppositeChargeAnalysisSeq
+process.zVetoHighAnalysis = cms.Path(
+    process.zVetoHighAnalysisSeq
 )
 
 
