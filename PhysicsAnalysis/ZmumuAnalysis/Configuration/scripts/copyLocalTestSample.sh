@@ -23,7 +23,7 @@
 
 #dcget /pnfs/desy.de/cms/tier2/store/user/wbehrenh/DYJetsToLL_TuneD6T_M-50_7TeV-madgraph-tauola/Spring11-PAT/6e6559812e09b52af172f27db20ae337/mc2pat_1_1_ntG.root /scratch/hh/current/cms/user/hauk/data/testPatTuple/mc2pat_1_1_ntG_Spring11_madgraph_D6T.root
 
-dcget /pnfs/desy.de/cms/tier2/store/user/hauk/DYJetsToLL_TuneZ2_M-50_7TeV-madgraph-tauola/Summer11_DYJetsToLL_Z2_madgraph_423_PAT_July10/bbcc262b5d85210b5cbc083e60a17a9c/patTuple_1_1_BQg.root /scratch/hh/current/cms/user/hauk/data/testPatTuple/patTuple_1_1_BQg_Summer11_madgraph_Z2.root
+dcget /pnfs/desy.de/cms/tier2/store/user/hauk/DYJetsToLL_TuneZ2_M-50_7TeV-madgraph-tauola/Summer11_DYJetsToLL_Z2_madgraph_425_PAT_Aug05/f7b7b5ec9f6e8dd23fb3ffd521e21ae0/patTuple_1_2_zRB.root /scratch/hh/current/cms/user/hauk/data/testPatTuple/patTuple_1_2_zRB_Summer11_madgraph_Z2.root
 
 
 

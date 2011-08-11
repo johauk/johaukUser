@@ -251,15 +251,19 @@ sub checkJob {
         }
     }
     print "\n" if $NResubmitted || $NError;
-    printf " -->  %d%%  --  %d jobs", 100*$NDoneJobs / keys %jobs, scalar keys %jobs,
-    my @N = (', %d queueing' => $NWaiting,
-             ', %d running' => $NRunning,
-             ', %d resubmitted' => $NResubmitted,
-             ', %d error' => $NError,
-             ', %d done' => $NDoneJobs);
-    while (@N) {
-        my $str = shift @N; my $val = shift @N;
-        printf $str, $val if $val;
+    if ($NDoneJobs == keys %jobs) {
+        print " --> ", colored("100% done!", 'on_green bold'), "  --  $NDoneJobs jobs";
+    } else {
+        printf " -->  %d%%  --  %d jobs", 100*$NDoneJobs / keys %jobs, scalar keys %jobs;
+        my @N = (colored(', %d queueing', 'dark cyan') => $NWaiting,
+                 colored(', %d running', 'bold') => $NRunning,
+                 colored(', %d resubmitted', C_RESUBMIT) => $NResubmitted,
+                 colored(', %d error', C_ERROR) => $NError,
+                 colored(', %d done', C_OK) => $NDoneJobs);
+        while (@N) {
+            my $str = shift @N; my $val = shift @N;
+            printf $str, $val if $val;
+        }
     }
     my @details;
     @details = showFJRsummary($dir) unless $args{'S'};
@@ -284,7 +288,7 @@ sub checkJob {
                 print " - Hint: pass the -j option to join files\n";
             }
         } else {
-            print colored(" - results have already been joined\n", C_OK);
+            #print colored(" - results have already been joined\n", C_OK);
         }
     }
 }
@@ -405,11 +409,12 @@ process.source.fileNames = process.source.fileNames[jobNumber:numberOfFiles:numb
 print "running over these files:"
 print process.source.fileNames
 
-process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32($maxEvents)
-)
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32($maxEvents))
 
-process.options.wantSummary = cms.untracked.bool(True)
+if hasattr(process, "options"):
+    process.options.wantSummary = cms.untracked.bool(True)
+else:
+    process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(True))
 
 if jobNumber == 0 and not $alternativeOutput:
     fh = open('OUTPUTPATH/joined.txt', 'w')
@@ -479,9 +484,9 @@ if [ "$?" = "0" ] ; then
             NDone=$(($NDone + 1))
             if [ "$NDone" = "NUMBER_OF_JOBS" ] ; then
                 joined=`cat $current/naf_DIRECTORY/joined.txt`
-                hadd -f $current/naf_DIRECTORY/$joined.$SGE_TASK_ID $current/naf_DIRECTORY/CONFIGFILE-*.root
+                hadd -f $current/naf_DIRECTORY/`basename $joined`.$SGE_TASK_ID $current/naf_DIRECTORY/CONFIGFILE-*.root
                 if [ "$?" = "0" ] ; then
-                    mv -f $current/naf_DIRECTORY/$joined.$SGE_TASK_ID $current/naf_DIRECTORY/$joined
+                    mv -f $current/naf_DIRECTORY/`basename $joined`.$SGE_TASK_ID $current/naf_DIRECTORY/`basename $joined`
                     cp -f $TMPDIR/stdout.txt $current/naf_DIRECTORY/out$SGE_TASK_ID.txt
                     sumTriggerReports2.pl $current/naf_DIRECTORY/out*.txt > $current/naf_DIRECTORY/`basename $joined .root`.txt
                     if [ -e $current/naf_DIRECTORY/autoremove ] ; then
