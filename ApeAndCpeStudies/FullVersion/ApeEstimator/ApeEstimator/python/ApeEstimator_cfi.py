@@ -37,6 +37,16 @@ ApeEstimatorTemplate = cms.EDAnalyzer('ApeEstimator',
       chargePixel = cms.vdouble(),
       widthX = cms.vuint32(),
       widthY = cms.vuint32(),
+      baryStripX = cms.vdouble(),
+      baryStripY = cms.vdouble(),
+      clusterProbabilityXY = cms.vdouble(),
+      clusterProbabilityQ = cms.vdouble(),
+      clusterProbabilityXYQ = cms.vdouble(),
+      logClusterProbability = cms.vdouble(),
+      isOnEdge = cms.vuint32(),
+      hasBadPixels = cms.vuint32(),
+      spansTwoRoc = cms.vuint32(),
+      qBin = cms.vuint32(),
       
       #Parameters for Cuts on Pixel+Strip Hits (depending on track reconstruction)
       phiSens = cms.vdouble(), #trajectory angle on module
@@ -71,7 +81,7 @@ ApeEstimatorTemplate = cms.EDAnalyzer('ApeEstimator',
     
     
     
-    #Tool 1: Switch on Analyzer mode with full set of overview plots
+    ## Tool 1: Switch on Analyzer mode with full set of overview plots
     analyzerMode = cms.bool(True),
     
     #Vary Histo's ranges for Overview Plots (for analyzer mode)
@@ -82,9 +92,9 @@ ApeEstimatorTemplate = cms.EDAnalyzer('ApeEstimator',
     
     
     
-    #Tool 2: Switch on calculation of APE values
+    ## Tool 2: Switch on calculation of APE values
     calculateApe = cms.bool(True),
     
-     #Define intervals in residual error for calculation of APE (one estimation per interval), (for APE calculation)
+    #Define intervals in residual error for calculation of APE (one estimation per interval), (for APE calculation)
     residualErrorBinning = cms.vdouble(),
 )

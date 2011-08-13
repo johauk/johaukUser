@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.19 2011/08/01 00:50:20 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.20 2011/08/03 17:35:42 hauk Exp $
 //
 //
 
@@ -611,7 +611,7 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     (*i_sector).second.m_correlationHistsX["ClusterProbXY"] = (*i_sector).second.bookCorrHistsX("ClusterProbXY","cluster probability xy","prob_{xy,cl}","",100,50,0.,1.,"nph");
     (*i_sector).second.m_correlationHistsX["ClusterProbQ"] = (*i_sector).second.bookCorrHistsX("ClusterProbQ","cluster probability q","prob_{q,cl}","",100,50,0.,1.,"nph");
     (*i_sector).second.m_correlationHistsX["ClusterProbXYQ"] = (*i_sector).second.bookCorrHistsX("ClusterProbXYQ","cluster probability xyq","prob_{xyq,cl}","",100,50,0.,1.,"nph");
-    (*i_sector).second.m_correlationHistsX["LogClusterProb"] = (*i_sector).second.bookCorrHistsX("LogClusterProb","cluster probability xy","log(prob_{xy,cl})","",100,50,-20.,0.,"nph");
+    (*i_sector).second.m_correlationHistsX["LogClusterProb"] = (*i_sector).second.bookCorrHistsX("LogClusterProb","cluster probability xy","log(prob_{xy,cl})","",100,50,-15.,0.,"nph");
     (*i_sector).second.m_correlationHistsX["IsOnEdge"] = (*i_sector).second.bookCorrHistsX("IsOnEdge","IsOnEdge","isOnEdge","",2,2,0,2,"nph");
     (*i_sector).second.m_correlationHistsX["HasBadPixels"] = (*i_sector).second.bookCorrHistsX("HasBadPixels","HasBadPixels","hasBadPixels","",2,2,0,2,"nph");
     (*i_sector).second.m_correlationHistsX["SpansTwoRoc"] = (*i_sector).second.bookCorrHistsX("SpansTwoRoc","SpansTwoRoc","spansTwoRoc","",2,2,0,2,"nph");
@@ -959,7 +959,7 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
   if(parameterSet_.getParameter<bool>("applyTrackCuts")){
     trackCut_ = false;
     if(trkParams.hitsStrip<11 || trkParams.hits2D<2 || trkParams.hitsPixel<2 || //trkParams.hitsInvalid>2 ||
-       trkParams.hitsStrip>18 || trkParams.hitsPixel>5 ||
+       trkParams.hitsStrip>23 || trkParams.hitsPixel>5 ||
        trkParams.norChi2>5 ||
        trkParams.pt<15. || trkParams.pt>100. || 
        std::fabs(trkParams.d0Beamspot)>0.1 || std::fabs(trkParams.dz)>15.)trackCut_ = true;
@@ -1453,6 +1453,20 @@ ApeEstimator::hitSelection(){
   this->setHitSelectionMapUInt("widthX");
   this->setHitSelectionMapUInt("widthY");
   
+  
+  this->setHitSelectionMap("baryStripX");
+  this->setHitSelectionMap("baryStripY");
+  this->setHitSelectionMap("clusterProbabilityXY");
+  this->setHitSelectionMap("clusterProbabilityQ");
+  this->setHitSelectionMap("clusterProbabilityXYQ");
+  this->setHitSelectionMap("logClusterProbability");
+  this->setHitSelectionMapUInt("isOnEdge");
+  this->setHitSelectionMapUInt("hasBadPixels");
+  this->setHitSelectionMapUInt("spansTwoRoc");
+  this->setHitSelectionMapUInt("qBin");
+  
+  
+  
   this->setHitSelectionMap("phiSens");
   this->setHitSelectionMap("phiSensX");
   this->setHitSelectionMap("phiSensY");
@@ -1593,8 +1607,18 @@ ApeEstimator::hitSelected(TrackStruct::HitParameterStruct& hitParams)const{
     
     // For pixel only
     if(hitParams.isPixelHit){
-    if     (hitSelection == "chargePixel")    {if(!this->inDoubleInterval(v_hitSelection, hitParams.chargePixel))isGoodHit = false;}
-    if     (hitSelection == "resY")           {if(!this->inDoubleInterval(v_hitSelection, hitParams.resY))isGoodHitY = false;}
+    if     (hitSelection == "chargePixel")          {if(!this->inDoubleInterval(v_hitSelection, hitParams.chargePixel))isGoodHit = false;}
+    else if(hitSelection == "clusterProbabilityXY") {if(!this->inDoubleInterval(v_hitSelection, hitParams.clusterProbabilityXY))isGoodHit = false;}
+    else if(hitSelection == "clusterProbabilityQ")  {if(!this->inDoubleInterval(v_hitSelection, hitParams.clusterProbabilityQ))isGoodHit = false;}
+    else if(hitSelection == "clusterProbabilityXYQ"){if(!this->inDoubleInterval(v_hitSelection, hitParams.clusterProbabilityXYQ))isGoodHit = false;}
+    else if(hitSelection == "logClusterProbability"){if(!this->inDoubleInterval(v_hitSelection, hitParams.logClusterProbability))isGoodHit = false;}
+    
+    else if(hitSelection == "baryStripX")           {if(!this->inDoubleInterval(v_hitSelection, hitParams.baryStripX))isGoodHitX = false;}
+    else if(hitSelection == "baryStripY")           {if(!this->inDoubleInterval(v_hitSelection, hitParams.baryStripY))isGoodHitY = false;}
+    
+    
+    
+    else if(hitSelection == "resY")           {if(!this->inDoubleInterval(v_hitSelection, hitParams.resY))isGoodHitY = false;}
     else if(hitSelection == "norResY")        {if(!this->inDoubleInterval(v_hitSelection, hitParams.norResY))isGoodHitY = false;}
     else if(hitSelection == "probY")          {if(!this->inDoubleInterval(v_hitSelection, hitParams.probY))isGoodHitY = false;}
     else if(hitSelection == "errYHit")        {if(!this->inDoubleInterval(v_hitSelection, hitParams.errYHit))isGoodHitY = false;}
@@ -1626,7 +1650,12 @@ ApeEstimator::hitSelected(TrackStruct::HitParameterStruct& hitParams)const{
     
     // For pixel only
     if(hitParams.isPixelHit){
-    if(hitSelection == "widthX")         {if(!this->inUintInterval(v_hitSelection, hitParams.widthX))isGoodHitX = false;}
+    if(hitSelection == "isOnEdge")         {if(!this->inUintInterval(v_hitSelection, hitParams.isOnEdge))isGoodHit = false;}
+    else if(hitSelection == "hasBadPixels"){if(!this->inUintInterval(v_hitSelection, hitParams.hasBadPixels))isGoodHit = false;}
+    else if(hitSelection == "spansTwoRoc") {if(!this->inUintInterval(v_hitSelection, hitParams.spansTwoRoc))isGoodHit = false;}
+    else if(hitSelection == "qBin")        {if(!this->inUintInterval(v_hitSelection, hitParams.qBin))isGoodHit = false;}
+    
+    else if(hitSelection == "widthX")   {if(!this->inUintInterval(v_hitSelection, hitParams.widthX))isGoodHitX = false;}
     else if(hitSelection == "widthY")    {if(!this->inUintInterval(v_hitSelection, hitParams.widthY))isGoodHitY = false;}
     }
     
