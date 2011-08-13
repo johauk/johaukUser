@@ -112,8 +112,8 @@ gROOT->ProcessLine(".L ApeOverview.C++");
 
 
 gROOT->ProcessLine("ApeOverview a1(\"../hists/Design/baseline/allData.root\");");
-gROOT->ProcessLine("a1.setSectorsForOverview(\"1,9,14,21,25\")");
-//gROOT->ProcessLine("a1.setSectorsForOverview(\"3\")");
+//gROOT->ProcessLine("a1.setSectorsForOverview(\"1,3,6\")");
+gROOT->ProcessLine("a1.setSectorsForOverview(\"7,9,12\")");
 gROOT->ProcessLine("a1.getOverview();");
 gROOT->ProcessLine("a1.printOverview(\"../hists/plots/test1.ps\");");
 gROOT->ProcessLine("a1.whichModuleInFile(2)");
@@ -126,8 +126,8 @@ gROOT->ProcessLine("a1.printOverview(\"../hists/plots/test3.ps\");");
 
 
 gROOT->ProcessLine("ApeOverview b1(\"../hists/Design/baseline/allData_resultsFile.root\");");
-gROOT->ProcessLine("b1.setSectorsForOverview(\"1,9,14,21,25\")");
-//gROOT->ProcessLine("b1.setSectorsForOverview(\"3\")");
+//gROOT->ProcessLine("b1.setSectorsForOverview(\"1,3,6\")");
+gROOT->ProcessLine("b1.setSectorsForOverview(\"7,9,12\")");
 gROOT->ProcessLine("b1.getOverview();");
 gROOT->ProcessLine("b1.printOverview(\"../hists/plots/testSummary.ps\");");
 

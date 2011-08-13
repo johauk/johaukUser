@@ -897,7 +897,8 @@ ApeOverview::drawHistToPad(const TString histName, const bool setLogScale){
 	
 	// Loop for separating mean and RMS per bin (separate entries in final plot)
 	TProfile *rmsPlot(0);
-	if(histNameP.BeginsWith("p_norResXVs") ||histNameP.BeginsWith("p_probXVs") ){
+	if(histNameP.BeginsWith("p_norResXVs") || histNameP.BeginsWith("p_probXVs") ||
+	   histNameP.BeginsWith("p_norResYVs") || histNameP.BeginsWith("p_probYVs")){
 	  std::stringstream tempName;
 	  tempName << "temp_" << histNameP << "_" << sectorCounter_ << "_" << moduleNo_;
 	  TString tempHist(tempName.str().c_str());
@@ -913,8 +914,8 @@ ApeOverview::drawHistToPad(const TString histName, const bool setLogScale){
 	
         histP->Draw();
         if(rmsPlot){
-	  double yMin(histNameP.BeginsWith("p_probXVs") ? -0.1 : -3);
-	  double yMax(histNameP.BeginsWith("p_probXVs") ? 1.1 : 3);
+	  double yMin(histNameP.BeginsWith("p_probXVs") || histNameP.BeginsWith("p_probYVs") ? -0.1 : -3);
+	  double yMax(histNameP.BeginsWith("p_probXVs") || histNameP.BeginsWith("p_probYVs") ? 1.1 : 3);
 	  histP->SetErrorOption("");
 	  histP->GetYaxis()->SetRangeUser(yMin,yMax);
 	  const int nBinX(histP->GetNbinsX());
