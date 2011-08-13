@@ -82,11 +82,11 @@ FpixMinusLayer1In = FpixMinusLayer1.clone(
     wDirection = [1],
 )
 FpixMinusLayer2Out = FpixMinusLayer2.clone(
-    name = 'FpixMinusLayer1Out',
+    name = 'FpixMinusLayer2Out',
     wDirection = [-1],
 )
 FpixMinusLayer2In = FpixMinusLayer2.clone(
-    name = 'FpixMinusLayer1In',
+    name = 'FpixMinusLayer2In',
     wDirection = [1],
 )
 FpixPlusLayer1Out = FpixPlusLayer1.clone(
@@ -98,11 +98,11 @@ FpixPlusLayer1In = FpixPlusLayer1.clone(
     wDirection = [-1],
 )
 FpixPlusLayer2Out = FpixPlusLayer2.clone(
-    name = 'FpixPlusLayer1Out',
+    name = 'FpixPlusLayer2Out',
     wDirection = [1],
 )
 FpixPlusLayer2In = FpixPlusLayer2.clone(
-    name = 'FpixPlusLayer1In',
+    name = 'FpixPlusLayer2In',
     wDirection = [-1],
 )
 

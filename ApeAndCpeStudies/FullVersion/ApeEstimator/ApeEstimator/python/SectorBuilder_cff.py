@@ -101,7 +101,7 @@ TIDTECSideAndRingAndOrientationSeparation = TIDSideAndRingAndOrientationSeparati
 RecentSectors = cms.VPSet()
 
 RecentSectors += BPIXLayerAndOrientationSeparation
-RecentSectors += FPIXSideAndLayerAndOrientationSeparation
+RecentSectors += FPIXSideAndLayerSeparation
 RecentSectors += TIBLayerAndOrientationSeparation
 RecentSectors += TOBLayerAndOrientationSeparation
 RecentSectors += TIDSideAndRingSeparation
