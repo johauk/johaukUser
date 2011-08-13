@@ -208,6 +208,9 @@ process.ApeEstimator1.HitSelector.errXHit = []
 process.ApeEstimator1.HitSelector.chargePixel = []
 process.ApeEstimator1.HitSelector.widthX = []
 process.ApeEstimator1.HitSelector.widthY = []
+process.ApeEstimator1.HitSelector.logClusterProbability = []
+process.ApeEstimator1.HitSelector.isOnEdge = []
+process.ApeEstimator1.HitSelector.qBin = []
 
 
 process.ApeEstimator2 = process.ApeEstimator1.clone(
