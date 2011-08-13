@@ -4,7 +4,34 @@ import FWCore.ParameterSet.Config as cms
 
 
 
-process = cms.Process("ParticleGun")
+
+##
+## Setup command line options
+##
+import FWCore.ParameterSet.VarParsing as VarParsing
+import sys
+options = VarParsing.VarParsing ('standard')
+options.register('sample', 'data', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Input sample")
+options.register('isTest', True, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "Test run")
+
+# get and parse the command line arguments
+if( hasattr(sys, "argv") ):
+    for args in sys.argv :
+        arg = args.split(',')
+        for val in arg:
+            val = val.split('=')
+            if(len(val)==2):
+                setattr(options,val[0], val[1])
+
+print "Input sample: ", options.sample
+print "Test run: ", options.isTest
+
+
+
+##
+## Process definition
+##
+process = cms.Process("ApeEstimator")
 
 
 
@@ -36,7 +63,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000 ## really show only ever
 
 
 ##
-## Handle huge number of Files
+## Process options
 ##
 process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(True),
@@ -45,34 +72,75 @@ process.options = cms.untracked.PSet(
 
 
 ##
-## Input Files (Collisions '10, 7 TeV)
+## Input sample definition
 ##
-## --- Particle Gun ---
-#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunPion_mc_cff")
-#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunAntiPion_mc_cff")
-#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunBothPion_mc_cff")
-#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunMuon_mc_cff")
-#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunAntiMuon_mc_cff")
-#process.load("ApeEstimator.ApeEstimator.samples.ParticleGunBothMuon_mc_cff")
-## --- Monte Carlo ---
-process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_DYToMuMu_ApeSkim_cff")
-#process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_WToMuNu_ApeSkim_cff")
-#process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_WToMuNu_cff")
-#process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_QcdMuPt10_ApeSkim_cff")
-#process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_QcdMuPt10_cff")
-## --- Run XXX-YYY, End of Year Reprocessing ---
-#process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMinBias_Run2010A_Dec22ReReco_cff")
-#process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMinBias_Run2010B_Dec22ReReco_cff")
-#process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010A_Dec22ReReco_cff")
-#process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010B_Dec22ReReco_cff")
+isData = False
+isQcd = isWlnu = isZmumu = isZtautau = False
+isMc = False
+isParticleGunMu = isParticleGunPi = False
+if options.sample == 'data':
+    isData = True
+elif options.sample == 'qcd':
+    isQcd = True
+    isMc = True
+elif options.sample == 'wlnu':
+    isWlnu = True
+    isMc = True
+elif options.sample == 'zmumu':
+    isZmumu = True
+    isMc = True
+elif options.sample == 'ztautau':
+    isZtautau = True
+    isMc = True
+elif options.sample == 'particleGunMu':
+    isParticleGunMu = True
+    isMc = True
+elif options.sample == 'particleGunPi':
+    isParticleGunPi = True
+    isMc = True
+else:
+    print 'ERROR --- incorrect data sammple: ', options.sample
+    exit(8888)
+
+
+
+##
+## Input Files
+##
+if isData:
+    #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010A_Dec22ReReco_cff")
+    #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010B_Dec22ReReco_cff")
+    process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010B_Dec22ReReco_ApeSkim_cff")
+elif isQcd:
+    #process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_QcdMuPt10_cff")
+    #process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_QcdMuPt10_ApeSkim_cff")
+    process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Spring11_QcdMuPt15_ApeSkim_cff")
+elif isWlnu:
+    #process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_WToMuNu_cff")
+    #process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_WToMuNu_ApeSkim_cff")
+    process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Spring11_WJetsToLNu_ApeSkim_cff")
+elif isZmumu:
+    #process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_DYToMuMu_ApeSkim_cff")
+    process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Spring11_DYToMuMu_ApeSkim_cff")
+elif isZtautau:
+    process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Spring11_DYToTauTau_ApeSkim_cff")
+elif isParticleGunMu:
+    #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunMuon_mc_cff")
+    #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunAntiMuon_mc_cff")
+    process.load("ApeEstimator.ApeEstimator.samples.ParticleGunBothMuon_mc_cff")
+elif isParticleGunPi:
+    #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunPion_mc_cff")
+    #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunAntiPion_mc_cff")
+    process.load("ApeEstimator.ApeEstimator.samples.ParticleGunBothPion_mc_cff")
+    
 
 
 
 ##
 ## Number of Events (should be after input file)
 ##
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
-
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+if options.isTest: process.maxEvents.input = 1001
 
 
 ##
@@ -89,21 +157,19 @@ process.source.duplicateCheckMode = cms.untracked.string("checkEachRealDataFile"
 ## Whole Refitter Sequence
 ##
 process.load("ApeEstimator.ApeEstimator.TrackRefitter_38T_cff")
-## --- Monte Carlo for Particle Gun ---
-#process.GlobalTag.globaltag = 'DESIGN311_V2::All'
-process.GlobalTag.globaltag = 'MC_311_V2::All'
-#process.GlobalTag.globaltag = 'START311_V2::All'
-## --- Run XXX-YYY, End of Jear Reprocessing ---
-#process.GlobalTag.globaltag = 'FT_R_311_V4A::All'
-
+## Global Tag
+if isMc:
+    #process.GlobalTag.globaltag = 'DESIGN311_V2::All'
+    #process.GlobalTag.globaltag = 'START311_V2::All'
+    process.GlobalTag.globaltag = 'MC_311_V2::All'
+if isData:
+    process.GlobalTag.globaltag = 'FT_R_311_V4A::All'
 ## --- Further information (Monte Carlo and Data) ---
 #process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
 #process.TTRHBuilderGeometricAndTemplate.PixelCPE = 'PixelCPEGeneric'
 #process.HighPuritySelector.src = 'generalTracks'
 #process.HighPuritySelector.src = 'ALCARECOTkAlMuonIsolated'
 process.HighPuritySelector.src = 'MuSkim'
-#process.HighPuritySelector.src = 'ALCARECOTkAlMinBias'
-#process.HighPuritySelector.src = 'MinBiasSkim'
 
 
 
@@ -112,7 +178,8 @@ process.HighPuritySelector.src = 'MuSkim'
 ##
 import CalibTracker.Configuration.Common.PoolDBESSource_cfi
 ## Choose Alignment (w/o touching APE)
-process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+if isMc:
+  process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
     connect = 'frontier://FrontierProd/CMS_COND_31X_FROM21X', # or your sqlite file
     toGet = [
       cms.PSet(
@@ -120,8 +187,8 @@ process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cf
         tag = cms.string('TrackerIdealGeometry210_mc') # 'TrackerAlignment_2009_v2_offline'
       )
     ],
-)
-process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+  )
+  process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
 #process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
 #    connect = 'sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/misalignments/AlignmentsTob20.db',
 #    toGet = [
@@ -214,7 +281,7 @@ process.ApeEstimator1.HitSelector.qBin = []
 
 
 process.ApeEstimator2 = process.ApeEstimator1.clone(
-    Sectors = BPIXLayerAndOrientationSeparation + FPIXSideAndLayerAndOrientationSeparation,
+    Sectors = BPIXLayerAndOrientationSeparation + FPIXSideAndLayerSeparation,
     analyzerMode = True,
     calculateApe = False,
 )
@@ -228,11 +295,17 @@ process.ApeEstimator3 = process.ApeEstimator2.clone(
 ##
 ## Output File Configuration
 ##
+outputName = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/'
+if options.isTest:
+    outputName = outputName + 'test_'
+outputName = outputName + options.sample + '.root'
+
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string(os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/test_ideal.root'),
+    fileName = cms.string(outputName),
     closeFileFast = cms.untracked.bool(True)
 )
-
+if isData:
+    pass
 
 
 ##
@@ -240,10 +313,10 @@ process.TFileService = cms.Service("TFileService",
 ##
 process.p = cms.Path(
     #process.TriggerSelectionSequence*
-    process.RefitterHighPuritySequence
-    *(process.ApeEstimator1
-     +process.ApeEstimator2
-     +process.ApeEstimator3
+    process.RefitterHighPuritySequence*
+    (process.ApeEstimator1+
+     process.ApeEstimator2+
+     process.ApeEstimator3
     )
 )
 
