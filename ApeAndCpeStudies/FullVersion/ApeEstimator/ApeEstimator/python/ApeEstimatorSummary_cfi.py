@@ -13,6 +13,9 @@ ApeEstimatorSummary = cms.EDAnalyzer('ApeEstimatorSummary',
     # Currently implemented: "unity", "entries", "entriesOverSigmaX2" 
     apeWeight = cms.string("entries"),
     
+    # Define minimum number of hits per interval per sector for use of interval in APE calculation
+    minHitsPerInterval = cms.double(100.),
+    
     # Sigma factor for second gauss fit (+-2.5 sigma1 around mean1 of first fit)
     sigmaFactorFit = cms.double(2.5),
     

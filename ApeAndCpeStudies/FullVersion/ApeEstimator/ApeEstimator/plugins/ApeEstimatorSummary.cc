@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,6 2-039,+41227673512,
 //         Created:  Mon Oct 11 13:44:03 CEST 2010
-// $Id: ApeEstimatorSummary.cc,v 1.10 2011/07/18 21:42:32 hauk Exp $
+// $Id: ApeEstimatorSummary.cc,v 1.11 2011/08/01 01:30:42 hauk Exp $
 //
 //
 
@@ -476,6 +476,7 @@ ApeEstimatorSummary::calculateApe(){
 				  <<"\n...APE calculation stopped.";
      return;
    }
+   const double minHitsPerInterval(parameterSet_.getParameter<double>("minHitsPerInterval"));
    const double sigmaFactorFit(parameterSet_.getParameter<double>("sigmaFactorFit"));
    const double correctionScaling(parameterSet_.getParameter<double>("correctionScaling"));
    const bool smoothIteration(parameterSet_.getParameter<bool>("smoothIteration"));
@@ -524,7 +525,7 @@ ApeEstimatorSummary::calculateApe(){
        funcX_1.SetParameters(maximumX, meanX, rmsX);
        TString fitOpt("ILERQ"); //TString fitOpt("IMR"); ("IRLL"); ("IRQ");
        Int_t fitResultX(0);
-       if(integralX>1000.){
+       if(integralX>minHitsPerInterval){
          if(mHists["norResX"]->Fit(&funcX_1, fitOpt)){
            edm::LogWarning("CalculateAPE")<<"Fit1 did not work: "<<mHists["norResX"]->Fit(&funcX_1, fitOpt);
            continue;
@@ -539,7 +540,7 @@ ApeEstimatorSummary::calculateApe(){
        // Second gaus fit
        TF1 funcX_2("mygausX2","gaus",meanX_1 - sigmaFactorFit*TMath::Abs(sigmaX_1), meanX_1 + sigmaFactorFit*TMath::Abs(sigmaX_1));
        funcX_2.SetParameters(funcX_1.GetParameter(0),meanX_1,sigmaX_1);
-       if(integralX>1000.){
+       if(integralX>minHitsPerInterval){
          if(mHists["norResX"]->Fit(&funcX_2, fitOpt)){
            edm::LogWarning("CalculateAPE")<<"Fit2 did not work: "<<mHists["norResX"]->Fit(&funcX_2, fitOpt);
 	   continue;
@@ -578,7 +579,7 @@ ApeEstimatorSummary::calculateApe(){
          TF1 funcY_1("mygausY", "gaus", yMin, yMax);
          funcY_1.SetParameters(maximumY, meanY, rmsY);
          Int_t fitResultY(0);
-         if(integralY>1000.){
+         if(integralY>minHitsPerInterval){
            if(mHists["norResY"]->Fit(&funcY_1, fitOpt)){
              edm::LogWarning("CalculateAPE")<<"Fit1 did not work: "<<mHists["norResY"]->Fit(&funcY_1, fitOpt);
              continue;
@@ -591,7 +592,7 @@ ApeEstimatorSummary::calculateApe(){
 	 // Second gaus fit
          TF1 funcY_2("mygausY2","gaus",meanY_1 - sigmaFactorFit*TMath::Abs(sigmaY_1), meanY_1 + sigmaFactorFit*TMath::Abs(sigmaY_1));
          funcY_2.SetParameters(funcY_1.GetParameter(0),meanY_1,sigmaY_1);
-         if(integralY>1000.){
+         if(integralY>minHitsPerInterval){
            if(mHists["norResY"]->Fit(&funcY_2, fitOpt)){
              edm::LogWarning("CalculateAPE")<<"Fit2 did not work: "<<mHists["norResY"]->Fit(&funcY_2, fitOpt);
 	     continue;
@@ -630,13 +631,13 @@ ApeEstimatorSummary::calculateApe(){
        if(isnan(correctionY_1))correctionY_1 = -0.0010;
        if(isnan(correctionY_2))correctionY_2 = -0.0010;
        
-       if(entriesX<1000.){
+       if(entriesX<minHitsPerInterval){
          meanX = 0.; rmsX = -0.0010;
          fitMeanX_1 = 0.; correctionX_1 = residualWidthX_1 = -0.0010;
          fitMeanX_2 = 0.; correctionX_2 = residualWidthX_2 = -0.0010;
        }
        
-       if(entriesY<1000.){
+       if(entriesY<minHitsPerInterval){
 	 meanY = 0.; rmsY = -0.0010;
          fitMeanY_1 = 0.; correctionY_1 = residualWidthY_1 = -0.0010;
          fitMeanY_2 = 0.; correctionY_2 = residualWidthY_2 = -0.0010;
@@ -671,7 +672,7 @@ ApeEstimatorSummary::calculateApe(){
        
        
        // Use result for bin only when entries>1000
-       if(entriesX<1000. && entriesY<1000.)continue;
+       if(entriesX<minHitsPerInterval && entriesY<minHitsPerInterval)continue;
        
        double weightX(0.);
        double weightY(0.);
@@ -690,13 +691,13 @@ ApeEstimatorSummary::calculateApe(){
        
        const Error2AndResidualWidth2PerBin error2AndResidualWidth2PerBinX(meanSigmaX*meanSigmaX, residualWidthX_1*residualWidthX_1);
        const WeightAndResultsPerBin weightAndResultsPerBinX(weightX, error2AndResidualWidth2PerBinX);
-       if(!(entriesX<1000.)){
+       if(!(entriesX<minHitsPerInterval)){
          v_weightAndResultsPerBinX.push_back(weightAndResultsPerBinX);
        }
        
        const Error2AndResidualWidth2PerBin error2AndResidualWidth2PerBinY(meanSigmaY*meanSigmaY, residualWidthY_1*residualWidthY_1);
        const WeightAndResultsPerBin weightAndResultsPerBinY(weightY, error2AndResidualWidth2PerBinY);
-       if(!(entriesY<1000.)){
+       if(!(entriesY<minHitsPerInterval)){
          v_weightAndResultsPerBinY.push_back(weightAndResultsPerBinY);
        }
      }
