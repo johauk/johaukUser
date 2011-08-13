@@ -31,11 +31,10 @@ MinBiasSkimSelector = Alignment.CommonAlignmentProducer.AlignmentTrackSelector_c
     etaMax = 999.,
     d0Min = -2.,
     d0Max = 2.,
-    dzMin = -15.,
-    dzMax = 15.,
+    dzMin = -25.,
+    dzMax = 25.,
     nHitMin = 12,
     nHitMin2D = 2,
-    trackQualities = ["highPurity"],
 )
 
 
@@ -48,13 +47,12 @@ MuSkimSelector = Alignment.CommonAlignmentProducer.AlignmentTrackSelector_cfi.Al
     pMin = 9.,
     etaMin = -2.5,
     etaMax = 2.5,
-    d0Min = -10.,
-    d0Max = 10.,
-    dzMin = -50.,
-    dzMax = 50.,
+    d0Min = -2.,
+    d0Max = 2.,
+    dzMin = -25.,
+    dzMax = 25.,
     nHitMin = 6,
     nHitMin2D = 0,
-    trackQualities = ["highPurity"],
 )
 
 
