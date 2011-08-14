@@ -84,11 +84,9 @@ fi
 ## Add root files from step1 and delete them, keep only summed file
 
 
-if [ -a ${ROOTFILEBASE}/workingArea/*.root ] ; then 
-  hadd ${fileDir}/allData.root ${ROOTFILEBASE}/workingArea/*.root
-  if [ $? -eq 0 ] ; then
-    rm ${ROOTFILEBASE}/workingArea/*.root
-  fi
+hadd ${fileDir}/allData.root ${ROOTFILEBASE}/workingArea/*.root
+if [ $? -eq 0 ] ; then
+  rm ${ROOTFILEBASE}/workingArea/*.root
 fi
 
 
