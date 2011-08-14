@@ -196,6 +196,22 @@ if options.alignRcd=='design':
   process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
 elif options.alignRcd == 'data':
   pass
+elif options.alignRcd == 'misalTob20':
+  process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+    connect = 'sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/misalignments/AlignmentsTob20.db',
+    toGet = cms.VPSet(
+      cms.PSet(
+        record = cms.string('TrackerAlignmentRcd'),
+        tag = cms.string('TrackerScenario'),
+      )
+    )
+  )
+  process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+elif options.alignRcd == '':
+  pass
+else:
+  print 'ERROR --- incorrect alignment: ', options.alignRcd
+  exit(8888)
 
 ## APE
 if options.iterNumber==0:
