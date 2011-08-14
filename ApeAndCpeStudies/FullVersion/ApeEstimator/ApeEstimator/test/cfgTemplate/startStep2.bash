@@ -2,18 +2,16 @@
 
 
 
-
-cmsRun $CMSSW_BASE/src/ApeEstimator/ApeEstimator/test/batch/workingArea/summary_cfg.py
-
-
-cmsRun $CMSSW_BASE/src/ApeEstimator/ApeEstimator/test/batch/workingArea/apeLocalSetting_cfg.py
-
-
-rm alignment.log
+base="$CMSSW_BASE/src/ApeEstimator/ApeEstimator/test/batch/workingArea"
 
 
 
-rm $CMSSW_BASE/src/ApeEstimator/ApeEstimator/test/batch/workingArea/*_cfg.py
 
-rm $CMSSW_BASE/src/ApeEstimator/ApeEstimator/test/batch/workingArea/*.bash
+bash $base/summary.bash
+
+
+
+rm $base/*_cfg.py
+
+rm $base/*.bash
 
