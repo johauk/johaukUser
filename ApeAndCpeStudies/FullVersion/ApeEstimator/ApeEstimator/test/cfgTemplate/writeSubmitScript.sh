@@ -18,25 +18,13 @@ fi
 
 
 
-## name of input files
-cafDir="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk"
-if $isData; then
-  INPUTBASE1="${cafDir}\/data\/mu\/Run2010B_Dec22ReReco\/apeSkim";
-elif $isMc; then
-  INPUTBASE1="${cafDir}\/mc\/${datasetName}\/apeSkim";
-elif $isParticleGun; then
-  INPUTBASE1="${cafDir}\/mc\/${datasetName}\/RECO\/reco";
-fi
-
-
-
 ## Batch submit file template
 BATCH_TEMPLATEFILE="${CMSSW_BASE}/src/ApeEstimator/ApeEstimator/test/cfgTemplate/batchSubmitTemplate.bash"
 BATCH_OUTPUTBASE1="${CMSSW_BASE}/src/ApeEstimator/ApeEstimator/test/batch/workingArea/${datasetName}BatchSubmit"
 BATCH_OUTPUTSUFFIX=".bash"
 
 helpFile1="help1.txt"
-cat $BATCH_TEMPLATEFILE |sed "s/_THE_INPUTBASE_/${INPUTBASE1}/g" > $helpFile1
+cat $BATCH_TEMPLATEFILE |sed "s/_THE_INPUTBASE_/${inputBase}/g" > $helpFile1
 
 
 

@@ -40,8 +40,13 @@ createStep1="${CMSSW_BASE}/src/ApeEstimator/ApeEstimator/test/cfgTemplate/writeS
 export datasetName
 ## number of input files
 export nFiles
+## Input file base
+cafDir="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk"
+export inputBase
+
 
 datasetName="data"
+inputBase="${cafDir}\/data\/mu\/Run2010B_Dec22ReReco\/apeSkim"
 nFiles=2
-bash $createStep1 $datasetName $nFiles $iterationNumber $lastIteration $alignmentRcd
+bash $createStep1 $datasetName $nFiles $iterationNumber $lastIteration $alignmentRcd $inputBase
 

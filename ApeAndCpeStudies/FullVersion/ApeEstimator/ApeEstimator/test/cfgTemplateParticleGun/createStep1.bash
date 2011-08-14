@@ -45,14 +45,20 @@ createStep1="${CMSSW_BASE}/src/ApeEstimator/ApeEstimator/test/cfgTemplate/writeS
 export datasetName
 ## number of input files
 export nFiles
+## Input file base
+cafDir="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk"
+export inputBase
+
 
 datasetName="ParticleGunMuon"
 #datasetName="ParticleGunPion"
+inputBase="${cafDir}\/mc\/${datasetName}\/RECO\/reco"
 nFiles=10
 bash $createStep1 $datasetName $nFiles $iterationNumber $lastIteration $alignmentRcd
 
 datasetName="ParticleGunAntiMuon"
 #datasetName="ParticleGunAntiPion"
+inputBase="${cafDir}\/mc\/${datasetName}\/RECO\/reco"
 nFiles=10
 bash $createStep1 $datasetName $nFiles $iterationNumber $lastIteration $alignmentRcd
 
