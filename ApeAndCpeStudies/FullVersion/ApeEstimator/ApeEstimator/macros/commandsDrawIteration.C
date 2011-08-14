@@ -3,14 +3,14 @@
 
 gROOT->ProcessLine(".L DrawIteration.C+");
 
-DrawIteration a1(7);
+DrawIteration a1(2);
 //a1.drawIteration();
 a1.drawIteration(1,6);
-a1.drawIteration(7,14);
-a1.drawIteration(15,26);
-a1.drawIteration(27,38);
-a1.drawIteration(39,48);
-a1.drawIteration(49,68);
+a1.drawIteration(7,10);
+a1.drawIteration(11,22);
+a1.drawIteration(26,34);
+a1.drawIteration(35,44);
+a1.drawIteration(45,64);
 
 
 
