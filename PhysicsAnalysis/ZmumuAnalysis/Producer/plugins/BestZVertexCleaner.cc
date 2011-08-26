@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May  5 18:06:19 CEST 2011
-// $Id: BestZVertexCleaner.cc,v 1.4 2011/05/06 19:27:53 hauk Exp $
+// $Id: BestZVertexCleaner.cc,v 1.5 2011/05/06 20:32:30 hauk Exp $
 //
 //
 
@@ -160,6 +160,7 @@ BestZVertexCleaner::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	if(std::abs(deltaZ)<std::abs(lastDeltaZ)){bestVertex = &*i_vertex;iBestVertex = nIter;}
       }
     }
+    if(!bestVertex)continue;
     const double deltaZ1(daughter1->vz() - bestVertex->z());
     const double deltaZ2(daughter2->vz() - bestVertex->z());
     LogDebug("BestZVertexCleaner")<<"New Z, Best Vertex "<<deltaZ1<<" , "<<deltaZ2;
