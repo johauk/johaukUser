@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Fri Jul 29 00:12:31 CEST 2011
-// $Id$
+// $Id: EventWeight.cc,v 1.1 2011/08/04 11:45:12 hauk Exp $
 //
 //
 
@@ -108,6 +108,8 @@ EventWeight::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::auto_ptr<double> result(new double);
   *result = finalWeight;
   iEvent.put(result);
+  
+  //std::cout<<"FinalWeight: "<<*result<<"\n";
 }
 
 // ------------ method called once each job just before starting event loop  ------------

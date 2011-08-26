@@ -29,7 +29,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
 
 
 ## Event Weight
-process.load("ZmumuAnalysis.Utils.EventWeight_cfi")
+process.load("ZmumuAnalysis.Utils.EventWeight_cff")
 
 
 
@@ -58,7 +58,7 @@ process.TFileService = cms.Service("TFileService",
 
 ## Path
 process.p = cms.Path(
-    process.EventWeight*(
+    process.makeEventWeights*(
     process.MuonAnalyzer1+
     process.MuonAnalyzer2+
     process.MuonAnalyzer3
