@@ -26,10 +26,10 @@ ApeEstimator.HitSelector.maxIndex = [1,1]
 #ApeEstimator.HitSelector.edgeStrips = [2,800]   # exclude first (and so also last) strip
 ApeEstimator.HitSelector.sOverN = [20.,50.]
 
-ApeEstimator.HitSelector.chargePixel = [18000., 2000000.]
+ApeEstimator.HitSelector.chargePixel = [10000., 2000000.]
 ApeEstimator.HitSelector.widthX = [2,1000]
 ApeEstimator.HitSelector.widthY = [2,1000]
-#ApeEstimator.HitSelector.logClusterProbability = [-5.,1.]
+ApeEstimator.HitSelector.logClusterProbability = [-5.,1.]
 ApeEstimator.HitSelector.isOnEdge = [0,0]
 ApeEstimator.HitSelector.qBin = [1,3]
 
