@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.20 2011/08/03 17:35:42 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.21 2011/08/13 14:47:43 hauk Exp $
 //
 //
 
@@ -552,7 +552,8 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     double widthMax = zoomHists ? 20. : 200.;
     double chargePixelMax = zoomHists ? 200000. : 2000000.;
     double chargeStripMax = zoomHists ? 1000. : 10000.;
-    double sOverNMax = zoomHists? 200. : 2000.;
+    double sOverNMax = zoomHists ? 200. : 2000.;
+    double logClusterProbMin = zoomHists ? -5. : -15.;
     
     double resXAbsMax = zoomHists ? 0.5 : 5.;
     double norResXAbsMax = zoomHists ? 10. : 50.;
@@ -564,10 +565,10 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     double sigmaXHitMax = zoomHists ? 0.02 : 1.;
     double phiSensXMax = zoomHists ? 31. : 93.;
     
-    double norChi2Max = zoomHists ? 20. : 1000.;
-    double d0Max = zoomHists ? 0.1 : 40.;  // cosmics: 100.|100.
+    double norChi2Max = zoomHists ? 10. : 1000.;
+    double d0Max = zoomHists ? 0.02 : 40.;  // cosmics: 100.|100.
     double dzMax = zoomHists ? 15. : 100.;  // cosmics: 200.|600.
-    double pMax = zoomHists ? 100. : 2000.;
+    double pMax = zoomHists ? 200. : 2000.;
     double invPMax = zoomHists ? 0.05 : 10.;   //begins at 20GeV, 0.1GeV
     
     
@@ -621,7 +622,7 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     (*i_sector).second.m_correlationHistsY["ClusterProbXY"] = (*i_sector).second.bookCorrHistsY("ClusterProbXY","cluster probability xy","prob_{xy,cl}","",100,50,0.,1.,"nph");
     (*i_sector).second.m_correlationHistsY["ClusterProbQ"] = (*i_sector).second.bookCorrHistsY("ClusterProbQ","cluster probability q","prob_{q,cl}","",100,50,0.,1.,"nph");
     (*i_sector).second.m_correlationHistsY["ClusterProbXYQ"] = (*i_sector).second.bookCorrHistsY("ClusterProbXYQ","cluster probability xyq","prob_{xyq,cl}","",100,50,0.,1.,"nph");
-    (*i_sector).second.m_correlationHistsY["LogClusterProb"] = (*i_sector).second.bookCorrHistsY("LogClusterProb","cluster probability xy","log(prob_{xy,cl})","",100,50,-20.,0.,"nph");
+    (*i_sector).second.m_correlationHistsY["LogClusterProb"] = (*i_sector).second.bookCorrHistsY("LogClusterProb","cluster probability xy","log(prob_{xy,cl})","",60,30,logClusterProbMin,0.,"nph");
     (*i_sector).second.m_correlationHistsY["IsOnEdge"] = (*i_sector).second.bookCorrHistsY("IsOnEdge","IsOnEdge","isOnEdge","",2,2,0,2,"nph");
     (*i_sector).second.m_correlationHistsY["HasBadPixels"] = (*i_sector).second.bookCorrHistsY("HasBadPixels","HasBadPixels","hasBadPixels","",2,2,0,2,"nph");
     (*i_sector).second.m_correlationHistsY["SpansTwoRoc"] = (*i_sector).second.bookCorrHistsY("SpansTwoRoc","SpansTwoRoc","spansTwoRoc","",2,2,0,2,"nph");
@@ -844,11 +845,11 @@ ApeEstimator::bookTrackHists(){
   int trackSizeBins = zoomHists ? 21 : 201;
   double trackSizeMax = trackSizeBins -1;
   
-  double chi2Max = zoomHists ? 200. : 2000.;
-  double norChi2Max = zoomHists ? 40. : 1000.;
-  double d0max = zoomHists ? 0.1 : 40.;  // cosmics: 100.|100.
+  double chi2Max = zoomHists ? 100. : 2000.;
+  double norChi2Max = zoomHists ? 10. : 1000.;
+  double d0max = zoomHists ? 0.02 : 40.;  // cosmics: 100.|100.
   double dzmax = zoomHists ? 15. : 100.;  // cosmics: 200.|600.
-  double pMax = zoomHists ? 100. : 2000.;
+  double pMax = zoomHists ? 200. : 2000.;
   
   edm::Service<TFileService> fileService;
   //TFileDirectory dir1(*fileService);
@@ -872,8 +873,8 @@ ApeEstimator::bookTrackHists(){
   tkDetector_.Phi           = trkDir.make<TH1F>("h_phi","azimuth angle #phi;#phi  [ ^{o}];# tracks",190,-190,190);
   tkDetector_.D0Beamspot    = trkDir.make<TH1F>("h_d0Beamspot","Closest approach d_{0} wrt. beamspot;d_{0, BS}  [cm];# tracks",200,-d0max, d0max);
   tkDetector_.Dz            = trkDir.make<TH1F>("h_dz","Closest approach d_{z};d_{z}  [cm];# tracks",200,-dzmax, dzmax);
-  tkDetector_.D0BeamspotErr = trkDir.make<TH1F>("h_d0BeamspotErr","Error of d_{0, BS};#sigma{d_{0, BS}}  [cm];# tracks",200,0,0.01);
-  tkDetector_.D0BeamspotSig = trkDir.make<TH1F>("h_d0BeamspotSig","Significance of d_{0, BS};d_{0, BS}/#sigma{d_{0, BS}};# tracks",100,-5,5);
+  tkDetector_.D0BeamspotErr = trkDir.make<TH1F>("h_d0BeamspotErr","Error of d_{0, BS};#sigma(d_{0, BS})  [cm];# tracks",200,0,0.01);
+  tkDetector_.D0BeamspotSig = trkDir.make<TH1F>("h_d0BeamspotSig","Significance of d_{0, BS};d_{0, BS}/#sigma(d_{0, BS});# tracks",100,-5,5);
   tkDetector_.Pt	    = trkDir.make<TH1F>("h_pt","transverse momentum p_{t};p_{t}  [GeV];# tracks",100,0,pMax);
   tkDetector_.P	            = trkDir.make<TH1F>("h_p","momentum magnitude |p|;|p|  [GeV];# tracks",100,0,pMax);
   tkDetector_.MeanAngle     = trkDir.make<TH1F>("h_meanAngle","mean angle on module <#phi_{module}>;<#phi_{module}>  [ ^{o}];# tracks",100,-5,95);
@@ -959,10 +960,10 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
   if(parameterSet_.getParameter<bool>("applyTrackCuts")){
     trackCut_ = false;
     if(trkParams.hitsStrip<11 || trkParams.hits2D<2 || trkParams.hitsPixel<2 || //trkParams.hitsInvalid>2 ||
-       trkParams.hitsStrip>23 || trkParams.hitsPixel>5 ||
-       trkParams.norChi2>5 ||
-       trkParams.pt<15. || trkParams.pt>100. || 
-       std::fabs(trkParams.d0Beamspot)>0.1 || std::fabs(trkParams.dz)>15.)trackCut_ = true;
+       trkParams.hitsStrip>35 || trkParams.hitsPixel>7 ||
+       trkParams.norChi2>5. ||
+       trkParams.pt<17. || trkParams.pt>150. || 
+       std::abs(trkParams.d0Beamspot)>0.02 || std::abs(trkParams.dz)>15.)trackCut_ = true;
     //if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.hitsPixel<1 || //trkParams.hitsInvalid>2 ||
     //   trkParams.pt<15. || trkParams.p>100. || 
     //   std::fabs(trkParams.d0Beamspot)>0.1 || std::fabs(trkParams.dz)>10.)trackCut_ = true;
@@ -2171,7 +2172,7 @@ ApeEstimator::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      
      if(trackStruct.v_hitParams.size()>0)++trackSizeGood;
    }
-   if(analyzerMode_)tkDetector_.TrkSizeGood->Fill(trackSizeGood);
+   if(analyzerMode_ && trackSizeGood>0)tkDetector_.TrkSizeGood->Fill(trackSizeGood);
 }
 
 

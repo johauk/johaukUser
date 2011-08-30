@@ -18,7 +18,7 @@ else
   echo "No APE DB-Object created"
 fi
 
-if [-a alignment.log] ; then
+if [ -a alignment.log ] ; then
   rm alignment.log
 fi
 

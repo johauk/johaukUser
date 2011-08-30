@@ -131,20 +131,20 @@ readFiles.extend( [
 ##
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 if isQcd:
-  if options.fileNumber==1: process.maxEvents.input = -1
-  elif options.fileNumber==2: process.maxEvents.input = -1
-  elif options.fileNumber==3: process.maxEvents.input = -1
+  if options.fileNumber==1: process.maxEvents.input = 87763    # 854181 events
+  elif options.fileNumber==2: process.maxEvents.input = 87763  # 851413 events
+  elif options.fileNumber==3: process.maxEvents.input = 87763  # 206553 events
 elif isWlnu:
-  if options.fileNumber==1: process.maxEvents.input = -1
-  elif options.fileNumber==2: process.maxEvents.input = -1
-  elif options.fileNumber==3: process.maxEvents.input = -1
-  elif options.fileNumber==4: process.maxEvents.input = -1
+  if options.fileNumber==1: process.maxEvents.input = 56348    # 894904 events
+  elif options.fileNumber==2: process.maxEvents.input = 56348  # 892738 events
+  elif options.fileNumber==3: process.maxEvents.input = 56348  # 895703 events
+  elif options.fileNumber==4: process.maxEvents.input = 56348  # 365205 events
 elif isZmumu:
-  if options.fileNumber==1: process.maxEvents.input = -1
-  elif options.fileNumber==2: process.maxEvents.input = -1
-  elif options.fileNumber==3: process.maxEvents.input = -1
+  if options.fileNumber==1: process.maxEvents.input = 12043    # 619625 events
+  elif options.fileNumber==2: process.maxEvents.input = 12043  # 618007 events
+  elif options.fileNumber==3: process.maxEvents.input = 12043  # 209738	events
 elif isZtautau:
-  if options.fileNumber==1: process.maxEvents.input = -1
+  if options.fileNumber==1: process.maxEvents.input = 414      # 143721 events
 
 
 
