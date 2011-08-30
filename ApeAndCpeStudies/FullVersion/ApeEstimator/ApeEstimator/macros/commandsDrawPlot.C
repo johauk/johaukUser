@@ -64,16 +64,16 @@ DrawPlot drawPlot1(0, true);
 drawPlot1.setLegendEntry("data","MCideal");
 drawPlot1.setLegendCoordinate(0.41, 0.27, 0.71, 0.42);
 gStyle->SetOptStat(111110);
-drawPlot1.drawPlot("ApeEstimatorSummary","h_correctionX1");
-drawPlot1.drawPlot("ApeEstimatorSummary","h_correctionX2");
-drawPlot1.drawPlot("ApeEstimatorSummary","h_correctionY1");
-drawPlot1.drawPlot("ApeEstimatorSummary","h_correctionY2");
-drawPlot1.drawPlot("ApeEstimatorSummary","h_fitMeanX1");
-drawPlot1.drawPlot("ApeEstimatorSummary","h_fitMeanX2");
-drawPlot1.drawPlot("ApeEstimatorSummary","h_fitMeanY1");
-drawPlot1.drawPlot("ApeEstimatorSummary","h_fitMeanY2");
-drawPlot1.drawPlot("ApeEstimatorSummary","meanX");
-drawPlot1.drawPlot("ApeEstimatorSummary","meanY");
+// drawPlot1.drawPlot("ApeEstimatorSummary","h_correctionX1");
+// drawPlot1.drawPlot("ApeEstimatorSummary","h_correctionX2");
+// drawPlot1.drawPlot("ApeEstimatorSummary","h_correctionY1");
+// drawPlot1.drawPlot("ApeEstimatorSummary","h_correctionY2");
+// drawPlot1.drawPlot("ApeEstimatorSummary","h_fitMeanX1");
+// drawPlot1.drawPlot("ApeEstimatorSummary","h_fitMeanX2");
+// drawPlot1.drawPlot("ApeEstimatorSummary","h_fitMeanY1");
+// drawPlot1.drawPlot("ApeEstimatorSummary","h_fitMeanY2");
+// drawPlot1.drawPlot("ApeEstimatorSummary","meanX");
+// drawPlot1.drawPlot("ApeEstimatorSummary","meanY");
 drawPlot1.setLegendCoordinate(0.69, 0.22, 0.99, 0.37);
 drawPlot1.drawPlot("ApeEstimatorSummary","h_residualWidthX1");
 drawPlot1.drawPlot("ApeEstimatorSummary","h_residualWidthX2");
@@ -96,11 +96,29 @@ gStyle->SetOptStat(111110);
 drawPlot2.drawPlot("ApeEstimator2","h_NorResX");
 drawPlot2.drawPlot("ApeEstimator2","h_NorResY");
 
+drawPlot2.drawTrackPlot("ApeEstimator2","h_eta");
+drawPlot2.drawTrackPlot("ApeEstimator2","h_theta");
+drawPlot2.drawTrackPlot("ApeEstimator2","h_phi");
+drawPlot2.drawTrackPlot("ApeEstimator2","h_norChi2");
+drawPlot2.drawTrackPlot("ApeEstimator2","h_p");
+drawPlot2.drawTrackPlot("ApeEstimator2","h_pt");
+drawPlot2.drawTrackPlot("ApeEstimator2","h_charge");
+drawPlot2.drawTrackPlot("ApeEstimator2","h_d0Beamspot");
+drawPlot2.drawTrackPlot("ApeEstimator2","h_d0BeamspotErr");
+drawPlot2.drawTrackPlot("ApeEstimator2","h_d0BeamspotSig");
 
+drawPlot2.drawEventPlot("ApeEstimator2","h_trackSizeGood");
 
 
 
 //gROOT->ProcessLine(".q");
 
 
+
 }
+
+
+
+
+
+

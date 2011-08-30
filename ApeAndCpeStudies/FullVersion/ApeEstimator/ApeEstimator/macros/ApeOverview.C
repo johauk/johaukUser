@@ -235,7 +235,9 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h_ClusterProbXY");
       this->drawHistToPad("h_ClusterProbQ");
       this->drawHistToPad("h_ClusterProbXYQ");
+      }
       this->drawHistToPad("h_LogClusterProb");
+      if(!onlyZoomedHists_){
       this->drawHistToPad("h_QBin");
       }
       this->setNewCanvas(dim1);
@@ -253,7 +255,9 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h_ClusterProbXY_y");
       this->drawHistToPad("h_ClusterProbQ_y");
       this->drawHistToPad("h_ClusterProbXYQ_y");
+      }
       this->drawHistToPad("h_LogClusterProb_y");
+      if(!onlyZoomedHists_){
       this->drawHistToPad("h_QBin_y");
       }
       this->setNewCanvas(dim1);
@@ -368,7 +372,9 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_sigmaXHitVsClusterProbXY",false);
       this->drawHistToPad("h2_sigmaXHitVsClusterProbQ",false);
       this->drawHistToPad("h2_sigmaXHitVsClusterProbXYQ",false);
+      }
       this->drawHistToPad("h2_sigmaXHitVsLogClusterProb",false);
+      if(!onlyZoomedHists_){
       this->drawHistToPad("h2_sigmaXHitVsQBin",false);
       }
       this->setNewCanvas(dim2);
@@ -436,7 +442,9 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_norResXVsClusterProbXY",false);
       this->drawHistToPad("h2_norResXVsClusterProbQ",false);
       this->drawHistToPad("h2_norResXVsClusterProbXYQ",false);
+      }
       this->drawHistToPad("h2_norResXVsLogClusterProb",false);
+      if(!onlyZoomedHists_){
       this->drawHistToPad("h2_norResXVsQBin",false);
       }
       this->setNewCanvas(dim2);
@@ -503,7 +511,9 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_probXVsClusterProbXY",false);
       this->drawHistToPad("h2_probXVsClusterProbQ",false);
       this->drawHistToPad("h2_probXVsClusterProbXYQ",false);
+      }
       this->drawHistToPad("h2_probXVsLogClusterProb",false);
+      if(!onlyZoomedHists_){
       this->drawHistToPad("h2_probXVsQBin",false);
       }
       this->setNewCanvas(dim2);
@@ -585,7 +595,9 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_sigmaYHitVsClusterProbXY",false);
       this->drawHistToPad("h2_sigmaYHitVsClusterProbQ",false);
       this->drawHistToPad("h2_sigmaYHitVsClusterProbXYQ",false);
+      }
       this->drawHistToPad("h2_sigmaYHitVsLogClusterProb",false);
+      if(!onlyZoomedHists_){
       this->drawHistToPad("h2_sigmaYHitVsQBin",false);
       }
       this->setNewCanvas(dim2);
@@ -653,7 +665,9 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_norResYVsClusterProbXY",false);
       this->drawHistToPad("h2_norResYVsClusterProbQ",false);
       this->drawHistToPad("h2_norResYVsClusterProbXYQ",false);
+      }
       this->drawHistToPad("h2_norResYVsLogClusterProb",false);
+      if(!onlyZoomedHists_){
       this->drawHistToPad("h2_norResYVsQBin",false);
       }
       this->setNewCanvas(dim2);
@@ -720,7 +734,9 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h2_probYVsClusterProbXY",false);
       this->drawHistToPad("h2_probYVsClusterProbQ",false);
       this->drawHistToPad("h2_probYVsClusterProbXYQ",false);
+      }
       this->drawHistToPad("h2_probYVsLogClusterProb",false);
+      if(!onlyZoomedHists_){
       this->drawHistToPad("h2_probYVsQBin",false);
       }
       this->setNewCanvas(dim2);
@@ -857,8 +873,11 @@ ApeOverview::drawHistToPad(const TString histName, const bool setLogScale){
       }
       (*(--(canvasPair->first.end())))->cd(padCounter->first);
       
-      if(setLogScale==true && hist1->GetEffectiveEntries()>0.1)(*(--(canvasPair->first.end())))->cd(padCounter->first)->SetLogy();
+      if(setLogScale==true && hist1->GetEffectiveEntries()>0.1){
       //if(setLogScale==true && hist1->Integral()>0.1)(*(--(canvasPair->first.end())))->cd(padCounter->first)->SetLogy();  // gives same result
+        (*(--(canvasPair->first.end())))->cd(padCounter->first)->SetLogy();
+	hist1->SetMinimum(0.5);
+      }
       hist1->Draw();
       
       ++(padCounter->first);
@@ -881,7 +900,9 @@ ApeOverview::drawHistToPad(const TString histName, const bool setLogScale){
       }
       (*(--(canvasPair->second.end())))->cd(padCounter->second);
       
-      if(setLogScale==true && hist2->GetEffectiveEntries()>0.1)(*(--(canvasPair->second.end())))->cd(padCounter->second)->SetLogy();
+      if(setLogScale==true && hist2->GetEffectiveEntries()>0.1){
+        (*(--(canvasPair->second.end())))->cd(padCounter->second)->SetLogy();
+      }
       hist2->Draw("box");
       
       
@@ -893,7 +914,9 @@ ApeOverview::drawHistToPad(const TString histName, const bool setLogScale){
       if(histDir_.BeginsWith(firstSelectedSector_) || histDir_ == "TrackVariables/" || histDir_ == "EventVariables/")std::cout<<"\tDraw Profile Histo\t"<<pluginDir_<<histDir_<<histNameP<<"\n";
       if(histP){
         (*(--(canvasPair->second.end())))->cd(padCounter->second+3);
-        if(setLogScale==true && histP->GetEffectiveEntries()>0.1)(*(--(canvasPair->second.end())))->cd(padCounter->second+3)->SetLogy();
+        if(setLogScale==true && histP->GetEffectiveEntries()>0.1){
+	  (*(--(canvasPair->second.end())))->cd(padCounter->second+3)->SetLogy();
+	}
 	
 	// Loop for separating mean and RMS per bin (separate entries in final plot)
 	TProfile *rmsPlot(0);

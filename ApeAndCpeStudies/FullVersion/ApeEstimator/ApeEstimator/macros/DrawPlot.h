@@ -21,6 +21,8 @@ class DrawPlot{
     void setLegendEntry(const TString&, const TString&);
     void setLegendCoordinate(const double, const double, const double, const double);
     void drawPlot(const TString&, const TString&);
+    void drawTrackPlot(const TString&, const TString&);
+    void drawEventPlot(const TString&, const TString&);
     
   private:
     void printHist(const TString&, const TString&)const;

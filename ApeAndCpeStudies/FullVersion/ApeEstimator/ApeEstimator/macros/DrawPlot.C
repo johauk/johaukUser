@@ -134,6 +134,30 @@ DrawPlot::drawPlot(const TString& pluginName, const TString& histName){
 
 
 void
+DrawPlot::drawTrackPlot(const TString& pluginName, const TString& histName){
+  TString* plugin = new TString(pluginName.Copy());
+  if(!plugin->IsNull())plugin->Append("/");
+  std::stringstream ss_sector;
+  ss_sector<<*plugin<<"TrackVariables/"<<histName;
+  const TString fullName(ss_sector.str().c_str());
+  this->printHist(fullName, histName);
+}
+
+
+
+void
+DrawPlot::drawEventPlot(const TString& pluginName, const TString& histName){
+  TString* plugin = new TString(pluginName.Copy());
+  if(!plugin->IsNull())plugin->Append("/");
+  std::stringstream ss_sector;
+  ss_sector<<*plugin<<"EventVariables/"<<histName;
+  const TString fullName(ss_sector.str().c_str());
+  this->printHist(fullName, histName);
+}
+
+
+
+void
 DrawPlot::printHist(const TString& fullName, const TString& sectorName)const{
   TH1* hist(0);
   TH1* designHist(0);
