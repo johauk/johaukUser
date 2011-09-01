@@ -35,7 +35,8 @@ process.options = cms.untracked.PSet(
 ## Input Files
 ##
 ## --- Particle Gun ---
-process.load("ApeEstimator.ApeEstimator.samples.Mc_QcdMuEnriched_desy_cff")
+#process.load("ApeEstimator.ApeEstimator.samples.Mc_QcdMuEnriched_desy_cff")
+process.load("ApeEstimator.Utils.samples.data_Run2011A_PromptV4_cff")
 
 
 
@@ -47,71 +48,9 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1001) )
 
 
 ##
-## ALCARECOTkAlMuonIsolated selection
+## ALCARECOTkAlMuonIsolated and additional selection
 ##
-
-## First select goodId + isolated muons
-#process.load("Alignment.CommonAlignmentProducer.python.TkAlMuonSelectors_cfi")
-#process.load("Alignment.CommonAlignmentProducer.ALCARECOTkAlMuonIsolated_cff")
-TkAlGoodIdMuonSelector = cms.EDFilter("MuonSelector",
-    src = cms.InputTag('muons'),
-    cut = cms.string('isGlobalMuon &'
-                     'isTrackerMuon &'
-                     'numberOfMatches > 1 &'
-                     'globalTrack.hitPattern.numberOfValidMuonHits > 0 &'
-                     'abs(eta) < 2.5 &'
-                     'globalTrack.normalizedChi2 < 20.'),
-    filter = cms.bool(True)
-)
-TkAlRelCombIsoMuonSelector = cms.EDFilter("MuonSelector",
-    src = cms.InputTag(''),
-    cut = cms.string('(isolationR03().sumPt + isolationR03().emEt + isolationR03().hadEt)/pt  < 0.15'),
-    filter = cms.bool(True)
-)
-process.ALCARECOTkAlMuonIsolatedGoodMuons = TkAlGoodIdMuonSelector.clone()
-process.ALCARECOTkAlMuonIsolatedRelCombIsoMuons = TkAlRelCombIsoMuonSelector.clone(src = 'ALCARECOTkAlMuonIsolatedGoodMuons')
-
-## Then select their tracks with additional cuts
-import Alignment.CommonAlignmentProducer.AlignmentTrackSelector_cfi
-process.ALCARECOTkAlMuonIsolated = Alignment.CommonAlignmentProducer.AlignmentTrackSelector_cfi.AlignmentTrackSelector.clone(
-    filter = True, ##do not store empty events
-    applyBasicCuts = True,
-    ptMin = 2.0, ##GeV 
-    etaMin = -3.5,
-    etaMax = 3.5,
-    nHitMin = 0
-)
-process.ALCARECOTkAlMuonIsolated.GlobalSelector.muonSource = 'ALCARECOTkAlMuonIsolatedRelCombIsoMuons'
-# Isolation is shifted to the muon preselection, and then applied intrinsically if applyGlobalMuonFilter = True
-process.ALCARECOTkAlMuonIsolated.GlobalSelector.applyIsolationtest = False
-process.ALCARECOTkAlMuonIsolated.GlobalSelector.applyGlobalMuonFilter = True
-process.ALCARECOTkAlMuonIsolated.TwoBodyDecaySelector.applyMassrangeFilter = False
-process.ALCARECOTkAlMuonIsolated.TwoBodyDecaySelector.applyChargeFilter = False
-process.ALCARECOTkAlMuonIsolated.TwoBodyDecaySelector.applyAcoplanarityFilter = False
-
-## Define ALCARECO sequence
-process.mySeqALCARECOTkAlMuonIsolated = cms.Sequence(process.ALCARECOTkAlMuonIsolatedGoodMuons*process.ALCARECOTkAlMuonIsolatedRelCombIsoMuons*process.ALCARECOTkAlMuonIsolated)
-
-
-
-##
-## Good Primary Vertex Selection
-##
-process.goodPVs = cms.EDFilter("VertexSelector",
-    src = cms.InputTag('offlinePrimaryVertices'),
-    cut = cms.string('ndof>4 &'
-                     'abs(z)<24 &'
-                     '!isFake &'
-                     'position.Rho<2'
-    ),
-)
-process.oneGoodPVSelection = cms.EDFilter("VertexCountFilter",
-    src = cms.InputTag('goodPVs'),
-    minNumber = cms.uint32(1),
-    maxNumber = cms.uint32(99999),
-    
-)
-process.seqVertexSelection = cms.Sequence(process.goodPVs*process.oneGoodPVSelection)
+process.load("ApeEstimator.ApeEstimator.AlcaRecoSelection_cff")
 
 
 
