@@ -3,6 +3,10 @@
 DIRBASE="$CMSSW_BASE/src/ApeEstimator/ApeEstimator"
 
 
+mkdir $CMSSW_BASE/src/Alignment/TrackerTreeGenerator/hists/
+
+mkdir $CMSSW_BASE/src/ApeEstimator/Utils/hists/
+
 
 mkdir $DIRBASE/hists/
 mkdir $DIRBASE/hists/workingArea/

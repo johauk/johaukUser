@@ -110,7 +110,9 @@ else:
 if isData:
     #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010A_Dec22ReReco_cff")
     #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010B_Dec22ReReco_cff")
-    process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010B_Dec22ReReco_ApeSkim_cff")
+    #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010B_Dec22ReReco_ApeSkim_cff")
+    #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2011A_May10ReReco_cff")
+    process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2011A_PromptV4_cff")
 elif isQcd:
     #process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_QcdMuPt10_cff")
     #process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_QcdMuPt10_ApeSkim_cff")
@@ -159,17 +161,17 @@ process.source.duplicateCheckMode = cms.untracked.string("checkEachRealDataFile"
 process.load("ApeEstimator.ApeEstimator.TrackRefitter_38T_cff")
 ## Global Tag
 if isMc:
-    #process.GlobalTag.globaltag = 'DESIGN311_V2::All'
-    #process.GlobalTag.globaltag = 'START311_V2::All'
-    process.GlobalTag.globaltag = 'MC_311_V2::All'
+    #process.GlobalTag.globaltag = 'DESIGN42_V11::All'
+    #process.GlobalTag.globaltag = 'START42_V12::All'
+    process.GlobalTag.globaltag = 'MC_42_V12::All'
 if isData:
-    process.GlobalTag.globaltag = 'FT_R_311_V4A::All'
+    process.GlobalTag.globaltag = 'GR_R_42_V20::All'
 ## --- Further information (Monte Carlo and Data) ---
 #process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
 #process.TTRHBuilderGeometricAndTemplate.PixelCPE = 'PixelCPEGeneric'
 #process.HighPuritySelector.src = 'generalTracks'
-#process.HighPuritySelector.src = 'ALCARECOTkAlMuonIsolated'
-process.HighPuritySelector.src = 'MuSkim'
+process.HighPuritySelector.src = 'ALCARECOTkAlMuonIsolated'
+#process.HighPuritySelector.src = 'MuSkim'
 
 
 

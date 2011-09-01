@@ -1,1 +1,1 @@
-from ApeEstimator.ApeEstimator.samples.Cert_136033_149442_7TeV_Dec22ReReco_Collisions10_CMSSWConfig_v3_cff import LumisToProcess
+from ApeEstimator.ApeEstimator.samples.Cert_160404_173664_7TeV_PromptReco_Collisions11_CMSSWConfig_cff import LumisToProcess
