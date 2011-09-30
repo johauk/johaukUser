@@ -10,8 +10,9 @@ import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as VarParsing
 import sys
 options = VarParsing.VarParsing ('standard')
-options.register('sample', 'data', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Input sample")
+options.register('sample', 'data1', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Input sample")
 options.register('atCern', True, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "At DESY or at CERN")
+options.register('useTrackList', True, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "Use list of preselected tracks")
 options.register('isTest', True, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "Test run")
 
 # get and parse the command line arguments
@@ -25,6 +26,7 @@ if( hasattr(sys, "argv") ):
 
 print "Input sample: ", options.sample
 print "At CERN: ", options.atCern
+print "Use list of preselected tracks: ", options.useTrackList
 print "Test run: ", options.isTest
 
 
@@ -45,11 +47,6 @@ process.MessageLogger.categories.append('AlignmentTrackSelector')
 process.MessageLogger.cerr.INFO.limit = 0
 process.MessageLogger.cerr.default.limit = -1
 process.MessageLogger.cerr.AlignmentTrackSelector = cms.untracked.PSet(limit = cms.untracked.int32(-1))
-
-#process.MessageLogger.cout = cms.untracked.PSet(INFO = cms.untracked.PSet(
-#    reportEvery = cms.untracked.int32(100),  # every 100th only
-#    limit = cms.untracked.int32(10),         # or limit to 10 printouts...
-#))
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000 ## really show only every 1000th
 
 
@@ -63,10 +60,15 @@ process.options = cms.untracked.PSet(
 
 
 
+isData1 = isData2 = False
 isData = False
-isQcd = isWlnu = isZmumu = isZtautau = False
+isQcd = isWlnu = isZmumu = isZtautau = isZmumu10 = isZmumu20 = False
 isMc = False
-if options.sample == 'data':
+if options.sample == 'data1':
+    isData1 = True
+    isData = True
+elif options.sample == 'data2':
+    isData2 = True
     isData = True
 elif options.sample == 'qcd':
     isQcd = True
@@ -80,6 +82,12 @@ elif options.sample == 'zmumu':
 elif options.sample == 'ztautau':
     isZtautau = True
     isMc = True
+elif options.sample == 'zmumu10':
+    isZmumu10 = True
+    isMc = True
+elif options.sample == 'zmumu20':
+    isZmumu20 = True
+    isMc = True
 else:
     print 'ERROR --- incorrect data sammple: ', options.sample
     exit(8888)
@@ -89,11 +97,19 @@ else:
 ##
 ## Input Files
 ##
-if isData: process.load("ApeEstimator.ApeEstimator.samples.alcareco.data_TkAlMuonIsolated_Run2010B_Dec22ReReco_cff")
-if isQcd: process.load("ApeEstimator.ApeEstimator.samples.alcareco.mc_TkAlMuonIsolated_Spring11_qcdMuEnriched_cff")
-if isWlnu: process.load("ApeEstimator.ApeEstimator.samples.alcareco.mc_TkAlMuonIsolated_Spring11_wlnu_cff")
-if isZmumu: process.load("ApeEstimator.ApeEstimator.samples.alcareco.mc_TkAlMuonIsolated_Spring11_zmumu_cff")
-if isZtautau: process.load("ApeEstimator.ApeEstimator.samples.alcareco.mc_TkAlMuonIsolated_Spring11_ztautau_cff")
+#if isData: process.load("ApeEstimator.ApeEstimator.samples.alcareco.data_TkAlMuonIsolated_Run2010B_Dec22ReReco_cff")
+#if isQcd: process.load("ApeEstimator.ApeEstimator.samples.alcareco.mc_TkAlMuonIsolated_Spring11_qcdMuEnriched_cff")
+#if isWlnu: process.load("ApeEstimator.ApeEstimator.samples.alcareco.mc_TkAlMuonIsolated_Spring11_wlnu_cff")
+#if isZmumu: process.load("ApeEstimator.ApeEstimator.samples.alcareco.mc_TkAlMuonIsolated_Spring11_zmumu_cff")
+#if isZtautau: process.load("ApeEstimator.ApeEstimator.samples.alcareco.mc_TkAlMuonIsolated_Spring11_ztautau_cff")
+
+if isData1: process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2011A_May10ReReco_cff")
+if isData2: process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2011A_PromptV4_cff")
+if isQcd: process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Summer11_qcd_cff")
+if isWlnu: process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Summer11_wlnu_cff")
+if isZmumu10: process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Summer11_zmumu10_cff")
+if isZmumu20: process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Summer11_zmumu20_cff")
+
 
 
 
@@ -121,9 +137,20 @@ if options.isTest: process.maxEvents.input = 1001
 process.load("ApeEstimator.ApeEstimator.TriggerSelection_cff")
 #if isData:
 #    process.TriggerFilter.TriggerResultsTag = cms.InputTag("TriggerResults","","HLT")
-if isMc:
-    process.TriggerFilter.TriggerResultsTag = cms.InputTag("TriggerResults","","REDIGI311X")
+#if isMc:
+#    process.TriggerFilter.TriggerResultsTag = cms.InputTag("TriggerResults","","REDIGI311X")
 
+
+
+##
+## Track List Reader
+##
+import ApeEstimator.Utils.TrackListReader_cfi
+process.TrackList = ApeEstimator.Utils.TrackListReader_cfi.TrackListReader
+process.TrackList.trackSource = 'ALCARECOTkAlMuonIsolated'
+process.TrackList.trackListFileName = '/afs/cern.ch/user/h/hauk/scratch0/trackList/goodTrackList_' + options.sample + '.root'
+#if options.isTest: process.TrackList.trackListFileName = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/Utils/hists/test_trackList.root'
+#print process.TrackList.trackListFileName
 
 
 
@@ -132,6 +159,15 @@ if isMc:
 ##
 import ApeEstimator.ApeEstimator.AlignmentTrackSelector_cff
 process.MuSkim = ApeEstimator.ApeEstimator.AlignmentTrackSelector_cff.MuSkimSelector
+
+
+
+##
+## If preselected track list is used
+##
+if options.useTrackList:
+    process.MuSkim.src = 'TrackList'
+    process.TriggerSelectionSequence *= process.TrackList
 
 
 
@@ -190,35 +226,48 @@ process.out = cms.OutputModule("PoolOutputModule",
 process.load("ApeEstimator.ApeEstimator.PrivateSkim_EventContent_cff")
 process.out.outputCommands.extend(process.ApeSkimEventContent.outputCommands)
 
-if isData:
+if isData1:
   if options.atCern:
-    process.out.fileName = 'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/data/Mu/Run2010B_Dec22ReReco/apeSkim.root'
+    process.out.fileName = 'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/data/Mu/Run2011A_May10ReReco/apeSkim.root'
   else:
-    #process.out.fileName = 'dcap://dcache-cms-dcap.desy.de:22125/pnfs/desy.de/cms/tier2/store/user/hauk/ape/data/apeSkim.root'
-    #process.out.fileName = 'dcap://dcache-cms-dcap.desy.de//pnfs/desy.de/cms/tier2/store/user/hauk/ape/data/apeSkim.root'
-    #process.out.fileName = 'srm://dcache-se-cms.desy.de:8443//pnfs/desy.de/cms/tier2/store/user/hauk/ape/data/apeSkim.root'
-    #process.out.fileName = 'gsidcap://dcache-cms-gsidcap:22128/pnfs/desy.de/cms/tier2/store/user/hauk/ape/data/apeSkim.root'
+    process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/data/apeSkim.root'
+elif isData2:
+  if options.atCern:
+    process.out.fileName = 'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/data/Mu/Run2011A_PromptRecoV4/apeSkim.root'
+  else:
     process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/data/apeSkim.root'
 if isQcd:
   if options.atCern:
-    process.out.fileName = 'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Qcd/apeSkim.root'
+    process.out.fileName = 'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Summer11/qcd/apeSkim.root'
   else:
     process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/qcd/apeSkim.root'
 elif isWlnu:
   if options.atCern:
-    process.out.fileName = 'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Wlnu/apeSkim.root'
+    process.out.fileName = 'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Summer11/wlnu/apeSkim.root'
   else:
     process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/wlnu/apeSkim.root'
 elif isZmumu:
   if options.atCern:
-    process.out.fileName = 'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Zmumu/apeSkim.root'
+    process.out.fileName = ''
   else:
     process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/zmumu/apeSkim.root'
 elif isZtautau:
   if options.atCern:
-    process.out.fileName = 'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Ztautau/apeSkim.root'
+    process.out.fileName = ''
   else:
     process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/ztautau/apeSkim.root'
+elif isZmumu10:
+  if options.atCern:
+    process.out.fileName = 'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Summer11/zmumu10/apeSkim.root'
+  else:
+    process.out.fileName = ''
+elif isZmumu20:
+  if options.atCern:
+    process.out.fileName = 'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Summer11/zmumu20/apeSkim.root'
+  else:
+    process.out.fileName = ''
+
+
 
 
 if options.isTest:
