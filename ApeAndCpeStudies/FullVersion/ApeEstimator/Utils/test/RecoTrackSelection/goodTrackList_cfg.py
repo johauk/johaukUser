@@ -148,7 +148,7 @@ if options.isTest:
 outputName = outputName + options.sample + '_goodTrackList.root'
 
 if options.useCrab:
-    outputName = options.sample + '_goodTrackList.root'
+    outputName = 'goodTrackList.root'
 
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string(outputName),
