@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May 20 15:47:12 CEST 2010
-// $Id: DimuonAnalyzer.cc,v 1.2 2011/08/04 11:42:07 hauk Exp $
+// $Id: DimuonAnalyzer.cc,v 1.3 2011/08/11 15:07:03 hauk Exp $
 //
 //
 
@@ -82,7 +82,7 @@ class DimuonAnalyzer : public edm::EDAnalyzer {
       
       /// Properties of reconstructed di-muon particle
       TH1F *DiMass, *DiPt,
-	   *DiY;
+	   *DiPhi, *DiY;
       
 };
 
@@ -105,7 +105,7 @@ IsoLow(0), IsoHigh(0),
 DeltaEta(0), DeltaPhi(0), DeltaR(0),
 DeltaVz(0),
 DiMass(0), DiPt(0),
-DiY(0)
+DiPhi(0), DiY(0)
 {
 }
 
@@ -170,6 +170,7 @@ DimuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     //const reco::Candidate::LorentzVector dimuVec = mu1.p4() + mu2.p4();
     const double diMass = dimuon.mass();
     const double diPt = dimuon.pt();
+    const double diPhi = dimuon.phi();
     const double diY = dimuon.y();
     
     EtaLow->Fill(etaLow, eventWeight);
@@ -184,6 +185,7 @@ DimuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     DeltaVz->Fill(deltaVz, eventWeight);
     DiMass->Fill(diMass, eventWeight);
     DiPt->Fill(diPt, eventWeight);
+    DiPhi->Fill(diPhi*180./M_PI, eventWeight);
     DiY->Fill(diY, eventWeight);
     
   }
@@ -213,6 +215,7 @@ DimuonAnalyzer::beginJob()
   DeltaVz = dirDimuon.make<TH1F>("h_deltaVz","#Delta v_{z};#Delta v_{z};# muon pairs",100,-1.,1.);
   DiMass = dirDimuon.make<TH1F>("h_diMass","dimuon invariant mass;M_{#mu#mu} [GeV];# muon pairs",300,0.,600.);
   DiPt = dirDimuon.make<TH1F>("h_diPt","dimuon p_{t};p_{t}  [GeV];# muon pairs",100,0,200);
+  DiPhi = dirDimuon.make<TH1F>("h_phi","Azimuth angle #phi;#phi;# jets",90,-180,180);
   DiY = dirDimuon.make<TH1F>("h_diY","dimuon rapidity y;y;# muon pairs",120,-3,3);
 }
 

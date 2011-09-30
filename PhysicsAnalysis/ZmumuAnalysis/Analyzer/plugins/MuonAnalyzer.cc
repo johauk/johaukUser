@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu Aug 19 17:46:32 CEST 2010
-// $Id: MuonAnalyzer.cc,v 1.5 2011/08/04 11:42:07 hauk Exp $
+// $Id: MuonAnalyzer.cc,v 1.6 2011/08/11 15:07:03 hauk Exp $
 //
 //
 
@@ -77,6 +77,7 @@ class MuonAnalyzer : public edm::EDAnalyzer {
       TH1* NumberOfMatches;
       TH1* NumberOfValidMuonHits;
       TH1* NormalizedChi2;
+      TH1* Phi;
       TH1* Eta;
       TH1* Pt;
       TH1* D0Beamspot;
@@ -108,7 +109,7 @@ NumberOfValidTrackerHits(0), NumberOfValidPixelHits(0),
 NumberOfMatches(0),
 NumberOfValidMuonHits(0),
 NormalizedChi2(0),
-Eta(0), Pt(0), D0Beamspot(0),
+Phi(0), Eta(0), Pt(0), D0Beamspot(0),
 IsoTrk(0), IsoCombRel(0),
 PtZoom(0), IsoCombRelVsPtZoom(0)
 {
@@ -153,11 +154,14 @@ MuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   // All values taken from global muon, except for TrackerMuon: numberOfValidTrackerHits, numberOfValidPixelHits
   pat::MuonCollection::const_iterator i_muon;
   for(i_muon = muons->begin(); i_muon != muons->end(); ++i_muon){
+    const double phi = i_muon->phi();
     const double eta = i_muon->eta();
     const double pt = i_muon->pt();
     const double d0Beamspot = i_muon->dB();
     const double isoTrk = i_muon->trackIso();
     const double isoCombRel = (isoTrk + i_muon->caloIso())/pt;
+    
+    Phi->Fill(phi*180./M_PI, eventWeight);
     Eta->Fill(eta, eventWeight);
     Pt->Fill(pt, eventWeight);
     D0Beamspot->Fill(d0Beamspot, eventWeight);
@@ -237,6 +241,7 @@ MuonAnalyzer::beginJob()
     NormalizedChi2 = dirMuon.make<TH1F>("h_chi2","normalized #chi^{2};#chi^{2}/ndof;# muons",50,0,normalizedChi2Max);
     IsoTrk = dirMuon.make<TH1F>("h_isoTrk","Isolation (tracker);I_{trk}  [GeV];# muons",100,0,isoTrkMax);
   }
+  Phi = dirMuon.make<TH1F>("h_phi","Azimuth angle #phi;#phi;# jets",90,-180,180);
   Eta = dirMuon.make<TH1F>("h_eta","pseudorapidity #eta;#eta;# muons",60,-3,3);
   Pt = dirMuon.make<TH1F>("h_pt","transverse momentum p_{t};p_{t}  [GeV];# muons",100,0,200);
   D0Beamspot = dirMuon.make<TH1F>("h_d0Beamspot","closest approach d_{0} wrt. beamspot;d_{0, BS}  [cm];# muons",100,-d0BeamspotMax,d0BeamspotMax);

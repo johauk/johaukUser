@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Wed Nov 10 11:48:47 CET 2010
-// $Id: MetAnalyzer.cc,v 1.1 2010/12/09 16:18:53 hauk Exp $
+// $Id: MetAnalyzer.cc,v 1.2 2011/08/04 11:42:07 hauk Exp $
 //
 //
 
@@ -63,8 +63,9 @@ class MetAnalyzer : public edm::EDAnalyzer {
       // ----------member data ---------------------------
       
       const edm::ParameterSet parameterSet_;
-
-      TH1* MissingEt;
+      
+      TH1* Phi;
+      TH1* Et;
 };
 
 //
@@ -80,7 +81,7 @@ class MetAnalyzer : public edm::EDAnalyzer {
 //
 MetAnalyzer::MetAnalyzer(const edm::ParameterSet& iConfig):
 parameterSet_(iConfig),
-MissingEt(0)
+Phi(0), Et(0)
 {
 }
 
@@ -111,9 +112,11 @@ MetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                           "Bad MET collection" );
   }
   
+  const double phi = mets->begin()->phi();
+  const double et = (mets->begin())->et();
   
-  float met = (mets->begin())->et();
-  MissingEt->Fill(met, eventWeight);
+  Phi->Fill(phi*180./M_PI, eventWeight);
+  Et->Fill(et, eventWeight);
 }
 
 
@@ -124,7 +127,8 @@ MetAnalyzer::beginJob()
   edm::Service<TFileService> fileService;
   
   TFileDirectory dirMet = fileService->mkdir("MetProperties");
-  MissingEt = dirMet.make<TH1F>("h_missingEt","missing E_{t};E_{t,miss}  [GeV];# events",40,0,200);
+  Phi = dirMet.make<TH1F>("h_phi","Azimuth angle #phi;#phi;# jets",90,-180,180);
+  Et = dirMet.make<TH1F>("h_et","missing E_{t};E_{t,miss}  [GeV];# events",40,0,200);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------

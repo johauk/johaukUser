@@ -14,7 +14,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Wed Oct 20 16:37:05 CEST 2010
-// $Id: JetAnalyzer.cc,v 1.6 2011/07/20 16:51:07 hauk Exp $
+// $Id: JetAnalyzer.cc,v 1.7 2011/08/04 11:42:07 hauk Exp $
 //
 //
 
@@ -67,6 +67,7 @@ class JetAnalyzer : public edm::EDAnalyzer {
       
       TH1* NJet;
       
+      TH1* Phi;
       TH1* Eta;
       TH1* Pt;
       TH1* NConstituent;
@@ -94,7 +95,7 @@ class JetAnalyzer : public edm::EDAnalyzer {
 JetAnalyzer::JetAnalyzer(const edm::ParameterSet& iConfig):
 parameterSet_(iConfig),
 NJet(0),
-Eta(0), Pt(0),
+Phi(0), Eta(0), Pt(0),
 NConstituent(0),
 BDiscriminatorSsvHe(0), BDiscriminatorSsvHp(0),
 ChargedMultiplicity(0),
@@ -147,8 +148,10 @@ JetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     //  std::cout<<"\tLabels of JEC levels "<<*i_Jec<<"\n";
     //}
     
+    const double phi = i_jet->phi();
     const double eta = i_jet->eta();
     const double pt = i_jet->pt();
+    Phi->Fill(phi*180./M_PI, eventWeight);
     Eta->Fill(eta, eventWeight);
     Pt->Fill(pt, eventWeight);
     
@@ -210,6 +213,7 @@ JetAnalyzer::beginJob()
   BDiscriminatorSsvHe = dirJet.make<TH1F>("h_bDiscriminatorSsvHe","b discriminator simpleSecondaryVertexHighEff d;d;# jets",80,-1,14);
   BDiscriminatorSsvHp = dirJet.make<TH1F>("h_bDiscriminatorSsvHp","b discriminator simpleSecondaryVertexHighPur d;d;# jets",60,-1,14);
   
+  Phi = dirJet.make<TH1F>("h_phi","Azimuth angle #phi;#phi;# jets",90,-180,180);
   Eta = dirJet.make<TH1F>("h_eta","pseudorapidity #eta;#eta;# jets",60,-3,3);
   Pt = dirJet.make<TH1F>("h_pt","transverse momentum p_{t};p_{t};# jets",100,0,200);
   
