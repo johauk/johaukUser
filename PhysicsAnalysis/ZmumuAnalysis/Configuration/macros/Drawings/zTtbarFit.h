@@ -9,11 +9,14 @@
 
 
 #include "ZmumuAnalysis/Configuration/macros/Tools/signalAndSidebandCombined.h"
+#include "ZmumuAnalysis/Configuration/macros/Tools/histTools.h"
+
 
 #include "TString.h"
 #include "TH1.h"
 #include "TCanvas.h"
 #include "THStack.h"
+#include "TLegend.h"
 
 #include <iostream>
 
@@ -98,6 +101,7 @@ void FullAnalysis::zTtbarFit(){
   if(yMin>yMinTemp)yMin=yMinTemp;
   if(yMax<yMaxTemp)yMax=yMaxTemp;
   
+  StackTools::setTitles(mcStack, dimuonMassZmumuB);
   TCanvas* canvas = new TCanvas("plot", "plot", 800, 800);
   mcStack->Draw();
   // Does not work for y, but works for x !?
@@ -109,6 +113,17 @@ void FullAnalysis::zTtbarFit(){
   canvas->Clear();
   mcStack->Draw();
   dimuonMassData_rebin->Draw("same,e1");
+  
+  TLegend* legend(0);
+  legend = new TLegend(0.75,0.75,0.99,0.85);
+  legend->Clear();
+  legend->SetFillColor(0);
+  legend->SetFillStyle(4000);
+  //legend->AddEntry(dimuonMassData, "data", "le");
+  legend->AddEntry(dimuonMassData, "data", "p");
+  legend->AddEntry(dimuonMassZmumuB, "Z #rightarrow #mu#mu", "f");
+  legend->AddEntry(dimuonMassTtbar, "t#bar{t}", "f");
+  legend->Draw("same");
   
   canvas->Modified();
   canvas->Update();
@@ -158,6 +173,7 @@ void FullAnalysis::zTtbarFit(){
   if(yMin>yMinTemp)yMin=yMinTemp;
   if(yMax<yMaxTemp)yMax=yMaxTemp;
   
+  StackTools::setTitles(mcStack, dimuonMassZmumuB);
   TCanvas* canvas = new TCanvas("plot", "plot", 800, 800);
   mcStack->Draw();
   // Does not work for y, but works for x !?
@@ -169,6 +185,17 @@ void FullAnalysis::zTtbarFit(){
   canvas->Clear();
   mcStack->Draw();
   dimuonMassData_zoom->Draw("same,e1");
+  
+  TLegend* legend(0);
+  legend = new TLegend(0.75,0.75,0.99,0.85);
+  legend->Clear();
+  legend->SetFillColor(0);
+  legend->SetFillStyle(4000);
+  //legend->AddEntry(dimuonMassData, "data", "le");
+  legend->AddEntry(dimuonMassData, "data", "p");
+  legend->AddEntry(dimuonMassZmumuB, "Z #rightarrow #mu#mu", "f");
+  legend->AddEntry(dimuonMassTtbar, "t#bar{t}", "f");
+  legend->Draw("same");
   
   canvas->Modified();
   canvas->Update();

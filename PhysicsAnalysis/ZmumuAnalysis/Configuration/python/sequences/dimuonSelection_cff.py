@@ -26,7 +26,7 @@ dimuons = cms.EDProducer("CandViewShallowCloneCombiner",
 
 
 
-# Check trigger object matching for at least one of both muons
+# Check trigger object matching for muons
 ## Use the "CandViewSelector" and not the "CandViewRefSelector":
 ## First one is a lazy parser, so knows about input type
 ## Here: it is a ShallowCloneCandidate with corresponding methods and not only a Candidate*, as the plugin thinks as it is its input
