@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,6 2-039,+41227673512,
 //         Created:  Wed Aug 31 15:26:54 CEST 2011
-// $Id$
+// $Id: TrackListReader.cc,v 1.1 2011/08/31 16:31:37 hauk Exp $
 //
 //
 
@@ -123,8 +123,8 @@ TrackListReader::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   const unsigned int run(iEvent.id().run());
   const unsigned int event(iEvent.id().event());
   
-  if(m_runEventTrackParams_.count(run)==0)return;
-  if(m_runEventTrackParams_[run].count(event)==0)return;
+  if(m_runEventTrackParams_.count(run)==0){iEvent.put(outputTrack); return;}
+  if(m_runEventTrackParams_[run].count(event)==0){iEvent.put(outputTrack); return;}
   std::vector<TrackParams>& v_trackParams(m_runEventTrackParams_[run][event]);
   
   edm::InputTag trackSource = parameterSet_.getParameter<edm::InputTag>("trackSource");
