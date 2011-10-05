@@ -107,7 +107,7 @@ finalDimuonsZVetoLow = finalDimuons.clone(
     cut = 'mass <= 60.',
 )
 finalDimuonsZVetoHigh = finalDimuons.clone(
-    cut = 'mass >= 120.',
+    cut = 'mass >= 120. & mass < 400.',
 )
 
 
