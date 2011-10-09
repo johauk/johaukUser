@@ -7,13 +7,34 @@ fi
 
 sample="$1"
 
+directory=""
+
+if [[ "$sample" == data1 ]] ; then directory="/store/caf/user/hauk/data/DoubleMu/Run2011A_May10ReReco/"
+elif [[ "$sample" == data2 ]] ; then directory="/store/caf/user/hauk/data/DoubleMu/Run2011A_PromptV4/"
+elif [[ "$sample" == qcd ]] ; then directory="/store/caf/user/hauk/mc/Summer11/qcd/"
+elif [[ "$sample" == wlnu ]] ; then directory="/store/caf/user/hauk/mc/Summer11/wlnu/"
+elif [[ "$sample" == zmumu10 ]] ; then directory="/store/caf/user/hauk/mc/Summer11/zmumu10/"
+elif [[ "$sample" == zmumu20 ]] ; then directory="/store/caf/user/hauk/mc/Summer11/zmumu20/"
+else
+  echo "Invalid dataset: $sample"
+  exit 2
+fi
+
+
+ls -l
+
 cd $CMSSW_BASE/src
 eval `scram runtime -sh`
 cd -
 cmsRun $CMSSW_BASE/src/ApeEstimator/ApeEstimator/test/SkimProducer/skimProducer_cfg.py isTest=False sample=$sample
 
+ls -l
 
 
+for file in *.root;
+do
+  cmsStageOut $file ${directory}${file}
+done
 
 
 

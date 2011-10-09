@@ -226,50 +226,47 @@ process.out = cms.OutputModule("PoolOutputModule",
 process.load("ApeEstimator.ApeEstimator.PrivateSkim_EventContent_cff")
 process.out.outputCommands.extend(process.ApeSkimEventContent.outputCommands)
 
-if isData1:
-  if options.atCern:
-    process.out.fileName = 'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/data/Mu/Run2011A_May10ReReco/apeSkim.root'
-  else:
-    process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/data/apeSkim.root'
-elif isData2:
-  if options.atCern:
-    process.out.fileName = 'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/data/Mu/Run2011A_PromptRecoV4/apeSkim.root'
-  else:
-    process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/data/apeSkim.root'
-if isQcd:
-  if options.atCern:
-    process.out.fileName = 'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Summer11/qcd/apeSkim.root'
-  else:
-    process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/qcd/apeSkim.root'
-elif isWlnu:
-  if options.atCern:
-    process.out.fileName = 'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Summer11/wlnu/apeSkim.root'
-  else:
-    process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/wlnu/apeSkim.root'
-elif isZmumu:
-  if options.atCern:
-    process.out.fileName = ''
-  else:
-    process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/zmumu/apeSkim.root'
-elif isZtautau:
-  if options.atCern:
-    process.out.fileName = ''
-  else:
-    process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/ztautau/apeSkim.root'
-elif isZmumu10:
-  if options.atCern:
-    process.out.fileName = 'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Summer11/zmumu10/apeSkim.root'
-  else:
-    process.out.fileName = ''
-elif isZmumu20:
-  if options.atCern:
-    process.out.fileName = 'rfio:///?svcClass=cmscafuser&path=/castor/cern.ch/cms/store/caf/user/hauk/mc/Summer11/zmumu20/apeSkim.root'
-  else:
-    process.out.fileName = ''
-
-
-
-
+#if isData1:
+#  if options.atCern:
+#    process.out.fileName = 'root://eoscms//eos/cms/store/caf/user/hauk/data/DoubleMu/Run2011A_May10ReReco/apeSkim.root?svcClass=cmscafuser&stageHost=castorcms'
+#  else:
+#    process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/data/apeSkim.root'
+#elif isData2:
+#  if options.atCern:
+#    #process.out.fileName = 'root://eoscms//eos/cms/store/caf/user/hauk/data/DoubleMu/Run2011A_PromptV4/apeSkim.root?svcClass=cmscafuser&stageHost=castorcms'
+#    process.out.fileName = 'apeSkim.root'
+#  else:
+#    process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/data/apeSkim.root'
+#if isQcd:
+#  if options.atCern:
+#    process.out.fileName = 'root://eoscms//eos/cms/store/caf/user/hauk/mc/Summer11/qcd/apeSkim.root?svcClass=cmscafuser&stageHost=castorcms'
+#  else:
+#    process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/qcd/apeSkim.root'
+#elif isWlnu:
+#  if options.atCern:
+#    process.out.fileName = 'root://eoscms//eos/cms/store/caf/user/hauk/mc/Summer11/wlnu/apeSkim.root?svcClass=cmscafuser&stageHost=castorcms'
+#  else:
+#    process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/wlnu/apeSkim.root'
+#elif isZmumu:
+#  if options.atCern:
+#    process.out.fileName = ''
+#  else:
+#    process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/zmumu/apeSkim.root'
+#elif isZtautau:
+#  if options.atCern:
+#    process.out.fileName = ''
+#  else:
+#    process.out.fileName = '/scratch/hh/current/cms/user/hauk/data/alcareco/ztautau/apeSkim.root'
+#elif isZmumu10:
+#  if options.atCern:
+#    process.out.fileName = 'root://eoscms//eos/cms/store/caf/user/hauk/mc/Summer11/zmumu10/apeSkim.root?svcClass=cmscafuser&stageHost=castorcms'
+#  else:
+#    process.out.fileName = ''
+#elif isZmumu20:
+#  if options.atCern:
+#    process.out.fileName = 'root://eoscms//eos/cms/store/caf/user/hauk/mc/Summer11/zmumu20/apeSkim.root?svcClass=cmscafuser&stageHost=castorcms'
+#  else:
+#    process.out.fileName = ''
 if options.isTest:
   process.out.fileName = os.environ['CMSSW_BASE'] + '/src/ApeEstimator/ApeEstimator/hists/test_apeSkim.root'
 
