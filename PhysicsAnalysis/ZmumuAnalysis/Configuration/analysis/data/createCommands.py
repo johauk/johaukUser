@@ -5,7 +5,9 @@ samples = [
     #['elel2', 30],
     ['ttbar', 20],
     ['zmumuB', 40],
-    ['zmumuUdsc', 40],
+    ['zmumuC', 40],
+    ['zmumuUds', 40],
+    #['zmumuUdsc', 40],
     ]
 
 
@@ -18,8 +20,8 @@ metcuts = [
 btags = [
   ['HeM', ''],
   ['HpT', 'HeM'],
-  ['HeMExcl', ''],
-  ['HpTExcl', ''],
+  #['HeMExcl', ''],
+  #['HpTExcl', ''],
   ]
 
 

@@ -41,6 +41,12 @@ visibleKinematicBs = genParticleSelector.clone(
 
 
 
+selectedCs = genParticleSelector.clone(
+    #src = 'genParticles',
+    cut = 'abs(pdgId)=4',
+)
+
+
 
 
 ##
@@ -96,9 +102,12 @@ twoBSelection = cms.Sequence(
 ## Define signal process
 ##
 signalBs = genParticleSelector.clone(src = 'selectedBs',)
+signalCs = genParticleSelector.clone(src = 'selectedCs',)
 buildSignalBCollections = cms.Sequence(
     selectedBs*
-    signalBs
+    signalBs*
+    selectedCs*
+    signalCs
 )
 
 signalBSelection = genParticleCountFilter.clone(
@@ -106,6 +115,9 @@ signalBSelection = genParticleCountFilter.clone(
     minNumber = 1,
 )
 
-
+signalCSelection = genParticleCountFilter.clone(
+    src = 'signalCs',
+    minNumber = 1,
+)
 
 

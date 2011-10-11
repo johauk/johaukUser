@@ -56,7 +56,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 ##
 isMumu1 = isMumu2 = isMumu3 = False
 isElel1 = isElel2 = isElel3 = False
-isQcd = isSingletopS = isSingletopT = isSingletopTw = isTtbar = isWmunu = isWtaunu = isZmumu = isZmumuB = isZmumuUdsc = isZtautau = isWw = isWz = isZz = False
+isQcd = isSingletopS = isSingletopT = isSingletopTw = isTtbar = isWmunu = isWtaunu = isZmumu = isZmumuB = isZmumuC = isZmumuUds = isZmumuUdsc = isZtautau = isWw = isWz = isZz = False
 isTest = False
 # Data samples
 if options.sample == 'mumu1': isMumu1 = True
@@ -75,6 +75,8 @@ elif options.sample == 'wmunu': isWmunu = True
 elif options.sample == 'wtaunu': isWtaunu = True
 elif options.sample == 'zmumu': isZmumu = True
 elif options.sample == 'zmumuB': isZmumuB = True
+elif options.sample == 'zmumuC': isZmumuC = True
+elif options.sample == 'zmumuUds': isZmumuUds = True
 elif options.sample == 'zmumuUdsc': isZmumuUdsc = True
 elif options.sample == 'ztautau': isZtautau = True
 elif options.sample == 'ww': isWw = True
@@ -105,6 +107,8 @@ if(isWmunu): counter += 1; isMC = True
 if(isWtaunu): counter += 1; isMC = True
 if(isZmumu): counter += 1; isMC = True
 if(isZmumuB): counter += 1; isMC = True
+if(isZmumuC): counter += 1; isMC = True
+if(isZmumuUds): counter += 1; isMC = True
 if(isZmumuUdsc): counter += 1; isMC = True
 if(isZtautau): counter += 1; isMC = True
 if(isWw): counter += 1; isMC = True
@@ -155,6 +159,10 @@ elif(isWtaunu):
 elif(isZmumu):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_425_Aug08_cff")
 elif(isZmumuB):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_425_Aug08_cff")
+elif(isZmumuC):
+    process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_425_Aug08_cff")
+elif(isZmumuUds):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_425_Aug08_cff")
 elif(isZmumuUdsc):
     process.load("ZmumuAnalysis.Configuration.samples.dataAndSummer11.Summer11_DYJetsToLL_Z2_madgraph_425_Aug08_cff")
@@ -235,6 +243,8 @@ elif(isWmunu): fileName = 'wmunu.root'  # 'mc/wmunu.root'
 elif(isWtaunu): fileName = 'wtaunu.root'  # 'mc/wtaunu.root'
 elif(isZmumu): fileName = 'zmumu.root'  # 'mc/zmumu.root'
 elif(isZmumuB): fileName = 'zmumuB.root'  # 'mc/zmumuB.root'
+elif(isZmumuC): fileName = 'zmumuC.root'  # 'mc/zmumuC.root'
+elif(isZmumuUds): fileName = 'zmumuUds.root'  # 'mc/zmumuUds.root'
 elif(isZmumuUdsc): fileName = 'zmumuUdsc.root'  # 'mc/zmumuUdsc.root'
 elif(isZtautau): fileName = 'ztautau.root'  # 'mc/ztautau.root'
 elif(isWw): fileName = 'ww.root'  # 'mc/ww.root'
@@ -305,11 +315,15 @@ process.load("ZmumuAnalysis.Configuration.filters.GeneratorBclFilter_cff")
 ## Apply generator filters here
 if(isZmumu):
     process.seqGeneratorFilter *= process.GeneratorZmumuDiMuFilter
-if(isZmumuB or isZmumuUdsc):
+if(isZmumuB or isZmumuC or isZmumuUds or isZmumuUdsc):
     process.seqGeneratorFilter *= process.GeneratorZmumuDiMuFilter
     process.seqGeneratorFilter *= process.buildSignalBCollections
 if(isZmumuB):
     process.seqGeneratorFilter *= process.signalBSelection
+if(isZmumuC):
+    process.seqGeneratorFilter *= ~process.signalBSelection * process.signalCSelection
+if(isZmumuUds):
+    process.seqGeneratorFilter *= ~process.signalBSelection * ~process.signalCSelection
 if(isZmumuUdsc):
     process.seqGeneratorFilter *= ~process.signalBSelection
 if(isZtautau):
