@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu May 20 15:47:12 CEST 2010
-// $Id: DimuonAnalyzer.cc,v 1.3 2011/08/11 15:07:03 hauk Exp $
+// $Id: DimuonAnalyzer.cc,v 1.4 2011/09/30 09:39:34 hauk Exp $
 //
 //
 
@@ -213,7 +213,7 @@ DimuonAnalyzer::beginJob()
   DeltaPhi = dirDimuon.make<TH1F>("h_deltaPhi","#Delta#phi;#Delta#phi  [ ^{o}];# muon pairs",100,-200,200);
   DeltaR =  dirDimuon.make<TH1F>("h_deltaR","#Delta R;#Delta R;# muon pairs",100,0,10);
   DeltaVz = dirDimuon.make<TH1F>("h_deltaVz","#Delta v_{z};#Delta v_{z};# muon pairs",100,-1.,1.);
-  DiMass = dirDimuon.make<TH1F>("h_diMass","dimuon invariant mass;M_{#mu#mu} [GeV];# muon pairs",300,0.,600.);
+  DiMass = dirDimuon.make<TH1F>("h_diMass","dimuon invariant mass;M_{#mu#mu} [GeV];# muon pairs",200,0.,400.);
   DiPt = dirDimuon.make<TH1F>("h_diPt","dimuon p_{t};p_{t}  [GeV];# muon pairs",100,0,200);
   DiPhi = dirDimuon.make<TH1F>("h_phi","Azimuth angle #phi;#phi;# jets",90,-180,180);
   DiY = dirDimuon.make<TH1F>("h_diY","dimuon rapidity y;y;# muon pairs",120,-3,3);
