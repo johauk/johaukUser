@@ -57,8 +57,9 @@ TriggerFilterMu13Mu8 = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone(
 
 TriggerFilterDoubleMu = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone(
     HLTPaths = [
-      "HLT_DoubleMu7_v*",  # For data
-      "HLT_Mu13_Mu8_v*",  # For data
+      "HLT_DoubleMu6_v*",
+      "HLT_DoubleMu7_v*",
+      "HLT_Mu13_Mu8_v*",
     ],
     throw = False,   # do not throw exception on events where not all listed triggers are in...
 )
