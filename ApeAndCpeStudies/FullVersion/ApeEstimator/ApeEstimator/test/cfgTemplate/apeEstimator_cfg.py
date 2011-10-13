@@ -11,7 +11,7 @@ import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as VarParsing
 import sys
 options = VarParsing.VarParsing ('standard')
-options.register('sample', 'data', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Input sample")
+options.register('sample', 'data1', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Input sample")
 options.register('fileNumber', 1, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "Input file number")
 options.register('iterNumber', 0, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "Iteration number")
 options.register('lastIter', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "Last iteration")
@@ -61,11 +61,6 @@ process.MessageLogger.cerr.HitSelector = cms.untracked.PSet(limit = cms.untracke
 process.MessageLogger.cerr.CalculateAPE = cms.untracked.PSet(limit = cms.untracked.int32(-1))
 process.MessageLogger.cerr.ApeEstimator = cms.untracked.PSet(limit = cms.untracked.int32(-1))
 process.MessageLogger.cerr.AlignmentTrackSelector = cms.untracked.PSet(limit = cms.untracked.int32(-1))
-
-#process.MessageLogger.cout = cms.untracked.PSet(INFO = cms.untracked.PSet(
-#    reportEvery = cms.untracked.int32(100),  # every 100th only
-#    limit = cms.untracked.int32(10),         # or limit to 10 printouts...
-#))
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000 ## really show only every 1000th
 
 
@@ -82,12 +77,43 @@ process.options = cms.untracked.PSet(
 ##
 ## Input sample definition
 ##
+#isData = False
+#isQcd = isWlnu = isZmumu = isZtautau = False
+#isMc = False
+#isParticleGunMuon = isParticleGunPion = False
+#isParticleGun = False
+#if options.sample == 'data':
+#    isData = True
+#elif options.sample == 'qcd':
+#    isQcd = True
+#    isMc = True
+#elif options.sample == 'wlnu':
+#    isWlnu = True
+#    isMc = True
+#elif options.sample == 'zmumu':
+#    isZmumu = True
+#    isMc = True
+#elif options.sample == 'ztautau':
+#    isZtautau = True
+#    isMc = True
+#elif options.sample == 'ParticleGunMuon':
+#    isParticleGunMuon = True
+#    isParticleGun = True
+#elif options.sample == 'ParticleGunPion':
+#    isParticleGunPion = True
+#    isParticleGun = True
+#else:
+#    print 'ERROR --- incorrect data sammple: ', options.sample
+#    exit(8888)
+isData1 = isData2 = False
 isData = False
-isQcd = isWlnu = isZmumu = isZtautau = False
+isQcd = isWlnu = isZmumu = isZtautau = isZmumu10 = isZmumu20 = False
 isMc = False
-isParticleGunMuon = isParticleGunPion = False
-isParticleGun = False
-if options.sample == 'data':
+if options.sample == 'data1':
+    isData1 = True
+    isData = True
+elif options.sample == 'data2':
+    isData2 = True
     isData = True
 elif options.sample == 'qcd':
     isQcd = True
@@ -101,12 +127,12 @@ elif options.sample == 'zmumu':
 elif options.sample == 'ztautau':
     isZtautau = True
     isMc = True
-elif options.sample == 'ParticleGunMuon':
-    isParticleGunMuon = True
-    isParticleGun = True
-elif options.sample == 'ParticleGunPion':
-    isParticleGunPion = True
-    isParticleGun = True
+elif options.sample == 'zmumu10':
+    isZmumu10 = True
+    isMc = True
+elif options.sample == 'zmumu20':
+    isZmumu20 = True
+    isMc = True
 else:
     print 'ERROR --- incorrect data sammple: ', options.sample
     exit(8888)
@@ -130,22 +156,78 @@ readFiles.extend( [
 ## Number of Events (should be after input file)
 ##
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+#if isQcd:
+#  if options.fileNumber==1: process.maxEvents.input = 87763    # 854181 events
+#  elif options.fileNumber==2: process.maxEvents.input = 87763  # 851413 events
+#  elif options.fileNumber==3: process.maxEvents.input = 87763  # 206553 events
+#elif isWlnu:
+#  if options.fileNumber==1: process.maxEvents.input = 56348    # 894904 events
+#  elif options.fileNumber==2: process.maxEvents.input = 56348  # 892738 events
+#  elif options.fileNumber==3: process.maxEvents.input = 56348  # 895703 events
+#  elif options.fileNumber==4: process.maxEvents.input = 56348  # 365205 events
+#elif isZmumu:
+#  if options.fileNumber==1: process.maxEvents.input = 12043    # 619625 events
+#  elif options.fileNumber==2: process.maxEvents.input = 12043  # 618007 events
+#  elif options.fileNumber==3: process.maxEvents.input = 12043  # 209738 events
+#elif isZtautau:
+#  if options.fileNumber==1: process.maxEvents.input = 414      # 143721 events
 if isQcd:
-  if options.fileNumber==1: process.maxEvents.input = 87763    # 854181 events
-  elif options.fileNumber==2: process.maxEvents.input = 87763  # 851413 events
-  elif options.fileNumber==3: process.maxEvents.input = 87763  # 206553 events
+  if options.fileNumber==1: process.maxEvents.input = 496645   # 588022 events
 elif isWlnu:
-  if options.fileNumber==1: process.maxEvents.input = 56348    # 894904 events
-  elif options.fileNumber==2: process.maxEvents.input = 56348  # 892738 events
-  elif options.fileNumber==3: process.maxEvents.input = 56348  # 895703 events
-  elif options.fileNumber==4: process.maxEvents.input = 56348  # 365205 events
-elif isZmumu:
-  if options.fileNumber==1: process.maxEvents.input = 12043    # 619625 events
-  elif options.fileNumber==2: process.maxEvents.input = 12043  # 618007 events
-  elif options.fileNumber==3: process.maxEvents.input = 12043  # 209738	events
-elif isZtautau:
-  if options.fileNumber==1: process.maxEvents.input = 414      # 143721 events
-
+  if options.fileNumber==1: process.maxEvents.input =    91613 # 958439 events
+  elif options.fileNumber==2: process.maxEvents.input =  91613 # 958759 events
+  elif options.fileNumber==3: process.maxEvents.input =  91613 # 959034 events
+  elif options.fileNumber==4: process.maxEvents.input =  91613 # 960240 events
+  elif options.fileNumber==5: process.maxEvents.input =  91613 # 960338 events
+  elif options.fileNumber==6: process.maxEvents.input =  91613 # 961001 events
+  elif options.fileNumber==7: process.maxEvents.input =  91613 # 959984 events
+  elif options.fileNumber==8: process.maxEvents.input =  91612 # 959096 events
+  elif options.fileNumber==9: process.maxEvents.input =  91612 # 961693 events
+  elif options.fileNumber==10: process.maxEvents.input = 91612 # 960902 events
+  elif options.fileNumber==11: process.maxEvents.input = 91612 # 959644 events
+  elif options.fileNumber==12: process.maxEvents.input = 91612 # 960541 events
+  elif options.fileNumber==13: process.maxEvents.input = 91612 # 979030 events
+  elif options.fileNumber==14: process.maxEvents.input = 91612 # 958643 events
+  elif options.fileNumber==15: process.maxEvents.input = 91612 # 822995 events
+elif isZmumu10:
+  if options.fileNumber==1: process.maxEvents.input = 10121    # 114536 events
+elif isZmumu20:
+  if options.fileNumber==1: process.maxEvents.input =     9490 # 692756 events
+  elif options.fileNumber==2: process.maxEvents.input =   9490 # 697785 events
+  elif options.fileNumber==3: process.maxEvents.input =   9490 # 696344 events
+  elif options.fileNumber==4: process.maxEvents.input =   9490 # 696398 events
+  elif options.fileNumber==5: process.maxEvents.input =   9490 # 694961 events
+  elif options.fileNumber==6: process.maxEvents.input =   9490 # 695541 events
+  elif options.fileNumber==7: process.maxEvents.input =   9490 # 693676 events
+  elif options.fileNumber==8: process.maxEvents.input =   9490 # 652365 events
+  elif options.fileNumber==9: process.maxEvents.input =   9490 # 695692 events
+  elif options.fileNumber==10: process.maxEvents.input =  9490 # 695065 events
+  elif options.fileNumber==11: process.maxEvents.input =  9490 # 696383 events
+  elif options.fileNumber==12: process.maxEvents.input =  9490 # 696564 events
+  elif options.fileNumber==13: process.maxEvents.input =  9490 # 695379 events
+  elif options.fileNumber==14: process.maxEvents.input =  9490 # 692976 events
+  elif options.fileNumber==15: process.maxEvents.input =  9490 # 682748 events
+  elif options.fileNumber==16: process.maxEvents.input =  9490 # 697161 events
+  elif options.fileNumber==17: process.maxEvents.input =  9490 # 695905 events
+  elif options.fileNumber==18: process.maxEvents.input =  9490 # 696553 events
+  elif options.fileNumber==19: process.maxEvents.input =  9489 # 698772 events
+  elif options.fileNumber==20: process.maxEvents.input =  9489 # 696231 events
+  elif options.fileNumber==21: process.maxEvents.input =  9489 # 372419 events
+elif isData1:
+  if options.fileNumber==1: process.maxEvents.input = 1   # 894724 events
+  elif options.fileNumber==2: process.maxEvents.input = 1 # 895421 events
+  elif options.fileNumber==3: process.maxEvents.input = 1 # 207016 events
+elif isData2:
+  if options.fileNumber==1: process.maxEvents.input =    254095 # 1101299 events
+  elif options.fileNumber==2: process.maxEvents.input =  254095 # 947505 events
+  elif options.fileNumber==3: process.maxEvents.input =  254095 # 1087702 events
+  elif options.fileNumber==4: process.maxEvents.input =  254095 # 919027 events
+  elif options.fileNumber==5: process.maxEvents.input =  254095 # 1064381 events
+  elif options.fileNumber==6: process.maxEvents.input =  254095 # 896920 events
+  elif options.fileNumber==7: process.maxEvents.input =  254094 # 952183 events
+  elif options.fileNumber==8: process.maxEvents.input =  254094 # 986213 events
+  elif options.fileNumber==9: process.maxEvents.input =  254094 # 893426 events
+  elif options.fileNumber==10: process.maxEvents.input = 254094 # 542679 events
 
 
 ##
@@ -163,13 +245,13 @@ process.source.duplicateCheckMode = cms.untracked.string("checkEachRealDataFile"
 ##
 process.load("ApeEstimator.ApeEstimator.TrackRefitter_38T_cff")
 if isParticleGun:
-    process.GlobalTag.globaltag = 'DESIGN311_V2::All'
+    process.GlobalTag.globaltag = 'DESIGN42_V12::All'
 elif isMc:
-    #process.GlobalTag.globaltag = 'DESIGN311_V2::All'
-    #process.GlobalTag.globaltag = 'START311_V2::All'
-    process.GlobalTag.globaltag = 'MC_311_V2::All'
+    #process.GlobalTag.globaltag = 'DESIGN42_V12::All'
+    #process.GlobalTag.globaltag = 'START42_V12::All'
+    process.GlobalTag.globaltag = 'MC_42_V12::All'
 elif isData:
-    process.GlobalTag.globaltag = 'FT_R_311_V4A::All'
+    process.GlobalTag.globaltag = 'GR_R_42_V21::All'
 ## --- Further information (Monte Carlo and Data) ---
 #process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
 #process.TTRHBuilderGeometricAndTemplate.PixelCPE = 'PixelCPEGeneric'
