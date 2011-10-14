@@ -605,7 +605,7 @@ stepZVetoHigh7 = cms.Sequence(
 ## Gathering of common sequences
 
 zVetoDefaultSteps = cms.Sequence(
-    EventWeight*
+    buildEventWeights*
     seqGeneratorFilter*
     seqTriggerFilter*
     buildVertexCollections*
@@ -633,7 +633,7 @@ zVetoDefaultSteps = cms.Sequence(
 ## Analysis Paths
 
 analysisSeq = cms.Sequence(
-    EventWeight*
+    buildEventWeights*
     step0*
     
     seqGeneratorFilter*

@@ -14,6 +14,7 @@ options.register('sample', 'test', VarParsing.VarParsing.multiplicity.singleton,
 options.register('metCut', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "Apply MET cut")
 options.register('firstBtag', 'HeM', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Requirement for first b-tag")
 options.register('secondBtag', 'HeM', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Requirement for second b-tag")
+options.register('reweightPileup', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "Pileup reweighting")
 options.register('systematics', 'default', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Default analysis or systematic study")
 
 # get and parse the command line arguments
@@ -31,6 +32,7 @@ print "Input sample: ", options.sample
 print "Apply MET cut: ", options.metCut
 print "1st b-tag: ", options.firstBtag
 print "2nd b-tag: ", options.secondBtag
+print "Pileup reweighting: ", options.reweightPileup
 print "Systematic study: ", options.systematics
 
 
@@ -261,8 +263,6 @@ process.TFileService = cms.Service("TFileService",
 
 
 
-
-
 #******************************************************************************************
 #   The selection steps
 #******************************************************************************************
@@ -273,6 +273,7 @@ process.load("ZmumuAnalysis.Configuration.sequences.selectionSteps_cff")
 # For now remove vertex association
 process.cleanDimuonSelection.minNumber = 0
 process.goodDimuons.src = 'selectedDimuons'
+
 
 
 
@@ -303,6 +304,8 @@ if isMC:
 
 
 
+
+
 #******************************************************************************************
 # Generator Filter Sequences
 #******************************************************************************************
@@ -328,6 +331,7 @@ if(isZmumuUdsc):
     process.seqGeneratorFilter *= ~process.signalBSelection
 if(isZtautau):
     process.seqGeneratorFilter *= process.GeneratorZmumuDiTauFilter
+
 
 
 
@@ -372,6 +376,14 @@ if options.secondBtag != '':
 
 
 
+if not options.reweightPileup or isData:
+    process.buildEventWeights.remove(process.EventWeightPU)
+    #process.EventWeight.eventWeightSources = []   # not needed, since EventWeight checks for validity of listed weights
+    
+
+
+
+
 #******************************************************************************************
 # Dynamic changes for command line parameters - Systematic studies
 #******************************************************************************************
@@ -399,12 +411,11 @@ else:
 
 
 
+
+
 #******************************************************************************************
 #   Analysis Path
 #******************************************************************************************
-
-
-
 
 process.analysis = cms.Path(
     process.analysisSeq
