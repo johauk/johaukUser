@@ -15,8 +15,8 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
   if(!this->signalSample() || this->backgroundSamples().size()==0){
     std::cout<<"\tNo input sample\n"
              <<"\t... take dummy ratioInOut\n";
-    ratioInOutZmumu_ = ValueAndError::dummyValues();
-    ratioInOutTtbar_ = ValueAndError::dummyValues();
+    ratioInOutZmumu_ = ValueAndErrorStatSyst::dummyValues();
+    ratioInOutTtbar_ = ValueAndErrorStatSyst::dummyValues();
     std::cout<<"Ratio In/Out for zmumu: "<<this->ratioInOutZmumu().print()<<"\n";
     std::cout<<"Ratio In/Out for ttbar: "<<this->ratioInOutTtbar().print()<<"\n";
     return;
@@ -157,11 +157,11 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
   nTtbarInMc_ = nInTtbar;
   if(nInTtbar!=0 && nOutTtbar!=0){
     ratioInOutTtbar_.setValue(nInTtbar/nOutTtbar);
-    ratioInOutTtbar_.setRelErr2Up(1./nInTtbar + 1./nOutTtbar);
-    ratioInOutTtbar_.setRelErr2Dw(1./nInTtbar + 1./nOutTtbar);
+    ratioInOutTtbar_.setRelErr2StatUp(1./nInTtbar + 1./nOutTtbar);
+    ratioInOutTtbar_.setRelErr2StatDw(1./nInTtbar + 1./nOutTtbar);
   }
   else{
-    ratioInOutTtbar_ = ValueAndError::dummyValues();
+    ratioInOutTtbar_ = ValueAndErrorStatSyst::dummyValues();
   }
   
   const double nInZmumu(nInZmumuB + nInZmumuC + nInZmumuUds + nInZmumuUdsc);
@@ -169,11 +169,11 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
   const double nOutZmumu(nOutZmumuB + nOutZmumuC + nOutZmumuUds + nOutZmumuUdsc);
   if(nInZmumu!=0 && nOutZmumu!=0){
     ratioInOutZmumu_.setValue(nInZmumu/nOutZmumu);
-    ratioInOutZmumu_.setRelErr2Up(1./nInZmumu + 1./nOutZmumu);
-    ratioInOutZmumu_.setRelErr2Dw(1./nInZmumu + 1./nOutZmumu);
+    ratioInOutZmumu_.setRelErr2StatUp(1./nInZmumu + 1./nOutZmumu);
+    ratioInOutZmumu_.setRelErr2StatDw(1./nInZmumu + 1./nOutZmumu);
   }
   else{
-    ratioInOutZmumu_ = ValueAndError::dummyValues();
+    ratioInOutZmumu_ = ValueAndErrorStatSyst::dummyValues();
   }
   
   std::cout<<"\n";

@@ -92,19 +92,22 @@ class FullAnalysis{
     
     
     
-    ValueAndError ratioInOutZmumu()const{return ratioInOutZmumu_;}
-    ValueAndError ratioInOutTtbar()const{return ratioInOutTtbar_;}
+    ValueAndErrorStatSyst ratioInOutZmumu()const{return ratioInOutZmumu_;}
+    ValueAndErrorStatSyst ratioInOutTtbar()const{return ratioInOutTtbar_;}
     ValueAndError nOtherIn()const{return nOtherIn_;}
     ValueAndError nOtherOut()const{return nOtherOut_;}
     double nZmumuInMc()const{return nZmumuInMc_;}
     double nTtbarInMc()const{return nTtbarInMc_;}
     void setRatioInOut(const Sideband&);
-    ValueAndError ratioInOutZmumu_;
-    ValueAndError ratioInOutTtbar_;
+    ValueAndErrorStatSyst ratioInOutZmumu_;
+    ValueAndErrorStatSyst ratioInOutTtbar_;
     ValueAndError nOtherIn_;
     ValueAndError nOtherOut_;
     double nZmumuInMc_;
     double nTtbarInMc_;
+    
+    
+    void correctRatioInOutTtbar();
     
     
     ValueAndError nObservedSideband()const{return nObservedSideband_;}

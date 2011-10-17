@@ -21,6 +21,7 @@
 
 // For ttbar estimate from sidebands
 #include "ZmumuAnalysis/Configuration/macros/Calculations/ratioInOut.h"
+#include "ZmumuAnalysis/Configuration/macros/Calculations/correctRatioInOutTtbar.h"
 #include "ZmumuAnalysis/Configuration/macros/Calculations/nObservedSideband.h"
 #include "ZmumuAnalysis/Configuration/macros/Calculations/nBackgroundSideband.h"
 #include "ZmumuAnalysis/Configuration/macros/Calculations/ttbarFraction.h"
@@ -67,6 +68,8 @@ void FullAnalysis::defaultAnalysis(){
 void FullAnalysis::ttbarFromSideband(const Sideband& sideband){
   Tools::printLine("Ratio In/Out");
   this->setRatioInOut(sideband);
+  Tools::printLine("Correction for ttbar Ratio In/Out");
+  this->correctRatioInOutTtbar();
   Tools::printLine("No. of observed events (sidebands)");
   this->setNObservedSideband(sideband);
   Tools::printLine("No. of background events (sidebands)");

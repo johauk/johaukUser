@@ -77,7 +77,7 @@ gROOT->ProcessLine(".L Tools/FullAnalysis.C++");
 
 FullAnalysis fullAnalysis1;
 
-fullAnalysis1.setRecoSelectionStep("Step5");
+fullAnalysis1.setRecoSelectionStep("Step6");
 fullAnalysis1.setSimuSelectionStep("StepB2");
 
 fullAnalysis1.defaultAnalysis();
@@ -88,9 +88,9 @@ fullAnalysis1.ttbarFromSideband(FullAnalysis::upper);
 
 
 
-fullAnalysis1.setRecoSelectionStep("Step6");
-fullAnalysis1.defaultAnalysis();
-fullAnalysis1.ttbarFromSideband(FullAnalysis::upper);
+//fullAnalysis1.setRecoSelectionStep("Step5");
+//fullAnalysis1.defaultAnalysis();
+//fullAnalysis1.ttbarFromSideband(FullAnalysis::upper);
 
 // fullAnalysis1.setRecoSelectionStep("Step7a");
 // fullAnalysis1.defaultAnalysis();
