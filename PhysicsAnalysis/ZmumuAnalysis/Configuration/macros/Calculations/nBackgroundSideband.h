@@ -21,6 +21,7 @@ void FullAnalysis::setNBackgroundSideband(const Sideband& sideband){
   const std::vector<McSample*>& v_background = this->backgroundSamples();
   
   
+  std::vector<ValueAndError> v_nBkgZmumuSideband;
   std::vector<ValueAndError> v_nBkgOtherSideband;
   std::vector<McSample*>::const_iterator i_background;
   for(i_background = v_background.begin(); i_background != v_background.end(); ++i_background){
@@ -74,10 +75,12 @@ void FullAnalysis::setNBackgroundSideband(const Sideband& sideband){
     std::cout<<"No. events (weighted) for \""<<background.datasetName()<<"\": "
              <<nSelectedEventWeighted.print()<<"\n";
     
-    if(background.datasetName()=="zmumuUdsc"){
-      nBackgroundZmumuSideband_.setValue(nSelectedEventWeighted.value());
-      nBackgroundZmumuSideband_.setRelErr2Up(nSelectedEventWeighted.relErr2Up());
-      nBackgroundZmumuSideband_.setRelErr2Dw(nSelectedEventWeighted.relErr2Dw());
+    if(background.datasetName()=="zmumuC" || background.datasetName()=="zmumuUds" || background.datasetName()=="zmumuUdsc"){
+      ValueAndError nBkgZmumu;
+      nBkgZmumu.setValue(nSelectedEventWeighted.value());
+      nBkgZmumu.setRelErr2Up(nSelectedEventWeighted.relErr2Up());
+      nBkgZmumu.setRelErr2Dw(nSelectedEventWeighted.relErr2Dw());
+      v_nBkgZmumuSideband.push_back(nBkgZmumu);
     }
     else if(background.datasetName()=="ttbar"){
       nBackgroundTtbarSideband_.setValue(nSelectedEventWeighted.value());
@@ -93,18 +96,31 @@ void FullAnalysis::setNBackgroundSideband(const Sideband& sideband){
     }
   }
   
+  std::vector<ValueAndError>::const_iterator i_nBkgZmumu;
+  double nBkgZmumuValue(0.);
+  double nBkgZmumuAbsErr2Up(0.);
+  double nBkgZmumuAbsErr2Dw(0.);
+  for(i_nBkgZmumu = v_nBkgZmumuSideband.begin(); i_nBkgZmumu != v_nBkgZmumuSideband.end(); ++i_nBkgZmumu){
+    nBkgZmumuValue += i_nBkgZmumu->value();
+    nBkgZmumuAbsErr2Up += i_nBkgZmumu->absErr2Up();
+    nBkgZmumuAbsErr2Dw += i_nBkgZmumu->absErr2Dw();
+  }
+  nBackgroundZmumuSideband_.setValue(nBkgZmumuValue);
+  nBackgroundZmumuSideband_.setAbsErr2Up(nBkgZmumuAbsErr2Up);
+  nBackgroundZmumuSideband_.setAbsErr2Dw(nBkgZmumuAbsErr2Dw);
+  
   std::vector<ValueAndError>::const_iterator i_nBkgOther;
   double nBkgOtherValue(0.);
-  double nBkgAbsErr2Up(0.);
-  double nBkgAbsErr2Dw(0.);
+  double nBkgOtherAbsErr2Up(0.);
+  double nBkgOtherAbsErr2Dw(0.);
   for(i_nBkgOther = v_nBkgOtherSideband.begin(); i_nBkgOther != v_nBkgOtherSideband.end(); ++i_nBkgOther){
     nBkgOtherValue += i_nBkgOther->value();
-    nBkgAbsErr2Up += i_nBkgOther->absErr2Up();
-    nBkgAbsErr2Dw += i_nBkgOther->absErr2Dw();
+    nBkgOtherAbsErr2Up += i_nBkgOther->absErr2Up();
+    nBkgOtherAbsErr2Dw += i_nBkgOther->absErr2Dw();
   }
   nBackgroundOtherSideband_.setValue(nBkgOtherValue);
-  nBackgroundOtherSideband_.setAbsErr2Up(nBkgAbsErr2Up);
-  nBackgroundOtherSideband_.setAbsErr2Dw(nBkgAbsErr2Dw);
+  nBackgroundOtherSideband_.setAbsErr2Up(nBkgOtherAbsErr2Up);
+  nBackgroundOtherSideband_.setAbsErr2Dw(nBkgOtherAbsErr2Dw);
   
   nBackgroundSideband_.setValue(this->nBackgroundZmumuSideband().value() + this->nBackgroundTtbarSideband().value() + this->nBackgroundOtherSideband().value());
   nBackgroundSideband_.setAbsErr2Up(this->nBackgroundZmumuSideband().absErr2Up() + this->nBackgroundTtbarSideband().absErr2Up() + this->nBackgroundOtherSideband().absErr2Up());

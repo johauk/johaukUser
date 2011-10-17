@@ -21,6 +21,7 @@ void FullAnalysis::setNBackground(){
   const std::vector<McSample*>& v_background = this->backgroundSamples();
   
   
+  std::vector<ValueAndError> v_nBkgZmumu;
   std::vector<ValueAndError> v_nBkgOther;
   std::vector<McSample*>::const_iterator i_background;
   for(i_background = v_background.begin(); i_background != v_background.end(); ++i_background){
@@ -58,10 +59,12 @@ void FullAnalysis::setNBackground(){
     std::cout<<"No. events (weighted) for \""<<background.datasetName()<<"\": "
              <<nSelectedEventWeighted.print()<<"\n";
     
-    if(background.datasetName()=="zmumuUdsc"){
-      nBackgroundZmumu_.setValue(nSelectedEventWeighted.value());
-      nBackgroundZmumu_.setRelErr2Up(nSelectedEventWeighted.relErr2Up());
-      nBackgroundZmumu_.setRelErr2Dw(nSelectedEventWeighted.relErr2Dw());
+    if(background.datasetName()=="zmumuC" || background.datasetName()=="zmumuUds" || background.datasetName()=="zmumuUdsc"){
+      ValueAndError nBkgZmumu;
+      nBkgZmumu.setValue(nSelectedEventWeighted.value());
+      nBkgZmumu.setRelErr2Up(nSelectedEventWeighted.relErr2Up());
+      nBkgZmumu.setRelErr2Dw(nSelectedEventWeighted.relErr2Dw());
+      v_nBkgZmumu.push_back(nBkgZmumu);
     }
     else if(background.datasetName()=="ttbar"){
       nBackgroundTtbar_.setValue(nSelectedEventWeighted.value());
@@ -77,18 +80,31 @@ void FullAnalysis::setNBackground(){
     }
   }
   
+  std::vector<ValueAndError>::const_iterator i_nBkgZmumu;
+  double nBkgZmumuValue(0.);
+  double nBkgZmumuAbsErr2Up(0.);
+  double nBkgZmumuAbsErr2Dw(0.);
+  for(i_nBkgZmumu = v_nBkgZmumu.begin(); i_nBkgZmumu != v_nBkgZmumu.end(); ++i_nBkgZmumu){
+    nBkgZmumuValue += i_nBkgZmumu->value();
+    nBkgZmumuAbsErr2Up += i_nBkgZmumu->absErr2Up();
+    nBkgZmumuAbsErr2Dw += i_nBkgZmumu->absErr2Dw();
+  }
+  nBackgroundZmumu_.setValue(nBkgZmumuValue);
+  nBackgroundZmumu_.setAbsErr2Up(nBkgZmumuAbsErr2Up);
+  nBackgroundZmumu_.setAbsErr2Dw(nBkgZmumuAbsErr2Dw);
+  
   std::vector<ValueAndError>::const_iterator i_nBkgOther;
   double nBkgOtherValue(0.);
-  double nBkgAbsErr2Up(0.);
-  double nBkgAbsErr2Dw(0.);
+  double nBkgOtherAbsErr2Up(0.);
+  double nBkgOtherAbsErr2Dw(0.);
   for(i_nBkgOther = v_nBkgOther.begin(); i_nBkgOther != v_nBkgOther.end(); ++i_nBkgOther){
     nBkgOtherValue += i_nBkgOther->value();
-    nBkgAbsErr2Up += i_nBkgOther->absErr2Up();
-    nBkgAbsErr2Dw += i_nBkgOther->absErr2Dw();
+    nBkgOtherAbsErr2Up += i_nBkgOther->absErr2Up();
+    nBkgOtherAbsErr2Dw += i_nBkgOther->absErr2Dw();
   }
   nBackgroundOther_.setValue(nBkgOtherValue);
-  nBackgroundOther_.setAbsErr2Up(nBkgAbsErr2Up);
-  nBackgroundOther_.setAbsErr2Dw(nBkgAbsErr2Dw);
+  nBackgroundOther_.setAbsErr2Up(nBkgOtherAbsErr2Up);
+  nBackgroundOther_.setAbsErr2Dw(nBkgOtherAbsErr2Dw);
   
   nBackground_.setValue(this->nBackgroundZmumu().value() + this->nBackgroundTtbar().value() + this->nBackgroundOther().value());
   nBackground_.setAbsErr2Up(this->nBackgroundZmumu().absErr2Up() + this->nBackgroundTtbar().absErr2Up() + this->nBackgroundOther().absErr2Up());

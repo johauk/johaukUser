@@ -79,7 +79,8 @@ void FullAnalysis::ttbarFromSideband(const Sideband& sideband){
   Tools::printLine("ttbar and zmumu yields");
   this->setTtbarFraction();
   Tools::printLine("Plot fitted dimuon distribution");
-  this->zTtbarFit();
+  //this->zTtbarFit();
+  this->zTtbarFit(false);
 }
 
 

@@ -8,6 +8,9 @@
 
 
 
+// The calculation works either with two split files for C and UDS components of the Zmumu, or with one file containing all components UDSC
+
+
 void FullAnalysis::setRatioInOut(const Sideband& sideband){
   if(!this->signalSample() || this->backgroundSamples().size()==0){
     std::cout<<"\tNo input sample\n"
@@ -22,9 +25,13 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
   const std::vector<McSample*>& v_background = this->backgroundSamples();
   
   double nInTtbar(0.);
+  double nInZmumuC(0.);
+  double nInZmumuUds(0.);
   double nInZmumuUdsc(0.);
   double nInOther(0.);
   double nOutTtbar(0.);
+  double nOutZmumuC(0.);
+  double nOutZmumuUds(0.);
   double nOutZmumuUdsc(0.);
   double nOutOther(0.);
   std::vector<McSample*>::const_iterator i_background;
@@ -74,6 +81,14 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
     if(background.datasetName()=="ttbar"){
       nInTtbar = nEventsIn;
       nOutTtbar = nEventsOut;
+    }
+    else if(background.datasetName()=="zmumuC"){
+      nInZmumuC = nEventsIn;
+      nOutZmumuC = nEventsOut;
+    }
+    else if(background.datasetName()=="zmumuUds"){
+      nInZmumuUds = nEventsIn;
+      nOutZmumuUds = nEventsOut;
     }
     else if(background.datasetName()=="zmumuUdsc"){
       nInZmumuUdsc = nEventsIn;
@@ -149,9 +164,9 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
     ratioInOutTtbar_ = ValueAndError::dummyValues();
   }
   
-  const double nInZmumu(nInZmumuB + nInZmumuUdsc);
+  const double nInZmumu(nInZmumuB + nInZmumuC + nInZmumuUds + nInZmumuUdsc);
   nZmumuInMc_ = nInZmumu;
-  const double nOutZmumu(nOutZmumuB + nOutZmumuUdsc);
+  const double nOutZmumu(nOutZmumuB + nOutZmumuC + nOutZmumuUds + nOutZmumuUdsc);
   if(nInZmumu!=0 && nOutZmumu!=0){
     ratioInOutZmumu_.setValue(nInZmumu/nOutZmumu);
     ratioInOutZmumu_.setRelErr2Up(1./nInZmumu + 1./nOutZmumu);

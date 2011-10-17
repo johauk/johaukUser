@@ -135,7 +135,7 @@ class FullAnalysis{
     double zmumuFraction_;
     
     
-    void zTtbarFit();
+    void zTtbarFit(const bool =true);
     
 };
 

@@ -3,7 +3,9 @@
 
 void FullAnalysis::setMcSamples(){
   
-  TColor* colorZmumuB = new TColor(1001, 0.00, 1.00, 0.00, "zmumuB");
+  TColor* colorZmumuUds = new TColor(1014, 0.00, 0.00, 1.00, "zmumuUds");
+  TColor* colorZmumuC = new TColor(1015, 0.00, 1.00, 0.00, "zmumuC");
+  TColor* colorZmumuB = new TColor(1001, 1.00, 0.00, 0.00, "zmumuB");
   TColor* colorZmumuUdsc = new TColor(1002, 0.00, 0.50, 0.00, "zmumuUdsc");
   TColor* colorZz = new TColor(1003, 1.00, 1.00, 0.00, "zz");
   TColor* colorWz = new TColor(1004, 0.00, 0.00, 1.00, "wz");
@@ -14,7 +16,7 @@ void FullAnalysis::setMcSamples(){
   TColor* colorSingletopTw = new TColor(1009, 0.50, 0.00, 1.00, "singletopTw");
   TColor* colorSingletopT = new TColor(1010, 0.30, 0.00, 1.00, "singletopT");
   TColor* colorSingletopS = new TColor(1011, 0.40, 0.00, 1.00, "singletopS");
-  TColor* colorTtbar = new TColor(1012, 1.00, 0.00, 0.00, "ttbar");
+  TColor* colorTtbar = new TColor(1012, 1.00, 1.00, 0.00, "ttbar");
   TColor* colorQcd = new TColor(1013, 0.00, 0.00, 0.50, "qcd");
   
   // Define signal sample
@@ -31,6 +33,24 @@ void FullAnalysis::setMcSamples(){
   }
   
   // Define all background samples
+  McSample* zmumuC(0);
+  zmumuC = new McSample("zmumuC", 36277961, colorZmumuC);
+  zmumuC->crossSection_.setValue(3048.);
+  zmumuC->crossSection_.setAbsErrUp(132.);
+  zmumuC->crossSection_.setAbsErrDw(132.);
+  //zmumuC->setFilterEfficiency(1.);
+  if(zmumuC->file())v_backgroundSample_.push_back(zmumuC);
+  else delete zmumuC;
+  
+  McSample* zmumuUds(0);
+  zmumuUds = new McSample("zmumuUds", 36277961, colorZmumuUds);
+  zmumuUds->crossSection_.setValue(3048.);
+  zmumuUds->crossSection_.setAbsErrUp(132.);
+  zmumuUds->crossSection_.setAbsErrDw(132.);
+  //zmumuUds->setFilterEfficiency(1.);
+  if(zmumuUds->file())v_backgroundSample_.push_back(zmumuUds);
+  else delete zmumuUds;
+  
   McSample* zmumuUdsc(0);
   zmumuUdsc = new McSample("zmumuUdsc", 36277961, colorZmumuUdsc);
   zmumuUdsc->crossSection_.setValue(3048.);
