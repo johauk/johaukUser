@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,,,DESY
 //         Created:  Thu Apr 28 13:28:10 CEST 2011
-// $Id: EventCounter.cc,v 1.1 2011/04/28 12:34:05 hauk Exp $
+// $Id: EventCounter.cc,v 1.2 2011/08/04 11:42:07 hauk Exp $
 //
 //
 
@@ -99,7 +99,7 @@ EventCounter::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   const double eventWeight = Weights::eventWeight(iEvent, eventWeightSource);
   
   EventCount->SetBinContent(1, EventCount->GetBinContent(1) + 1.);
-  EventCountWeighted->SetBinContent(1, EventCount->GetBinContent(1) + eventWeight);
+  EventCountWeighted->SetBinContent(1, EventCountWeighted->GetBinContent(1) + eventWeight);
 }
 
 
