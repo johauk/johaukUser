@@ -44,13 +44,13 @@ void FullAnalysis::correctRatioInOutTtbar(){
   correctionDataMc.setRelErrSystUp(dataRatioInOut.relErrSystUp());
   correctionDataMc.setRelErrSystDw(dataRatioInOut.relErrSystDw());
   
-  double ratioInOutTtbar(this->ratioInOutTtbar().value());
-  double ratioInOutTtbarRelErrStatUp(this->ratioInOutTtbar().relErrStatUp());
-  double ratioInOutTtbarRelErrStatDw(this->ratioInOutTtbar().relErrStatDw());
+  double ratioInOutTtbarRaw(this->ratioInOutTtbar().value());
+  double ratioInOutTtbarRawRelErrStatUp(this->ratioInOutTtbar().relErrStatUp());
+  double ratioInOutTtbarRawRelErrStatDw(this->ratioInOutTtbar().relErrStatDw());
   
-  ratioInOutTtbar_.setValue(ratioInOutTtbar*correctionDataMc.value());
-  ratioInOutTtbar_.setRelErrStatUp(ratioInOutTtbarRelErrStatUp);
-  ratioInOutTtbar_.setRelErrStatDw(ratioInOutTtbarRelErrStatDw);
+  ratioInOutTtbar_.setValue(ratioInOutTtbarRaw*correctionDataMc.value());
+  ratioInOutTtbar_.setRelErrStatUp(ratioInOutTtbarRawRelErrStatUp);
+  ratioInOutTtbar_.setRelErrStatDw(ratioInOutTtbarRawRelErrStatDw);
   ratioInOutTtbar_.setRelErrSystUp(correctionDataMc.relErrUp());
   ratioInOutTtbar_.setRelErrSystDw(correctionDataMc.relErrDw());
   
