@@ -22,7 +22,10 @@ class DefaultSample{
     
     void openInputFile(const std::string&, const std::string&, const unsigned int);
     double dynamicWeight()const{return dynamicWeight_;}
+    // The unweighted number of processed events
     ValueAndError nEvent()const{return nEvent_;}
+    // The reweighted number of processed events (pile-up reweighting, b-tag-efficiency reweighting)
+    ValueAndError nEventReweight()const{return nEventReweight_;}
     
   private:
     void setDynamicWeightAndNEvent(TFile*, const unsigned int);
@@ -31,9 +34,10 @@ class DefaultSample{
     // Maximum number of events
     // If less are processed in data, luminosity is scaled down automatically,
     // If less are processed in MC/simulation, weight is scaled down automatically
-    void setNEvent(const double, const double);
+    void setNEvent(const double, const double, const double);
     double nEventFullSample_;
     ValueAndError nEvent_;
+    ValueAndError nEventReweight_;
     
     // Root file name only
     std::string datasetName()const{return datasetName_;}

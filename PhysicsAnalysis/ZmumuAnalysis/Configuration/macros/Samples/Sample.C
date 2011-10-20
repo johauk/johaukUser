@@ -28,7 +28,7 @@ ValueAndError McSample::correspondingLuminosity()const{
   effectiveCrossSection.setRelErr2Up(this->crossSection().relErr2Up());
   effectiveCrossSection.setRelErr2Dw(this->crossSection().relErr2Dw());
   
-  correspondingLumi.setValue(this->nEvent().value()/effectiveCrossSection.value());
+  correspondingLumi.setValue(this->nEventReweight().value()/effectiveCrossSection.value());
   correspondingLumi.setRelErr2Up(effectiveCrossSection.relErr2Dw());
   correspondingLumi.setRelErr2Dw(effectiveCrossSection.relErr2Up());
   

@@ -1,6 +1,7 @@
 #include "DefaultSample.h"
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 
 #include "TH1.h"
@@ -35,12 +36,24 @@ void DefaultSample::openInputFile(const std::string& dataset, const std::string&
 void DefaultSample::setDynamicWeightAndNEvent(TFile* inputFile, const unsigned int nEvtFullSample){
   TH1* EventCount(0);
   inputFile->GetObject("EventCounterStep0/h_eventCount;1", EventCount);
+  TH1* EventCountReweight(0);
+  inputFile->GetObject("EventCounterStep0/h_eventCountWeighted;1", EventCountReweight);
   
   if(EventCount){
     const unsigned int eventCount(EventCount->GetEntries());
-    this->setNEvent(nEvtFullSample, eventCount);
+    double eventCountReweight(0.);
+    if(EventCountReweight){
+      eventCountReweight = EventCountReweight->Integral(0, EventCountReweight->GetNbinsX()+1);
+    }
+    else{
+      std::cout<<"\tHistogram containing reweighted number of processed events \"EventCounterStep0/h_eventCountWeighted;1\" not found!\n"
+               <<"\t... will use unweighted number of events instead\n";
+      eventCountReweight = static_cast<double>(eventCount);
+    }
+    this->setNEvent(nEvtFullSample, eventCount, eventCountReweight);
     if(eventCount==nEvtFullSample){
-      std::cout<<"\tFull sample processed, dynamic weighting will not be applied\n";
+      std::cout<<"\tFull sample processed, dynamic weighting will not be applied\n"
+               <<"\tNumber of events (unweighted, weighted): "<<std::setprecision(10)<<nEvent().value()<<" , "<<nEventReweight().value()<<"\n";
       dynamicWeight_ = 1.;
     }
     else if(eventCount>nEvtFullSample){
@@ -64,12 +77,16 @@ void DefaultSample::setDynamicWeightAndNEvent(TFile* inputFile, const unsigned i
 
 
 
-void DefaultSample::setNEvent(const double nEvtFullSample, const double eventCount){
+void DefaultSample::setNEvent(const double nEvtFullSample, const double eventCount, const double eventCountReweight){
   nEventFullSample_ = nEvtFullSample;
   
   nEvent_.setValue(eventCount);
   nEvent_.setAbsErr2Up(eventCount);
   nEvent_.setAbsErr2Dw(eventCount);
+  
+  nEventReweight_.setValue(eventCountReweight);
+  nEventReweight_.setAbsErr2Up(eventCountReweight);
+  nEventReweight_.setAbsErr2Dw(eventCountReweight);
 }
 
 
