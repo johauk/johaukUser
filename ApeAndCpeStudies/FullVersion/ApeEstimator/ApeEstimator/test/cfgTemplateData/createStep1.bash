@@ -41,12 +41,20 @@ export datasetName
 ## number of input files
 export nFiles
 ## Input file base
-cafDir="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk"
+cafDir="\/store\/caf\/user\/hauk"
 export inputBase
 
 
-datasetName="data"
-inputBase="${cafDir}\/data\/mu\/Run2010B_Dec22ReReco\/apeSkim"
-nFiles=2
+#datasetName="data1"
+#inputBase="${cafDir}\/data\/DoubleMu\/Run2011A_May10ReReco\/apeSkim"
+#nFiles=3
+#bash $createStep1 $datasetName $nFiles $iterationNumber $lastIteration $alignmentRcd $inputBase
+
+
+datasetName="data2"
+inputBase="${cafDir}\/data\/DoubleMu\/Run2011A_PromptV4\/apeSkim"
+nFiles=10
 bash $createStep1 $datasetName $nFiles $iterationNumber $lastIteration $alignmentRcd $inputBase
+
+
 

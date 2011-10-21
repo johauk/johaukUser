@@ -41,31 +41,31 @@ export datasetName
 ## number of input files
 export nFiles
 ## Input file base
-cafDir="\/castor\/cern.ch\/cms\/store\/caf\/user\/hauk"
+cafDir="\/store\/caf\/user\/hauk"
 export inputBase
 
 
 datasetName="qcd"
-inputBase="${cafDir}\/mc\/${datasetName}\/apeSkim"
-nFiles=3
+inputBase="${cafDir}\/mc\/Summer11\/${datasetName}\/apeSkim"
+nFiles=1
 bash $createStep1 $datasetName $nFiles $iterationNumber $lastIteration $alignmentRcd $inputBase
 
 
 datasetName="wlnu"
-inputBase="${cafDir}\/mc\/${datasetName}\/apeSkim"
-nFiles=4
+inputBase="${cafDir}\/mc\/Summer11\/${datasetName}\/apeSkim"
+nFiles=15
 bash $createStep1 $datasetName $nFiles $iterationNumber $lastIteration $alignmentRcd $inputBase
 
 
-datasetName="zmumu"
-inputBase="${cafDir}\/mc\/${datasetName}\/apeSkim"
-nFiles=3
-bash $createStep1 $datasetName $nFiles $iterationNumber $lastIteration $alignmentRcd $inputBase
-
-
-datasetName="ztautau"
-inputBase="${cafDir}\/mc\/${datasetName}\/apeSkim"
+datasetName="zmumu10"
+inputBase="${cafDir}\/mc\/Summer11\/${datasetName}\/apeSkim"
 nFiles=1
+bash $createStep1 $datasetName $nFiles $iterationNumber $lastIteration $alignmentRcd $inputBase
+
+
+datasetName="zmumu20"
+inputBase="${cafDir}\/mc\/Summer11\/${datasetName}\/apeSkim"
+nFiles=21
 bash $createStep1 $datasetName $nFiles $iterationNumber $lastIteration $alignmentRcd $inputBase
 
 
