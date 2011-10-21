@@ -33,7 +33,10 @@ cp $DIRBASE/test/cfgTemplate/startStep2.bash $DIRBASE/test/cfgTemplateParticleGu
 
 
 
-
+## INFO: To run TrackListGenerator on AOD, need to comment in
+## /Alignment/CommonAlignmentProducer/plugins/AlignmentTrackSelectorModule.cc
+## the following line, since TrackExtra collection is not stored there:
+## #include "CommonTools/RecoAlgos/interface/TrackSelector.h"
 
 
 
