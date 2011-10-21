@@ -11,7 +11,7 @@ import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as VarParsing
 import sys
 options = VarParsing.VarParsing ('standard')
-options.register('sample', 'data', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Input sample")
+options.register('sample', 'data1', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Input sample")
 options.register('isTest', True, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "Test run")
 
 # get and parse the command line arguments
@@ -53,11 +53,6 @@ process.MessageLogger.cerr.HitSelector = cms.untracked.PSet(limit = cms.untracke
 process.MessageLogger.cerr.CalculateAPE = cms.untracked.PSet(limit = cms.untracked.int32(-1))
 process.MessageLogger.cerr.ApeEstimator = cms.untracked.PSet(limit = cms.untracked.int32(-1))
 process.MessageLogger.cerr.AlignmentTrackSelector = cms.untracked.PSet(limit = cms.untracked.int32(-1))
-
-#process.MessageLogger.cout = cms.untracked.PSet(INFO = cms.untracked.PSet(
-#    reportEvery = cms.untracked.int32(100),  # every 100th only
-#    limit = cms.untracked.int32(10),         # or limit to 10 printouts...
-#))
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000 ## really show only every 1000th
 
 
@@ -74,11 +69,15 @@ process.options = cms.untracked.PSet(
 ##
 ## Input sample definition
 ##
+isData1 = isData2 = False
 isData = False
-isQcd = isWlnu = isZmumu = isZtautau = False
+isQcd = isWlnu = isZmumu = isZtautau = isZmumu10 = isZmumu20 = False
 isMc = False
-isParticleGunMu = isParticleGunPi = False
-if options.sample == 'data':
+if options.sample == 'data1':
+    isData1 = True
+    isData = True
+elif options.sample == 'data2':
+    isData2 = True
     isData = True
 elif options.sample == 'qcd':
     isQcd = True
@@ -92,11 +91,11 @@ elif options.sample == 'zmumu':
 elif options.sample == 'ztautau':
     isZtautau = True
     isMc = True
-elif options.sample == 'particleGunMu':
-    isParticleGunMu = True
+elif options.sample == 'zmumu10':
+    isZmumu10 = True
     isMc = True
-elif options.sample == 'particleGunPi':
-    isParticleGunPi = True
+elif options.sample == 'zmumu20':
+    isZmumu20 = True
     isMc = True
 else:
     print 'ERROR --- incorrect data sammple: ', options.sample
@@ -107,35 +106,19 @@ else:
 ##
 ## Input Files
 ##
-if isData:
-    #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010A_Dec22ReReco_cff")
-    #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010B_Dec22ReReco_cff")
-    #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2010B_Dec22ReReco_ApeSkim_cff")
-    #process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2011A_May10ReReco_cff")
-    process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2011A_PromptV4_cff")
+if isData1:
+    process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2011A_May10ReReco_ApeSkim_cff")
+elif isData2:
+    process.load("ApeEstimator.ApeEstimator.samples.Data_TkAlMuonIsolated_Run2011A_PromptV4_ApeSkim_cff")
 elif isQcd:
-    #process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_QcdMuPt10_cff")
-    #process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_QcdMuPt10_ApeSkim_cff")
-    process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Spring11_QcdMuPt15_ApeSkim_cff")
+    process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Summer11_qcd_ApeSkim_cff")
 elif isWlnu:
-    #process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_WToMuNu_cff")
-    #process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_WToMuNu_ApeSkim_cff")
-    process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Spring11_WJetsToLNu_ApeSkim_cff")
-elif isZmumu:
-    #process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Fall10_DYToMuMu_ApeSkim_cff")
-    process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Spring11_DYToMuMu_ApeSkim_cff")
-elif isZtautau:
-    process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Spring11_DYToTauTau_ApeSkim_cff")
-elif isParticleGunMu:
-    #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunMuon_mc_cff")
-    #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunAntiMuon_mc_cff")
-    process.load("ApeEstimator.ApeEstimator.samples.ParticleGunBothMuon_mc_cff")
-elif isParticleGunPi:
-    #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunPion_mc_cff")
-    #process.load("ApeEstimator.ApeEstimator.samples.ParticleGunAntiPion_mc_cff")
-    process.load("ApeEstimator.ApeEstimator.samples.ParticleGunBothPion_mc_cff")
+    process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Summer11_wlnu_ApeSkim_cff")
+elif isZmumu10:
+    process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Summer11_zmumu10_ApeSkim_cff")
+elif isZmumu20:
+    process.load("ApeEstimator.ApeEstimator.samples.Mc_TkAlMuonIsolated_Summer11_zmumu20_ApeSkim_cff")
     
-
 
 
 ##
@@ -165,13 +148,13 @@ if isMc:
     #process.GlobalTag.globaltag = 'START42_V12::All'
     process.GlobalTag.globaltag = 'MC_42_V12::All'
 if isData:
-    process.GlobalTag.globaltag = 'GR_R_42_V20::All'
+    process.GlobalTag.globaltag = 'GR_R_42_V21::All'
 ## --- Further information (Monte Carlo and Data) ---
 #process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
 #process.TTRHBuilderGeometricAndTemplate.PixelCPE = 'PixelCPEGeneric'
 #process.HighPuritySelector.src = 'generalTracks'
-process.HighPuritySelector.src = 'ALCARECOTkAlMuonIsolated'
-#process.HighPuritySelector.src = 'MuSkim'
+#process.HighPuritySelector.src = 'ALCARECOTkAlMuonIsolated'
+process.HighPuritySelector.src = 'MuSkim'
 
 
 
@@ -231,13 +214,6 @@ process.es_prefer_trackerAlignmentErr = cms.ESPrefer("PoolDBESSource","myTracker
 ## Trigger Selection
 ##
 process.load("ApeEstimator.ApeEstimator.TriggerSelection_cff")
-
-
-
-##
-## Beamspot (Use correct Beamspot for simulated Vertex smearing of ParticleGun)
-##
-#process.load("ApeEstimator.ApeEstimator.BeamspotForParticleGun_cff")
 
 
 
@@ -306,8 +282,7 @@ process.TFileService = cms.Service("TFileService",
     fileName = cms.string(outputName),
     closeFileFast = cms.untracked.bool(True)
 )
-if isData:
-    pass
+
 
 
 ##
