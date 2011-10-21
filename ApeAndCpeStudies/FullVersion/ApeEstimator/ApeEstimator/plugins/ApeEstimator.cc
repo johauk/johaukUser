@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.21 2011/08/13 14:47:43 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.22 2011/08/30 11:38:05 hauk Exp $
 //
 //
 
@@ -612,7 +612,7 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     (*i_sector).second.m_correlationHistsX["ClusterProbXY"] = (*i_sector).second.bookCorrHistsX("ClusterProbXY","cluster probability xy","prob_{xy,cl}","",100,50,0.,1.,"nph");
     (*i_sector).second.m_correlationHistsX["ClusterProbQ"] = (*i_sector).second.bookCorrHistsX("ClusterProbQ","cluster probability q","prob_{q,cl}","",100,50,0.,1.,"nph");
     (*i_sector).second.m_correlationHistsX["ClusterProbXYQ"] = (*i_sector).second.bookCorrHistsX("ClusterProbXYQ","cluster probability xyq","prob_{xyq,cl}","",100,50,0.,1.,"nph");
-    (*i_sector).second.m_correlationHistsX["LogClusterProb"] = (*i_sector).second.bookCorrHistsX("LogClusterProb","cluster probability xy","log(prob_{xy,cl})","",100,50,-15.,0.,"nph");
+    (*i_sector).second.m_correlationHistsX["LogClusterProb"] = (*i_sector).second.bookCorrHistsX("LogClusterProb","cluster probability xy","log(prob_{xy,cl})","",60,30,logClusterProbMin,0.,"nph");
     (*i_sector).second.m_correlationHistsX["IsOnEdge"] = (*i_sector).second.bookCorrHistsX("IsOnEdge","IsOnEdge","isOnEdge","",2,2,0,2,"nph");
     (*i_sector).second.m_correlationHistsX["HasBadPixels"] = (*i_sector).second.bookCorrHistsX("HasBadPixels","HasBadPixels","hasBadPixels","",2,2,0,2,"nph");
     (*i_sector).second.m_correlationHistsX["SpansTwoRoc"] = (*i_sector).second.bookCorrHistsX("SpansTwoRoc","SpansTwoRoc","spansTwoRoc","",2,2,0,2,"nph");
@@ -822,11 +822,19 @@ ApeEstimator::bookSectorHistsForApeCalculation(){
       (*i_sector).second.RawId->Fill();
     }
     
-    //Result plots (one hist per sector containing one bin per interval)
+    // Result plots (one hist per sector containing one bin per interval)
     std::vector<double> v_binX(parameterSet_.getParameter<std::vector<double> >("residualErrorBinning"));
     (*i_sector).second.EntriesX = resDir.make<TH1F>("h_entriesX","# hits used;#sigma_{x}  [cm];# hits",v_binX.size()-1,&(v_binX[0]));
     if((*i_sector).second.isPixel){
       (*i_sector).second.EntriesY = resDir.make<TH1F>("h_entriesY","# hits used;#sigma_{y}  [cm];# hits",v_binX.size()-1,&(v_binX[0]));
+    }
+    
+    // In fact these are un-needed Analyzer plots, but I want to have them always for every sector visible
+    (*i_sector).second.ResX    = resDir.make<TH1F>("h_ResX","residual r_{x};(x_{track}-x_{hit})'  [cm];# hits",100,-0.1,0.1);
+    (*i_sector).second.NorResX = resDir.make<TH1F>("h_NorResX","normalized residual r_{x}/#sigma_{x};(x_{track}-x_{hit})'/#sigma_{x};# hits",100,-5.,5.);
+    if((*i_sector).second.isPixel){
+      (*i_sector).second.ResY    = resDir.make<TH1F>("h_ResY","residual r_{y};(y_{track}-y_{hit})'  [cm];# hits",100,-0.1,0.1);
+      (*i_sector).second.NorResY = resDir.make<TH1F>("h_NorResY","normalized residual r_{y}/#sigma_{y};(y_{track}-y_{hit})'/#sigma_{y};# hits",100,-5.,5.);
     }
   }
 }
@@ -962,7 +970,7 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
     if(trkParams.hitsStrip<11 || trkParams.hits2D<2 || trkParams.hitsPixel<2 || //trkParams.hitsInvalid>2 ||
        trkParams.hitsStrip>35 || trkParams.hitsPixel>7 ||
        trkParams.norChi2>5. ||
-       trkParams.pt<17. || trkParams.pt>150. || 
+       trkParams.pt<25. || trkParams.pt>150. || 
        std::abs(trkParams.d0Beamspot)>0.02 || std::abs(trkParams.dz)>15.)trackCut_ = true;
     //if(trkParams.hitsValid<12 || trkParams.hits2D<2 || trkParams.hitsPixel<1 || //trkParams.hitsInvalid>2 ||
     //   trkParams.pt<15. || trkParams.p>100. || 
@@ -2004,6 +2012,8 @@ ApeEstimator::fillHistsForApeCalculation(const TrackStruct& trackStruct){
 	  (*i_sector).second.m_binnedHists[(*i_errBins).first]["norResX"]->Fill((*i_hit).norResX);
 	  break;
         }
+	(*i_sector).second.ResX->Fill((*i_hit).resX);
+	(*i_sector).second.NorResX->Fill((*i_hit).norResX);
       }
       
       //if((*i_hit).goodYMeasurement && (*i_sector).second.isPixel){
@@ -2020,6 +2030,8 @@ ApeEstimator::fillHistsForApeCalculation(const TrackStruct& trackStruct){
 	  (*i_sector).second.m_binnedHists[(*i_errBins).first]["norResY"]->Fill((*i_hit).norResY);
 	  break;
         }
+	(*i_sector).second.ResY->Fill((*i_hit).resY);
+	(*i_sector).second.NorResY->Fill((*i_hit).norResY);
       }
     }
   }
