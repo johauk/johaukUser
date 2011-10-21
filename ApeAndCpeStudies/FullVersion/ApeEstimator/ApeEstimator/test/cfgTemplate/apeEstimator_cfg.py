@@ -77,38 +77,12 @@ process.options = cms.untracked.PSet(
 ##
 ## Input sample definition
 ##
-#isData = False
-#isQcd = isWlnu = isZmumu = isZtautau = False
-#isMc = False
-#isParticleGunMuon = isParticleGunPion = False
-#isParticleGun = False
-#if options.sample == 'data':
-#    isData = True
-#elif options.sample == 'qcd':
-#    isQcd = True
-#    isMc = True
-#elif options.sample == 'wlnu':
-#    isWlnu = True
-#    isMc = True
-#elif options.sample == 'zmumu':
-#    isZmumu = True
-#    isMc = True
-#elif options.sample == 'ztautau':
-#    isZtautau = True
-#    isMc = True
-#elif options.sample == 'ParticleGunMuon':
-#    isParticleGunMuon = True
-#    isParticleGun = True
-#elif options.sample == 'ParticleGunPion':
-#    isParticleGunPion = True
-#    isParticleGun = True
-#else:
-#    print 'ERROR --- incorrect data sammple: ', options.sample
-#    exit(8888)
 isData1 = isData2 = False
 isData = False
 isQcd = isWlnu = isZmumu = isZtautau = isZmumu10 = isZmumu20 = False
 isMc = False
+isParticleGunMuon = isParticleGunPion = False
+isParticleGun = False
 if options.sample == 'data1':
     isData1 = True
     isData = True
@@ -156,23 +130,9 @@ readFiles.extend( [
 ## Number of Events (should be after input file)
 ##
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-#if isQcd:
-#  if options.fileNumber==1: process.maxEvents.input = 87763    # 854181 events
-#  elif options.fileNumber==2: process.maxEvents.input = 87763  # 851413 events
-#  elif options.fileNumber==3: process.maxEvents.input = 87763  # 206553 events
-#elif isWlnu:
-#  if options.fileNumber==1: process.maxEvents.input = 56348    # 894904 events
-#  elif options.fileNumber==2: process.maxEvents.input = 56348  # 892738 events
-#  elif options.fileNumber==3: process.maxEvents.input = 56348  # 895703 events
-#  elif options.fileNumber==4: process.maxEvents.input = 56348  # 365205 events
-#elif isZmumu:
-#  if options.fileNumber==1: process.maxEvents.input = 12043    # 619625 events
-#  elif options.fileNumber==2: process.maxEvents.input = 12043  # 618007 events
-#  elif options.fileNumber==3: process.maxEvents.input = 12043  # 209738 events
-#elif isZtautau:
-#  if options.fileNumber==1: process.maxEvents.input = 414      # 143721 events
 if isQcd:
-  if options.fileNumber==1: process.maxEvents.input = 496645   # 588022 events
+  #if options.fileNumber==1: process.maxEvents.input = 496645   # 588022 events
+  if options.fileNumber==1: process.maxEvents.input = 550000   # 588022 events   # scale up to match observation
 elif isWlnu:
   if options.fileNumber==1: process.maxEvents.input =    91613 # 958439 events
   elif options.fileNumber==2: process.maxEvents.input =  91613 # 958759 events
