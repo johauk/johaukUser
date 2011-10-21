@@ -93,8 +93,8 @@ gStyle->SetOptStat(111100);
 drawPlot2.drawPlot("ApeEstimator1","h_entriesX");
 drawPlot2.drawPlot("ApeEstimator1","h_entriesY");
 gStyle->SetOptStat(111110);
-drawPlot2.drawPlot("ApeEstimator2","h_NorResX");
-drawPlot2.drawPlot("ApeEstimator2","h_NorResY");
+drawPlot2.drawPlot("ApeEstimator1","h_NorResX");
+drawPlot2.drawPlot("ApeEstimator1","h_NorResY");
 
 drawPlot2.drawTrackPlot("ApeEstimator2","h_eta");
 drawPlot2.drawTrackPlot("ApeEstimator2","h_theta");

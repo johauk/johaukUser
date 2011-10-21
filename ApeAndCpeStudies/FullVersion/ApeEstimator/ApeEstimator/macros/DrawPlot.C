@@ -121,7 +121,9 @@ DrawPlot::drawPlot(const TString& pluginName, const TString& histName){
     }
     else delta0_ = 0;
     
-    if(histName=="h_entriesX" || histName=="h_entriesY")ss_sector<<"Results/";
+    if(histName=="h_entriesX" || histName=="h_entriesY" ||
+       histName=="h_resX" || histName=="h_resY" ||
+       histName=="h_NorResX" || histName=="h_NorResY")ss_sector<<"Results/";
     
     ss_sector<<histName;
     const TString fullName(ss_sector.str().c_str());
