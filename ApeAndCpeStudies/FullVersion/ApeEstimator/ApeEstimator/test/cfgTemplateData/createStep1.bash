@@ -27,7 +27,7 @@ echo
 
 
 ## Alignment
-export alignmentRcd=""
+export alignmentRcd="GR10_v6"
 echo "Alignment Record: $alignmentRcd"
 echo
 

@@ -159,6 +159,19 @@ process.HighPuritySelector.src = 'MuSkim'
 
 
 ##
+## New pixel templates
+##
+process.GlobalTag.toGet = cms.VPSet(
+    cms.PSet(
+        record = cms.string("SiPixelTemplateDBObjectRcd"),
+        tag = cms.string("SiPixelTemplateDBObject_38T_v3_mc"),
+        connect = cms.untracked.string("frontier://FrontierProd/CMS_COND_31X_PIXEL"),
+    )
+) 
+
+
+
+##
 ## Alignment and APE
 ##
 import CalibTracker.Configuration.Common.PoolDBESSource_cfi
@@ -170,11 +183,11 @@ if isMc:
       cms.PSet(
         record = cms.string('TrackerAlignmentRcd'),
         tag = cms.string('TrackerIdealGeometry210_mc') # 'TrackerAlignment_2009_v2_offline'
-      )
+      ),
     ],
   )
   process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
-#process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+#  process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
 #    connect = 'sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/misalignments/AlignmentsTob20.db',
 #    toGet = [
 #      cms.PSet(
@@ -182,8 +195,31 @@ if isMc:
 #        tag = cms.string('TrackerScenario')
 #      )
 #    ],
-#)
+#  )
 #process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+if isData:
+  # Recent geometry
+  process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+    connect = 'frontier://FrontierProd/CMS_COND_31X_ALIGNMENT',
+    toGet = [
+      cms.PSet(
+        record = cms.string('TrackerAlignmentRcd'),
+        tag = cms.string('TrackerAlignment_GR10_v6_offline'),
+      ),
+    ],
+  )
+  process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+  # Kinks and bows
+  process.myTrackerAlignmentKinksAndBows = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+    connect = 'frontier://FrontierProd/CMS_COND_310X_ALIGN',
+    toGet = [
+      cms.PSet(
+        record = cms.string('TrackerSurfaceDeformationRcd'),
+        tag = cms.string('TrackerSurfaceDeformations_v1_offline'),
+      ),
+    ],
+  )
+  process.es_prefer_trackerAlignmentKinksAndBows = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentKinksAndBows")
 
 ## APE (set to zero)
 process.myTrackerAlignmentErr = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
@@ -192,7 +228,7 @@ process.myTrackerAlignmentErr = CalibTracker.Configuration.Common.PoolDBESSource
       cms.PSet(
         record = cms.string('TrackerAlignmentErrorRcd'),
         tag = cms.string('TrackerIdealGeometryErrors210_mc')
-      )
+      ),
     ],
 )
 process.es_prefer_trackerAlignmentErr = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentErr")

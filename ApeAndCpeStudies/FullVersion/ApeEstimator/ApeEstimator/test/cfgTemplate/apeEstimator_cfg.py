@@ -221,6 +221,19 @@ process.HighPuritySelector.src = 'MuSkim'
 
 
 ##
+## New pixel templates
+##
+#process.GlobalTag.toGet = cms.VPSet(
+#    cms.PSet(
+#        record = cms.string("SiPixelTemplateDBObjectRcd"),
+#        tag = cms.string("SiPixelTemplateDBObject_38T_v3_mc"),
+#        connect = cms.untracked.string("frontier://FrontierProd/CMS_COND_31X_PIXEL"),
+#    )
+#) 
+
+
+
+##
 ## Alignment and APE
 ##
 import CalibTracker.Configuration.Common.PoolDBESSource_cfi
@@ -236,8 +249,6 @@ if options.alignRcd=='design':
     )
   )
   process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
-elif options.alignRcd == 'data':
-  pass
 elif options.alignRcd == 'misalTob20':
   process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
     connect = 'sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/misalignments/AlignmentsTob20.db',
@@ -249,6 +260,31 @@ elif options.alignRcd == 'misalTob20':
     )
   )
   process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+elif options.alignRcd == 'GR10_v6':
+  # Recent geometry
+  process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+    connect = 'frontier://FrontierProd/CMS_COND_31X_ALIGNMENT',
+    toGet = [
+      cms.PSet(
+        record = cms.string('TrackerAlignmentRcd'),
+        tag = cms.string('TrackerAlignment_GR10_v6_offline'),
+      ),
+    ],
+  )
+  process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+  # Kinks and bows
+  process.myTrackerAlignmentKinksAndBows = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+    connect = 'frontier://FrontierProd/CMS_COND_310X_ALIGN',
+    toGet = [
+      cms.PSet(
+        record = cms.string('TrackerSurfaceDeformationRcd'),
+        tag = cms.string('TrackerSurfaceDeformations_v1_offline'),
+      ),
+    ],
+  )
+  process.es_prefer_trackerAlignmentKinksAndBows = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentKinksAndBows")
+elif options.alignRcd == 'globalTag':
+  pass
 elif options.alignRcd == '':
   pass
 else:
@@ -263,7 +299,7 @@ if options.iterNumber==0:
         cms.PSet(
           record = cms.string('TrackerAlignmentErrorRcd'),
           tag = cms.string('TrackerIdealGeometryErrors210_mc'),
-        )
+        ),
       ],
     )
     process.es_prefer_trackerAlignmentErr = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentErr")
@@ -274,7 +310,7 @@ else:
         cms.PSet(
           record = cms.string('TrackerAlignmentErrorRcd'),
           tag = cms.string('AlignmentErrors'),
-        )
+        ),
       ],
     )
     process.es_prefer_trackerAlignmentErr = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentErr")
