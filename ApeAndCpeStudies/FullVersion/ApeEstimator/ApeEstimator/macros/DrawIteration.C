@@ -11,6 +11,7 @@
 #include "TBranch.h"
 #include "TCanvas.h"
 #include "TAxis.h"
+#include "TH1F.h"
 
 #include "TROOT.h"
 #include "TStyle.h"
@@ -58,7 +59,6 @@ void DrawIteration::drawIteration(unsigned int iSectorLow, unsigned int iSectorH
   // Extract values stored in tree and put them into member data maps
   this->getSectorValues();
   
-  
   // Now create the final graphs, and get their extreme values
   ExtremeValues extremeValuesX(this->getGraphs("x", iSectorLow, iSectorHigh));
   ExtremeValues extremeValuesY(this->getGraphs("y", iSectorLow, iSectorHigh));
@@ -70,24 +70,30 @@ void DrawIteration::drawIteration(unsigned int iSectorLow, unsigned int iSectorH
   this->drawCorrections("y", extremeValuesY, ss_sectorInterval.str());
   
   // Finally, print out final values
-  for(std::map<unsigned int, std::string*>::const_iterator i_sectorValue = m_sectorName_.begin(); i_sectorValue != m_sectorName_.end(); ++i_sectorValue){
-    const unsigned int iSector(i_sectorValue->first);
-    if(iSector>=iSectorLow && iSector<=iSectorHigh){
-      const std::string* name(i_sectorValue->second);
-      const double apeX = std::sqrt(*(--(m_sectorValueX_[iSector].end())));
-      double apeY(-9.);
-      if(m_sectorValueY_.count(iSector)!=0)apeY = std::sqrt(*(--(m_sectorValueY_[iSector].end())));
-      
-      std::cout<<"Sector no., APE x, APE y, name:\t"<<iSector<<"\t, "<<std::fixed<<std::setprecision(5)<<apeX<<" , "<<apeY<<" , "<<*name<<"\n";
-    }
-  }
-  m_sectorName_.clear();
-  m_sectorValueX_.clear();
-  m_sectorValueY_.clear();
-  v_graphApeX_.clear();
-  v_graphCorrectionX_.clear();
-  v_graphApeY_.clear();
-  v_graphCorrectionY_.clear();
+  this->printFinalValues(iSectorLow, iSectorHigh);
+  
+  // Clean up
+  this->clear();
+}
+
+
+
+void DrawIteration::drawResult(){
+  // Set up style
+  //this->setStyle();
+  
+  // Extract values stored in tree and put them into member data maps
+  this->getSectorValues();
+  
+  // Collect sectors to be shown in same plot in correct order
+  this->arrangeHists();
+  
+  // Final plots
+  this->drawFinals("x");
+  this->drawFinals("y");
+  
+  // Clean up
+  this->clear();
 }
 
 
@@ -251,7 +257,7 @@ void DrawIteration::drawCorrections(const std::string& xOrY, const ExtremeValues
     v_graphCorrection = &v_graphCorrectionY_;
   }
   else{
-    std::cout<<"Wrong parameter for getGraphs(...)\n";
+    std::cout<<"Wrong parameter for drawCorrections(...)\n";
   }
   
   if(v_graphApe->size()==0 || v_graphCorrection->size()==0)return;
@@ -313,6 +319,368 @@ void DrawIteration::drawCorrections(const std::string& xOrY, const ExtremeValues
   v_graphCorrection->clear();
   canvas->Close();
 }
+
+
+
+void DrawIteration::printFinalValues(unsigned int iSectorLow, unsigned int iSectorHigh){
+  for(std::map<unsigned int, std::string*>::const_iterator i_sectorValue = m_sectorName_.begin(); i_sectorValue != m_sectorName_.end(); ++i_sectorValue){
+    const unsigned int iSector(i_sectorValue->first);
+    if(iSector>=iSectorLow && iSector<=iSectorHigh){
+      const std::string* name(i_sectorValue->second);
+      const double apeX = std::sqrt(*(--(m_sectorValueX_[iSector].end())));
+      double apeY(-9.);
+      if(m_sectorValueY_.count(iSector)!=0)apeY = std::sqrt(*(--(m_sectorValueY_[iSector].end())));
+      
+      std::cout<<"Sector no., APE x, APE y, name:\t"<<iSector<<"\t, "<<std::fixed<<std::setprecision(5)<<apeX<<" , "<<apeY<<" , "<<*name<<"\n";
+    }
+  }
+}
+
+
+
+void DrawIteration::clear(){
+  m_sectorName_.clear();
+  m_sectorValueX_.clear();
+  m_sectorValueY_.clear();
+  
+  v_graphApeX_.clear();
+  v_graphCorrectionX_.clear();
+  v_graphApeY_.clear();
+  v_graphCorrectionY_.clear();
+  
+  v_resultHist_.clear();
+}
+
+
+
+void DrawIteration::arrangeHists(){
+  v_resultHist_.push_back(this->pixelHist());
+  //v_resultHist_.push_back(this->barrelHist());
+  v_resultHist_.push_back(this->tibHist());
+  v_resultHist_.push_back(this->tobHist());
+  //v_resultHist_.push_back(this->endcapHist());
+  v_resultHist_.push_back(this->tidHist());
+  v_resultHist_.push_back(this->tecHist());
+}
+
+
+
+std::vector<std::string> DrawIteration::pixelHist(){
+  std::vector<std::string> v_name;
+  
+  v_name.push_back("BpixLayer1Out");
+  v_name.push_back("BpixLayer1In");
+  v_name.push_back("BpixLayer2Out");
+  v_name.push_back("BpixLayer2In");
+  v_name.push_back("BpixLayer3Out");
+  v_name.push_back("BpixLayer3In");
+  
+  v_name.push_back("FpixMinusLayer1");
+  v_name.push_back("FpixMinusLayer2");
+  v_name.push_back("FpixPlusLayer1");
+  v_name.push_back("FpixPlusLayer2");
+  
+  return v_name;
+}
+
+
+
+std::vector<std::string> DrawIteration::barrelHist(){
+  std::vector<std::string> v_name;
+  
+  v_name.push_back("TibLayer1RphiOut");
+  v_name.push_back("TibLayer1RphiIn");
+  v_name.push_back("TibLayer1StereoOut");
+  v_name.push_back("TibLayer1StereoIn");
+  v_name.push_back("TibLayer2RphiOut");
+  v_name.push_back("TibLayer2RphiIn");
+  v_name.push_back("TibLayer2StereoOut");
+  v_name.push_back("TibLayer2StereoIn");
+  v_name.push_back("TibLayer3Out");
+  v_name.push_back("TibLayer3In");
+  v_name.push_back("TibLayer4Out");
+  v_name.push_back("TibLayer4In");
+  
+  v_name.push_back("TobLayer1StereoOut");
+  v_name.push_back("TobLayer1RphiIn");
+  v_name.push_back("TobLayer2RphiOut");
+  v_name.push_back("TobLayer2StereoIn");
+  v_name.push_back("TobLayer3Out");
+  v_name.push_back("TobLayer3In");
+  v_name.push_back("TobLayer4Out");
+  v_name.push_back("TobLayer4In");
+  v_name.push_back("TobLayer5Out");
+  v_name.push_back("TobLayer5In");
+  v_name.push_back("TobLayer6Out");
+  v_name.push_back("TobLayer6In");
+  
+  return v_name;
+}
+
+
+
+std::vector<std::string> DrawIteration::tibHist(){
+  std::vector<std::string> v_name;
+  
+  v_name.push_back("TibLayer1RphiOut");
+  v_name.push_back("TibLayer1RphiIn");
+  v_name.push_back("TibLayer1StereoOut");
+  v_name.push_back("TibLayer1StereoIn");
+  v_name.push_back("TibLayer2RphiOut");
+  v_name.push_back("TibLayer2RphiIn");
+  v_name.push_back("TibLayer2StereoOut");
+  v_name.push_back("TibLayer2StereoIn");
+  v_name.push_back("TibLayer3Out");
+  v_name.push_back("TibLayer3In");
+  v_name.push_back("TibLayer4Out");
+  v_name.push_back("TibLayer4In");
+  
+  return v_name;
+}
+
+
+
+std::vector<std::string> DrawIteration::tobHist(){
+  std::vector<std::string> v_name;
+  
+  v_name.push_back("TobLayer1StereoOut");
+  v_name.push_back("TobLayer1RphiIn");
+  v_name.push_back("TobLayer2RphiOut");
+  v_name.push_back("TobLayer2StereoIn");
+  v_name.push_back("TobLayer3Out");
+  v_name.push_back("TobLayer3In");
+  v_name.push_back("TobLayer4Out");
+  v_name.push_back("TobLayer4In");
+  v_name.push_back("TobLayer5Out");
+  v_name.push_back("TobLayer5In");
+  v_name.push_back("TobLayer6Out");
+  v_name.push_back("TobLayer6In");
+  
+  return v_name;
+}
+
+
+
+std::vector<std::string> DrawIteration::endcapHist(){
+  std::vector<std::string> v_name;
+  
+  v_name.push_back("TidMinusRing1Rphi");
+  v_name.push_back("TidMinusRing1Stereo");
+  v_name.push_back("TidMinusRing2Rphi");
+  v_name.push_back("TidMinusRing2Stereo");
+  v_name.push_back("TidMinusRing3");
+  
+  v_name.push_back("TidPlusRing1Rphi");
+  v_name.push_back("TidPlusRing1Stereo");
+  v_name.push_back("TidPlusRing2Rphi");
+  v_name.push_back("TidPlusRing2Stereo");
+  v_name.push_back("TidPlusRing3");
+  
+  v_name.push_back("TecMinusRing1Rphi");
+  v_name.push_back("TecMinusRing1Stereo");
+  v_name.push_back("TecMinusRing2Rphi");
+  v_name.push_back("TecMinusRing2Stereo");
+  v_name.push_back("TecMinusRing3");
+  v_name.push_back("TecMinusRing4");
+  v_name.push_back("TecMinusRing5Rphi");
+  v_name.push_back("TecMinusRing5Stereo");
+  v_name.push_back("TecMinusRing6");
+  v_name.push_back("TecMinusRing7");
+  
+  v_name.push_back("TecPlusRing1Rphi");
+  v_name.push_back("TecPlusRing1Stereo");
+  v_name.push_back("TecPlusRing2Rphi");
+  v_name.push_back("TecPlusRing2Stereo");
+  v_name.push_back("TecPlusRing3");
+  v_name.push_back("TecPlusRing4");
+  v_name.push_back("TecPlusRing5Rphi");
+  v_name.push_back("TecPlusRing5Stereo");
+  v_name.push_back("TecPlusRing6");
+  v_name.push_back("TecPlusRing7");
+  
+  return v_name;
+}
+
+
+
+std::vector<std::string> DrawIteration::tidHist(){
+  std::vector<std::string> v_name;
+  
+  v_name.push_back("TidMinusRing1Rphi");
+  v_name.push_back("TidMinusRing1Stereo");
+  v_name.push_back("TidMinusRing2Rphi");
+  v_name.push_back("TidMinusRing2Stereo");
+  v_name.push_back("TidMinusRing3");
+  
+  v_name.push_back("TidPlusRing1Rphi");
+  v_name.push_back("TidPlusRing1Stereo");
+  v_name.push_back("TidPlusRing2Rphi");
+  v_name.push_back("TidPlusRing2Stereo");
+  v_name.push_back("TidPlusRing3");
+  
+  return v_name;
+}
+
+
+
+std::vector<std::string> DrawIteration::tecHist(){
+  std::vector<std::string> v_name;
+  
+  v_name.push_back("TecMinusRing1Rphi");
+  v_name.push_back("TecMinusRing1Stereo");
+  v_name.push_back("TecMinusRing2Rphi");
+  v_name.push_back("TecMinusRing2Stereo");
+  v_name.push_back("TecMinusRing3");
+  v_name.push_back("TecMinusRing4");
+  v_name.push_back("TecMinusRing5Rphi");
+  v_name.push_back("TecMinusRing5Stereo");
+  v_name.push_back("TecMinusRing6");
+  v_name.push_back("TecMinusRing7");
+  
+  v_name.push_back("TecPlusRing1Rphi");
+  v_name.push_back("TecPlusRing1Stereo");
+  v_name.push_back("TecPlusRing2Rphi");
+  v_name.push_back("TecPlusRing2Stereo");
+  v_name.push_back("TecPlusRing3");
+  v_name.push_back("TecPlusRing4");
+  v_name.push_back("TecPlusRing5Rphi");
+  v_name.push_back("TecPlusRing5Stereo");
+  v_name.push_back("TecPlusRing6");
+  v_name.push_back("TecPlusRing7");
+  
+  return v_name;
+}
+
+
+
+TString DrawIteration::associateLabel(const std::string& sectorName){
+  const TString name(sectorName.c_str());
+  TString nameHelp("");
+  
+  TString subdet, subdetLabel;
+  if(name.BeginsWith("Bpix")){subdet="Bpix"; subdetLabel="BPIX";}
+  else if(name.BeginsWith("Fpix")){subdet="Fpix"; subdetLabel="FPIX";}
+  else if(name.BeginsWith("Tib")){subdet="Tib"; subdetLabel="TIB";}
+  else if(name.BeginsWith("Tid")){subdet="Tid"; subdetLabel="TID";}
+  else if(name.BeginsWith("Tob")){subdet="Tob"; subdetLabel="TOB";}
+  else if(name.BeginsWith("Tec")){subdet="Tec"; subdetLabel="TEC";}
+  else return "ERROR: no label found";
+  nameHelp += subdet;
+  
+  TString side, sideLabel;
+  if(name.BeginsWith(nameHelp+"Minus")){side="Minus"; sideLabel="m";}
+  else if(name.BeginsWith(nameHelp+"Plus")){side="Plus"; sideLabel="p";}
+  else {side=""; sideLabel="";}
+  nameHelp += side;
+  
+  TString layer, layerLabel;
+  if(name.BeginsWith(nameHelp+"Layer")){layer="Layer"; layerLabel=" L";}
+  else if(name.BeginsWith(nameHelp+"Ring")){layer="Ring"; layerLabel=" R";}
+  else return "ERROR: no label found";
+  nameHelp += layer;
+  
+  TString layerNo, layerNoLabel;
+  for(unsigned int iLayer=1; iLayer<=7; ++iLayer){
+    std::stringstream ss_layer;
+    ss_layer<<iLayer;
+    if(name.BeginsWith(nameHelp+ss_layer.str())){;
+      layerNo=ss_layer.str(); layerNoLabel=ss_layer.str();
+      break;
+    }
+  }
+  nameHelp += layerNo;
+  
+  TString sublayer, sublayerLabel;
+  if(name.BeginsWith(nameHelp+"Rphi")){sublayer="Rphi"; sublayerLabel="R";}
+  else if(name.BeginsWith(nameHelp+"Stereo")){sublayer="Stereo"; sublayerLabel="S";}
+  else {sublayer=""; sublayerLabel="";}
+  nameHelp += sublayer;
+  
+  TString orientation, orientationLabel;
+  if(name.BeginsWith(nameHelp+"Out")){orientation="Out"; orientationLabel="o";}
+  else if(name.BeginsWith(nameHelp+"In")){orientation="In"; orientationLabel="i";}
+  else {orientation=""; orientationLabel="";}
+  nameHelp += orientation;
+  
+  const TString label(subdetLabel+sideLabel+layerLabel+layerNoLabel+sublayerLabel+orientationLabel);
+  return label;
+}
+
+
+
+unsigned int DrawIteration::sectorNumber(const std::string& name){
+  unsigned int sectorNo(0);
+  std::map<unsigned int, std::string*>::const_iterator i_sector;
+  for(i_sector=m_sectorName_.begin(); i_sector!=m_sectorName_.end(); ++i_sector){
+    if(*(i_sector->second)==name){
+      sectorNo=i_sector->first;
+      break;
+    }
+  }
+  return sectorNo;
+}
+
+
+
+void DrawIteration::drawFinals(const std::string& xOrY){
+  std::map<unsigned int, std::vector<double> >* m_sectorValue(0);
+  if(xOrY=="x"){
+    m_sectorValue = &m_sectorValueX_;
+  }
+  else if(xOrY=="y"){
+    m_sectorValue = &m_sectorValueY_;
+  }
+  else{
+    std::cout<<"Wrong parameter for drawFinals(...)\n";
+  }
+  
+  unsigned int iHist(1);
+  std::vector<std::vector<std::string> >::const_iterator i_resultHist;
+  for(i_resultHist=v_resultHist_.begin(); i_resultHist!=v_resultHist_.end(); ++i_resultHist, ++iHist){
+    //std::cout<<"New histogram\n";
+    TCanvas* canvas(0);
+    canvas = new TCanvas("canvas");
+    TH1* hist(0);
+    const TString title("Results;;#sigma_{APE,"+xOrY+"}  [#mum]");
+    hist = new TH1F("hist",title,i_resultHist->size(),0,i_resultHist->size());
+    
+    unsigned int iBin(1);
+    bool hasEntry(false);
+    std::vector<std::string>::const_iterator i_name;
+    for(i_name=i_resultHist->begin(); i_name!=i_resultHist->end(); ++i_name, ++iBin){
+      const TString& label = this->associateLabel(*i_name);
+      const unsigned int iSector = this->sectorNumber(*i_name);
+      double ape(-9.);
+      if(m_sectorValue->count(iSector)!=0){
+        ape = 10000.*std::sqrt(*(--((*m_sectorValue)[iSector].end())));
+	hasEntry = true;
+      }
+      hist->SetBinContent(iBin, ape);
+      hist->SetBinError(iBin, 0.0000001);
+      hist->GetXaxis()->SetBinLabel(iBin, label);
+      hist->SetAxisRange(0.,30.,"Y");
+    }
+    
+    if(hasEntry){
+      //gStyle->SetErrorX(0.5);
+      hist->Draw("e0");
+      std::stringstream ss_hist;
+      ss_hist<<"_"<<iHist;
+      canvas->Print(outpath_->Copy().Append("result_").Append(xOrY).Append(ss_hist.str()).Append(".eps"));
+      canvas->Print(outpath_->Copy().Append("result_").Append(xOrY).Append(ss_hist.str()).Append(".png"));
+    }
+    
+    hist->Delete();
+    canvas->Close();
+  }
+  
+}
+
+
+
+
+
+
 
 
 
