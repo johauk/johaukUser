@@ -658,7 +658,7 @@ void DrawIteration::drawFinals(const std::string& xOrY){
       hist->SetBinContent(iBin, ape);
       hist->SetBinError(iBin, 0.0000001);
       hist->GetXaxis()->SetBinLabel(iBin, label);
-      hist->SetAxisRange(0.,30.,"Y");
+      hist->SetAxisRange(0.,35.,"Y");
     }
     
     if(hasEntry){
