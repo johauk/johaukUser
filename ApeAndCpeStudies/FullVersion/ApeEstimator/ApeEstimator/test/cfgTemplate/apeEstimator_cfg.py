@@ -223,13 +223,13 @@ process.HighPuritySelector.src = 'MuSkim'
 ##
 ## New pixel templates
 ##
-#process.GlobalTag.toGet = cms.VPSet(
-#    cms.PSet(
-#        record = cms.string("SiPixelTemplateDBObjectRcd"),
-#        tag = cms.string("SiPixelTemplateDBObject_38T_v3_mc"),
-#        connect = cms.untracked.string("frontier://FrontierProd/CMS_COND_31X_PIXEL"),
-#    )
-#) 
+process.GlobalTag.toGet = cms.VPSet(
+    cms.PSet(
+        record = cms.string("SiPixelTemplateDBObjectRcd"),
+        tag = cms.string("SiPixelTemplateDBObject_38T_v3_mc"),
+        connect = cms.untracked.string("frontier://FrontierProd/CMS_COND_31X_PIXEL"),
+    )
+) 
 
 
 
