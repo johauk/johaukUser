@@ -18,26 +18,29 @@ class DrawPlot{
     DrawPlot(const unsigned int =0, const bool =true);
     ~DrawPlot();
     
-    void setLegendEntry(const TString&, const TString&);
+    void setLegendEntry(const TString&, const TString&, const TString&);
     void setLegendCoordinate(const double, const double, const double, const double);
-    void drawPlot(const TString&, const TString&);
-    void drawTrackPlot(const TString&, const TString&);
-    void drawEventPlot(const TString&, const TString&);
+    void drawPlot(const TString&, const TString&, bool =true, bool =true);
+    void drawTrackPlot(const TString&, const TString&, const bool =true, const bool =true);
+    void drawEventPlot(const TString&, const TString&, const bool =true, const bool =true);
     
   private:
-    void printHist(const TString&, const TString&)const;
+    void printHist(const TString&, const TString&, const bool, const bool)const;
+    void scale(std::vector<TH1*>&, const double =1.)const;
     double maximumY(std::vector<TH1*>&)const;
     double minimumY(std::vector<TH1*>&)const;
-    void setRangeUser(std::vector<TH1*>&, const double minY, const double maxY)const;
+    void setRangeUser(std::vector<TH1*>&, const double, const double)const;
     void setLineWidth(std::vector<TH1*>&, const unsigned int)const;
-    void draw(std::vector<TH1*>& v_hist)const;
-    void cleanup(std::vector<TH1*>& v_hist)const;
+    void draw(std::vector<TH1*>&)const;
+    void cleanup(std::vector<TH1*>&)const;
     
     
     
     const TString* outpath_;
-    // File with distributions for result iteration
+    // File with distributions for result after iterations (final APE)
     TFile* file_;
+    // File with distributions for result before iterations (APE=0)
+    TFile* fileZeroApe_;
     // File with distributions for design geometry
     TFile* designFile_;
     // Only used when baseline should be drawn in residualWidth plot
@@ -47,6 +50,7 @@ class DrawPlot{
     
     // For setting legend in plots
     TString legendEntry_;
+    TString legendEntryZeroApe_;
     TString designLegendEntry_;
     double legendXmin_;
     double legendYmin_;

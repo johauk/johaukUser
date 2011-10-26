@@ -18,31 +18,41 @@
 
 
 DrawPlot::DrawPlot(const unsigned int iterationNumber, const bool summaryFile):
-outpath_(0), file_(0), designFile_(0), baselineTreeX_(0), baselineTreeY_(0), delta0_(0),
-legendEntry_("data"),  designLegendEntry_("MCideal"),
+outpath_(0), file_(0), fileZeroApe_(0), designFile_(0), baselineTreeX_(0), baselineTreeY_(0), delta0_(0),
+legendEntry_("data (final APE)"), legendEntryZeroApe_("data (APE=0)"), designLegendEntry_("MCideal"),
 legendXmin_(0.41), legendYmin_(0.27), legendXmax_(0.71), legendYmax_(0.42)
 {
-  std::stringstream ss_inpath;
-  ss_inpath<<"$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/workingArea/iter"<<iterationNumber<<"/";
+  std::stringstream ss_inpath, ss_inpathZeroApe;
+  ss_inpath<<"$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/workingArea/iter";
+  ss_inpathZeroApe<<ss_inpath.str()<<"0/";
+  ss_inpath<<iterationNumber<<"/";
+  
   const TString* inpath = new TString(ss_inpath.str().c_str());
+  const TString* inpathZeroApe = new TString(ss_inpathZeroApe.str().c_str());
   outpath_ = new TString(inpath->Copy().Append("plots/"));
   const TString rootFileName(summaryFile ? "allData_resultsFile.root" : "allData.root");
   const TString* fileName = new TString(inpath->Copy().Append(rootFileName));
+  const TString* fileNameZeroApe = new TString(inpathZeroApe->Copy().Append(rootFileName));
   const TString* designFileName = new TString("$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/Design/baseline/" + rootFileName);
   const TString* baselineFileName = new TString("$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/Design/baseline/allData_baselineApe.root");
   
+  std::cout<<"\n";
   std::cout<<"Outpath: "<<*outpath_<<"\n";
-  std::cout<<"File name: "<<*fileName<<"\n";
+  std::cout<<"File name (final APE): "<<*fileName<<"\n";
+  std::cout<<"File name (zero APE): "<<*fileNameZeroApe<<"\n";
   std::cout<<"Design file name: "<<*designFileName<<"\n";
   std::cout<<"Baseline file name: "<<*baselineFileName<<"\n";
+  std::cout<<"\n";
   
-  file_ = new TFile(*fileName, "READ");
+  if(iterationNumber!=0)file_ = new TFile(*fileName, "READ");
+  fileZeroApe_ = new TFile(*fileNameZeroApe, "READ");
   designFile_ = new TFile(*designFileName, "READ");
   TFile* baselineFile = new TFile(*baselineFileName, "READ");
-  if(!file_ || !designFile_ || !baselineFile){
+  
+  //if(!file_ || !fileZeroApe_ || !designFile_ || !baselineFile){
     // Not needed: root gives error by default when file is not found
-    std::cout<<"\n\tInput file not found, please check file name: "<<*fileName<<"\n";
-  }
+    //std::cout<<"\n\tInput file not found, please check file name: "<<*fileName<<"\n";
+  //}
   
   if(baselineFile){
     baselineFile->GetObject("iterTreeX", baselineTreeX_);
@@ -54,6 +64,7 @@ legendXmin_(0.41), legendYmin_(0.27), legendXmax_(0.71), legendYmax_(0.42)
   
   delete inpath;
   delete fileName;
+  delete fileNameZeroApe;
   delete designFileName;
   delete baselineFileName;
 }
@@ -63,6 +74,7 @@ legendXmin_(0.41), legendYmin_(0.27), legendXmax_(0.71), legendYmax_(0.42)
 DrawPlot::~DrawPlot(){
   if(outpath_)delete outpath_;
   if(file_)file_->Close();
+  if(fileZeroApe_)fileZeroApe_->Close();
   if(designFile_)designFile_->Close();
   if(baselineTreeX_)baselineTreeX_->Delete();
   if(baselineTreeY_)baselineTreeY_->Delete();
@@ -71,8 +83,9 @@ DrawPlot::~DrawPlot(){
 
 
 void
-DrawPlot::setLegendEntry(const TString& legendEntry, const TString& designLegendEntry){
+DrawPlot::setLegendEntry(const TString& legendEntry, const TString& legendEntryZeroApe, const TString& designLegendEntry){
   legendEntry_ = legendEntry;
+  legendEntryZeroApe_ = legendEntryZeroApe;
   designLegendEntry_ = designLegendEntry;
 }
 void
@@ -86,7 +99,7 @@ DrawPlot::setLegendCoordinate(const double legendXmin, const double legendYmin, 
 
 
 void
-DrawPlot::drawPlot(const TString& pluginName, const TString& histName){
+DrawPlot::drawPlot(const TString& pluginName, const TString& histName, const bool normalise, const bool plotZeroApe){
   TString* plugin = new TString(pluginName.Copy());
   if(!plugin->IsNull())plugin->Append("/");
   for(unsigned int iSector=1; ; ++iSector){
@@ -95,11 +108,11 @@ DrawPlot::drawPlot(const TString& pluginName, const TString& histName){
     ss_sector<<*plugin<<ss_sectorName.str()<<"/";
     TDirectory* dir(0);
     //std::cout<<"Sector: "<<ss_sector.str()<<"\n";
-    dir = (TDirectory*)file_->TDirectory::GetDirectory(ss_sector.str().c_str());
+    dir = (TDirectory*)designFile_->TDirectory::GetDirectory(ss_sector.str().c_str());
     if(!dir)break;
     
     TH1* SectorName(0);
-    file_->GetObject((ss_sector.str()+"z_name;1").c_str(), SectorName);
+    designFile_->GetObject((ss_sector.str()+"z_name;1").c_str(), SectorName);
     const TString sectorName(SectorName ? SectorName->GetTitle() : ss_sectorName.str().c_str());
     
     
@@ -127,7 +140,7 @@ DrawPlot::drawPlot(const TString& pluginName, const TString& histName){
     
     ss_sector<<histName;
     const TString fullName(ss_sector.str().c_str());
-    this->printHist(fullName, histName.Copy().Append("_").Append(sectorName));
+    this->printHist(fullName, histName.Copy().Append("_").Append(sectorName), normalise, plotZeroApe);
     
     if(delta0_)delete delta0_;
   }
@@ -136,57 +149,65 @@ DrawPlot::drawPlot(const TString& pluginName, const TString& histName){
 
 
 void
-DrawPlot::drawTrackPlot(const TString& pluginName, const TString& histName){
+DrawPlot::drawTrackPlot(const TString& pluginName, const TString& histName, const bool normalise, const bool plotZeroApe){
   TString* plugin = new TString(pluginName.Copy());
   if(!plugin->IsNull())plugin->Append("/");
   std::stringstream ss_sector;
   ss_sector<<*plugin<<"TrackVariables/"<<histName;
   const TString fullName(ss_sector.str().c_str());
-  this->printHist(fullName, histName);
+  this->printHist(fullName, histName, normalise, plotZeroApe);
 }
 
 
 
 void
-DrawPlot::drawEventPlot(const TString& pluginName, const TString& histName){
+DrawPlot::drawEventPlot(const TString& pluginName, const TString& histName, const bool normalise, const bool plotZeroApe){
   TString* plugin = new TString(pluginName.Copy());
   if(!plugin->IsNull())plugin->Append("/");
   std::stringstream ss_sector;
   ss_sector<<*plugin<<"EventVariables/"<<histName;
   const TString fullName(ss_sector.str().c_str());
-  this->printHist(fullName, histName);
+  this->printHist(fullName, histName, normalise, plotZeroApe);
 }
 
 
 
 void
-DrawPlot::printHist(const TString& fullName, const TString& sectorName)const{
+DrawPlot::printHist(const TString& fullName, const TString& sectorName, const bool normalise, const bool plotZeroApe)const{
   TH1* hist(0);
+  TH1* histZeroApe(0);
   TH1* designHist(0);
-  file_->GetObject(fullName + ";1", hist);
+  if(file_)file_->GetObject(fullName + ";1", hist);
+  if(fileZeroApe_)fileZeroApe_->GetObject(fullName + ";1", histZeroApe);
   designFile_->GetObject(fullName + ";1", designHist);
-  if(!hist || !designHist){std::cout<<"Histogram not found in file: "<<fullName<<"\n"; return;}
+  if(hist && !plotZeroApe)histZeroApe = 0;
+  if(!(hist || histZeroApe) || !designHist){std::cout<<"Histogram not found in file: "<<fullName<<"\n"; return;}
   else std::cout<<"Drawing histogram: "<<fullName<<"\n";
   
   std::vector<TH1*> v_hist;
   v_hist.push_back(designHist);
-  v_hist.push_back(hist);
+  if(histZeroApe)v_hist.push_back(histZeroApe);
+  if(hist)v_hist.push_back(hist);
+  
+  if(normalise)this->scale(v_hist, 100.);
   
   const double maxY(this->maximumY(v_hist));
   //const double minY(this->minimumY(v_hist));
   this->setRangeUser(v_hist, 0., 1.1*maxY);
   
   this->setLineWidth(v_hist, 2);
-  hist->SetLineColor(2);
-  hist->SetLineStyle(2);
+  if(histZeroApe)histZeroApe->SetLineColor(2);
+  if(histZeroApe)histZeroApe->SetLineStyle(2);
+  if(hist)hist->SetLineColor(4);
+  if(hist)hist->SetLineStyle(4);
   
   TCanvas* canvas = new TCanvas("canvas");
   canvas->cd();
   
   this->draw(v_hist);
   if(delta0_){
-    const double xLow(hist->GetXaxis()->GetXmin());
-    const double xUp(hist->GetXaxis()->GetXmax());
+    const double xLow(designHist->GetXaxis()->GetXmin());
+    const double xUp(designHist->GetXaxis()->GetXmax());
     TLine* baseline(0);
     baseline = new TLine(xLow,*delta0_,xUp,*delta0_);
     baseline->SetLineStyle(2);
@@ -199,13 +220,21 @@ DrawPlot::printHist(const TString& fullName, const TString& sectorName)const{
   canvas->Update();
   
   //TPaveStats* stats =(TPaveStats*) hist->GetListOfFunctions()->At(1);
+  TPaveStats* statsZeroApe(0);
+  if(histZeroApe)statsZeroApe = (TPaveStats*)histZeroApe->GetListOfFunctions()->FindObject("stats");
+  if(statsZeroApe){
+    statsZeroApe->SetY1NDC(0.58);
+    statsZeroApe->SetY2NDC(0.78);
+    statsZeroApe->SetLineColor(2);
+    statsZeroApe->SetTextColor(2);
+  }
   TPaveStats* stats(0);
-  stats = (TPaveStats*)hist->GetListOfFunctions()->FindObject("stats");
+  if(hist)stats = (TPaveStats*)hist->GetListOfFunctions()->FindObject("stats");
   if(stats){
-    stats->SetY1NDC(0.58);
-    stats->SetY2NDC(0.78);
-    stats->SetLineColor(2);
-    stats->SetTextColor(2);
+    stats->SetY1NDC(0.37);
+    stats->SetY2NDC(0.57);
+    stats->SetLineColor(4);
+    stats->SetTextColor(4);
   }
   canvas->Modified();
   canvas->Update();
@@ -219,7 +248,8 @@ DrawPlot::printHist(const TString& fullName, const TString& sectorName)const{
   legend->SetFillStyle(1001);
   //legend->SetBorderSize(0);
   legend->AddEntry(designHist, designLegendEntry_, "l");
-  legend->AddEntry(hist, legendEntry_, "l");
+  if(histZeroApe)legend->AddEntry(histZeroApe, legendEntryZeroApe_, "l");
+  if(hist)legend->AddEntry(hist, legendEntry_, "l");
   legend->Draw("same");
   
   canvas->Modified();
@@ -234,7 +264,18 @@ DrawPlot::printHist(const TString& fullName, const TString& sectorName)const{
   if(canvas)canvas->Close();
   this->cleanup(v_hist);
   if(designHist)designHist->Delete();
+  if(histZeroApe)histZeroApe->Delete();
   if(hist)hist->Delete();
+}
+
+
+void DrawPlot::scale(std::vector<TH1*>& v_hist, const double factor)const{
+  for(std::vector<TH1*>::const_iterator i_hist = v_hist.begin();  i_hist != v_hist.end(); ++i_hist){
+    TH1* hist(*i_hist);
+    const double integral(hist->Integral(0,hist->GetNbinsX()+1));
+    if(integral>0.)hist->Scale(factor/integral);
+    hist->SetYTitle(TString(hist->GetYaxis()->GetTitle()) + "  (scaled)");
+  }
 }
 
 
