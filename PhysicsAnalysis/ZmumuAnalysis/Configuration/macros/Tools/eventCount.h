@@ -10,6 +10,8 @@
 
 namespace Tools{
   TH1* eventCount(TFile* file, const TString& pluginSuffix);
+  double nEvent(const TH1*);
+  double nEventReweight(const TH1*);
 };
 
 

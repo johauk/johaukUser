@@ -21,7 +21,8 @@ TH1* Tools::eventCount(TFile* file, const TString& pluginSuffix){
   
   // Give name of input histogram
   TString* histName(0);
-  histName = new TString("h_eventCount");
+  //histName = new TString("h_eventCount");
+  histName = new TString("h_eventCountWeighted");  // Do not need to separate, since weighted histogram contains all information: Unweighted number of events is simply given by GetEntries()
   
   TString* fullName(0);
   fullName = new TString(fullPathName->Copy().Append(*histName));
@@ -37,7 +38,12 @@ TH1* Tools::eventCount(TFile* file, const TString& pluginSuffix){
 
 
 
+double Tools::nEvent(const TH1* eventCount){
+  return eventCount->GetEntries();
+}
 
 
 
-
+double Tools::nEventReweight(const TH1* eventCount){
+  return eventCount->Integral(0, eventCount->GetNbinsX()+1);
+}
