@@ -33,7 +33,7 @@ class ValueAndError{
     void setAbsErr2Up(const double input){absoluteErrorSquaredUp_ = input;}
     void setAbsErr2Dw(const double input){absoluteErrorSquaredDown_ = input;}
     
-    std::string print()const;
+    std::string print(const double =1.)const;
     
     static const ValueAndError dummyValues(const double =1., const double =0.1, const double =0.1);
     
@@ -94,7 +94,7 @@ class ValueAndErrorStatSyst : public ValueAndError{
     void setAbsErr2SystUp(const double input){absoluteErrorSquaredSystUp_ = input;this->setError();}
     void setAbsErr2SystDw(const double input){absoluteErrorSquaredSystDown_ = input;this->setError();}
     
-    std::string print()const;
+    std::string print(const double =1.)const;
     
     static const ValueAndErrorStatSyst dummyValues(const double =1., const double =0.1, const double =0.1, const double =0.1, const double =0.1);
     
@@ -139,7 +139,7 @@ class ValueAndErrorStatSystLumi : public ValueAndErrorStatSyst{
     void setAbsErr2LumiUp(const double input){absoluteErrorSquaredLumiUp_ = input;this->setError();}
     void setAbsErr2LumiDw(const double input){absoluteErrorSquaredLumiDown_ = input;this->setError();}
     
-    std::string print()const;
+    std::string print(const double =1.)const;
     
     static const ValueAndErrorStatSystLumi dummyValues(const double =1., const double =0.1, const double =0.1, const double =0.1, const double =0.1, const double =0.1, const double =0.1);
     

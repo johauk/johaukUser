@@ -6,32 +6,32 @@
 
 
 
-std::string ValueAndError::print()const{
+std::string ValueAndError::print(const double factor)const{
   std::stringstream out;
-  out<<this->value();
-  out<<" +"<<this->absErrUp()<<"-"<<this->absErrDw();
+  out<<this->value()*factor;
+  out<<" +"<<this->absErrUp()*factor<<"-"<<this->absErrDw()*factor;
   return out.str();
 }
 
 
 
-std::string ValueAndErrorStatSyst::print()const{
+std::string ValueAndErrorStatSyst::print(const double factor)const{
   std::stringstream out;
-  out<<this->value();
-  out<<" +"<<this->absErrStatUp()<<"-"<<this->absErrStatDw()<<"(stat.)";
-  out<<" +"<<this->absErrSystUp()<<"-"<<this->absErrSystDw()<<"(syst.)";
-  out<<" [+"<<this->absErrUp()<<"-"<<this->absErrDw()<<"]";
+  out<<this->value()*factor;
+  out<<" +"<<this->absErrStatUp()*factor<<"-"<<this->absErrStatDw()*factor<<"(stat.)";
+  out<<" +"<<this->absErrSystUp()*factor<<"-"<<this->absErrSystDw()*factor<<"(syst.)";
+  out<<" [+"<<this->absErrUp()*factor<<"-"<<this->absErrDw()*factor<<"]";
   return out.str();
 }
 
 
-std::string ValueAndErrorStatSystLumi::print()const{
+std::string ValueAndErrorStatSystLumi::print(const double factor)const{
   std::stringstream out;
-  out<<this->value();
-  out<<" +"<<this->absErrStatUp()<<"-"<<this->absErrStatDw()<<"(stat.)";
-  out<<" +"<<this->absErrSystUp()<<"-"<<this->absErrSystDw()<<"(syst.)";
-  out<<" +"<<this->absErrLumiUp()<<"-"<<this->absErrLumiDw()<<"(lumi.)";
-  out<<" [+"<<this->absErrUp()<<"-"<<this->absErrDw()<<"]";
+  out<<this->value()*factor;
+  out<<" +"<<this->absErrStatUp()*factor<<"-"<<this->absErrStatDw()*factor<<"(stat.)";
+  out<<" +"<<this->absErrSystUp()*factor<<"-"<<this->absErrSystDw()*factor<<"(syst.)";
+  out<<" +"<<this->absErrLumiUp()*factor<<"-"<<this->absErrLumiDw()*factor<<"(lumi.)";
+  out<<" [+"<<this->absErrUp()*factor<<"-"<<this->absErrDw()*factor<<"]";
   return out.str();
 }
 
