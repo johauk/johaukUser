@@ -24,7 +24,7 @@ void FullAnalysis::setCrossSectionFromMc(){
              <<"\t... crossSectionFromMc calculation stopped\n";
     return;
   }
-  const double nEvents(events->GetEntries());
+  const double nEvents(Tools::nEvent(events));
   
   ValueAndError selectionEfficiency;
   selectionEfficiency.setValue(nEvents/zmumuB.nEvent().value());

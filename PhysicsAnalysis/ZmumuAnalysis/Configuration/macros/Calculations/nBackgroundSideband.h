@@ -39,7 +39,8 @@ void FullAnalysis::setNBackgroundSideband(const Sideband& sideband){
         return;
       }
     }
-    const double nEventsOut1(eventsOut1 ? eventsOut1->GetEntries() : 0.);
+    const double nEventsOut1(eventsOut1 ? Tools::nEventReweight(eventsOut1) : 0.);
+    
     TH1* eventsOut2(0);
     if(sideband==lower || sideband==both){
       TString pluginSuffix(this->recoSelectionStep());
@@ -51,7 +52,7 @@ void FullAnalysis::setNBackgroundSideband(const Sideband& sideband){
         return;
       }
     }
-    const double nEventsOut2(eventsOut2 ? eventsOut2->GetEntries() : 0.);
+    const double nEventsOut2(eventsOut2 ? Tools::nEventReweight(eventsOut2) : 0.);
     const double nEventsOut(nEventsOut1 + nEventsOut2);
     
     ValueAndError nSelectedEvent;

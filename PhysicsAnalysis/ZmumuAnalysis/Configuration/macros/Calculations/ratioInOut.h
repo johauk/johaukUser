@@ -45,7 +45,7 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
                <<"\t... ratioInOut calculation stopped\n";
       return;
     }
-    const double nEventsIn(eventsIn->GetEntries());
+    const double nEventsIn(Tools::nEventReweight(eventsIn));
     TH1* eventsOut1(0);
     if(sideband==upper || sideband==both){
       TString pluginSuffix(this->recoSelectionStep());
@@ -57,7 +57,7 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
         return;
       }
     }
-    const double nEventsOut1(eventsOut1 ? eventsOut1->GetEntries() : 0.);
+    const double nEventsOut1(eventsOut1 ? Tools::nEventReweight(eventsOut1) : 0.);
     TH1* eventsOut2(0);
     if(sideband==lower || sideband==both){
       TString pluginSuffix(this->recoSelectionStep());
@@ -69,7 +69,7 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
         return;
       }
     }
-    const double nEventsOut2(eventsOut2 ? eventsOut2->GetEntries() : 0.);
+    const double nEventsOut2(eventsOut2 ? Tools::nEventReweight(eventsOut2) : 0.);
     const double nEventsOut(nEventsOut1 + nEventsOut2);
     std::cout<<"Used no. of events (In, Out, [Out1, Out2]) for \""<<background.datasetName()<<"\": "
              <<nEventsIn<<" , "<<nEventsOut<<" , ["<<nEventsOut1<<" , "<<nEventsOut2<<"]\n";
@@ -110,7 +110,7 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
                <<"\t... ratioInOut calculation stopped\n";
       return;
     }
-    const double nEventsIn(eventsIn->GetEntries());
+    const double nEventsIn(Tools::nEventReweight(eventsIn));
     TH1* eventsOut1(0);
     if(sideband==upper || sideband==both){
       TString pluginSuffix(this->recoSelectionStep());
@@ -122,7 +122,7 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
         return;
       }
     }
-    const double nEventsOut1(eventsOut1 ? eventsOut1->GetEntries() : 0.);
+    const double nEventsOut1(eventsOut1 ? Tools::nEventReweight(eventsOut1) : 0.);
     TH1* eventsOut2(0);
     if(sideband==lower || sideband==both){
       TString pluginSuffix(this->recoSelectionStep());
@@ -134,7 +134,7 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
         return;
       }
     }
-    const double nEventsOut2(eventsOut2 ? eventsOut2->GetEntries() : 0.);
+    const double nEventsOut2(eventsOut2 ? Tools::nEventReweight(eventsOut2) : 0.);
     const double nEventsOut(nEventsOut1 + nEventsOut2);
     std::cout<<"Used no. of events (In, Out, [Out1, Out2]) for \""<<zmumuB.datasetName()<<"\": "
              <<nEventsIn<<" , "<<nEventsOut<<" , ["<<nEventsOut1<<" , "<<nEventsOut2<<"]\n";

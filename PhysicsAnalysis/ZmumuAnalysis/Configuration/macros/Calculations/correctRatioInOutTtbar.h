@@ -10,23 +10,23 @@
 // Use results from top analysis in emu channel to correct ratioInOutTtbar
 
 void FullAnalysis::correctRatioInOutTtbar(){
-  const double mcValueSignal(0.00761);
+  const double mcValueSignal(0.00755);
   
-  const double mcValueSideband(0.00112);
+  const double mcValueSideband(0.00114);
   
   ValueAndErrorStatSyst dataValueSignal;
-  dataValueSignal.setValue(0.00753);
+  dataValueSignal.setValue(0.00755);
   dataValueSignal.setRelErrStatUp(0.036);
   dataValueSignal.setRelErrStatDw(0.036);
-  dataValueSignal.setRelErrSystUp(0.114);
-  dataValueSignal.setRelErrSystDw(0.114);
+  dataValueSignal.setRelErrSystUp(0.047);
+  dataValueSignal.setRelErrSystDw(0.047);
   
   ValueAndErrorStatSyst dataValueSideband;
-  dataValueSideband.setValue(0.00110);
+  dataValueSideband.setValue(0.00109);
   dataValueSideband.setRelErrStatUp(0.043);
   dataValueSideband.setRelErrStatDw(0.043);
-  dataValueSideband.setRelErrSystUp(0.049);
-  dataValueSideband.setRelErrSystDw(0.049);
+  dataValueSideband.setRelErrSystUp(0.060);
+  dataValueSideband.setRelErrSystDw(0.060);
   
   const double mcRatioInOut((mcValueSignal*60.)/(mcValueSideband*280.));
   

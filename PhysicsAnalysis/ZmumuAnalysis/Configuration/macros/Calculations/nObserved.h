@@ -27,7 +27,7 @@ void FullAnalysis::setNObserved(){
              <<"\t... nObserved calculation stopped\n";
     return;
   }
-  const double nEvents(events->GetEntries());
+  const double nEvents(Tools::nEvent(events));
   
   nObserved_.setValue(nEvents);
   nObserved_.setAbsErr2Up(nEvents);

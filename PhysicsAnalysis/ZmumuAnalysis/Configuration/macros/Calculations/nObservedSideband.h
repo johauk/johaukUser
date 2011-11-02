@@ -31,7 +31,7 @@ void FullAnalysis::setNObservedSideband(const Sideband& sideband){
       return;
     }
   }
-  const double nEventsOut1(eventsOut1 ? eventsOut1->GetEntries() : 0.);
+  const double nEventsOut1(eventsOut1 ? Tools::nEvent(eventsOut1) : 0.);
   TH1* eventsOut2(0);
   if(sideband==lower || sideband==both){
     TString pluginSuffix(this->recoSelectionStep());
@@ -43,7 +43,7 @@ void FullAnalysis::setNObservedSideband(const Sideband& sideband){
       return;
     }
   }
-  const double nEventsOut2(eventsOut2 ? eventsOut2->GetEntries() : 0.);
+  const double nEventsOut2(eventsOut2 ? Tools::nEvent(eventsOut2) : 0.);
   const double nEventsOut(nEventsOut1 + nEventsOut2);
   nObservedSideband_.setValue(nEventsOut);
   nObservedSideband_.setAbsErr2Up(nEventsOut);
@@ -54,35 +54,6 @@ void FullAnalysis::setNObservedSideband(const Sideband& sideband){
   std::cout<<"No. observed events (candidates) in sidebands: "<<this->nObservedSideband().print()<<"\n";
 
 }
-
-
-
-
-
-
-
-
-
-
-/*
-void nObservedSideband(TString pluginSuffixOut1 = "", TString pluginSuffixOut2 = ""){
-  
-  
-  std::cout<<"No. observed events (candidates) in sidebands (Out1, Out2, Both): "
-           <<nEventsOut1<<" , "<<nEventsOut2<<" , "<<theNObservedSideband<<"\n";
-  
-  theNObservedSidebandRelErr2Up = 1./theNObservedSideband;
-  theNObservedSidebandRelErr2Dw = 1./theNObservedSideband;
-  
-  const double nObservedAbsErrUp = theNObservedSideband*std::sqrt(theNObservedSidebandRelErr2Up);
-  const double nObservedAbsErrDw = theNObservedSideband*std::sqrt(theNObservedSidebandRelErr2Dw);
-  
-  std::cout<<"No. observed events (candidates) in sidebands: "<<theNObservedSideband<<" + "<<nObservedAbsErrUp<<" - "<<nObservedAbsErrDw<<"\n";
-}
-
-*/
-
-
 
 
 

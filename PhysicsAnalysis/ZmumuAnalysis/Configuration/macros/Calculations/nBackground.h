@@ -34,7 +34,7 @@ void FullAnalysis::setNBackground(){
                <<"\t... nObserved calculation stopped\n";
       return;
     }
-    const double nEvents(events->GetEntries());
+    const double nEvents(Tools::nEventReweight(events));
     // Do not use this weighting, use implicit one
     //const double nEffectiveEvents(nEvents/background.dynamicWeight());
     
