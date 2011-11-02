@@ -53,7 +53,7 @@ void DefaultSample::setDynamicWeightAndNEvent(TFile* inputFile, const unsigned i
     this->setNEvent(nEvtFullSample, eventCount, eventCountReweight);
     if(eventCount==nEvtFullSample){
       std::cout<<"\tFull sample processed, dynamic weighting will not be applied\n"
-               <<"\tNumber of events (unweighted, weighted): "<<std::setprecision(10)<<nEvent().value()<<" , "<<nEventReweight().value()<<"\n";
+               <<"\tNumber of events (raw, reweighted): "<<std::setprecision(10)<<nEvent().value()<<" , "<<nEventReweight().value()<<"\n";
       dynamicWeight_ = 1.;
     }
     else if(eventCount>nEvtFullSample){
