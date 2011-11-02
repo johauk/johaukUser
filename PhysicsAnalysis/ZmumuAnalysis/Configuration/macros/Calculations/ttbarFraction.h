@@ -58,15 +58,15 @@ void FullAnalysis::setTtbarFraction(){
   const double absErr2SystContRatioInOutZmumu = std::pow(dRatioInOutZmumu,2)*this->ratioInOutZmumu().absErr2SystUp();
   
   std::cout<<"\n";
-  std::cout<<"Error contributions to ttbar fraction with central value: "<<nTtbarInRel*100<<"\n";
-  std::cout<<"NObservedIn stat. (absolute/relative in %): "<<100*std::sqrt(absErr2ContNObservedIn)/this->nObserved().value()<<" , "<<100*std::sqrt(absErr2ContNObservedIn)/nTtbarIn<<"\n";
-  std::cout<<"NOtherIn (absolute/relative in %): "<<100*std::sqrt(absErr2ContNOtherIn)/this->nObserved().value()<<" , "<<100*std::sqrt(absErr2ContNOtherIn)/nTtbarIn<<"\n";
-  std::cout<<"NObservedOut stat. (absolute/relative in %): "<<100*std::sqrt(absErr2ContNObservedOut)/this->nObserved().value()<<" , "<<100*std::sqrt(absErr2ContNObservedOut)/nTtbarIn<<"\n";
-  std::cout<<"NOtherOut (absolute/relative in %): "<<100*std::sqrt(absErr2ContNOtherOut)/this->nObserved().value()<<" , "<<100*std::sqrt(absErr2ContNOtherOut)/nTtbarIn<<"\n";
-  std::cout<<"RatioInOutTtbar stat. (absolute/relative in %): "<<100*std::sqrt(absErr2StatContRatioInOutTtbar)/this->nObserved().value()<<" , "<<100*std::sqrt(absErr2StatContRatioInOutTtbar)/nTtbarIn<<"\n";
-  std::cout<<"RatioInOutZmumu stat. (absolute/relative in %): "<<100*std::sqrt(absErr2StatContRatioInOutZmumu)/this->nObserved().value()<<" , "<<100*std::sqrt(absErr2StatContRatioInOutZmumu)/nTtbarIn<<"\n";
-  std::cout<<"RatioInOutTtbar syst. (absolute/relative in %): "<<100*std::sqrt(absErr2SystContRatioInOutTtbar)/this->nObserved().value()<<" , "<<100*std::sqrt(absErr2SystContRatioInOutTtbar)/nTtbarIn<<"\n";
-  std::cout<<"RatioInOutZmumu syst. (absolute/relative in %): "<<100*std::sqrt(absErr2SystContRatioInOutZmumu)/this->nObserved().value()<<" , "<<100*std::sqrt(absErr2SystContRatioInOutZmumu)/nTtbarIn<<"\n";
+  std::cout<<"Error contributions to ttbar fraction with central value in %: "<<nTtbarInRel*100<<"\n";
+  std::cout<<"NObservedIn stat. (absolute in %, relative in %): "<<100*std::sqrt(absErr2ContNObservedIn)/this->nObserved().value()<<" , "<<100*std::sqrt(absErr2ContNObservedIn)/nTtbarIn<<"\n";
+  std::cout<<"NOtherIn (absolute in %, relative in %): "<<100*std::sqrt(absErr2ContNOtherIn)/this->nObserved().value()<<" , "<<100*std::sqrt(absErr2ContNOtherIn)/nTtbarIn<<"\n";
+  std::cout<<"NObservedOut stat. (absolute in %, relative in %): "<<100*std::sqrt(absErr2ContNObservedOut)/this->nObserved().value()<<" , "<<100*std::sqrt(absErr2ContNObservedOut)/nTtbarIn<<"\n";
+  std::cout<<"NOtherOut (absolute in %, relative in %): "<<100*std::sqrt(absErr2ContNOtherOut)/this->nObserved().value()<<" , "<<100*std::sqrt(absErr2ContNOtherOut)/nTtbarIn<<"\n";
+  std::cout<<"RatioInOutTtbar stat. (absolute in %, relative in %): "<<100*std::sqrt(absErr2StatContRatioInOutTtbar)/this->nObserved().value()<<" , "<<100*std::sqrt(absErr2StatContRatioInOutTtbar)/nTtbarIn<<"\n";
+  std::cout<<"RatioInOutZmumu stat. (absolute in %, relative in %): "<<100*std::sqrt(absErr2StatContRatioInOutZmumu)/this->nObserved().value()<<" , "<<100*std::sqrt(absErr2StatContRatioInOutZmumu)/nTtbarIn<<"\n";
+  std::cout<<"RatioInOutTtbar syst. (absolute in %, relative in %): "<<100*std::sqrt(absErr2SystContRatioInOutTtbar)/this->nObserved().value()<<" , "<<100*std::sqrt(absErr2SystContRatioInOutTtbar)/nTtbarIn<<"\n";
+  std::cout<<"RatioInOutZmumu syst. (absolute in %, relative in %): "<<100*std::sqrt(absErr2SystContRatioInOutZmumu)/this->nObserved().value()<<" , "<<100*std::sqrt(absErr2SystContRatioInOutZmumu)/nTtbarIn<<"\n";
   
   // Corresponding error for nInTtbar
   // Where to assign error of NOther, stat or syst?
@@ -90,7 +90,7 @@ void FullAnalysis::setTtbarFraction(){
   ttbarFraction_.setRelErr2StatDw(ttbarEstimate.relErr2StatDw());
   ttbarFraction_.setRelErr2SystUp(ttbarEstimate.relErr2SystUp());
   ttbarFraction_.setRelErr2SystDw(ttbarEstimate.relErr2SystDw());
-  std::cout<<"Estimated ttbar contribution (relative values in %): "<<this->ttbarFraction().print()<<"\n";
+  std::cout<<"Estimated ttbar contribution (relative values in %): "<<this->ttbarFraction().print(100.)<<"\n";
 }
 
 
