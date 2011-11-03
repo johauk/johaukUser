@@ -6,6 +6,7 @@
 
 #include "FullAnalysis.h"
 
+// Defintion of samples to use
 #include "ZmumuAnalysis/Configuration/macros/Samples/Data.h"
 #include "ZmumuAnalysis/Configuration/macros/Samples/Mc.h"
 #include "ZmumuAnalysis/Configuration/macros/Samples/Simulation.h"
@@ -30,24 +31,39 @@
 
 // For printout of tables in LaTeX format
 #include "ZmumuAnalysis/Configuration/macros/Drawings/fillTable.h"
-#include "ZmumuAnalysis/Configuration/macros/Drawings/printTable.h"
 
+// Further helpers
 #include "ZmumuAnalysis/Configuration/macros/Tools/printLine.h"
 
 
 
-FullAnalysis::FullAnalysis(const std::string& inputFolder){
+FullAnalysis::FullAnalysis(PrintoutCollector& printoutCollector, const std::string& inputFolderName):
+inputFolder_(inputFolderName),
+dataSample_(0), signalSample_(0), simulationSample_(0),
+printoutCollector_(printoutCollector)
+{
+  Tools::printLine("Job configuration");
+  std::cout<<"Files are taken from folder: "<<inputFolder_<<"\n";
   Tools::printLine("Data sample");
-  this->setDataSample(inputFolder);
+  this->setDataSample();
   Tools::printLine("MC samples");
-  this->setMcSamples(inputFolder);
+  this->setMcSamples();
   Tools::printLine("Simulated signal sample");
   this->setSimulationSample();
 }
 
 
 
-FullAnalysis::~FullAnalysis(){}
+FullAnalysis::~FullAnalysis(){
+  // Works without error, but TColors of signal and background samples are still defined...
+  if(dataSample_)delete dataSample_;
+  if(signalSample_)delete signalSample_;
+  if(simulationSample_)delete simulationSample_;
+  for(std::vector<McSample*>::iterator i_background = v_backgroundSample_.begin(); i_background != v_backgroundSample_.end(); ++i_background){
+    if(*i_background) (**i_background).~McSample();
+    //if(*i_background)delete *i_background;
+  }
+}
 
 
 

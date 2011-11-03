@@ -6,6 +6,7 @@
 
 #include "ZmumuAnalysis/Configuration/macros/Samples/Sample.h"
 #include "ZmumuAnalysis/Configuration/macros/Tools/ValueAndError.h"
+#include "ZmumuAnalysis/Configuration/macros/Tools/PrintoutCollector.h"
 
 #include "TString.h"
 
@@ -14,7 +15,7 @@
 class FullAnalysis{
   public:
     
-    FullAnalysis(const std::string& ="");
+    FullAnalysis(PrintoutCollector&, const std::string& ="");
     ~FullAnalysis();
     
     void setRecoSelectionStep(TString step){recoSelectionStep_ = step;}
@@ -25,20 +26,21 @@ class FullAnalysis{
     enum Sideband{upper, lower, both};
     void ttbarFromSideband(const Sideband& =upper);
     
-    void printTable();
     
     
   private:
+    
+    const std::string inputFolder()const{return inputFolder_;}
+    const std::string inputFolder_;
+    
     
     DataSample* dataSample()const{return dataSample_;}
     McSample* signalSample()const{return signalSample_;}
     std::vector<McSample*> backgroundSamples()const{return v_backgroundSample_;}
     SimulationSample* simulationSample()const{return simulationSample_;}
-    
-    void setDataSample(const std::string&);
-    void setMcSamples(const std::string&);
+    void setDataSample();
+    void setMcSamples();
     void setSimulationSample();
-    
     DataSample* dataSample_;
     McSample* signalSample_;
     std::vector<McSample*> v_backgroundSample_;
@@ -165,10 +167,8 @@ class FullAnalysis{
     
     
     void fillTable();
-    std::vector<std::string> v_nObservedInOut_;
-    std::vector<std::string> v_nSimulationInOut_;
-    std::vector<std::string> v_ratioInOut_;
-    std::vector<std::string> v_ttbarFraction_;
+    std::string assignLabel()const;
+    PrintoutCollector& printoutCollector_;
     
 };
 
