@@ -1,7 +1,7 @@
 #include "ZmumuAnalysis/Configuration/macros/Tools/FullAnalysis.h"
 
 
-void FullAnalysis::setMcSamples(){
+void FullAnalysis::setMcSamples(const std::string& inputFolder){
   
   TColor* colorZmumuUds = new TColor(1014, 0.00, 0.00, 1.00, "zmumuUds");
   TColor* colorZmumuC = new TColor(1015, 0.00, 1.00, 0.00, "zmumuC");
@@ -21,7 +21,7 @@ void FullAnalysis::setMcSamples(){
   
   // Define signal sample
   McSample* zmumuB(0);
-  zmumuB = new McSample("zmumuB", 36277961, colorZmumuB);
+  zmumuB = new McSample("zmumuB", 36277961, colorZmumuB, inputFolder);
   zmumuB->crossSection_.setValue(3048.);
   zmumuB->crossSection_.setAbsErrUp(132.);
   zmumuB->crossSection_.setAbsErrDw(132.);
@@ -34,7 +34,7 @@ void FullAnalysis::setMcSamples(){
   
   // Define all background samples
   McSample* zmumuC(0);
-  zmumuC = new McSample("zmumuC", 36277961, colorZmumuC);
+  zmumuC = new McSample("zmumuC", 36277961, colorZmumuC, inputFolder);
   zmumuC->crossSection_.setValue(3048.);
   zmumuC->crossSection_.setAbsErrUp(132.);
   zmumuC->crossSection_.setAbsErrDw(132.);
@@ -43,7 +43,7 @@ void FullAnalysis::setMcSamples(){
   else delete zmumuC;
   
   McSample* zmumuUds(0);
-  zmumuUds = new McSample("zmumuUds", 36277961, colorZmumuUds);
+  zmumuUds = new McSample("zmumuUds", 36277961, colorZmumuUds, inputFolder);
   zmumuUds->crossSection_.setValue(3048.);
   zmumuUds->crossSection_.setAbsErrUp(132.);
   zmumuUds->crossSection_.setAbsErrDw(132.);
@@ -52,7 +52,7 @@ void FullAnalysis::setMcSamples(){
   else delete zmumuUds;
   
   McSample* zmumuUdsc(0);
-  zmumuUdsc = new McSample("zmumuUdsc", 36277961, colorZmumuUdsc);
+  zmumuUdsc = new McSample("zmumuUdsc", 36277961, colorZmumuUdsc, inputFolder);
   zmumuUdsc->crossSection_.setValue(3048.);
   zmumuUdsc->crossSection_.setAbsErrUp(132.);
   zmumuUdsc->crossSection_.setAbsErrDw(132.);
@@ -61,7 +61,7 @@ void FullAnalysis::setMcSamples(){
   else delete zmumuUdsc;
   
   McSample* zz(0);
-  zz = new McSample("zz", 0, colorZz);
+  zz = new McSample("zz", 0, colorZz, inputFolder);
   zz->crossSection_.setValue(7.4);
   zz->crossSection_.setAbsErrUp(0.19);
   zz->crossSection_.setAbsErrDw(0.19);
@@ -70,7 +70,7 @@ void FullAnalysis::setMcSamples(){
   else delete zz;
   
   McSample* wz(0);
-  wz = new McSample("wz", 0, colorWz);
+  wz = new McSample("wz", 0, colorWz, inputFolder);
   wz->crossSection_.setValue(0.61);
   wz->crossSection_.setAbsErrUp(0.02);
   wz->crossSection_.setAbsErrDw(0.02);
@@ -79,7 +79,7 @@ void FullAnalysis::setMcSamples(){
   else delete wz;
   
   McSample* ww(0);
-  ww = new McSample("ww", 0, colorWw);
+  ww = new McSample("ww", 0, colorWw, inputFolder);
   ww->crossSection_.setValue(4.51);
   ww->crossSection_.setAbsErrUp(0.16);
   ww->crossSection_.setAbsErrDw(0.16);
@@ -88,7 +88,7 @@ void FullAnalysis::setMcSamples(){
   else delete ww;
   
   McSample* ztautau(0);
-  ztautau = new McSample("ztautau", 0, colorZtautau);
+  ztautau = new McSample("ztautau", 0, colorZtautau, inputFolder);
   ztautau->crossSection_.setValue(3048.);
   ztautau->crossSection_.setAbsErrUp(132.);
   ztautau->crossSection_.setAbsErrDw(132.);
@@ -97,7 +97,7 @@ void FullAnalysis::setMcSamples(){
   else delete ztautau;
   
   McSample* wmunu(0);
-  wmunu = new McSample("wmunu", 0, colorWmunu);
+  wmunu = new McSample("wmunu", 0, colorWmunu, inputFolder);
   wmunu->crossSection_.setValue(10438.);
   wmunu->crossSection_.setAbsErrUp(519.);
   wmunu->crossSection_.setAbsErrDw(519.);
@@ -106,7 +106,7 @@ void FullAnalysis::setMcSamples(){
   else delete wmunu;
   
   McSample* wtaunu(0);
-  wtaunu = new McSample("wtaunu", 0, colorWtaunu);
+  wtaunu = new McSample("wtaunu", 0, colorWtaunu, inputFolder);
   wtaunu->crossSection_.setValue(10438.);
   wtaunu->crossSection_.setAbsErrUp(519.);
   wtaunu->crossSection_.setAbsErrDw(519.);
@@ -115,7 +115,7 @@ void FullAnalysis::setMcSamples(){
   else delete wtaunu;
   
   McSample* singletopTw(0);
-  singletopTw = new McSample("singletopTw", 0, colorSingletopTw);
+  singletopTw = new McSample("singletopTw", 0, colorSingletopTw, inputFolder);
   singletopTw->crossSection_.setValue(10.6);
   singletopTw->crossSection_.setAbsErrUp(0.8);
   singletopTw->crossSection_.setAbsErrDw(0.8);
@@ -124,7 +124,7 @@ void FullAnalysis::setMcSamples(){
   else delete singletopTw;
   
   McSample* singletopT(0);
-  singletopT = new McSample("singletopT", 0, colorSingletopT);
+  singletopT = new McSample("singletopT", 0, colorSingletopT, inputFolder);
   singletopT->crossSection_.setValue(64.6);
   singletopT->crossSection_.setAbsErrUp(3.4);
   singletopT->crossSection_.setAbsErrDw(3.2);
@@ -133,7 +133,7 @@ void FullAnalysis::setMcSamples(){
   else delete singletopT;
   
   McSample* singletopS(0);
-  singletopS = new McSample("singletopS", 0, colorSingletopS);
+  singletopS = new McSample("singletopS", 0, colorSingletopS, inputFolder);
   singletopS->crossSection_.setValue(4.21);
   singletopS->crossSection_.setAbsErrUp(0.19);
   singletopS->crossSection_.setAbsErrDw(0.18);
@@ -142,7 +142,7 @@ void FullAnalysis::setMcSamples(){
   else delete singletopS;
   
   McSample* ttbar(0);
-  ttbar = new McSample("ttbar", 3581947, colorTtbar);
+  ttbar = new McSample("ttbar", 3581947, colorTtbar, inputFolder);
   ttbar->crossSection_.setValue(157.5);
   ttbar->crossSection_.setAbsErrUp(23.2);
   ttbar->crossSection_.setAbsErrDw(24.4);
@@ -151,7 +151,7 @@ void FullAnalysis::setMcSamples(){
   else delete ttbar;
   
   McSample* qcd(0);
-  qcd = new McSample("qcd", 0, colorQcd);  // real values: crossSection*1000, filterEfficiency/1000
+  qcd = new McSample("qcd", 0, colorQcd, inputFolder);  // real values: crossSection*1000, filterEfficiency/1000
   qcd->crossSection_.setValue(296600.);
   qcd->crossSection_.setAbsErrUp(296600.*0.5);
   qcd->crossSection_.setAbsErrDw(296600.*0.5);
@@ -160,7 +160,7 @@ void FullAnalysis::setMcSamples(){
   else delete qcd;
   
   //McSample* (0);
-  // = new McSample("", , color);
+  // = new McSample("", , color, inputFolder);
   //->crossSection_.setValue();
   //->crossSection_.setAbsErrUp();
   //->crossSection_.setAbsErrDw();

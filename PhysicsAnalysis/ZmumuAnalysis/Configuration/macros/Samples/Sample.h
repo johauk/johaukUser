@@ -15,8 +15,8 @@
 class DataSample : public DefaultSample {
   public:
     
-    DataSample(const std::string dataset, const unsigned int nEvents)
-    {this->openInputFile(dataset, this->defaultPath(), nEvents);}
+    DataSample(const std::string dataset, const unsigned int nEvents, const std::string& inputFolder)
+    {this->openInputFile(dataset, this->defaultPath(inputFolder), nEvents);}
     
     ~DataSample(){}
     
@@ -25,7 +25,10 @@ class DataSample : public DefaultSample {
   private:
     
     // Full path of dataset
-    static const std::string defaultPath(){return cmsswBase() + "/src/ZmumuAnalysis/Configuration/hists/data/";}
+    static const std::string defaultPath(const std::string& inputFolder){
+      if(inputFolder=="")return cmsswBase() + "/src/ZmumuAnalysis/Configuration/hists/data/";
+      else return cmsswBase() + "/src/ZmumuAnalysis/Configuration/analysis/data/" + inputFolder + "/data/";
+    }
     
     // Luminosity corresponding to the maximum number of events in [pb-1]
     ValueAndError luminosity()const{return luminosity_;}
@@ -39,9 +42,9 @@ class DataSample : public DefaultSample {
 class McSample : public DefaultSample {
   public:
     
-    McSample(const std::string dataset, const unsigned int nEvents, TColor* col):
+    McSample(const std::string dataset, const unsigned int nEvents, TColor* col, const std::string& inputFolder):
       filterEfficiency_(1.), color_(col)
-      {this->openInputFile(dataset, this->defaultPath(), nEvents);}
+      {this->openInputFile(dataset, this->defaultPath(inputFolder), nEvents);}
     
     ~McSample(){if(this->color())this->color()->Delete();}
     
@@ -56,7 +59,10 @@ class McSample : public DefaultSample {
     ValueAndErrorStatSystLumi weight(const ValueAndError&)const;
     
     // Full path of dataset
-    static const std::string defaultPath(){return cmsswBase() + "/src/ZmumuAnalysis/Configuration/hists/mc/";}
+    static const std::string defaultPath(const std::string& inputFolder){
+      if(inputFolder=="")return cmsswBase() + "/src/ZmumuAnalysis/Configuration/hists/mc/";
+      else return cmsswBase() + "/src/ZmumuAnalysis/Configuration/analysis/data/" + inputFolder + "/mc/";
+    }
     
     // Assign cross section for normalisation to data lumi
     ValueAndError crossSection()const{return crossSection_;}

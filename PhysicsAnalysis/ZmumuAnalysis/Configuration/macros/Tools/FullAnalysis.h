@@ -14,7 +14,7 @@
 class FullAnalysis{
   public:
     
-    FullAnalysis();
+    FullAnalysis(const std::string& ="");
     ~FullAnalysis();
     
     void setRecoSelectionStep(TString step){recoSelectionStep_ = step;}
@@ -35,8 +35,8 @@ class FullAnalysis{
     std::vector<McSample*> backgroundSamples()const{return v_backgroundSample_;}
     SimulationSample* simulationSample()const{return simulationSample_;}
     
-    void setDataSample();
-    void setMcSamples();
+    void setDataSample(const std::string&);
+    void setMcSamples(const std::string&);
     void setSimulationSample();
     
     DataSample* dataSample_;

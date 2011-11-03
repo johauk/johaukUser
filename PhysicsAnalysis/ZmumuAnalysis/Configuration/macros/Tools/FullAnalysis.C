@@ -36,11 +36,11 @@
 
 
 
-FullAnalysis::FullAnalysis(){
+FullAnalysis::FullAnalysis(const std::string& inputFolder){
   Tools::printLine("Data sample");
-  this->setDataSample();
+  this->setDataSample(inputFolder);
   Tools::printLine("MC samples");
-  this->setMcSamples();
+  this->setMcSamples(inputFolder);
   Tools::printLine("Simulated signal sample");
   this->setSimulationSample();
 }
