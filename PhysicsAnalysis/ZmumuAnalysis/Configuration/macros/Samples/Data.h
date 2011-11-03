@@ -2,9 +2,9 @@
 
 
 
-void FullAnalysis::setDataSample(const std::string& inputFolder){
+void FullAnalysis::setDataSample(){
   DataSample* sample(0);
-  sample = new DataSample("allData", 24492880, inputFolder);
+  sample = new DataSample("allData", 24492880, this->inputFolder());
   sample->luminosity_.setValue(1143.);
   sample->luminosity_.setRelErrUp(0.045);
   sample->luminosity_.setRelErrDw(0.045);
