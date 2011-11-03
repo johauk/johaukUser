@@ -145,11 +145,19 @@ class FullAnalysis{
     //ValueAndErrorStatSyst nSignalSideband_;
     
     
+    ValueAndErrorStatSyst ttbarEstimate()const{return ttbarEstimate_;}
     ValueAndErrorStatSyst ttbarFraction()const{return ttbarFraction_;}
     double zmumuFraction()const{return zmumuFraction_;}
+    double ttbarEstimateSideband()const{return ttbarEstimateSideband_;}
+    double ttbarFractionSideband()const{return ttbarFractionSideband_;}
+    double zmumuFractionSideband()const{return zmumuFractionSideband_;}
     void setTtbarFraction();
+    ValueAndErrorStatSyst ttbarEstimate_;
     ValueAndErrorStatSyst ttbarFraction_;
     double zmumuFraction_;
+    double ttbarEstimateSideband_;
+    double ttbarFractionSideband_;
+    double zmumuFractionSideband_;
     
     
     void zTtbarFit(const bool =true);
