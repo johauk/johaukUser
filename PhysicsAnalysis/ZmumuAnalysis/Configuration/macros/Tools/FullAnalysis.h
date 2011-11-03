@@ -25,6 +25,9 @@ class FullAnalysis{
     enum Sideband{upper, lower, both};
     void ttbarFromSideband(const Sideband& =upper);
     
+    void printTable();
+    
+    
   private:
     
     DataSample* dataSample()const{return dataSample_;}
@@ -92,22 +95,33 @@ class FullAnalysis{
     
     
     
-    ValueAndErrorStatSyst ratioInOutZmumu()const{return ratioInOutZmumu_;}
-    ValueAndErrorStatSyst ratioInOutTtbar()const{return ratioInOutTtbar_;}
+    ValueAndError ratioInOutZmumu()const{return ratioInOutZmumu_;}
+    ValueAndError ratioInOutTtbar()const{return ratioInOutTtbar_;}
     ValueAndError nOtherIn()const{return nOtherIn_;}
     ValueAndError nOtherOut()const{return nOtherOut_;}
     double nZmumuInMc()const{return nZmumuInMc_;}
     double nTtbarInMc()const{return nTtbarInMc_;}
+    double nZmumuOutMc()const{return nZmumuOutMc_;}
+    double nTtbarOutMc()const{return nTtbarOutMc_;}
     void setRatioInOut(const Sideband&);
-    ValueAndErrorStatSyst ratioInOutZmumu_;
-    ValueAndErrorStatSyst ratioInOutTtbar_;
+    ValueAndError ratioInOutZmumu_;
+    ValueAndError ratioInOutTtbar_;
     ValueAndError nOtherIn_;
     ValueAndError nOtherOut_;
     double nZmumuInMc_;
     double nTtbarInMc_;
+    double nZmumuOutMc_;
+    double nTtbarOutMc_;
     
     
+    ValueAndErrorStatSyst ratioInOutTtbarCorrected()const{return ratioInOutTtbarCorrected_;}
     void correctRatioInOutTtbar();
+    ValueAndErrorStatSyst ratioInOutTtbarCorrected_;
+    
+    
+    ValueAndErrorStatSyst ratioInOutZmumuCorrected()const{return ratioInOutZmumuCorrected_;}
+    void correctRatioInOutZmumu();
+    ValueAndErrorStatSyst ratioInOutZmumuCorrected_;
     
     
     ValueAndError nObservedSideband()const{return nObservedSideband_;}
@@ -139,6 +153,14 @@ class FullAnalysis{
     
     
     void zTtbarFit(const bool =true);
+    
+    
+    
+    void fillTable();
+    std::vector<std::string> v_nObservedInOut_;
+    std::vector<std::string> v_nSimulationInOut_;
+    std::vector<std::string> v_ratioInOut_;
+    std::vector<std::string> v_ttbarFraction_;
     
 };
 

@@ -22,10 +22,15 @@
 // For ttbar estimate from sidebands
 #include "ZmumuAnalysis/Configuration/macros/Calculations/ratioInOut.h"
 #include "ZmumuAnalysis/Configuration/macros/Calculations/correctRatioInOutTtbar.h"
+#include "ZmumuAnalysis/Configuration/macros/Calculations/correctRatioInOutZmumu.h"
 #include "ZmumuAnalysis/Configuration/macros/Calculations/nObservedSideband.h"
 #include "ZmumuAnalysis/Configuration/macros/Calculations/nBackgroundSideband.h"
 #include "ZmumuAnalysis/Configuration/macros/Calculations/ttbarFraction.h"
 #include "ZmumuAnalysis/Configuration/macros/Drawings/zTtbarFit.h"
+
+// For printout of tables in LaTeX format
+#include "ZmumuAnalysis/Configuration/macros/Drawings/fillTable.h"
+#include "ZmumuAnalysis/Configuration/macros/Drawings/printTable.h"
 
 #include "ZmumuAnalysis/Configuration/macros/Tools/printLine.h"
 
@@ -70,6 +75,8 @@ void FullAnalysis::ttbarFromSideband(const Sideband& sideband){
   this->setRatioInOut(sideband);
   Tools::printLine("Correction for ttbar Ratio In/Out");
   this->correctRatioInOutTtbar();
+  Tools::printLine("Correction for Zmumu Ratio In/Out");
+  this->correctRatioInOutZmumu();
   Tools::printLine("No. of observed events (sidebands)");
   this->setNObservedSideband(sideband);
   Tools::printLine("No. of background events (sidebands)");
@@ -84,6 +91,8 @@ void FullAnalysis::ttbarFromSideband(const Sideband& sideband){
   Tools::printLine("Plot fitted dimuon distribution");
   //this->zTtbarFit();
   this->zTtbarFit(false);
+  
+  this->fillTable();
 }
 
 
