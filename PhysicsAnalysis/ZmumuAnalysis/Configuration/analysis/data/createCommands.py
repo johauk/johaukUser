@@ -12,8 +12,8 @@ samples = [
 
 
 metcuts = [
-  'False',
-  #'True',
+  #'False',
+  'True',
   ]
 
 
@@ -26,16 +26,16 @@ btags = [
 
 
 reweightPileups = [
-  #'False',
+  'False',
   'True',
   ]
 
 
 systematics = [
   'default',
-  'pileup14',
-  'pileup57',
-  'pileup8plus',
+  #'pileup14',
+  #'pileup57',
+  #'pileup8plus',
   #'sideband140',
   #'sideband160',
   #'sideband200',
