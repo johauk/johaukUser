@@ -6,8 +6,8 @@ void FullAnalysis::setDataSample(){
   DataSample* sample(0);
   sample = new DataSample("allData", 24492880);
   sample->luminosity_.setValue(1143.);
-  sample->luminosity_.setRelErrUp(0.04);
-  sample->luminosity_.setRelErrDw(0.04);
+  sample->luminosity_.setRelErrUp(0.045);
+  sample->luminosity_.setRelErrDw(0.045);
   
   if(sample->file()){
     dataSample_ = sample;
