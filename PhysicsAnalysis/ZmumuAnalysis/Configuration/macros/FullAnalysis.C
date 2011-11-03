@@ -61,13 +61,14 @@ setTDRStyle();
 
 
 
-
-
-
 gROOT->ProcessLine(".L Tools/printLine.C+");
 gROOT->ProcessLine(".L Tools/eventCount.C+");
 gROOT->ProcessLine(".L Tools/signalAndSidebandCombined.C+");
 gROOT->ProcessLine(".L Tools/histTools.C+");
+
+gROOT->ProcessLine(".L Tools/PrintoutCollector.C+");
+PrintoutCollector printoutCollector1;
+
 
 gROOT->ProcessLine(".L Tools/ValueAndError.C+");
 gROOT->ProcessLine(".L Samples/DefaultSample.C+");
@@ -75,31 +76,80 @@ gROOT->ProcessLine(".L Samples/Sample.C+");
 gROOT->ProcessLine(".L Tools/FullAnalysis.C++");
 
 
-FullAnalysis fullAnalysis1;
 
-fullAnalysis1.setRecoSelectionStep("Step6");
+
+FullAnalysis fullAnalysis1(printoutCollector1, "False_HeM__True_default");
 fullAnalysis1.setSimuSelectionStep("StepB2");
 
+fullAnalysis1.setRecoSelectionStep("Step3");
 fullAnalysis1.defaultAnalysis();
 fullAnalysis1.ttbarFromSideband(FullAnalysis::upper);
 
+fullAnalysis1.setRecoSelectionStep("Step4");
+fullAnalysis1.defaultAnalysis();
+fullAnalysis1.ttbarFromSideband(FullAnalysis::upper);
+
+printoutCollector1.hline();
+
+fullAnalysis1.setRecoSelectionStep("Step6");
+fullAnalysis1.defaultAnalysis();
+fullAnalysis1.ttbarFromSideband(FullAnalysis::upper);
+
+fullAnalysis1.~fullAnalysis();
 
 
 
 
 
-//fullAnalysis1.setRecoSelectionStep("Step5");
-//fullAnalysis1.defaultAnalysis();
-//fullAnalysis1.ttbarFromSideband(FullAnalysis::upper);
+FullAnalysis fullAnalysis2(printoutCollector1, "True_HeM__True_default");
+fullAnalysis2.setSimuSelectionStep("StepB2");
 
-// fullAnalysis1.setRecoSelectionStep("Step7a");
-// fullAnalysis1.defaultAnalysis();
-// fullAnalysis1.ttbarFromSideband(FullAnalysis::upper);
-// 
-// fullAnalysis1.setRecoSelectionStep("Step7");
-// fullAnalysis1.defaultAnalysis();
-// fullAnalysis1.ttbarFromSideband(FullAnalysis::upper);
+fullAnalysis2.setRecoSelectionStep("Step6");
+fullAnalysis2.defaultAnalysis();
+fullAnalysis2.ttbarFromSideband(FullAnalysis::upper);
 
+fullAnalysis2.~fullAnalysis();
+
+printoutCollector1.hline();
+
+
+
+
+
+FullAnalysis fullAnalysis3(printoutCollector1, "False_HpT_HeM_True_default");
+fullAnalysis3.setSimuSelectionStep("StepB2");
+
+fullAnalysis3.setRecoSelectionStep("Step6");
+fullAnalysis3.defaultAnalysis();
+fullAnalysis3.ttbarFromSideband(FullAnalysis::upper);
+
+fullAnalysis3.~fullAnalysis();
+
+
+
+
+
+FullAnalysis fullAnalysis4(printoutCollector1, "True_HpT_HeM_True_default");
+fullAnalysis4.setSimuSelectionStep("StepB2");
+
+fullAnalysis4.setRecoSelectionStep("Step6");
+fullAnalysis4.defaultAnalysis();
+fullAnalysis4.ttbarFromSideband(FullAnalysis::upper);
+
+fullAnalysis4.setRecoSelectionStep("Step7a");
+fullAnalysis4.defaultAnalysis();
+fullAnalysis4.ttbarFromSideband(FullAnalysis::upper);
+
+fullAnalysis4.setRecoSelectionStep("Step7");
+fullAnalysis4.defaultAnalysis();
+fullAnalysis4.ttbarFromSideband(FullAnalysis::upper);
+
+fullAnalysis4.~fullAnalysis();
+
+
+
+
+printoutCollector1.printTable();
 
 
 
