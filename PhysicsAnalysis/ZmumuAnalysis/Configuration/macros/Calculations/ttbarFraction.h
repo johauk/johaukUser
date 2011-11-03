@@ -15,15 +15,15 @@ void FullAnalysis::setTtbarFraction(){
   // Helper substitutes to shorten the equations
   const double nIn(this->nObserved().value() - this->nBackgroundOther().value());
   const double nOut(this->nObservedSideband().value() - this->nBackgroundOtherSideband().value());
-  const double bracket(this->ratioInOutZmumu().value()*nOut - nIn);
-  const double factor(this->ratioInOutTtbar().value()/(this->ratioInOutZmumu().value()-this->ratioInOutTtbar().value()));
-  const double diffRatio2(std::pow(this->ratioInOutZmumu().value() - this->ratioInOutTtbar().value(),2));
+  const double bracket(this->ratioInOutZmumuCorrected().value()*nOut - nIn);
+  const double factor(this->ratioInOutTtbarCorrected().value()/(this->ratioInOutZmumuCorrected().value()-this->ratioInOutTtbarCorrected().value()));
+  const double diffRatio2(std::pow(this->ratioInOutZmumuCorrected().value() - this->ratioInOutTtbarCorrected().value(),2));
   
   // Central values (absolute contributions)
   const double nTtbarIn = factor*bracket;
   const double nZmumuIn = this->nObserved().value() - this->nBackgroundOther().value() - nTtbarIn;
-  const double nTtbarOut = nTtbarIn/this->ratioInOutTtbar().value();
-  const double nZmumuOut = nZmumuIn/this->ratioInOutZmumu().value();
+  const double nTtbarOut = nTtbarIn/this->ratioInOutTtbarCorrected().value();
+  const double nZmumuOut = nZmumuIn/this->ratioInOutZmumuCorrected().value();
   std::cout<<"ttbar in, ttbar out, zmumu in, zmumu out (absolute values): "
            <<nTtbarIn<<" , "<<nTtbarOut<<" , "<<nZmumuIn<<" , "<<nZmumuOut<<"\n";
   
@@ -38,24 +38,20 @@ void FullAnalysis::setTtbarFraction(){
   // Derivatives for nTtbarIn, needed for error propagation
   const double dNObservedIn = -factor;
   const double dNOtherIn = factor;
-  const double dNObservedOut = factor*this->ratioInOutZmumu().value();
-  const double dNOtherOut = -factor*this->ratioInOutZmumu().value();
-  const double dRatioInOutTtbar = (this->ratioInOutZmumu().value()/diffRatio2)*bracket;
-  const double dRatioInOutZmumu = -(this->ratioInOutTtbar().value()/diffRatio2)*(this->ratioInOutTtbar().value()*nOut - nIn);
-  
-  // Test systematic uncertainties
-  //ratioInOutZmumu_.setRelErrSystUp(0.25);
-  //ratioInOutZmumu_.setRelErrSystDw(0.25);
+  const double dNObservedOut = factor*this->ratioInOutZmumuCorrected().value();
+  const double dNOtherOut = -factor*this->ratioInOutZmumuCorrected().value();
+  const double dRatioInOutTtbar = (this->ratioInOutZmumuCorrected().value()/diffRatio2)*bracket;
+  const double dRatioInOutZmumu = -(this->ratioInOutTtbarCorrected().value()/diffRatio2)*(this->ratioInOutTtbarCorrected().value()*nOut - nIn);
   
   // Helper substitutes for individual contributions to absolute error ^2 of nInTtbar
   const double absErr2ContNObservedIn = std::pow(dNObservedIn,2)*this->nObserved().absErr2Up();
   const double absErr2ContNOtherIn = std::pow(dNOtherIn,2)*this->nBackgroundOther().absErr2Up();
   const double absErr2ContNObservedOut = std::pow(dNObservedOut,2)*this->nObservedSideband().absErr2Up();
   const double absErr2ContNOtherOut = std::pow(dNOtherOut,2)*this->nBackgroundOtherSideband().absErr2Up();
-  const double absErr2StatContRatioInOutTtbar = std::pow(dRatioInOutTtbar,2)*this->ratioInOutTtbar().absErr2StatUp();
-  const double absErr2StatContRatioInOutZmumu = std::pow(dRatioInOutZmumu,2)*this->ratioInOutZmumu().absErr2StatUp();
-  const double absErr2SystContRatioInOutTtbar = std::pow(dRatioInOutTtbar,2)*this->ratioInOutTtbar().absErr2SystUp();
-  const double absErr2SystContRatioInOutZmumu = std::pow(dRatioInOutZmumu,2)*this->ratioInOutZmumu().absErr2SystUp();
+  const double absErr2StatContRatioInOutTtbar = std::pow(dRatioInOutTtbar,2)*this->ratioInOutTtbarCorrected().absErr2StatUp();
+  const double absErr2StatContRatioInOutZmumu = std::pow(dRatioInOutZmumu,2)*this->ratioInOutZmumuCorrected().absErr2StatUp();
+  const double absErr2SystContRatioInOutTtbar = std::pow(dRatioInOutTtbar,2)*this->ratioInOutTtbarCorrected().absErr2SystUp();
+  const double absErr2SystContRatioInOutZmumu = std::pow(dRatioInOutZmumu,2)*this->ratioInOutZmumuCorrected().absErr2SystUp();
   
   std::cout<<"\n";
   std::cout<<"Error contributions to ttbar fraction with central value in %: "<<nTtbarInRel*100<<"\n";

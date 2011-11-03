@@ -44,15 +44,11 @@ void FullAnalysis::correctRatioInOutTtbar(){
   correctionDataMc.setRelErrSystUp(dataRatioInOut.relErrSystUp());
   correctionDataMc.setRelErrSystDw(dataRatioInOut.relErrSystDw());
   
-  double ratioInOutTtbarRaw(this->ratioInOutTtbar().value());
-  double ratioInOutTtbarRawRelErrStatUp(this->ratioInOutTtbar().relErrStatUp());
-  double ratioInOutTtbarRawRelErrStatDw(this->ratioInOutTtbar().relErrStatDw());
-  
-  ratioInOutTtbar_.setValue(ratioInOutTtbarRaw*correctionDataMc.value());
-  ratioInOutTtbar_.setRelErrStatUp(ratioInOutTtbarRawRelErrStatUp);
-  ratioInOutTtbar_.setRelErrStatDw(ratioInOutTtbarRawRelErrStatDw);
-  ratioInOutTtbar_.setRelErrSystUp(correctionDataMc.relErrUp());
-  ratioInOutTtbar_.setRelErrSystDw(correctionDataMc.relErrDw());
+  ratioInOutTtbarCorrected_.setValue(this->ratioInOutTtbar().value()*correctionDataMc.value());
+  ratioInOutTtbarCorrected_.setRelErrStatUp(this->ratioInOutTtbar().relErrUp());
+  ratioInOutTtbarCorrected_.setRelErrStatDw(this->ratioInOutTtbar().relErrDw());
+  ratioInOutTtbarCorrected_.setRelErrSystUp(correctionDataMc.relErrUp());
+  ratioInOutTtbarCorrected_.setRelErrSystDw(correctionDataMc.relErrDw());
   
   std::cout<<"Normalised differential cross section from MC (In): "<<mcValueSignal<<"\n";
   std::cout<<"Normalised differential cross section from MC (Out): "<<mcValueSideband<<"\n";
@@ -67,7 +63,7 @@ void FullAnalysis::correctRatioInOutTtbar(){
   std::cout<<"Correction factor for ratio In/Out: "<<correctionDataMc.print()<<"\n";
   
   std::cout<<"\n";
-  std::cout<<"Ratio In/Out for ttbar: "<<this->ratioInOutTtbar().print()<<"\n";
+  std::cout<<"Ratio In/Out for ttbar: "<<this->ratioInOutTtbarCorrected().print()<<"\n";
 }
 
 

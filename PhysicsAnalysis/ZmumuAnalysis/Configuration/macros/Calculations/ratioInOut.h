@@ -155,30 +155,32 @@ void FullAnalysis::setRatioInOut(const Sideband& sideband){
   nOtherOut_.setAbsErr2Dw(nOutOther);
   
   nTtbarInMc_ = nInTtbar;
+  nTtbarOutMc_ = nOutTtbar;
   if(nInTtbar!=0 && nOutTtbar!=0){
     ratioInOutTtbar_.setValue(nInTtbar/nOutTtbar);
-    ratioInOutTtbar_.setRelErr2StatUp(1./nInTtbar + 1./nOutTtbar);
-    ratioInOutTtbar_.setRelErr2StatDw(1./nInTtbar + 1./nOutTtbar);
+    ratioInOutTtbar_.setRelErr2Up(1./nInTtbar + 1./nOutTtbar);
+    ratioInOutTtbar_.setRelErr2Dw(1./nInTtbar + 1./nOutTtbar);
   }
   else{
-    ratioInOutTtbar_ = ValueAndErrorStatSyst::dummyValues();
+    ratioInOutTtbar_ = ValueAndError::dummyValues(0.,1.,1.);
   }
   
   const double nInZmumu(nInZmumuB + nInZmumuC + nInZmumuUds + nInZmumuUdsc);
   nZmumuInMc_ = nInZmumu;
   const double nOutZmumu(nOutZmumuB + nOutZmumuC + nOutZmumuUds + nOutZmumuUdsc);
+  nZmumuOutMc_ = nOutZmumu;
   if(nInZmumu!=0 && nOutZmumu!=0){
     ratioInOutZmumu_.setValue(nInZmumu/nOutZmumu);
-    ratioInOutZmumu_.setRelErr2StatUp(1./nInZmumu + 1./nOutZmumu);
-    ratioInOutZmumu_.setRelErr2StatDw(1./nInZmumu + 1./nOutZmumu);
+    ratioInOutZmumu_.setRelErr2Up(1./nInZmumu + 1./nOutZmumu);
+    ratioInOutZmumu_.setRelErr2Dw(1./nInZmumu + 1./nOutZmumu);
   }
   else{
-    ratioInOutZmumu_ = ValueAndErrorStatSyst::dummyValues();
+    ratioInOutZmumu_ = ValueAndError::dummyValues(0.,1.,1.);
   }
   
   std::cout<<"\n";
-  std::cout<<"Number of events (In, Out) for ttbar: "<<this->nTtbarInMc()<<" , "<<nOutTtbar<<"\n";
-  std::cout<<"Number of events (In, Out) for zmumu: "<<this->nZmumuInMc()<<" , "<<nOutZmumu<<"\n";
+  std::cout<<"Number of events (In, Out) for ttbar: "<<this->nTtbarInMc()<<" , "<<this->nTtbarOutMc()<<"\n";
+  std::cout<<"Number of events (In, Out) for zmumu: "<<this->nZmumuInMc()<<" , "<<this->nZmumuOutMc()<<"\n";
   std::cout<<"Number of events (In, Out) for other: "<<this->nOtherIn().value()<<" , "<<this->nOtherOut().value()<<"\n";
   
   std::cout<<"Ratio In/Out for ttbar: "<<this->ratioInOutTtbar().print()<<"\n";
