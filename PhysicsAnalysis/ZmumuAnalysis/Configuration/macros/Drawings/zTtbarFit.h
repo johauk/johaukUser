@@ -183,7 +183,7 @@ void FullAnalysis::zTtbarFit(const bool zmumuInOne){
   canvas->Update();
   
   TString outputDirectory("plots/");
-  TString plotName(outputDirectory + "zTtbarFit" + this->recoSelectionStep());
+  TString plotName(outputDirectory + this->inputFolder() + "_zTtbarFit" + this->recoSelectionStep());
   
   canvas->Print(plotName + ".eps");
   canvas->Print(plotName + ".png");
@@ -287,7 +287,7 @@ void FullAnalysis::zTtbarFit(const bool zmumuInOne){
   canvas->Update();
   
   TString outputDirectory("plots/");
-  TString plotName(outputDirectory + "zTtbarFit" + this->recoSelectionStep());
+  TString plotName(outputDirectory + this->inputFolder() + "_zTtbarFit" + this->recoSelectionStep());
   
   plotName += "_zoom";
   
