@@ -81,12 +81,12 @@ void FullAnalysis::fillTable(){
   
   printout<<ss_selectionStep.str()
           <<std::fixed<<std::setprecision(1)
-	  <<std::setw(10)<<100.*this->ttbarFractionRelErrFromNObs()<<" & "
-	  <<std::setw(10)<<100.*this->ttbarFractionRelErrFromNObsSideband()<<" & "
-	  <<std::setw(10)<<100.*this->ttbarFractionRelErrFromRatioTtbarStat()<<" & "
-	  <<std::setw(10)<<100.*this->ttbarFractionRelErrFromRatioZmumuStat()<<" & "
-	  <<std::setw(10)<<100.*this->ttbarFractionRelErrFromRatioTtbarSyst()<<" & "
-	  <<std::setw(10)<<100.*this->ttbarFractionRelErrFromRatioZmumuSyst()<<" \\\\\n";
+	  <<std::setw(5)<<100.*this->ttbarFractionRelErrFromNObs()<<" & "
+	  <<std::setw(5)<<100.*this->ttbarFractionRelErrFromNObsSideband()<<" & "
+	  <<std::setw(5)<<100.*this->ttbarFractionRelErrFromRatioTtbarStat()<<" & "
+	  <<std::setw(5)<<100.*this->ttbarFractionRelErrFromRatioZmumuStat()<<" & "
+	  <<std::setw(5)<<100.*this->ttbarFractionRelErrFromRatioTtbarSyst()<<" & "
+	  <<std::setw(5)<<100.*this->ttbarFractionRelErrFromRatioZmumuSyst()<<" \\\\\n";
   printoutCollector_.v_ttbarFractionErrContribution_.push_back(printout.str());
   printout.str("");
   printout.clear();
