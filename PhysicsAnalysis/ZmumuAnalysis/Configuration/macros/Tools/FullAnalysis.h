@@ -178,6 +178,7 @@ class FullAnalysis{
     
     
     void fillTable();
+    void fillSystematicTable();
     std::string assignLabel()const;
     PrintoutCollector& printoutCollector_;
     

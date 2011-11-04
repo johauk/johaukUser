@@ -109,6 +109,7 @@ void FullAnalysis::ttbarFromSideband(const Sideband& sideband){
   this->zTtbarFit(false);
   
   this->fillTable();
+  this->fillSystematicTable();
 }
 
 

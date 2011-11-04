@@ -65,16 +65,14 @@ gROOT->ProcessLine(".L Tools/printLine.C+");
 gROOT->ProcessLine(".L Tools/eventCount.C+");
 gROOT->ProcessLine(".L Tools/signalAndSidebandCombined.C+");
 gROOT->ProcessLine(".L Tools/histTools.C+");
-
-gROOT->ProcessLine(".L Tools/PrintoutCollector.C+");
-PrintoutCollector printoutCollector1;
-
-
 gROOT->ProcessLine(".L Tools/ValueAndError.C+");
 gROOT->ProcessLine(".L Samples/DefaultSample.C+");
 gROOT->ProcessLine(".L Samples/Sample.C+");
+gROOT->ProcessLine(".L Tools/PrintoutCollector.C+");
 gROOT->ProcessLine(".L Tools/FullAnalysis.C++");
 
+
+PrintoutCollector printoutCollector1;
 
 
 
@@ -151,6 +149,110 @@ fullAnalysis4.~fullAnalysis();
 
 printoutCollector1.printTable();
 
+
+
+
+//==========================================================================================================
+
+
+
+
+PrintoutCollector printoutCollector2;
+
+
+
+FullAnalysis fullAnalysisSyst1(printoutCollector2, "False_HeM__True_default");
+fullAnalysisSyst1.setSimuSelectionStep("StepB2");
+
+fullAnalysisSyst1.setRecoSelectionStep("Step3");
+fullAnalysisSyst1.defaultAnalysis();
+fullAnalysisSyst1.ttbarFromSideband(FullAnalysis::upper);
+
+fullAnalysisSyst1.setRecoSelectionStep("Step4");
+fullAnalysisSyst1.defaultAnalysis();
+fullAnalysisSyst1.ttbarFromSideband(FullAnalysis::upper);
+
+//printoutCollector2.hline();
+
+fullAnalysisSyst1.setRecoSelectionStep("Step6");
+fullAnalysisSyst1.defaultAnalysis();
+fullAnalysisSyst1.ttbarFromSideband(FullAnalysis::upper);
+
+fullAnalysisSyst1.~fullAnalysis();
+
+
+
+
+
+FullAnalysis fullAnalysisSyst2(printoutCollector2, "False_HeM__True_pileup14");
+fullAnalysisSyst2.setSimuSelectionStep("StepB2");
+
+fullAnalysisSyst2.setRecoSelectionStep("Step3");
+fullAnalysisSyst2.defaultAnalysis();
+fullAnalysisSyst2.ttbarFromSideband(FullAnalysis::upper);
+
+fullAnalysisSyst2.setRecoSelectionStep("Step4");
+fullAnalysisSyst2.defaultAnalysis();
+fullAnalysisSyst2.ttbarFromSideband(FullAnalysis::upper);
+
+//printoutCollector2.hline();
+
+fullAnalysisSyst2.setRecoSelectionStep("Step6");
+fullAnalysisSyst2.defaultAnalysis();
+fullAnalysisSyst2.ttbarFromSideband(FullAnalysis::upper);
+
+fullAnalysisSyst2.~fullAnalysis();
+
+
+
+
+
+
+FullAnalysis fullAnalysisSyst3(printoutCollector2, "False_HeM__True_pileup57");
+fullAnalysisSyst3.setSimuSelectionStep("StepB2");
+
+fullAnalysisSyst3.setRecoSelectionStep("Step3");
+fullAnalysisSyst3.defaultAnalysis();
+fullAnalysisSyst3.ttbarFromSideband(FullAnalysis::upper);
+
+fullAnalysisSyst3.setRecoSelectionStep("Step4");
+fullAnalysisSyst3.defaultAnalysis();
+fullAnalysisSyst3.ttbarFromSideband(FullAnalysis::upper);
+
+//printoutCollector2.hline();
+
+fullAnalysisSyst3.setRecoSelectionStep("Step6");
+fullAnalysisSyst3.defaultAnalysis();
+fullAnalysisSyst3.ttbarFromSideband(FullAnalysis::upper);
+
+fullAnalysisSyst3.~fullAnalysis();
+
+
+
+
+
+FullAnalysis fullAnalysisSyst4(printoutCollector2, "False_HeM__True_pileup8plus");
+fullAnalysisSyst4.setSimuSelectionStep("StepB2");
+
+fullAnalysisSyst4.setRecoSelectionStep("Step3");
+fullAnalysisSyst4.defaultAnalysis();
+fullAnalysisSyst4.ttbarFromSideband(FullAnalysis::upper);
+
+fullAnalysisSyst4.setRecoSelectionStep("Step4");
+fullAnalysisSyst4.defaultAnalysis();
+fullAnalysisSyst4.ttbarFromSideband(FullAnalysis::upper);
+
+//printoutCollector2.hline();
+
+fullAnalysisSyst4.setRecoSelectionStep("Step6");
+fullAnalysisSyst4.defaultAnalysis();
+fullAnalysisSyst4.ttbarFromSideband(FullAnalysis::upper);
+
+fullAnalysisSyst4.~fullAnalysis();
+
+
+
+printoutCollector2.printSystematicTable();
 
 
 }

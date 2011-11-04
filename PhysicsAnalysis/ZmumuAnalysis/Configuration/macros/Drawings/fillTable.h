@@ -95,6 +95,126 @@ void FullAnalysis::fillTable(){
 
 
 
+void FullAnalysis::fillSystematicTable(){
+  
+  const std::string selectionStep(this->assignLabel());
+  
+  std::stringstream printout;
+  std::stringstream parameter1;
+  std::stringstream parameter2;
+  
+  std::stringstream ss_selectionStep;
+  ss_selectionStep<<std::left<<std::setw(16)<<selectionStep<<" & ";
+  
+  std::string systematicJob;
+  const std::string& inputFolderName(this->inputFolder());
+  
+  
+  
+  parameter1<<std::fixed<<std::setprecision(3)
+            <<"$"<<this->ratioInOutTtbar().value()<<"\\pm"<<this->ratioInOutTtbar().absErrUp()<<"$";
+  if(inputFolderName=="False_HeM__False_default" || inputFolderName=="False_HeM__True_default"){
+    systematicJob = "default";
+    printout<<ss_selectionStep.str()
+            <<std::setw(15)<<parameter1.str()<<" & ";
+    printoutCollector_.m_pileup_ratioInOutTtbar_[systematicJob].push_back(printout.str());
+  }
+  else if(inputFolderName=="False_HeM__False_pileup14" || inputFolderName=="False_HeM__True_pileup14"){
+    systematicJob = "pileup14";
+    printout<<std::setw(15)<<parameter1.str()<<" & ";
+    printoutCollector_.m_pileup_ratioInOutTtbar_[systematicJob].push_back(printout.str());
+  }
+  else if(inputFolderName=="False_HeM__False_pileup57" || inputFolderName=="False_HeM__True_pileup57"){
+    systematicJob = "pileup57";
+    printout<<std::setw(15)<<parameter1.str()<<" & ";
+    printoutCollector_.m_pileup_ratioInOutTtbar_[systematicJob].push_back(printout.str());
+  }
+  else if(inputFolderName=="False_HeM__False_pileup8plus" || inputFolderName=="False_HeM__True_pileup8plus"){
+    systematicJob = "pileup8plus";
+    printout<<std::setw(15)<<parameter1.str()<<" \\\\\n";
+    printoutCollector_.m_pileup_ratioInOutTtbar_[systematicJob].push_back(printout.str());
+  }
+  printout.str("");
+  printout.clear();
+  parameter1.str("");
+  parameter1.clear();
+  parameter2.str("");
+  parameter2.clear();
+  
+  
+  
+  
+  
+  parameter1<<std::fixed<<std::setprecision(2)
+            <<"$"<<this->ratioInOutZmumu().value()<<"\\pm"<<this->ratioInOutZmumu().absErrUp()<<"$";
+  if(inputFolderName=="False_HeM__False_default" || inputFolderName=="False_HeM__True_default"){
+    systematicJob = "default";
+    printout<<ss_selectionStep.str()
+            <<std::setw(15)<<parameter1.str()<<" & ";
+    printoutCollector_.m_pileup_ratioInOutZmumu_[systematicJob].push_back(printout.str());
+  }
+  else if(inputFolderName=="False_HeM__False_pileup14" || inputFolderName=="False_HeM__True_pileup14"){
+    systematicJob = "pileup14";
+    printout<<std::setw(15)<<parameter1.str()<<" & ";
+    printoutCollector_.m_pileup_ratioInOutZmumu_[systematicJob].push_back(printout.str());
+  }
+  else if(inputFolderName=="False_HeM__False_pileup57" || inputFolderName=="False_HeM__True_pileup57"){
+    systematicJob = "pileup57";
+    printout<<std::setw(15)<<parameter1.str()<<" & ";
+    printoutCollector_.m_pileup_ratioInOutZmumu_[systematicJob].push_back(printout.str());
+  }
+  else if(inputFolderName=="False_HeM__False_pileup8plus" || inputFolderName=="False_HeM__True_pileup8plus"){
+    systematicJob = "pileup8plus";
+    printout<<std::setw(15)<<parameter1.str()<<" \\\\\n";
+    printoutCollector_.m_pileup_ratioInOutZmumu_[systematicJob].push_back(printout.str());
+  }
+  printout.str("");
+  printout.clear();
+  parameter1.str("");
+  parameter1.clear();
+  parameter2.str("");
+  parameter2.clear();
+  
+  
+  
+  
+  
+  parameter1<<std::fixed<<std::setprecision(2)
+            <<"$"<<100.*this->ttbarFraction().value()<<"\\pm"<<100.*this->ttbarFraction().absErrUp()<<"$";
+  if(inputFolderName=="False_HeM__False_default" || inputFolderName=="False_HeM__True_default"){
+    systematicJob = "default";
+    printout<<ss_selectionStep.str()
+            <<std::setw(15)<<parameter1.str()<<" & ";
+    printoutCollector_.m_pileup_ttbarFraction_[systematicJob].push_back(printout.str());
+  }
+  else if(inputFolderName=="False_HeM__False_pileup14" || inputFolderName=="False_HeM__True_pileup14"){
+    systematicJob = "pileup14";
+    printout<<std::setw(15)<<parameter1.str()<<" & ";
+    printoutCollector_.m_pileup_ttbarFraction_[systematicJob].push_back(printout.str());
+  }
+  else if(inputFolderName=="False_HeM__False_pileup57" || inputFolderName=="False_HeM__True_pileup57"){
+    systematicJob = "pileup57";
+    printout<<std::setw(15)<<parameter1.str()<<" & ";
+    printoutCollector_.m_pileup_ttbarFraction_[systematicJob].push_back(printout.str());
+  }
+  else if(inputFolderName=="False_HeM__False_pileup8plus" || inputFolderName=="False_HeM__True_pileup8plus"){
+    systematicJob = "pileup8plus";
+    printout<<std::setw(15)<<parameter1.str()<<" \\\\\n";
+    printoutCollector_.m_pileup_ttbarFraction_[systematicJob].push_back(printout.str());
+  }
+  printout.str("");
+  printout.clear();
+  parameter1.str("");
+  parameter1.clear();
+  parameter2.str("");
+  parameter2.clear();
+  
+}
+
+
+
+
+
 std::string FullAnalysis::assignLabel()const{
   const std::string& inputFolderName(this->inputFolder());
   const std::string recoStep(this->recoSelectionStep());
