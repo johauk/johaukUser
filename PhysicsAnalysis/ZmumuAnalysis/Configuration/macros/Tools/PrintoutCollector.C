@@ -42,6 +42,12 @@ void PrintoutCollector::printTable(){
     std::cout<<*i_print;
   }
   std::cout<<"\n\n\n";
+  
+  Tools::printLine("Table for error contribution to ttbarFraction");
+  for(i_print = v_ttbarFractionErrContribution_.begin(); i_print != v_ttbarFractionErrContribution_.end(); ++i_print){
+    std::cout<<*i_print;
+  }
+  std::cout<<"\n\n\n";
 }
 
 
@@ -51,6 +57,7 @@ void PrintoutCollector::hline(){
   v_nSimulationInOut_.push_back("\\hline\n");
   v_ratioInOut_.push_back("\\hline\n");
   v_ttbarFraction_.push_back("\\hline\n");
+  v_ttbarFractionErrContribution_.push_back("\\hline\n");
 }
 
 

@@ -153,6 +153,12 @@ class FullAnalysis{
     double ttbarEstimateSideband()const{return ttbarEstimateSideband_;}
     double ttbarFractionSideband()const{return ttbarFractionSideband_;}
     double zmumuFractionSideband()const{return zmumuFractionSideband_;}
+    double ttbarFractionRelErrFromNObs()const{return ttbarFractionRelErrFromNObs_;}
+    double ttbarFractionRelErrFromNObsSideband()const{return ttbarFractionRelErrFromNObsSideband_;}
+    double ttbarFractionRelErrFromRatioTtbarStat()const{return ttbarFractionRelErrFromRatioTtbarStat_;}
+    double ttbarFractionRelErrFromRatioZmumuStat()const{return ttbarFractionRelErrFromRatioZmumuStat_;}
+    double ttbarFractionRelErrFromRatioTtbarSyst()const{return ttbarFractionRelErrFromRatioTtbarSyst_;}
+    double ttbarFractionRelErrFromRatioZmumuSyst()const{return ttbarFractionRelErrFromRatioZmumuSyst_;}
     void setTtbarFraction();
     ValueAndErrorStatSyst ttbarEstimate_;
     ValueAndErrorStatSyst ttbarFraction_;
@@ -160,10 +166,15 @@ class FullAnalysis{
     double ttbarEstimateSideband_;
     double ttbarFractionSideband_;
     double zmumuFractionSideband_;
+    double ttbarFractionRelErrFromNObs_;
+    double ttbarFractionRelErrFromNObsSideband_;
+    double ttbarFractionRelErrFromRatioTtbarStat_;
+    double ttbarFractionRelErrFromRatioZmumuStat_;
+    double ttbarFractionRelErrFromRatioTtbarSyst_;
+    double ttbarFractionRelErrFromRatioZmumuSyst_;
     
     
     void zTtbarFit(const bool =true);
-    
     
     
     void fillTable();

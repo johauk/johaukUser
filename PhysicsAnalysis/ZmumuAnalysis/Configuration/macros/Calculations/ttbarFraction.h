@@ -53,16 +53,25 @@ void FullAnalysis::setTtbarFraction(){
   const double absErr2SystContRatioInOutTtbar = std::pow(dRatioInOutTtbar,2)*this->ratioInOutTtbarCorrected().absErr2SystUp();
   const double absErr2SystContRatioInOutZmumu = std::pow(dRatioInOutZmumu,2)*this->ratioInOutZmumuCorrected().absErr2SystUp();
   
+  ttbarFractionRelErrFromNObs_ = std::sqrt(absErr2ContNObservedIn)/nTtbarIn;
+  const double ttbarFractionRelErrFromNOther = std::sqrt(absErr2ContNOtherIn)/nTtbarIn;
+  ttbarFractionRelErrFromNObsSideband_ = std::sqrt(absErr2ContNObservedOut)/nTtbarIn;
+  const double ttbarFractionRelErrFromNOtherSideband = std::sqrt(absErr2ContNOtherOut)/nTtbarIn;
+  ttbarFractionRelErrFromRatioTtbarStat_ = std::sqrt(absErr2StatContRatioInOutTtbar)/nTtbarIn;
+  ttbarFractionRelErrFromRatioZmumuStat_ = std::sqrt(absErr2StatContRatioInOutZmumu)/nTtbarIn;
+  ttbarFractionRelErrFromRatioTtbarSyst_ = std::sqrt(absErr2SystContRatioInOutTtbar)/nTtbarIn;
+  ttbarFractionRelErrFromRatioZmumuSyst_ = std::sqrt(absErr2SystContRatioInOutZmumu)/nTtbarIn;
+  
   std::cout<<"\n";
   std::cout<<"Error contributions to ttbar fraction with central value in %: "<<nTtbarInRel*100.<<"\n";
-  std::cout<<"NObservedIn stat. (absolute in %, relative in %): "<<100.*std::sqrt(absErr2ContNObservedIn)/this->nObserved().value()<<" , "<<100.*std::sqrt(absErr2ContNObservedIn)/nTtbarIn<<"\n";
-  std::cout<<"NOtherIn (absolute in %, relative in %): "<<100.*std::sqrt(absErr2ContNOtherIn)/this->nObserved().value()<<" , "<<100.*std::sqrt(absErr2ContNOtherIn)/nTtbarIn<<"\n";
-  std::cout<<"NObservedOut stat. (absolute in %, relative in %): "<<100.*std::sqrt(absErr2ContNObservedOut)/this->nObserved().value()<<" , "<<100.*std::sqrt(absErr2ContNObservedOut)/nTtbarIn<<"\n";
-  std::cout<<"NOtherOut (absolute in %, relative in %): "<<100.*std::sqrt(absErr2ContNOtherOut)/this->nObserved().value()<<" , "<<100.*std::sqrt(absErr2ContNOtherOut)/nTtbarIn<<"\n";
-  std::cout<<"RatioInOutTtbar stat. (absolute in %, relative in %): "<<100.*std::sqrt(absErr2StatContRatioInOutTtbar)/this->nObserved().value()<<" , "<<100.*std::sqrt(absErr2StatContRatioInOutTtbar)/nTtbarIn<<"\n";
-  std::cout<<"RatioInOutZmumu stat. (absolute in %, relative in %): "<<100.*std::sqrt(absErr2StatContRatioInOutZmumu)/this->nObserved().value()<<" , "<<100.*std::sqrt(absErr2StatContRatioInOutZmumu)/nTtbarIn<<"\n";
-  std::cout<<"RatioInOutTtbar syst. (absolute in %, relative in %): "<<100.*std::sqrt(absErr2SystContRatioInOutTtbar)/this->nObserved().value()<<" , "<<100.*std::sqrt(absErr2SystContRatioInOutTtbar)/nTtbarIn<<"\n";
-  std::cout<<"RatioInOutZmumu syst. (absolute in %, relative in %): "<<100.*std::sqrt(absErr2SystContRatioInOutZmumu)/this->nObserved().value()<<" , "<<100.*std::sqrt(absErr2SystContRatioInOutZmumu)/nTtbarIn<<"\n";
+  std::cout<<"NObservedIn stat. (absolute in %, relative in %): "<<100.*std::sqrt(absErr2ContNObservedIn)/this->nObserved().value()<<" , "<<100.*this->ttbarFractionRelErrFromNObs()<<"\n";
+  std::cout<<"NOtherIn (absolute in %, relative in %): "<<100.*std::sqrt(absErr2ContNOtherIn)/this->nObserved().value()<<" , "<<100.*ttbarFractionRelErrFromNOther<<"\n";
+  std::cout<<"NObservedOut stat. (absolute in %, relative in %): "<<100.*std::sqrt(absErr2ContNObservedOut)/this->nObserved().value()<<" , "<<100.*this->ttbarFractionRelErrFromNObsSideband()<<"\n";
+  std::cout<<"NOtherOut (absolute in %, relative in %): "<<100.*std::sqrt(absErr2ContNOtherOut)/this->nObserved().value()<<" , "<<100.*ttbarFractionRelErrFromNOtherSideband<<"\n";
+  std::cout<<"RatioInOutTtbar stat. (absolute in %, relative in %): "<<100.*std::sqrt(absErr2StatContRatioInOutTtbar)/this->nObserved().value()<<" , "<<100.*this->ttbarFractionRelErrFromRatioTtbarStat()<<"\n";
+  std::cout<<"RatioInOutZmumu stat. (absolute in %, relative in %): "<<100.*std::sqrt(absErr2StatContRatioInOutZmumu)/this->nObserved().value()<<" , "<<100.*this->ttbarFractionRelErrFromRatioZmumuStat()<<"\n";
+  std::cout<<"RatioInOutTtbar syst. (absolute in %, relative in %): "<<100.*std::sqrt(absErr2SystContRatioInOutTtbar)/this->nObserved().value()<<" , "<<100.*this->ttbarFractionRelErrFromRatioTtbarSyst()<<"\n";
+  std::cout<<"RatioInOutZmumu syst. (absolute in %, relative in %): "<<100.*std::sqrt(absErr2SystContRatioInOutZmumu)/this->nObserved().value()<<" , "<<100.*this->ttbarFractionRelErrFromRatioZmumuSyst()<<"\n";
   
   // Corresponding error for nInTtbar
   // Where to assign error of NOther, stat or syst?

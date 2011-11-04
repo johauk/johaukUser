@@ -21,6 +21,7 @@ class PrintoutCollector{
     std::vector<std::string> v_nSimulationInOut_;
     std::vector<std::string> v_ratioInOut_;
     std::vector<std::string> v_ttbarFraction_;
+    std::vector<std::string> v_ttbarFractionErrContribution_;
     
 };
 

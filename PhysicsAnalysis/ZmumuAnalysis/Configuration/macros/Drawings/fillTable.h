@@ -19,6 +19,7 @@ void FullAnalysis::fillTable(){
   std::stringstream ss_selectionStep;
   ss_selectionStep<<std::left<<std::setw(16)<<selectionStep<<" & ";
   
+  
   printout<<ss_selectionStep.str()
           <<std::setw(8)<<this->nObserved().value()<<" & "
 	  <<std::setw(8)<<this->nObservedSideband().value()<<" \\\\\n";
@@ -76,6 +77,19 @@ void FullAnalysis::fillTable(){
   parameter1.clear();
   parameter2.str("");
   parameter2.clear();
+  
+  
+  printout<<ss_selectionStep.str()
+          <<std::fixed<<std::setprecision(1)
+	  <<std::setw(10)<<100.*this->ttbarFractionRelErrFromNObs()<<" & "
+	  <<std::setw(10)<<100.*this->ttbarFractionRelErrFromNObsSideband()<<" & "
+	  <<std::setw(10)<<100.*this->ttbarFractionRelErrFromRatioTtbarStat()<<" & "
+	  <<std::setw(10)<<100.*this->ttbarFractionRelErrFromRatioZmumuStat()<<" & "
+	  <<std::setw(10)<<100.*this->ttbarFractionRelErrFromRatioTtbarSyst()<<" & "
+	  <<std::setw(10)<<100.*this->ttbarFractionRelErrFromRatioZmumuSyst()<<" \\\\\n";
+  printoutCollector_.v_ttbarFractionErrContribution_.push_back(printout.str());
+  printout.str("");
+  printout.clear();
 }
 
 
