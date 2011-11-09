@@ -219,7 +219,7 @@ std::string FullAnalysis::assignLabel()const{
   const std::string& inputFolderName(this->inputFolder());
   const std::string recoStep(this->recoSelectionStep());
   if(inputFolderName=="")return recoStep;
-  else if(inputFolderName=="False_HeM__True_default"){
+  else if(inputFolderName=="False_HeM__True_default" || inputFolderName=="False_HeM__False_default"){
     if(recoStep=="Step3")return "Dimuons";
     else if(recoStep=="Step4")return "1 jet";
     else if(recoStep=="Step5")return "UNDEFINED";
@@ -228,7 +228,7 @@ std::string FullAnalysis::assignLabel()const{
     else if(recoStep=="Step7")return "UNDEFINED";
     else return "--UNKNOWN STEP--";
   }
-  else if(inputFolderName=="True_HeM__True_default"){
+  else if(inputFolderName=="True_HeM__True_default" || inputFolderName=="True_HeM__False_default"){
     if(recoStep=="Step3")return "UNDEFINED";
     else if(recoStep=="Step4")return "UNDEFINED";
     else if(recoStep=="Step5")return "UNDEFINED";
@@ -237,7 +237,7 @@ std::string FullAnalysis::assignLabel()const{
     else if(recoStep=="Step7")return "UNDEFINED";
     else return "--UNKNOWN STEP--";
   }
-  else if(inputFolderName=="False_HpT_HeM_True_default"){
+  else if(inputFolderName=="False_HpT_HeM_True_default" || inputFolderName=="False_HpT_HeM_False_default"){
     if(recoStep=="Step3")return "UNDEFINED";
     else if(recoStep=="Step4")return "UNDEFINED";
     else if(recoStep=="Step5")return "UNDEFINED";
@@ -246,7 +246,7 @@ std::string FullAnalysis::assignLabel()const{
     else if(recoStep=="Step7")return "UNDEFINED";
     else return "--UNKNOWN STEP--";
   }
-  else if(inputFolderName=="True_HpT_HeM_True_default"){
+  else if(inputFolderName=="True_HpT_HeM_True_default" || inputFolderName=="True_HpT_HeM_False_default"){
     if(recoStep=="Step3")return "UNDEFINED";
     else if(recoStep=="Step4")return "UNDEFINED";
     else if(recoStep=="Step5")return "UNDEFINED";
