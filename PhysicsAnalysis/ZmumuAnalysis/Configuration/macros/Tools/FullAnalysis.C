@@ -30,6 +30,9 @@
 #include "ZmumuAnalysis/Configuration/macros/Calculations/ttbarFraction.h"
 #include "ZmumuAnalysis/Configuration/macros/Drawings/zTtbarFit.h"
 
+// For ttbar estimate on ee analysis
+#include "ZmumuAnalysis/Configuration/macros/Calculations/eeInput.h"
+
 // For printout of tables in LaTeX format
 #include "ZmumuAnalysis/Configuration/macros/Drawings/fillTable.h"
 
@@ -103,8 +106,6 @@ void FullAnalysis::ttbarFromSideband(const Sideband& sideband){
   
   //nBackgroundOther_.setValue(nObserved().value()*0.03);
   //nBackgroundOtherSideband_.setValue(nObservedSideband().value()*0.03);
-  
-  
   Tools::printLine("ttbar and zmumu yields");
   this->setTtbarFraction();
   Tools::printLine("Plot fitted dimuon distribution");
@@ -115,6 +116,22 @@ void FullAnalysis::ttbarFromSideband(const Sideband& sideband){
   this->fillSystematicTable();
 }
 
+
+
+void FullAnalysis::eeAnalysisTtbarFromSideband(const std::string& jobSetup){
+  Tools::printLine("Input for ee analysis");
+  this->eeInput(jobSetup);
+  Tools::printLine("Ratio In/Out");
+  this->setRatioInOut();
+  Tools::printLine("Correction for ttbar Ratio In/Out");
+  this->correctRatioInOutTtbar();
+  Tools::printLine("Correction for Zmumu Ratio In/Out");
+  this->correctRatioInOutZmumu();
+  Tools::printLine("ttbar and zmumu yields");
+  this->setTtbarFraction();
+  
+  this->fillTable();
+}
 
 
 

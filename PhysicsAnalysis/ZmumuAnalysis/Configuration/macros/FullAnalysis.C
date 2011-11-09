@@ -72,6 +72,9 @@ gROOT->ProcessLine(".L Tools/PrintoutCollector.C+");
 gROOT->ProcessLine(".L Tools/FullAnalysis.C++");
 
 
+
+
+
 PrintoutCollector printoutCollector1;
 
 
@@ -253,6 +256,34 @@ fullAnalysisSyst4.~fullAnalysis();
 
 
 printoutCollector2.printSystematicTable();
+
+
+
+
+
+
+
+
+
+//==========================================================================================================
+
+
+
+PrintoutCollector printoutCollector3;
+
+
+FullAnalysis fullAnalysisEe1(printoutCollector3, "False_HeM__True_default");
+fullAnalysisEe1.setRecoSelectionStep("Step6");
+fullAnalysisEe1.eeAnalysisTtbarFromSideband("HE");
+
+
+FullAnalysis fullAnalysisEe2(printoutCollector3, "False_HpT_HeM_True_default");
+fullAnalysisEe2.setRecoSelectionStep("Step6");
+fullAnalysisEe2.eeAnalysisTtbarFromSideband("HP");
+
+
+printoutCollector3.printTable();
+
 
 
 }

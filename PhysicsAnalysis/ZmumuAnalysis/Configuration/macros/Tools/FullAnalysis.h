@@ -25,6 +25,7 @@ class FullAnalysis{
     
     enum Sideband{upper, lower, both};
     void ttbarFromSideband(const Sideband& =upper);
+    void eeAnalysisTtbarFromSideband(const std::string&);
     
     
     
@@ -184,6 +185,9 @@ class FullAnalysis{
     void fillSystematicTable();
     std::string assignLabel()const;
     PrintoutCollector& printoutCollector_;
+    
+    
+    void eeInput(const std::string&);
     
 };
 
