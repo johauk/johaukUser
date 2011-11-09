@@ -43,6 +43,12 @@ STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.pn
 STEP="6"
 STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
 
+STEP="7a"
+STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
+
+STEP="7"
+STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
+
 
 
 
@@ -68,6 +74,12 @@ STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.pn
 STEP="ZVetoLow6"
 STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
 
+STEP="ZVetoLow7a"
+STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
+
+STEP="ZVetoLow7"
+STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
+
 
 
 
@@ -91,6 +103,12 @@ STEP="ZVetoHigh6a"
 STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
 
 STEP="ZVetoHigh6"
+STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
+
+STEP="ZVetoHigh7a"
+STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
+
+STEP="ZVetoHigh7"
 STEPDIR="plots/Step${STEP}/"; mkdir $STEPDIR; for file in plots/*Step${STEP}*.png; do mv $file $STEPDIR; done
 
 
