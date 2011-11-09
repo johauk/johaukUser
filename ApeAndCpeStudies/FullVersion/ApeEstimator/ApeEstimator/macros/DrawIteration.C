@@ -639,7 +639,8 @@ void DrawIteration::drawFinals(const std::string& xOrY){
   for(i_resultHist=v_resultHist_.begin(); i_resultHist!=v_resultHist_.end(); ++i_resultHist, ++iHist){
     //std::cout<<"New histogram\n";
     TCanvas* canvas(0);
-    canvas = new TCanvas("canvas");
+    canvas = new TCanvas("canvas","canvas",gStyle->GetCanvasDefW()*i_resultHist->size()/10.,gStyle->GetCanvasDefH());
+    
     TH1* hist(0);
     const TString title("Results;;#sigma_{APE,"+xOrY+"}  [#mum]");
     hist = new TH1F("hist",title,i_resultHist->size(),0,i_resultHist->size());

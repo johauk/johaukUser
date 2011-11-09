@@ -31,6 +31,12 @@ gROOT->ProcessLine(".L tdrstyle.C");
 setTDRStyle();
 gStyle->SetErrorX(0.5);
 
+gStyle->SetPadLeftMargin(0.15);
+gStyle->SetPadRightMargin(0.10);
+gStyle->SetPadTopMargin(0.10);
+gStyle->SetPadBottomMargin(0.10);
+gStyle->SetTitleOffset(1.0,"Y");
+
 drawIteration1.drawResult();
 
 drawIteration2.drawResult();
