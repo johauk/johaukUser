@@ -21,6 +21,7 @@
 #include "ZmumuAnalysis/Configuration/macros/Calculations/crossSectionFromMc.h"
 
 // For ttbar estimate from sidebands
+#include "ZmumuAnalysis/Configuration/macros/Calculations/nInOutMc.h"
 #include "ZmumuAnalysis/Configuration/macros/Calculations/ratioInOut.h"
 #include "ZmumuAnalysis/Configuration/macros/Calculations/correctRatioInOutTtbar.h"
 #include "ZmumuAnalysis/Configuration/macros/Calculations/correctRatioInOutZmumu.h"
@@ -87,8 +88,10 @@ void FullAnalysis::defaultAnalysis(){
 
 
 void FullAnalysis::ttbarFromSideband(const Sideband& sideband){
+  Tools::printLine("Yields in/out from MC (unscaled)");
+  this->nInOutMc(sideband);
   Tools::printLine("Ratio In/Out");
-  this->setRatioInOut(sideband);
+  this->setRatioInOut();
   Tools::printLine("Correction for ttbar Ratio In/Out");
   this->correctRatioInOutTtbar();
   Tools::printLine("Correction for Zmumu Ratio In/Out");
