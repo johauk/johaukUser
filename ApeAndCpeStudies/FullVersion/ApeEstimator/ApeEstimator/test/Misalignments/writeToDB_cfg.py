@@ -1,3 +1,5 @@
+# Config is used to misalign the design geometry
+
 import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("TEST")

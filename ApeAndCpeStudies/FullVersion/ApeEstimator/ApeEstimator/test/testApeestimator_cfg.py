@@ -152,6 +152,8 @@ if isData:
 ## --- Further information (Monte Carlo and Data) ---
 #process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
 #process.TTRHBuilderGeometricAndTemplate.PixelCPE = 'PixelCPEGeneric'
+#process.FittingSmootherRKP5.EstimateCut = 25.
+#process.FittingSmootherRKP5.RejectTracks = True
 #process.HighPuritySelector.src = 'generalTracks'
 #process.HighPuritySelector.src = 'ALCARECOTkAlMuonIsolated'
 process.HighPuritySelector.src = 'MuSkim'
@@ -188,15 +190,17 @@ if isMc:
   )
   process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
 #  process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
-#    connect = 'sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/misalignments/AlignmentsTob20.db',
+#    #connect = 'sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/misalignments/AlignmentsTob20.db',
+#    connect = 'sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/idealAlignedGeometry/alignments_MP.db',
 #    toGet = [
 #      cms.PSet(
 #        record = cms.string('TrackerAlignmentRcd'),
-#        tag = cms.string('TrackerScenario')
+#        #tag = cms.string('TrackerScenario'),
+#	tag = cms.string('Alignments'),
 #      )
 #    ],
 #  )
-#process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
 if isData:
   # Recent geometry
   process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
