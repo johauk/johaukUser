@@ -60,6 +60,29 @@ Tob20 = cms.PSet(
 
 
 
+PixelTob5 = cms.PSet(
+    Scenarios.MisalignmentScenarioSettings,
+    TOBHalfBarrels = cms.PSet(
+        DetUnits = cms.PSet(
+	  dXlocal = cms.double(0.0005),
+	),
+    ),
+    TPBHalfBarrels = cms.PSet(
+        DetUnits = cms.PSet(
+	  dXlocal = cms.double(0.0005),
+	  dYlocal = cms.double(0.0005),
+	),
+    ),
+    TPEEndcaps = cms.PSet(
+      DetUnits = cms.PSet(
+	  dXlocal = cms.double(0.0005),
+	  dYlocal = cms.double(0.0005),
+      ),
+    ),
+)
+
+
+
 import Alignment.TrackerAlignment.MisalignedTracker_cfi
 
 
