@@ -73,6 +73,16 @@ void FullAnalysis::setTtbarFraction(){
   std::cout<<"RatioInOutTtbar syst. (absolute in %, relative in %): "<<100.*std::sqrt(absErr2SystContRatioInOutTtbar)/this->nObserved().value()<<" , "<<100.*this->ttbarFractionRelErrFromRatioTtbarSyst()<<"\n";
   std::cout<<"RatioInOutZmumu syst. (absolute in %, relative in %): "<<100.*std::sqrt(absErr2SystContRatioInOutZmumu)/this->nObserved().value()<<" , "<<100.*this->ttbarFractionRelErrFromRatioZmumuSyst()<<"\n";
   
+  const double ttbarFractionAbsErr2Uncorrelated = absErr2ContNObservedIn + absErr2ContNObservedOut + absErr2StatContRatioInOutTtbar + absErr2StatContRatioInOutZmumu;
+  const double ttbarFractionAbsErr2Correlated = absErr2ContNOtherIn + absErr2ContNOtherOut + absErr2SystContRatioInOutTtbar + absErr2SystContRatioInOutZmumu;
+  const double ttbarFractionRelErrUncorrelated = std::sqrt(ttbarFractionAbsErr2Uncorrelated)/nTtbarIn;
+  const double ttbarFractionRelErrCorrelated = std::sqrt(ttbarFractionAbsErr2Correlated)/nTtbarIn;
+  
+  std::cout<<"\n";
+  std::cout<<"Correlated and uncorrelated error contributions to ttbar fraction from ee and mumu\n";
+  std::cout<<"Uncorrelated (absolute in %, relative in %): "<<100.*std::sqrt(ttbarFractionAbsErr2Uncorrelated)/this->nObserved().value()<<" , "<<100.*ttbarFractionRelErrUncorrelated<<"\n";
+  std::cout<<"Correlated (absolute in %, relative in %): "<<100.*std::sqrt(ttbarFractionAbsErr2Correlated)/this->nObserved().value()<<" , "<<100.*ttbarFractionRelErrCorrelated<<"\n";
+  
   // Corresponding error for nInTtbar
   // Where to assign error of NOther, stat or syst?
   const double nTtbarInAbsErr2Stat = absErr2ContNObservedIn + absErr2ContNOtherIn + absErr2ContNObservedOut + absErr2ContNOtherOut + absErr2StatContRatioInOutTtbar + absErr2StatContRatioInOutZmumu;
@@ -99,6 +109,7 @@ void FullAnalysis::setTtbarFraction(){
   ttbarFractionSideband_ = nTtbarOutRel;
   
   std::cout<<"Estimated ttbar contribution (relative values in %): "<<this->ttbarFraction().print(100.)<<"\n";
+  std::cout<<"This corresponds to a relative uncertainty of (in %): "<<100.*this->ttbarFraction().absErrUp()/this->ttbarFraction().value()<<"\n";
 }
 
 
