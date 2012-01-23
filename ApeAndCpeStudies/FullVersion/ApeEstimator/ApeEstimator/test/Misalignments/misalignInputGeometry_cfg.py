@@ -1,10 +1,11 @@
 # This file is used to misalign a given geometry
+# modified version of alignment_forGeomComp_cfg.py
 
 # Config file template to produce a treeFile.root usable as input for
 # .../CMSSW/Alignment/MillePedeAlignmentAlgorithm/macros/CompareMillePede.h
 # to compare two different geometries.
 #
-# last update on $Date: 2011/10/20 16:37:13 $ by $Author: flucke $
+# last update on $Date: 2011/12/16 14:31:32 $ by $Author: hauk $
 
 import FWCore.ParameterSet.Config as cms
 
