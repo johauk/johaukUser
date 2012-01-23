@@ -215,6 +215,9 @@ elif isData:
 ## --- Further information (Monte Carlo and Data) ---
 #process.TTRHBuilderGeometricAndTemplate.StripCPE = 'StripCPEfromTrackAngle'
 #process.TTRHBuilderGeometricAndTemplate.PixelCPE = 'PixelCPEGeneric'
+process.FittingSmootherRKP5.EstimateCut = 25.
+process.FittingSmootherRKP5.RejectTracks = True
+process.FittingSmootherRKP5.LogPixelProbabilityCut = -14.
 #process.HighPuritySelector.src = 'generalTracks'
 process.HighPuritySelector.src = 'MuSkim'
 
@@ -229,7 +232,7 @@ process.GlobalTag.toGet = cms.VPSet(
         tag = cms.string("SiPixelTemplateDBObject_38T_v3_mc"),
         connect = cms.untracked.string("frontier://FrontierProd/CMS_COND_31X_PIXEL"),
     )
-) 
+)
 
 
 
@@ -260,6 +263,17 @@ elif options.alignRcd == 'misalTob20':
     )
   )
   process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+elif options.alignRcd == 'idealAligned':
+  process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+    connect = 'sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/idealAlignedGeometry/alignments_MP.db',
+    toGet = cms.VPSet(
+      cms.PSet(
+        record = cms.string('TrackerAlignmentRcd'),
+        tag = cms.string('Alignments'),
+      )
+    )
+  )
+  process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
 elif options.alignRcd == 'GR10_v6':
   # Recent geometry
   process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
@@ -270,6 +284,94 @@ elif options.alignRcd == 'GR10_v6':
         tag = cms.string('TrackerAlignment_GR10_v6_offline'),
       ),
     ],
+  )
+  process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+  # Kinks and bows
+  process.myTrackerAlignmentKinksAndBows = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+    connect = 'frontier://FrontierProd/CMS_COND_310X_ALIGN',
+    toGet = [
+      cms.PSet(
+        record = cms.string('TrackerSurfaceDeformationRcd'),
+        tag = cms.string('TrackerSurfaceDeformations_v1_offline'),
+      ),
+    ],
+  )
+  process.es_prefer_trackerAlignmentKinksAndBows = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentKinksAndBows")
+elif options.alignRcd == 'GR10_v6_plus5':
+  process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+    connect = 'sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/dataMisalignment/pixelTobMisaligned_5.db',
+    toGet = cms.VPSet(
+      cms.PSet(
+        record = cms.string('TrackerAlignmentRcd'),
+        tag = cms.string('TrackerScenario'),
+      )
+    )
+  )
+  process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+  # Kinks and bows
+  process.myTrackerAlignmentKinksAndBows = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+    connect = 'frontier://FrontierProd/CMS_COND_310X_ALIGN',
+    toGet = [
+      cms.PSet(
+        record = cms.string('TrackerSurfaceDeformationRcd'),
+        tag = cms.string('TrackerSurfaceDeformations_v1_offline'),
+      ),
+    ],
+  )
+  process.es_prefer_trackerAlignmentKinksAndBows = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentKinksAndBows")
+elif options.alignRcd == 'GR10_v6_plus10':
+  process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+    connect = 'sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/dataMisalignment/pixelTobMisaligned_10.db',
+    toGet = cms.VPSet(
+      cms.PSet(
+        record = cms.string('TrackerAlignmentRcd'),
+        tag = cms.string('TrackerScenario'),
+      )
+    )
+  )
+  process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+  # Kinks and bows
+  process.myTrackerAlignmentKinksAndBows = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+    connect = 'frontier://FrontierProd/CMS_COND_310X_ALIGN',
+    toGet = [
+      cms.PSet(
+        record = cms.string('TrackerSurfaceDeformationRcd'),
+        tag = cms.string('TrackerSurfaceDeformations_v1_offline'),
+      ),
+    ],
+  )
+  process.es_prefer_trackerAlignmentKinksAndBows = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentKinksAndBows")
+elif options.alignRcd == 'GR10_v6_plus15':
+  process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+    connect = 'sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/dataMisalignment/pixelTobMisaligned_15.db',
+    toGet = cms.VPSet(
+      cms.PSet(
+        record = cms.string('TrackerAlignmentRcd'),
+        tag = cms.string('TrackerScenario'),
+      )
+    )
+  )
+  process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
+  # Kinks and bows
+  process.myTrackerAlignmentKinksAndBows = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+    connect = 'frontier://FrontierProd/CMS_COND_310X_ALIGN',
+    toGet = [
+      cms.PSet(
+        record = cms.string('TrackerSurfaceDeformationRcd'),
+        tag = cms.string('TrackerSurfaceDeformations_v1_offline'),
+      ),
+    ],
+  )
+  process.es_prefer_trackerAlignmentKinksAndBows = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentKinksAndBows")
+elif options.alignRcd == 'GR10_v6_plus20':
+  process.myTrackerAlignment = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
+    connect = 'sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/dataMisalignment/pixelTobMisaligned_20.db',
+    toGet = cms.VPSet(
+      cms.PSet(
+        record = cms.string('TrackerAlignmentRcd'),
+        tag = cms.string('TrackerScenario'),
+      )
+    )
   )
   process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource","myTrackerAlignment")
   # Kinks and bows
