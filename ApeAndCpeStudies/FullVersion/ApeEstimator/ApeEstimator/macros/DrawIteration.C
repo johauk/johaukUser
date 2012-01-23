@@ -16,31 +16,37 @@
 #include "TROOT.h"
 #include "TStyle.h"
 #include "TGaxis.h"
+#include "TLegend.h"
 
 
 
 
-
-DrawIteration::DrawIteration(unsigned int iterationNumber):
-outpath_(0), file_(0)
+DrawIteration::DrawIteration(unsigned int iterationNumber, const bool overlayMode):
+outpath_(0), file_(0), overlayMode_(overlayMode), yAxisFixed_(false)
 {
-  std::stringstream ss_inpath;
-  ss_inpath<<"$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/workingArea/iter"<<iterationNumber<<"/";
-  const TString* inpath = new TString(ss_inpath.str().c_str());
-  outpath_ = new TString(inpath->Copy().Append("plots/"));
-  const TString* fileName = new TString(inpath->Copy().Append("allData_iterationApe.root"));
-  delete inpath;
-  
-  std::cout<<"Outpath: "<<*outpath_<<"\n";
-  std::cout<<"File name: "<<*fileName<<"\n";
-  
-  file_ = new TFile(*fileName, "READ");
-  if(!file_){
-    // Not needed: root gives error by default when file is not found
-    std::cout<<"\n\tInput file not found, please check file name: "<<*fileName<<"\n";
+  if(!overlayMode_){
+    std::stringstream ss_inpath;
+    ss_inpath<<"$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/workingArea/iter"<<iterationNumber<<"/";
+    const TString* inpath = new TString(ss_inpath.str().c_str());
+    outpath_ = new TString(inpath->Copy().Append("plots/"));
+    const TString* fileName = new TString(inpath->Copy().Append("allData_iterationApe.root"));
+    delete inpath;
+    
+    std::cout<<"Outpath: "<<*outpath_<<"\n";
+    std::cout<<"File name: "<<*fileName<<"\n";
+    
+    file_ = new TFile(*fileName, "READ");
+    if(!file_){
+      // Not needed: root gives error by default when file is not found
+      std::cout<<"\n\tInput file not found, please check file name: "<<*fileName<<"\n";
+    }
+    delete fileName;
   }
-  delete fileName;
-  
+  else{
+    outpath_ = new TString("$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/comparison/");
+    std::cout<<"Outpath: "<<*outpath_<<"\n";
+    std::cout<<"Overlay mode, provide input files, and output directory\n\n";
+  }
 }
 
 
@@ -53,11 +59,8 @@ DrawIteration::~DrawIteration(){
 
 
 void DrawIteration::drawIteration(unsigned int iSectorLow, unsigned int iSectorHigh){
-  // Set up style
-  this->setStyle();
-  
   // Extract values stored in tree and put them into member data maps
-  this->getSectorValues();
+  sectorValues_ = this->getSectorValues(file_);
   
   // Now create the final graphs, and get their extreme values
   ExtremeValues extremeValuesX(this->getGraphs("x", iSectorLow, iSectorHigh));
@@ -79,14 +82,19 @@ void DrawIteration::drawIteration(unsigned int iSectorLow, unsigned int iSectorH
 
 
 void DrawIteration::drawResult(){
-  // Set up style
-  //this->setStyle();
-  
   // Extract values stored in tree and put them into member data maps
-  this->getSectorValues();
+  if(!overlayMode_){
+    sectorValues_ = this->getSectorValues(file_);
+  }
+  else{
+    std::vector<Input*>::iterator i_input;
+    for(i_input = v_input_.begin(); i_input != v_input_.end(); ++i_input){
+      (*i_input)->sectorValues = this->getSectorValues((*i_input)->file);
+    }
+  }
   
   // Collect sectors to be shown in same plot in correct order
-  this->arrangeHists();
+  v_resultHist_ = this->arrangeHists();
   
   // Final plots
   this->drawFinals("x");
@@ -98,39 +106,18 @@ void DrawIteration::drawResult(){
 
 
 
-void DrawIteration::setStyle(){
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  double width = 600.;
-  gStyle->SetCanvasDefW(width);
-  gStyle->SetCanvasDefH(width);
-  gStyle->SetTitleX(0.25);
-  gStyle->SetPadLeftMargin(0.12);
-  gStyle->SetPadRightMargin(0.08);
-  gStyle->SetPadTopMargin(0.08);
-  gStyle->SetPadBottomMargin(0.12);
-  gStyle->SetHistLineWidth(2);
-  //gStyle->SetTitleOffset(1.2,"X");
-  gStyle->SetTitleOffset(1.1,"Y");
-  gStyle->SetTitleXSize(0.05);
-  gStyle->SetTitleYSize(0.05);
-  gStyle->SetTitleSize(0.05,"XY");
-  //gStyle->SetLabelSize(0.05,"XY");
-  TGaxis::SetMaxDigits(3);
-}
-
-
-
-void DrawIteration::getSectorValues(){
+DrawIteration::SectorValues DrawIteration::getSectorValues(TFile* file){
+  SectorValues sectorValues;
+  
   // Trees containing the iterative APE values and the sector names
   TTree* nameTree(0);
-  file_->GetObject("nameTree", nameTree);
+  file->GetObject("nameTree", nameTree);
   if(!nameTree)std::cout<<"\n\tTTree with names of sectors not found in file!\n";
   TTree* treeX(0);
-  file_->GetObject("iterTreeX", treeX);
+  file->GetObject("iterTreeX", treeX);
   if(!treeX)std::cout<<"\n\tTTree with iteration x values of APE not found in file!\n";
   TTree* treeY(0);
-  file_->GetObject("iterTreeY", treeY);
+  file->GetObject("iterTreeY", treeY);
   if(!treeY)std::cout<<"\n\tTTree with iteration y values of APE not found in file!\n";
   
   unsigned int nSector(0);
@@ -163,7 +150,7 @@ void DrawIteration::getSectorValues(){
     std::string* value(0);
     i_branch->second->SetAddress(&value);
     i_branch->second->GetEntry(0);
-    m_sectorName_[i_branch->first] = value; 
+    sectorValues.m_sectorName[i_branch->first] = value;
   }
   const unsigned int nIter(treeX->GetEntries());
   for(unsigned int iIter = 0; iIter < nIter; ++iIter){
@@ -171,15 +158,16 @@ void DrawIteration::getSectorValues(){
       double value(-999.);
       (i_branch->second)->SetAddress(&value);
       (i_branch->second)->GetEntry(iIter);
-      m_sectorValueX_[i_branch->first].push_back(value); 
+      sectorValues.m_sectorValueX[i_branch->first].push_back(value);
     }
     for(std::map<unsigned int, TBranch*>::const_iterator i_branch = m_branchY.begin(); i_branch != m_branchY.end(); ++i_branch){
       double value(-999.);
       (i_branch->second)->SetAddress(&value);
       (i_branch->second)->GetEntry(iIter);
-      m_sectorValueY_[i_branch->first].push_back(value); 
+      sectorValues.m_sectorValueY[i_branch->first].push_back(value);
     }
   }
+  return sectorValues;
 }
 
 
@@ -193,12 +181,12 @@ DrawIteration::ExtremeValues DrawIteration::getGraphs(const std::string xOrY, un
   std::vector<TGraph*>* v_graphCorrection(0);
   
   if(xOrY=="x"){
-    m_sectorValue = &m_sectorValueX_;
+    m_sectorValue = &sectorValues_.m_sectorValueX;
     v_graphApe = &v_graphApeX_;
     v_graphCorrection = &v_graphCorrectionX_;
   }
   else if(xOrY=="y"){
-    m_sectorValue = &m_sectorValueY_;
+    m_sectorValue = &sectorValues_.m_sectorValueY;
     v_graphApe = &v_graphApeY_;
     v_graphCorrection = &v_graphCorrectionY_;
   }
@@ -210,18 +198,20 @@ DrawIteration::ExtremeValues DrawIteration::getGraphs(const std::string xOrY, un
     if((*i_sectorValue).first >= iSectorLow && (*i_sectorValue).first<= iSectorHigh){
       TGraph* graphApe(0);
       TGraph* graphCorrection(0);
-      graphApe = new TGraph(m_sectorValueX_[1].size());
-      graphCorrection = new TGraph(m_sectorValueX_[1].size());
+      graphApe = new TGraph(sectorValues_.m_sectorValueX[1].size());
+      graphCorrection = new TGraph(sectorValues_.m_sectorValueX[1].size());
       double lastCorrection(0.);
       bool unregardedSector(false);
       int iValue(0);
       for(std::vector<double>::const_iterator i_value = (*i_sectorValue).second.begin(); i_value != (*i_sectorValue).second.end(); ++i_value, ++iValue){
-        const double valueApe(std::sqrt(*i_value));
+        double valueApe(std::sqrt(*i_value));
 	// Prevent method for non-analyzed sectors with default value sqrt(99.)
 	if(valueApe>9.){
 	  unregardedSector = true;
 	  break;
 	}
+	// Scale APE to have values in mum instead of cm
+	valueApe = valueApe*10000.;
 	if(valueApe<minimumApe)minimumApe = valueApe;
 	if(valueApe>maximumApe)maximumApe = valueApe;
 	graphApe->SetPoint(iValue,static_cast<double>(iValue),valueApe);
@@ -266,7 +256,7 @@ void DrawIteration::drawCorrections(const std::string& xOrY, const ExtremeValues
   canvas = new TCanvas("canvas");
   bool firstGraph(true);
   for(std::vector<TGraph*>::const_iterator i_graph = v_graphApe->begin(); i_graph != v_graphApe->end(); ++i_graph){
-    const TString yAxisTitle("#sigma_{APE," + xOrY + "}  [cm]");
+    const TString yAxisTitle("#sigma_{align," + xOrY + "}  [#mum]");
     TGraph* graph(*i_graph);
     graph->SetTitle("Absolute correction");
     graph->GetXaxis()->SetTitle("iteration");
@@ -278,9 +268,15 @@ void DrawIteration::drawCorrections(const std::string& xOrY, const ExtremeValues
     else{
       graph->Draw("sameL*");
     }
-    //graph->SetMinimum(-0.0001);
-    graph->SetMinimum(extremeValues.minimumApe-0.0001);
-    graph->SetMaximum(extremeValues.maximumApe*1.1);
+    if(yAxisFixed_){
+      graph->SetMinimum(-1.);
+      graph->SetMaximum(35.);
+    }
+    else{
+      //graph->SetMinimum(-0.0001);
+      graph->SetMinimum(extremeValues.minimumApe-1.);
+      graph->SetMaximum(extremeValues.maximumApe*1.1);
+    }
   }
   
   canvas->Print(outpath_->Copy().Append("ape_").Append(xOrY).Append(sectorInterval).Append(".eps"));
@@ -295,7 +291,7 @@ void DrawIteration::drawCorrections(const std::string& xOrY, const ExtremeValues
   firstGraph = true;
   canvas = new TCanvas("canvas");
   for(std::vector<TGraph*>::const_iterator i_graph = v_graphCorrection->begin(); i_graph != v_graphCorrection->end(); ++i_graph){
-    const TString yAxisTitle("#Delta#sigma_{APE," + xOrY + "}  [cm]");
+    const TString yAxisTitle("#Delta#sigma_{align," + xOrY + "}  [#mum]");
     TGraph* graph(*i_graph);
     graph->SetTitle("Relative correction");
     graph->GetXaxis()->SetTitle("iteration");
@@ -307,8 +303,14 @@ void DrawIteration::drawCorrections(const std::string& xOrY, const ExtremeValues
     else{
       graph->Draw("sameL*");
     }
-    graph->SetMinimum(-extremeValues.maxAbsCorrection*1.1);
-    graph->SetMaximum(extremeValues.maxAbsCorrection*1.1);
+    if(yAxisFixed_){
+      graph->SetMinimum(-5.);
+      graph->SetMaximum(15.);
+    }
+    else{
+      graph->SetMinimum(-extremeValues.maxAbsCorrection*1.1);
+      graph->SetMaximum(extremeValues.maxAbsCorrection*1.1);
+    }
   }
   canvas->Print(outpath_->Copy().Append("correction_").Append(xOrY).Append(sectorInterval).Append(".eps"));
   canvas->Print(outpath_->Copy().Append("correction_").Append(xOrY).Append(sectorInterval).Append(".png"));
@@ -323,13 +325,14 @@ void DrawIteration::drawCorrections(const std::string& xOrY, const ExtremeValues
 
 
 void DrawIteration::printFinalValues(unsigned int iSectorLow, unsigned int iSectorHigh){
-  for(std::map<unsigned int, std::string*>::const_iterator i_sectorValue = m_sectorName_.begin(); i_sectorValue != m_sectorName_.end(); ++i_sectorValue){
+  std::map<unsigned int, std::string*>::const_iterator i_sectorValue;
+  for(i_sectorValue = sectorValues_.m_sectorName.begin(); i_sectorValue != sectorValues_.m_sectorName.end(); ++i_sectorValue){
     const unsigned int iSector(i_sectorValue->first);
     if(iSector>=iSectorLow && iSector<=iSectorHigh){
       const std::string* name(i_sectorValue->second);
-      const double apeX = std::sqrt(*(--(m_sectorValueX_[iSector].end())));
+      const double apeX = std::sqrt(*(--(sectorValues_.m_sectorValueX[iSector].end())));
       double apeY(-9.);
-      if(m_sectorValueY_.count(iSector)!=0)apeY = std::sqrt(*(--(m_sectorValueY_[iSector].end())));
+      if(sectorValues_.m_sectorValueY.count(iSector)!=0)apeY = std::sqrt(*(--(sectorValues_.m_sectorValueY[iSector].end())));
       
       std::cout<<"Sector no., APE x, APE y, name:\t"<<iSector<<"\t, "<<std::fixed<<std::setprecision(5)<<apeX<<" , "<<apeY<<" , "<<*name<<"\n";
     }
@@ -339,9 +342,16 @@ void DrawIteration::printFinalValues(unsigned int iSectorLow, unsigned int iSect
 
 
 void DrawIteration::clear(){
-  m_sectorName_.clear();
-  m_sectorValueX_.clear();
-  m_sectorValueY_.clear();
+  std::vector<Input*>::iterator i_input;
+  for(i_input = v_input_.begin(); i_input != v_input_.end(); ++i_input){
+    (*i_input)->sectorValues.m_sectorName.clear();
+    (*i_input)->sectorValues.m_sectorValueX.clear();
+    (*i_input)->sectorValues.m_sectorValueY.clear();
+  }
+  
+  sectorValues_.m_sectorName.clear();
+  sectorValues_.m_sectorValueX.clear();
+  sectorValues_.m_sectorValueY.clear();
   
   v_graphApeX_.clear();
   v_graphCorrectionX_.clear();
@@ -353,14 +363,18 @@ void DrawIteration::clear(){
 
 
 
-void DrawIteration::arrangeHists(){
-  v_resultHist_.push_back(this->pixelHist());
-  //v_resultHist_.push_back(this->barrelHist());
-  v_resultHist_.push_back(this->tibHist());
-  v_resultHist_.push_back(this->tobHist());
-  //v_resultHist_.push_back(this->endcapHist());
-  v_resultHist_.push_back(this->tidHist());
-  v_resultHist_.push_back(this->tecHist());
+std::vector<std::vector<std::string> > DrawIteration::arrangeHists(){
+  std::vector<std::vector<std::string> > v_resultHist;
+  
+  v_resultHist.push_back(this->pixelHist());
+  //v_resultHist.push_back(this->barrelHist());
+  v_resultHist.push_back(this->tibHist());
+  v_resultHist.push_back(this->tobHist());
+  //v_resultHist.push_back(this->endcapHist());
+  v_resultHist.push_back(this->tidHist());
+  v_resultHist.push_back(this->tecHist());
+  
+  return v_resultHist;
 }
 
 
@@ -610,8 +624,12 @@ TString DrawIteration::associateLabel(const std::string& sectorName){
 
 unsigned int DrawIteration::sectorNumber(const std::string& name){
   unsigned int sectorNo(0);
+  
+  if(overlayMode_){
+    sectorValues_ = (*v_input_.begin())->sectorValues;
+  }
   std::map<unsigned int, std::string*>::const_iterator i_sector;
-  for(i_sector=m_sectorName_.begin(); i_sector!=m_sectorName_.end(); ++i_sector){
+  for(i_sector=sectorValues_.m_sectorName.begin(); i_sector!=sectorValues_.m_sectorName.end(); ++i_sector){
     if(*(i_sector->second)==name){
       sectorNo=i_sector->first;
       break;
@@ -623,63 +641,156 @@ unsigned int DrawIteration::sectorNumber(const std::string& name){
 
 
 void DrawIteration::drawFinals(const std::string& xOrY){
-  std::map<unsigned int, std::vector<double> >* m_sectorValue(0);
-  if(xOrY=="x"){
-    m_sectorValue = &m_sectorValueX_;
-  }
-  else if(xOrY=="y"){
-    m_sectorValue = &m_sectorValueY_;
-  }
-  else{
-    std::cout<<"Wrong parameter for drawFinals(...)\n";
-  }
-  
-  unsigned int iHist(1);
+  unsigned int iCanvas(1);
   std::vector<std::vector<std::string> >::const_iterator i_resultHist;
-  for(i_resultHist=v_resultHist_.begin(); i_resultHist!=v_resultHist_.end(); ++i_resultHist, ++iHist){
-    //std::cout<<"New histogram\n";
+  for(i_resultHist=v_resultHist_.begin(); i_resultHist!=v_resultHist_.end(); ++i_resultHist, ++iCanvas){
+    //std::cout<<"New canvas\n";
     TCanvas* canvas(0);
     canvas = new TCanvas("canvas","canvas",gStyle->GetCanvasDefW()*i_resultHist->size()/10.,gStyle->GetCanvasDefH());
+    std::vector<std::pair<TH1*, TString> > v_hist;
     
-    TH1* hist(0);
-    const TString title("Results;;#sigma_{APE,"+xOrY+"}  [#mum]");
-    hist = new TH1F("hist",title,i_resultHist->size(),0,i_resultHist->size());
-    
-    unsigned int iBin(1);
-    bool hasEntry(false);
-    std::vector<std::string>::const_iterator i_name;
-    for(i_name=i_resultHist->begin(); i_name!=i_resultHist->end(); ++i_name, ++iBin){
-      const TString& label = this->associateLabel(*i_name);
-      const unsigned int iSector = this->sectorNumber(*i_name);
-      double ape(-9.);
-      if(m_sectorValue->count(iSector)!=0){
-        ape = 10000.*std::sqrt(*(--((*m_sectorValue)[iSector].end())));
-	hasEntry = true;
+    SectorValues* sectorValues(0);
+    if(!overlayMode_){
+      unsigned int iInput(1);
+      sectorValues = &sectorValues_;
+      TH1* hist(0);
+      bool hasEntry = this->createResultHist(hist, *i_resultHist, xOrY, *sectorValues, iInput);
+      if(hasEntry)v_hist.push_back(std::make_pair(hist, ""));
+      else hist->Delete();
+    }
+    else{
+      unsigned int iInput(1);
+      std::vector<Input*>::const_iterator i_input;
+      for(i_input = v_input_.begin(); i_input != v_input_.end(); ++i_input, ++iInput){
+        sectorValues = &(*i_input)->sectorValues;
+	TH1* hist(0);
+	TString& legendEntry = (*i_input)->legendEntry;
+        bool hasEntry = this->createResultHist(hist, *i_resultHist, xOrY, *sectorValues, iInput);
+        if(hasEntry)v_hist.push_back(std::make_pair(hist, legendEntry));
+        else hist->Delete();
       }
-      hist->SetBinContent(iBin, ape);
-      hist->SetBinError(iBin, 0.0000001);
-      hist->GetXaxis()->SetBinLabel(iBin, label);
-      hist->SetAxisRange(0.,35.,"Y");
     }
     
-    if(hasEntry){
+    if(v_hist.size()!=0){
       //gStyle->SetErrorX(0.5);
-      hist->Draw("e0");
+      std::vector<std::pair<TH1*, TString> >::iterator i_hist;
+      unsigned int iHist(1);
+      for(i_hist = v_hist.begin(); i_hist != v_hist.end(); ++i_hist, ++iHist){
+        TH1* hist((*i_hist).first);
+	if(iHist==1){
+	  hist->Draw("e0");
+	}
+	else{
+	  hist->SetLineColor(iHist);
+	  hist->SetMarkerColor(iHist);
+	  hist->Draw("e0same");
+	}
+      }
+      
+      canvas->Modified();
+      canvas->Update();
+      
+      TLegend* legend(0);
+      legend = new TLegend(0.2,0.65,0.5,0.85);
+      legend->SetFillColor(0);
+      legend->SetFillStyle(0);
+      legend->SetTextSize(0.04);
+      legend->SetMargin(0.30);
+      legend->SetBorderSize(0);
+      
+      if(v_hist.size()>1){
+        for(i_hist = v_hist.begin(), iHist = 1; i_hist != v_hist.end(); ++i_hist, ++iHist){
+	  legend->AddEntry((*i_hist).first, (*i_hist).second, "lp");
+	}
+	legend->Draw("same");
+      }
+      
+      canvas->Modified();
+      canvas->Update();
+      
       std::stringstream ss_hist;
-      ss_hist<<"_"<<iHist;
+      ss_hist<<"_"<<iCanvas;
       canvas->Print(outpath_->Copy().Append("result_").Append(xOrY).Append(ss_hist.str()).Append(".eps"));
       canvas->Print(outpath_->Copy().Append("result_").Append(xOrY).Append(ss_hist.str()).Append(".png"));
+      
+      legend->Delete();
     }
     
-    hist->Delete();
-    canvas->Close();
+    std::vector<std::pair<TH1*, TString> >::iterator i_hist;
+    for(i_hist = v_hist.begin(); i_hist != v_hist.end(); ++i_hist){
+      if((*i_hist).first)(*i_hist).first->Delete();
+    }
+    v_hist.clear();
+    if(canvas)canvas->Close();
   }
   
 }
 
 
 
+bool DrawIteration::createResultHist(TH1*& hist, const std::vector<std::string>& v_name, const std::string& xOrY, SectorValues& sectorValues, unsigned int iInput){
+  bool hasEntry(false);
+  
+  std::stringstream ss_name;
+  ss_name<<"hist"<<iInput;
+  const TString title("Results;;#sigma_{align,"+xOrY+"}  [#mum]");
+  hist = new TH1F(ss_name.str().c_str(), title, v_name.size(), 0, v_name.size());
+  
+  std::map<unsigned int, std::vector<double> >* m_sectorValue(0);
+  if(xOrY=="x"){
+    m_sectorValue = &sectorValues.m_sectorValueX;
+  }
+  else if(xOrY=="y"){
+    m_sectorValue = &sectorValues.m_sectorValueY;
+  }
+  else{
+    std::cout<<"Wrong parameter for drawFinals(...)\n";
+  }
+  
+  unsigned int iBin(1);
+  std::vector<std::string>::const_iterator i_name;
+  for(i_name=v_name.begin(); i_name!=v_name.end(); ++i_name, ++iBin){
+    const TString& label = this->associateLabel(*i_name);
+    const unsigned int iSector = this->sectorNumber(*i_name);
+    double ape(-9.);
+    if(m_sectorValue->count(iSector)!=0){
+      ape = 10000.*std::sqrt(*(--((*m_sectorValue)[iSector].end())));
+      hasEntry = true;
+    }
+    hist->SetBinContent(iBin, ape);
+    hist->SetBinError(iBin, 0.0000001);
+    hist->GetXaxis()->SetBinLabel(iBin, label);
+  }
+  hist->SetAxisRange(0.,35.,"Y");
+  
+  return hasEntry;
+}
 
+
+
+// --------------------------------------------------------------------------------------------
+
+
+
+void DrawIteration::addInputFile(const TString& name, const TString& legend){
+  Input* input = new Input(name, legend);
+  
+  input->file = new TFile(name, "READ");
+  if(!input->file){
+    // Not needed: root gives error by default when file is not found
+    std::cout<<"\n\tInput file not found, please check file name: "<<name<<"\n";
+  }
+  std::cout<<"Input file, legend: "<<input->fileName<<" , "<<input->legendEntry<<"\n";
+  
+  v_input_.push_back(input);
+}
+
+
+
+void DrawIteration::outputDirectory(const TString& outpath){
+  delete outpath_;
+  outpath_ = new TString(outpath);
+}
 
 
 

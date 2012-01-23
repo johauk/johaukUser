@@ -21,6 +21,7 @@ do
     mv ${plots}/result_*.* ${plots}/Result/.
     
     mv ${plots}/h_NorRes*.* ${plots}/Sector/.
+    mv ${plots}/h_Res*.* ${plots}/Sector/.
     mv ${plots}/h_entries*.* ${plots}/Sector/.
     mv ${plots}/h_residualWidth*.* ${plots}/Sector/.
     mv ${plots}/h_rms*.* ${plots}/Sector/.

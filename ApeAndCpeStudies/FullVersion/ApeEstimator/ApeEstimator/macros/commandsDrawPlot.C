@@ -83,6 +83,9 @@ drawPlot2.drawPlot("ApeEstimator1","h_entriesY", false);
 gStyle->SetOptStat(111110);
 drawPlot2.drawPlot("ApeEstimator1","h_NorResX", false);
 drawPlot2.drawPlot("ApeEstimator1","h_NorResY", false);
+drawPlot2.drawPlot("ApeEstimator1","h_ResX", false);
+drawPlot2.drawPlot("ApeEstimator1","h_ResY", false);
+
 
 gStyle->SetOptStat(111110);
 drawPlot2.drawTrackPlot("ApeEstimator2","h_eta", false);
@@ -138,6 +141,9 @@ drawPlot4.drawPlot("ApeEstimator1","h_entriesY", false);
 gStyle->SetOptStat(111110);
 drawPlot4.drawPlot("ApeEstimator1","h_NorResX");
 drawPlot4.drawPlot("ApeEstimator1","h_NorResY");
+drawPlot4.drawPlot("ApeEstimator1","h_ResX");
+drawPlot4.drawPlot("ApeEstimator1","h_ResY");
+
 
 gStyle->SetOptStat(111110);
 drawPlot4.drawTrackPlot("ApeEstimator2","h_eta");

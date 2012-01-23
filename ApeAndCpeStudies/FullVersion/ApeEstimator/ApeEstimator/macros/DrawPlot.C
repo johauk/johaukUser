@@ -135,7 +135,7 @@ DrawPlot::drawPlot(const TString& pluginName, const TString& histName, const boo
     else delta0_ = 0;
     
     if(histName=="h_entriesX" || histName=="h_entriesY" ||
-       histName=="h_resX" || histName=="h_resY" ||
+       histName=="h_ResX" || histName=="h_ResY" ||
        histName=="h_NorResX" || histName=="h_NorResY")ss_sector<<"Results/";
     
     ss_sector<<histName;
