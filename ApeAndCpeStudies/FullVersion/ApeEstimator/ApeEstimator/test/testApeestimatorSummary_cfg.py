@@ -12,7 +12,7 @@ import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as VarParsing
 import sys
 options = VarParsing.VarParsing ('standard')
-options.register('sample', 'data', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Input sample")
+options.register('sample', 'data1', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Input sample")
 options.register('isTest', True, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "Test run")
 
 # get and parse the command line arguments
@@ -67,11 +67,15 @@ process.options = cms.untracked.PSet(
 ##
 ## Input sample definition
 ##
+isData1 = isData2 = False
 isData = False
-isQcd = isWlnu = isZmumu = isZtautau = False
+isQcd = isWlnu = isZmumu = isZtautau = isZmumu10 = isZmumu20 = False
 isMc = False
-isParticleGunMu = isParticleGunPi = False
-if options.sample == 'data':
+if options.sample == 'data1':
+    isData1 = True
+    isData = True
+elif options.sample == 'data2':
+    isData2 = True
     isData = True
 elif options.sample == 'qcd':
     isQcd = True
@@ -85,11 +89,11 @@ elif options.sample == 'zmumu':
 elif options.sample == 'ztautau':
     isZtautau = True
     isMc = True
-elif options.sample == 'particleGunMu':
-    isParticleGunMu = True
+elif options.sample == 'zmumu10':
+    isZmumu10 = True
     isMc = True
-elif options.sample == 'particleGunPi':
-    isParticleGunPi = True
+elif options.sample == 'zmumu20':
+    isZmumu20 = True
     isMc = True
 else:
     print 'ERROR --- incorrect data sammple: ', options.sample

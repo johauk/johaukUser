@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.22 2011/08/30 11:38:05 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.23 2011/10/21 13:34:18 hauk Exp $
 //
 //
 
@@ -565,7 +565,7 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     double sigmaXHitMax = zoomHists ? 0.02 : 1.;
     double phiSensXMax = zoomHists ? 31. : 93.;
     
-    double norChi2Max = zoomHists ? 10. : 1000.;
+    double norChi2Max = zoomHists ? 5. : 1000.;
     double d0Max = zoomHists ? 0.02 : 40.;  // cosmics: 100.|100.
     double dzMax = zoomHists ? 15. : 100.;  // cosmics: 200.|600.
     double pMax = zoomHists ? 200. : 2000.;
@@ -601,28 +601,28 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     
     
     // Cluster Parameters
-    (*i_sector).second.m_correlationHistsX["WidthX"] = (*i_sector).second.bookCorrHistsX("WidthX","cluster width","w_{x,cl}","[# strips]",200,20,0.,widthMax,"nph");
-    (*i_sector).second.m_correlationHistsX["BaryStripX"] = (*i_sector).second.bookCorrHistsX("BaryStripX","barycenter of cluster charge","b_{x,cl}","[# strips]",800,100,-10.,790.,"nph");
+    (*i_sector).second.m_correlationHistsX["WidthX"] = (*i_sector).second.bookCorrHistsX("WidthX","cluster width","w_{cl,x}","[# channels]",200,20,0.,widthMax,"nph");
+    (*i_sector).second.m_correlationHistsX["BaryStripX"] = (*i_sector).second.bookCorrHistsX("BaryStripX","barycenter of cluster charge","b_{cl,x}","[# channels]",800,100,-10.,790.,"nph");
     
     if(pixelSector){
-    (*i_sector).second.m_correlationHistsY["WidthY"] = (*i_sector).second.bookCorrHistsY("WidthY","cluster width","w_{y,cl}","[# strips]",200,20,0.,widthMax,"nph");
-    (*i_sector).second.m_correlationHistsY["BaryStripY"] = (*i_sector).second.bookCorrHistsY("BaryStripY","barycenter of cluster charge","b_{y,cl}","[# strips]",800,100,-10.,790.,"nph");
+    (*i_sector).second.m_correlationHistsY["WidthY"] = (*i_sector).second.bookCorrHistsY("WidthY","cluster width","w_{cl,y}","[# channels]",200,20,0.,widthMax,"nph");
+    (*i_sector).second.m_correlationHistsY["BaryStripY"] = (*i_sector).second.bookCorrHistsY("BaryStripY","barycenter of cluster charge","b_{cl,y}","[# channels]",800,100,-10.,790.,"nph");
     
-    (*i_sector).second.m_correlationHistsX["ChargePixel"] = (*i_sector).second.bookCorrHistsX("ChargePixel","cluster charge","c_{cl}","[xxx]",100,50,0.,chargePixelMax,"nph");
-    (*i_sector).second.m_correlationHistsX["ClusterProbXY"] = (*i_sector).second.bookCorrHistsX("ClusterProbXY","cluster probability xy","prob_{xy,cl}","",100,50,0.,1.,"nph");
-    (*i_sector).second.m_correlationHistsX["ClusterProbQ"] = (*i_sector).second.bookCorrHistsX("ClusterProbQ","cluster probability q","prob_{q,cl}","",100,50,0.,1.,"nph");
-    (*i_sector).second.m_correlationHistsX["ClusterProbXYQ"] = (*i_sector).second.bookCorrHistsX("ClusterProbXYQ","cluster probability xyq","prob_{xyq,cl}","",100,50,0.,1.,"nph");
-    (*i_sector).second.m_correlationHistsX["LogClusterProb"] = (*i_sector).second.bookCorrHistsX("LogClusterProb","cluster probability xy","log(prob_{xy,cl})","",60,30,logClusterProbMin,0.,"nph");
+    (*i_sector).second.m_correlationHistsX["ChargePixel"] = (*i_sector).second.bookCorrHistsX("ChargePixel","cluster charge","c_{cl}","[e]",100,50,0.,chargePixelMax,"nph");
+    (*i_sector).second.m_correlationHistsX["ClusterProbXY"] = (*i_sector).second.bookCorrHistsX("ClusterProbXY","cluster probability xy","prob_{cl,xy}","",100,50,0.,1.,"nph");
+    (*i_sector).second.m_correlationHistsX["ClusterProbQ"] = (*i_sector).second.bookCorrHistsX("ClusterProbQ","cluster probability q","prob_{cl,q}","",100,50,0.,1.,"nph");
+    (*i_sector).second.m_correlationHistsX["ClusterProbXYQ"] = (*i_sector).second.bookCorrHistsX("ClusterProbXYQ","cluster probability xyq","prob_{cl,xyq}","",100,50,0.,1.,"nph");
+    (*i_sector).second.m_correlationHistsX["LogClusterProb"] = (*i_sector).second.bookCorrHistsX("LogClusterProb","cluster probability xy","log(prob_{cl,xy})","",60,30,logClusterProbMin,0.,"nph");
     (*i_sector).second.m_correlationHistsX["IsOnEdge"] = (*i_sector).second.bookCorrHistsX("IsOnEdge","IsOnEdge","isOnEdge","",2,2,0,2,"nph");
     (*i_sector).second.m_correlationHistsX["HasBadPixels"] = (*i_sector).second.bookCorrHistsX("HasBadPixels","HasBadPixels","hasBadPixels","",2,2,0,2,"nph");
     (*i_sector).second.m_correlationHistsX["SpansTwoRoc"] = (*i_sector).second.bookCorrHistsX("SpansTwoRoc","SpansTwoRoc","spansTwoRoc","",2,2,0,2,"nph");
     (*i_sector).second.m_correlationHistsX["QBin"] = (*i_sector).second.bookCorrHistsX("QBin","q bin","q bin","",8,8,0,8,"nph");
     
-    (*i_sector).second.m_correlationHistsY["ChargePixel"] = (*i_sector).second.bookCorrHistsY("ChargePixel","cluster charge","c_{cl}","[xxx]",100,50,0.,chargePixelMax,"nph");
-    (*i_sector).second.m_correlationHistsY["ClusterProbXY"] = (*i_sector).second.bookCorrHistsY("ClusterProbXY","cluster probability xy","prob_{xy,cl}","",100,50,0.,1.,"nph");
-    (*i_sector).second.m_correlationHistsY["ClusterProbQ"] = (*i_sector).second.bookCorrHistsY("ClusterProbQ","cluster probability q","prob_{q,cl}","",100,50,0.,1.,"nph");
-    (*i_sector).second.m_correlationHistsY["ClusterProbXYQ"] = (*i_sector).second.bookCorrHistsY("ClusterProbXYQ","cluster probability xyq","prob_{xyq,cl}","",100,50,0.,1.,"nph");
-    (*i_sector).second.m_correlationHistsY["LogClusterProb"] = (*i_sector).second.bookCorrHistsY("LogClusterProb","cluster probability xy","log(prob_{xy,cl})","",60,30,logClusterProbMin,0.,"nph");
+    (*i_sector).second.m_correlationHistsY["ChargePixel"] = (*i_sector).second.bookCorrHistsY("ChargePixel","cluster charge","c_{cl}","[e]",100,50,0.,chargePixelMax,"nph");
+    (*i_sector).second.m_correlationHistsY["ClusterProbXY"] = (*i_sector).second.bookCorrHistsY("ClusterProbXY","cluster probability xy","prob_{cl,xy}","",100,50,0.,1.,"nph");
+    (*i_sector).second.m_correlationHistsY["ClusterProbQ"] = (*i_sector).second.bookCorrHistsY("ClusterProbQ","cluster probability q","prob_{cl,q}","",100,50,0.,1.,"nph");
+    (*i_sector).second.m_correlationHistsY["ClusterProbXYQ"] = (*i_sector).second.bookCorrHistsY("ClusterProbXYQ","cluster probability xyq","prob_{cl,xyq}","",100,50,0.,1.,"nph");
+    (*i_sector).second.m_correlationHistsY["LogClusterProb"] = (*i_sector).second.bookCorrHistsY("LogClusterProb","cluster probability xy","log(prob_{cl,xy})","",60,30,logClusterProbMin,0.,"nph");
     (*i_sector).second.m_correlationHistsY["IsOnEdge"] = (*i_sector).second.bookCorrHistsY("IsOnEdge","IsOnEdge","isOnEdge","",2,2,0,2,"nph");
     (*i_sector).second.m_correlationHistsY["HasBadPixels"] = (*i_sector).second.bookCorrHistsY("HasBadPixels","HasBadPixels","hasBadPixels","",2,2,0,2,"nph");
     (*i_sector).second.m_correlationHistsY["SpansTwoRoc"] = (*i_sector).second.bookCorrHistsY("SpansTwoRoc","SpansTwoRoc","spansTwoRoc","",2,2,0,2,"nph");
@@ -640,57 +640,57 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     (*i_sector).second.m_correlationHistsX["ChargeLRminus"] = (*i_sector).second.bookCorrHistsX("ChargeLRminus","asymmetry of charge L and R of maxStrip","(c_{cl,L}-c_{cl,R})/c_{cl}","",110,55,-1.1,1.1,"nph");
     (*i_sector).second.m_correlationHistsX["SOverN"] = (*i_sector).second.bookCorrHistsX("SOverN","signal over noise","s/N","",100,50,0,sOverNMax,"nph");
     (*i_sector).second.m_correlationHistsX["WidthProj"] = (*i_sector).second.bookCorrHistsX("WidthProj","projected width","w_{p}","[# strips]",200,20,0.,widthMax,"nph");
-    (*i_sector).second.m_correlationHistsX["WidthDiff"] = (*i_sector).second.bookCorrHistsX("WidthDiff","width difference","w_{p} - w_{x,cl}","[# strips]",200,20,-widthMax/2.,widthMax/2.,"nph");
+    (*i_sector).second.m_correlationHistsX["WidthDiff"] = (*i_sector).second.bookCorrHistsX("WidthDiff","width difference","w_{p} - w_{cl}","[# strips]",200,20,-widthMax/2.,widthMax/2.,"nph");
     
-    (*i_sector).second.WidthVsWidthProjected = secDir.make<TH2F>("h2_widthVsWidthProj","w_{x,cl} vs. w_{p};w_{p}  [# strips];w_{x,cl}  [# strips]",static_cast<int>(widthMax),0,widthMax,static_cast<int>(widthMax),0,widthMax);
-    (*i_sector).second.PWidthVsWidthProjected = secDir.make<TProfile>("p_widthVsWidthProj","w_{x,cl} vs. w_{p};w_{p}  [# strips];w_{x,cl}  [# strips]",static_cast<int>(widthMax),0,widthMax);
+    (*i_sector).second.WidthVsWidthProjected = secDir.make<TH2F>("h2_widthVsWidthProj","w_{cl} vs. w_{p};w_{p}  [# strips];w_{cl}  [# strips]",static_cast<int>(widthMax),0,widthMax,static_cast<int>(widthMax),0,widthMax);
+    (*i_sector).second.PWidthVsWidthProjected = secDir.make<TProfile>("p_widthVsWidthProj","w_{cl} vs. w_{p};w_{p}  [# strips];w_{cl}  [# strips]",static_cast<int>(widthMax),0,widthMax);
     
-    (*i_sector).second.WidthDiffVsMaxStrip = secDir.make<TH2F>("h2_widthDiffVsMaxStrip","(w_{p} - w_{x,cl}) vs. n_{cl,max};n_{cl,max};w_{p} - w_{x,cl}  [# strips]",800,-10.,790.,static_cast<int>(widthMax),-widthMax/2.,widthMax/2.);
-    (*i_sector).second.PWidthDiffVsMaxStrip = secDir.make<TProfile>("p_widthDiffVsMaxStrip","(w_{p} - w_{x,cl}) vs. n_{cl,max};n_{cl,max};w_{p} - w_{x,cl}  [# strips]",800,-10.,790.);
+    (*i_sector).second.WidthDiffVsMaxStrip = secDir.make<TH2F>("h2_widthDiffVsMaxStrip","(w_{p} - w_{cl}) vs. n_{cl,max};n_{cl,max};w_{p} - w_{cl}  [# strips]",800,-10.,790.,static_cast<int>(widthMax),-widthMax/2.,widthMax/2.);
+    (*i_sector).second.PWidthDiffVsMaxStrip = secDir.make<TProfile>("p_widthDiffVsMaxStrip","(w_{p} - w_{cl}) vs. n_{cl,max};n_{cl,max};w_{p} - w_{cl}  [# strips]",800,-10.,790.);
     
-    (*i_sector).second.WidthDiffVsSigmaXHit = secDir.make<TH2F>("h2_widthDiffVsSigmaXHit","(w_{p} - w_{x,cl}) vs. #sigma_{x,hit};#sigma_{x,hit}  [cm];w_{p} - w_{x,cl}  [# strips]",100,0.,sigmaXMax,100,-10.,10.);
-    (*i_sector).second.PWidthDiffVsSigmaXHit = secDir.make<TProfile>("p_widthDiffVsSigmaXHit","(w_{p} - w_{x,cl}) vs. #sigma_{x,hit};#sigma_{x,hit}  [cm];w_{p} - w_{x,cl}  [# strips]",100,0.,sigmaXMax);
+    (*i_sector).second.WidthDiffVsSigmaXHit = secDir.make<TH2F>("h2_widthDiffVsSigmaXHit","(w_{p} - w_{cl}) vs. #sigma_{hit,x};#sigma_{hit,x}  [cm];w_{p} - w_{cl}  [# strips]",100,0.,sigmaXMax,100,-10.,10.);
+    (*i_sector).second.PWidthDiffVsSigmaXHit = secDir.make<TProfile>("p_widthDiffVsSigmaXHit","(w_{p} - w_{cl}) vs. #sigma_{hit,x};#sigma_{hit,x}  [cm];w_{p} - w_{cl}  [# strips]",100,0.,sigmaXMax);
     
-    (*i_sector).second.WidthVsPhiSensX = secDir.make<TH2F>("h2_widthVsPhiSensX","w_{x,cl} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];w_{x,cl}  [# strips]",93,-93,93,static_cast<int>(widthMax),0,widthMax);
-    (*i_sector).second.PWidthVsPhiSensX = secDir.make<TProfile>("p_widthVsPhiSensX","w_{x,cl} vs. #phi_{x,module};#phi_{x,module}  [ ^{o}];w_{x,cl}  [# strips]",93,-93,93);
+    (*i_sector).second.WidthVsPhiSensX = secDir.make<TH2F>("h2_widthVsPhiSensX","w_{cl} vs. #phi_{module,x};#phi_{module,x}  [ ^{o}];w_{cl}  [# strips]",93,-93,93,static_cast<int>(widthMax),0,widthMax);
+    (*i_sector).second.PWidthVsPhiSensX = secDir.make<TProfile>("p_widthVsPhiSensX","w_{cl} vs. #phi_{module,x};#phi_{module,x}  [ ^{o}];w_{cl}  [# strips]",93,-93,93);
     }
     
     
     // Hit Parameters
-    (*i_sector).second.m_correlationHistsX["SigmaXHit"] = (*i_sector).second.bookCorrHistsX("SigmaXHit","hit error","#sigma_{x,hit}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
-    (*i_sector).second.m_correlationHistsX["SigmaXTrk"] = (*i_sector).second.bookCorrHistsX("SigmaXTrk","track error","#sigma_{x,track}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
-    (*i_sector).second.m_correlationHistsX["SigmaX"]    = (*i_sector).second.bookCorrHistsX("SigmaX","residual error","#sigma_{x}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
+    (*i_sector).second.m_correlationHistsX["SigmaXHit"] = (*i_sector).second.bookCorrHistsX("SigmaXHit","hit error","#sigma_{hit,x}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
+    (*i_sector).second.m_correlationHistsX["SigmaXTrk"] = (*i_sector).second.bookCorrHistsX("SigmaXTrk","track error","#sigma_{trk,x}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
+    (*i_sector).second.m_correlationHistsX["SigmaX"]    = (*i_sector).second.bookCorrHistsX("SigmaX","residual error","#sigma_{r,x}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
     (*i_sector).second.m_correlationHistsX["PhiSens"]   = (*i_sector).second.bookCorrHistsX("PhiSens","track angle on sensor","#phi_{module}","[ ^{o}]",96,48,-3,93,"nphtr");
-    (*i_sector).second.m_correlationHistsX["PhiSensX"]  = (*i_sector).second.bookCorrHistsX("PhiSensX","track angle on sensor","#phi_{x,module}","[ ^{o}]",186,93,-phiSensXMax,phiSensXMax,"nphtr");
-    (*i_sector).second.m_correlationHistsX["PhiSensY"]  = (*i_sector).second.bookCorrHistsX("PhiSensY","track angle on sensor","#phi_{y,module}","[ ^{o}]",186,93,-93,93,"nphtr");
+    (*i_sector).second.m_correlationHistsX["PhiSensX"]  = (*i_sector).second.bookCorrHistsX("PhiSensX","track angle on sensor","#phi_{module,x}","[ ^{o}]",186,93,-phiSensXMax,phiSensXMax,"nphtr");
+    (*i_sector).second.m_correlationHistsX["PhiSensY"]  = (*i_sector).second.bookCorrHistsX("PhiSensY","track angle on sensor","#phi_{module,y}","[ ^{o}]",186,93,-93,93,"nphtr");
     
     (*i_sector).second.XHit    = secDir.make<TH1F>("h_XHit"," hit measurement x_{hit};x_{hit}  [cm];# hits",100,-20,20);
-    (*i_sector).second.XTrk    = secDir.make<TH1F>("h_XTrk","track prediction x_{track};x_{track}  [cm];# hits",100,-20,20);
-    (*i_sector).second.SigmaX2 = secDir.make<TH1F>("h_SigmaX2","squared residual error #sigma_{x}^{2};#sigma_{x}^{2}  [cm^{2}];# hits",105,sigmaXMin,sigmaX2Max); //no mistake !
-    (*i_sector).second.ResX    = secDir.make<TH1F>("h_ResX","residual r_{x};(x_{track}-x_{hit})'  [cm];# hits",100,-resXAbsMax,resXAbsMax);
-    (*i_sector).second.NorResX = secDir.make<TH1F>("h_NorResX","normalized residual r_{x}/#sigma_{x};(x_{track}-x_{hit})'/#sigma_{x};# hits",100,-norResXAbsMax,norResXAbsMax);
-    (*i_sector).second.ProbX   = secDir.make<TH1F>("h_ProbX","residual probability;prob(r_{x}^{2}/#sigma_{x}^{2},1);# hits",60,probXMin,probXMax);
+    (*i_sector).second.XTrk    = secDir.make<TH1F>("h_XTrk","track prediction x_{trk};x_{trk}  [cm];# hits",100,-20,20);
+    (*i_sector).second.SigmaX2 = secDir.make<TH1F>("h_SigmaX2","squared residual error #sigma_{r,x}^{2};#sigma_{r,x}^{2}  [cm^{2}];# hits",105,sigmaXMin,sigmaX2Max); //no mistake !
+    (*i_sector).second.ResX    = secDir.make<TH1F>("h_ResX","residual r_{x};x_{trk}-x_{hit}  [cm];# hits",100,-resXAbsMax,resXAbsMax);
+    (*i_sector).second.NorResX = secDir.make<TH1F>("h_NorResX","normalized residual r_{x}/#sigma_{r,x};(x_{trk}-x_{hit})/#sigma_{r,x};# hits",100,-norResXAbsMax,norResXAbsMax);
+    (*i_sector).second.ProbX   = secDir.make<TH1F>("h_ProbX","residual probability;prob(r_{x}^{2}/#sigma_{r,x}^{2},1);# hits",60,probXMin,probXMax);
     
-    (*i_sector).second.PhiSensXVsBarycentreX = secDir.make<TH2F>("h2_phiSensXVsBarycentreX","#phi_{x,module} vs. b_{x,cl};b_{x,cl}  [# strips];#phi_{x,module}  [ ^{o}]",200,-10.,790.,93,-93,93);
-    (*i_sector).second.PPhiSensXVsBarycentreX = secDir.make<TProfile>("p_phiSensXVsBarycentreX","#phi_{x,module} vs. b_{x,cl};b_{x,cl}  [# strips];#phi_{x,module}  [ ^{o}]",200,-10.,790.);
+    (*i_sector).second.PhiSensXVsBarycentreX = secDir.make<TH2F>("h2_phiSensXVsBarycentreX","#phi_{module,x} vs. b_{cl,x};b_{cl,x}  [# channels];#phi_{module,x}  [ ^{o}]",200,-10.,790.,93,-93,93);
+    (*i_sector).second.PPhiSensXVsBarycentreX = secDir.make<TProfile>("p_phiSensXVsBarycentreX","#phi_{module,x} vs. b_{cl,x};b_{cl,x}  [# channels];#phi_{module,x}  [ ^{o}]",200,-10.,790.);
     
     if(pixelSector){
-    (*i_sector).second.m_correlationHistsY["SigmaYHit"] = (*i_sector).second.bookCorrHistsY("SigmaYHit","hit error","#sigma_{y,hit}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
-    (*i_sector).second.m_correlationHistsY["SigmaYTrk"] = (*i_sector).second.bookCorrHistsY("SigmaYTrk","track error","#sigma_{y,track}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
-    (*i_sector).second.m_correlationHistsY["SigmaY"]    = (*i_sector).second.bookCorrHistsY("SigmaY","residual error","#sigma_{y}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
+    (*i_sector).second.m_correlationHistsY["SigmaYHit"] = (*i_sector).second.bookCorrHistsY("SigmaYHit","hit error","#sigma_{hit,y}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
+    (*i_sector).second.m_correlationHistsY["SigmaYTrk"] = (*i_sector).second.bookCorrHistsY("SigmaYTrk","track error","#sigma_{trk,y}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
+    (*i_sector).second.m_correlationHistsY["SigmaY"]    = (*i_sector).second.bookCorrHistsY("SigmaY","residual error","#sigma_{r,y}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
     (*i_sector).second.m_correlationHistsY["PhiSens"]   = (*i_sector).second.bookCorrHistsY("PhiSens","track angle on sensor","#phi_{module}","[ ^{o}]",96,48,-3,93,"nphtr");
-    (*i_sector).second.m_correlationHistsY["PhiSensX"]  = (*i_sector).second.bookCorrHistsY("PhiSensX","track angle on sensor","#phi_{x,module}","[ ^{o}]",186,93,-phiSensXMax,phiSensXMax,"nphtr");
-    (*i_sector).second.m_correlationHistsY["PhiSensY"]  = (*i_sector).second.bookCorrHistsY("PhiSensY","track angle on sensor","#phi_{y,module}","[ ^{o}]",186,93,-93,93,"nphtr");
+    (*i_sector).second.m_correlationHistsY["PhiSensX"]  = (*i_sector).second.bookCorrHistsY("PhiSensX","track angle on sensor","#phi_{module,x}","[ ^{o}]",186,93,-phiSensXMax,phiSensXMax,"nphtr");
+    (*i_sector).second.m_correlationHistsY["PhiSensY"]  = (*i_sector).second.bookCorrHistsY("PhiSensY","track angle on sensor","#phi_{module,y}","[ ^{o}]",186,93,-93,93,"nphtr");
     
     (*i_sector).second.YHit    = secDir.make<TH1F>("h_YHit"," hit measurement y_{hit};y_{hit}  [cm];# hits",100,-20,20);
-    (*i_sector).second.YTrk    = secDir.make<TH1F>("h_YTrk","track prediction y_{track};y_{track}  [cm];# hits",100,-20,20);
-    (*i_sector).second.SigmaY2 = secDir.make<TH1F>("h_SigmaY2","squared residual error #sigma_{y}^{2};#sigma_{y}^{2}  [cm^{2}];# hits",105,sigmaXMin,sigmaX2Max); //no mistake !
-    (*i_sector).second.ResY    = secDir.make<TH1F>("h_ResY","residual r_{y};(y_{track}-y_{hit})'  [cm];# hits",100,-resXAbsMax,resXAbsMax);
-    (*i_sector).second.NorResY = secDir.make<TH1F>("h_NorResY","normalized residual r_{y}/#sigma_{y};(y_{track}-y_{hit})'/#sigma_{y};# hits",100,-norResXAbsMax,norResXAbsMax);
-    (*i_sector).second.ProbY   = secDir.make<TH1F>("h_ProbY","residual probability;prob(r_{y}^{2}/#sigma_{y}^{2},1);# hits",60,probXMin,probXMax);
+    (*i_sector).second.YTrk    = secDir.make<TH1F>("h_YTrk","track prediction y_{trk};y_{trk}  [cm];# hits",100,-20,20);
+    (*i_sector).second.SigmaY2 = secDir.make<TH1F>("h_SigmaY2","squared residual error #sigma_{r,y}^{2};#sigma_{r,y}^{2}  [cm^{2}];# hits",105,sigmaXMin,sigmaX2Max); //no mistake !
+    (*i_sector).second.ResY    = secDir.make<TH1F>("h_ResY","residual r_{y};y_{trk}-y_{hit}  [cm];# hits",100,-resXAbsMax,resXAbsMax);
+    (*i_sector).second.NorResY = secDir.make<TH1F>("h_NorResY","normalized residual r_{y}/#sigma_{r,y};(y_{track}-y_{hit})/#sigma_{r,y};# hits",100,-norResXAbsMax,norResXAbsMax);
+    (*i_sector).second.ProbY   = secDir.make<TH1F>("h_ProbY","residual probability;prob(r_{y}^{2}/#sigma_{r,y}^{2},1);# hits",60,probXMin,probXMax);
     
-    (*i_sector).second.PhiSensYVsBarycentreY = secDir.make<TH2F>("h2_phiSensYVsBarycentreY","#phi_{y,module} vs. b_{y,cl};b_{y,cl}  [# strips];#phi_{y,module}  [ ^{o}]",200,-10.,790.,93,-93,93);
-    (*i_sector).second.PPhiSensYVsBarycentreY = secDir.make<TProfile>("p_phiSensYVsBarycentreY","#phi_{y,module} vs. b_{y,cl};b_{y,cl}  [# strips];#phi_{y,module}  [ ^{o}]",200,-10.,790.);
+    (*i_sector).second.PhiSensYVsBarycentreY = secDir.make<TH2F>("h2_phiSensYVsBarycentreY","#phi_{module,y} vs. b_{cl,y};b_{cl,y}  [# channels];#phi_{module,y}  [ ^{o}]",200,-10.,790.,93,-93,93);
+    (*i_sector).second.PPhiSensYVsBarycentreY = secDir.make<TProfile>("p_phiSensYVsBarycentreY","#phi_{module,y} vs. b_{cl,y};b_{cl,y}  [# channels];#phi_{module,y}  [ ^{o}]",200,-10.,790.);
     }
     
     
@@ -702,7 +702,7 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     (*i_sector).second.m_correlationHistsX["HitsPixel"] = (*i_sector).second.bookCorrHistsX("HitsPixel","# hits","[pixel]",10,0,10,"npt");
     (*i_sector).second.m_correlationHistsX["HitsStrip"] = (*i_sector).second.bookCorrHistsX("HitsStrip","# hits","[strip]",40,0,40,"npt");
     (*i_sector).second.m_correlationHistsX["HitsGood"] = (*i_sector).second.bookCorrHistsX("HitsGood","# hits","[good]",50,0,50,"npt");
-    (*i_sector).second.m_correlationHistsX["NorChi2"] = (*i_sector).second.bookCorrHistsX("NorChi2","#chi^{2}/ndof","",50,0,norChi2Max,"npr");
+    (*i_sector).second.m_correlationHistsX["NorChi2"] = (*i_sector).second.bookCorrHistsX("NorChi2","#chi^{2}/f","",50,0,norChi2Max,"npr");
     (*i_sector).second.m_correlationHistsX["Theta"] = (*i_sector).second.bookCorrHistsX("Theta","#theta","[ ^{o}]",40,-10,190,"npt");
     (*i_sector).second.m_correlationHistsX["Phi"] = (*i_sector).second.bookCorrHistsX("Phi","#phi","[ ^{o}]",76,-190,190,"npt");
     (*i_sector).second.m_correlationHistsX["D0Beamspot"] = (*i_sector).second.bookCorrHistsX("D0Beamspot","d_{0, BS}","[cm]",40,-d0Max,d0Max,"npt");
@@ -721,7 +721,7 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     (*i_sector).second.m_correlationHistsY["HitsPixel"] = (*i_sector).second.bookCorrHistsY("HitsPixel","# hits","[pixel]",10,0,10,"npt");
     (*i_sector).second.m_correlationHistsY["HitsStrip"] = (*i_sector).second.bookCorrHistsY("HitsStrip","# hits","[strip]",40,0,40,"npt");
     (*i_sector).second.m_correlationHistsY["HitsGood"] = (*i_sector).second.bookCorrHistsY("HitsGood","# hits","[good]",50,0,50,"npt");
-    (*i_sector).second.m_correlationHistsY["NorChi2"] = (*i_sector).second.bookCorrHistsY("NorChi2","#chi^{2}/ndof","",50,0,norChi2Max,"npr");
+    (*i_sector).second.m_correlationHistsY["NorChi2"] = (*i_sector).second.bookCorrHistsY("NorChi2","#chi^{2}/f","",50,0,norChi2Max,"npr");
     (*i_sector).second.m_correlationHistsY["Theta"] = (*i_sector).second.bookCorrHistsY("Theta","#theta","[ ^{o}]",40,-10,190,"npt");
     (*i_sector).second.m_correlationHistsY["Phi"] = (*i_sector).second.bookCorrHistsY("Phi","#phi","[ ^{o}]",76,-190,190,"npt");
     (*i_sector).second.m_correlationHistsY["D0Beamspot"] = (*i_sector).second.bookCorrHistsY("D0Beamspot","d_{0, BS}","[cm]",40,-d0Max,d0Max,"npt");
@@ -740,17 +740,17 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
       sigmaXHit << "h_sigmaXHit_" << *i_errHists;
       sigmaXTrk << "h_sigmaXTrk_" << *i_errHists;
       sigmaX    << "h_sigmaX_"    << *i_errHists;
-      (*i_sector).second.m_sigmaX["sigmaXHit"].push_back(secDir.make<TH1F>(sigmaXHit.str().c_str(),"hit error #sigma_{x,hit};#sigma_{x,hit}  [cm];# hits",100,xMin,xMax));
-      (*i_sector).second.m_sigmaX["sigmaXTrk"].push_back(secDir.make<TH1F>(sigmaXTrk.str().c_str(),"track error #sigma_{x,track};#sigma_{x,track}  [cm];# hits",100,xMin,xMax));
-      (*i_sector).second.m_sigmaX["sigmaX"   ].push_back(secDir.make<TH1F>(sigmaX.str().c_str(),"residual error #sigma_{x};#sigma_{x}  [cm];# hits",100,xMin,xMax));
+      (*i_sector).second.m_sigmaX["sigmaXHit"].push_back(secDir.make<TH1F>(sigmaXHit.str().c_str(),"hit error #sigma_{hit,x};#sigma_{hit,x}  [cm];# hits",100,xMin,xMax));
+      (*i_sector).second.m_sigmaX["sigmaXTrk"].push_back(secDir.make<TH1F>(sigmaXTrk.str().c_str(),"track error #sigma_{trk,x};#sigma_{trk,x}  [cm];# hits",100,xMin,xMax));
+      (*i_sector).second.m_sigmaX["sigmaX"   ].push_back(secDir.make<TH1F>(sigmaX.str().c_str(),"residual error #sigma_{r,x};#sigma_{r,x}  [cm];# hits",100,xMin,xMax));
       if(pixelSector){
       std::stringstream sigmaYHit, sigmaYTrk, sigmaY;
       sigmaYHit << "h_sigmaYHit_" << *i_errHists;
       sigmaYTrk << "h_sigmaYTrk_" << *i_errHists;
       sigmaY    << "h_sigmaY_"    << *i_errHists;
-      (*i_sector).second.m_sigmaY["sigmaYHit"].push_back(secDir.make<TH1F>(sigmaYHit.str().c_str(),"hit error #sigma_{y,hit};#sigma_{y,hit}  [cm];# hits",100,xMin,xMax));
-      (*i_sector).second.m_sigmaY["sigmaYTrk"].push_back(secDir.make<TH1F>(sigmaYTrk.str().c_str(),"track error #sigma_{y,track};#sigma_{y,track}  [cm];# hits",100,xMin,xMax));
-      (*i_sector).second.m_sigmaY["sigmaY"   ].push_back(secDir.make<TH1F>(sigmaY.str().c_str(),"residual error #sigma_{y};#sigma_{y}  [cm];# hits",100,xMin,xMax));
+      (*i_sector).second.m_sigmaY["sigmaYHit"].push_back(secDir.make<TH1F>(sigmaYHit.str().c_str(),"hit error #sigma_{hit,y};#sigma_{hit,y}  [cm];# hits",100,xMin,xMax));
+      (*i_sector).second.m_sigmaY["sigmaYTrk"].push_back(secDir.make<TH1F>(sigmaYTrk.str().c_str(),"track error #sigma_{trk,y};#sigma_{trk,y}  [cm];# hits",100,xMin,xMax));
+      (*i_sector).second.m_sigmaY["sigmaY"   ].push_back(secDir.make<TH1F>(sigmaY.str().c_str(),"residual error #sigma_{r,y};#sigma_{r,y}  [cm];# hits",100,xMin,xMax));
       }
     }
     
@@ -802,11 +802,11 @@ ApeEstimator::bookSectorHistsForApeCalculation(){
          i_errBins != m_resErrBins_.end(); ++i_errBins){
       std::stringstream interval; interval << "Interval_" << (*i_errBins).first;
       TFileDirectory intDir = secDir.mkdir(interval.str().c_str());
-      (*i_sector).second.m_binnedHists[(*i_errBins).first]["sigmaX"]  = intDir.make<TH1F>("h_sigmaX","residual error #sigma_{x};#sigma_{x}  [cm];# hits",100,0.,0.01);
-      (*i_sector).second.m_binnedHists[(*i_errBins).first]["norResX"] = intDir.make<TH1F>("h_norResX","normalized residual r_{x}/#sigma_{x};(x_{track}-x_{hit})'/#sigma_{x};# hits",100,-10,10);
+      (*i_sector).second.m_binnedHists[(*i_errBins).first]["sigmaX"]  = intDir.make<TH1F>("h_sigmaX","residual resolution #sigma_{x};#sigma_{x}  [cm];# hits",100,0.,0.01);
+      (*i_sector).second.m_binnedHists[(*i_errBins).first]["norResX"] = intDir.make<TH1F>("h_norResX","normalized residual r_{x}/#sigma_{r,x};(x_{trk}-x_{hit})/#sigma_{r,x};# hits",100,-10,10);
       if((*i_sector).second.isPixel){
-        (*i_sector).second.m_binnedHists[(*i_errBins).first]["sigmaY"]  = intDir.make<TH1F>("h_sigmaY","residual error #sigma_{y};#sigma_{y}  [cm];# hits",100,0.,0.01);
-        (*i_sector).second.m_binnedHists[(*i_errBins).first]["norResY"] = intDir.make<TH1F>("h_norResY","normalized residual r_{y}/#sigma_{y};(y_{track}-y_{hit})'/#sigma_{y};# hits",100,-10,10);
+        (*i_sector).second.m_binnedHists[(*i_errBins).first]["sigmaY"]  = intDir.make<TH1F>("h_sigmaY","residual resolution #sigma_{y};#sigma_{y}  [cm];# hits",100,0.,0.01);
+        (*i_sector).second.m_binnedHists[(*i_errBins).first]["norResY"] = intDir.make<TH1F>("h_norResY","normalized residual r_{y}/#sigma_{r,y};(y_{trk}-y_{hit})/#sigma_{r,y};# hits",100,-10,10);
       }
     }
     
@@ -830,11 +830,11 @@ ApeEstimator::bookSectorHistsForApeCalculation(){
     }
     
     // In fact these are un-needed Analyzer plots, but I want to have them always for every sector visible
-    (*i_sector).second.ResX    = resDir.make<TH1F>("h_ResX","residual r_{x};(x_{track}-x_{hit})'  [cm];# hits",100,-0.1,0.1);
-    (*i_sector).second.NorResX = resDir.make<TH1F>("h_NorResX","normalized residual r_{x}/#sigma_{x};(x_{track}-x_{hit})'/#sigma_{x};# hits",100,-5.,5.);
+    (*i_sector).second.ResX    = resDir.make<TH1F>("h_ResX","residual r_{x};x_{trk}-x_{hit}  [cm];# hits",100,-0.03,0.03);
+    (*i_sector).second.NorResX = resDir.make<TH1F>("h_NorResX","normalized residual r_{x}/#sigma_{r,x};(x_{trk}-x_{hit})/#sigma_{r,x};# hits",100,-5.,5.);
     if((*i_sector).second.isPixel){
-      (*i_sector).second.ResY    = resDir.make<TH1F>("h_ResY","residual r_{y};(y_{track}-y_{hit})'  [cm];# hits",100,-0.1,0.1);
-      (*i_sector).second.NorResY = resDir.make<TH1F>("h_NorResY","normalized residual r_{y}/#sigma_{y};(y_{track}-y_{hit})'/#sigma_{y};# hits",100,-5.,5.);
+      (*i_sector).second.ResY    = resDir.make<TH1F>("h_ResY","residual r_{y};y_{trk}-y_{hit}  [cm];# hits",100,-0.03,0.03);
+      (*i_sector).second.NorResY = resDir.make<TH1F>("h_NorResY","normalized residual r_{y}/#sigma_{r,y};(y_{trk}-y_{hit})/#sigma_{r,y};# hits",100,-5.,5.);
     }
   }
 }
@@ -850,11 +850,12 @@ ApeEstimator::bookTrackHists(){
   
   bool zoomHists(parameterSet_.getParameter<bool>("zoomHists"));
   
-  int trackSizeBins = zoomHists ? 21 : 201;
+  //int trackSizeBins = zoomHists ? 21 : 201;
+  int trackSizeBins = zoomHists ? 6 : 201;
   double trackSizeMax = trackSizeBins -1;
   
   double chi2Max = zoomHists ? 100. : 2000.;
-  double norChi2Max = zoomHists ? 10. : 1000.;
+  double norChi2Max = zoomHists ? 5. : 1000.;
   double d0max = zoomHists ? 0.02 : 40.;  // cosmics: 100.|100.
   double dzmax = zoomHists ? 15. : 100.;  // cosmics: 200.|600.
   double pMax = zoomHists ? 200. : 2000.;
@@ -874,16 +875,25 @@ ApeEstimator::bookTrackHists(){
   tkDetector_.HitsStrip     = trkDir.make<TH1F>("h_hitsStrip","# hits  [strip];# hits  [strip];# tracks",41,-1,40);
   tkDetector_.Charge        = trkDir.make<TH1F>("h_charge","charge q;q  [e];# tracks",5,-2,3);
   tkDetector_.Chi2          = trkDir.make<TH1F>("h_chi2"," #chi^{2};#chi^{2};# tracks",100,0,chi2Max);
-  tkDetector_.Ndof          = trkDir.make<TH1F>("h_ndof","# degrees of freedom ndof;ndof;# tracks",101,-1,100);
-  tkDetector_.NorChi2       = trkDir.make<TH1F>("h_norChi2","normalized #chi^{2};#chi^{2}/ndof;# tracks",200,0,norChi2Max);
+  tkDetector_.Ndof          = trkDir.make<TH1F>("h_ndof","# degrees of freedom f;f;# tracks",101,-1,100);
+  tkDetector_.NorChi2       = trkDir.make<TH1F>("h_norChi2","normalized #chi^{2};#chi^{2}/f;# tracks",200,0,norChi2Max);
+  tkDetector_.Prob          = trkDir.make<TH1F>("h_prob"," #chi^{2} probability;prob(#chi^{2},f);# tracks",50,0,1);
   tkDetector_.Eta           = trkDir.make<TH1F>("h_eta","pseudorapidity #eta;#eta;# tracks",100,-5,5);
+  tkDetector_.EtaErr        = trkDir.make<TH1F>("h_etaErr","Error of #eta;#sigma(#eta);# tracks",100,0,0.001);
+  tkDetector_.EtaSig        = trkDir.make<TH1F>("h_etaSig","Significance of #eta;#eta/#sigma(#eta);# tracks",100,-20000,20000);
   tkDetector_.Theta         = trkDir.make<TH1F>("h_theta","polar angle #theta;#theta  [ ^{o}];# tracks",100,-10,190);
   tkDetector_.Phi           = trkDir.make<TH1F>("h_phi","azimuth angle #phi;#phi  [ ^{o}];# tracks",190,-190,190);
-  tkDetector_.D0Beamspot    = trkDir.make<TH1F>("h_d0Beamspot","Closest approach d_{0} wrt. beamspot;d_{0, BS}  [cm];# tracks",200,-d0max, d0max);
-  tkDetector_.Dz            = trkDir.make<TH1F>("h_dz","Closest approach d_{z};d_{z}  [cm];# tracks",200,-dzmax, dzmax);
+  tkDetector_.PhiErr        = trkDir.make<TH1F>("h_phiErr","Error of #phi;#sigma(#phi)  [ ^{o}];# tracks",100,0,0.04);
+  tkDetector_.PhiSig        = trkDir.make<TH1F>("h_phiSig","Significance of #phi;#phi/#sigma(#phi)  [ ^{o}];# tracks",100,-50000,50000);
+  tkDetector_.D0Beamspot    = trkDir.make<TH1F>("h_d0Beamspot","Closest approach d_{0} wrt. beamspot;d_{0, BS}  [cm];# tracks",200,-d0max,d0max);
   tkDetector_.D0BeamspotErr = trkDir.make<TH1F>("h_d0BeamspotErr","Error of d_{0, BS};#sigma(d_{0, BS})  [cm];# tracks",200,0,0.01);
   tkDetector_.D0BeamspotSig = trkDir.make<TH1F>("h_d0BeamspotSig","Significance of d_{0, BS};d_{0, BS}/#sigma(d_{0, BS});# tracks",100,-5,5);
+  tkDetector_.Dz            = trkDir.make<TH1F>("h_dz","Closest approach d_{z};d_{z}  [cm];# tracks",200,-dzmax,dzmax);
+  tkDetector_.DzErr         = trkDir.make<TH1F>("h_dzErr","Error of d_{z};#sigma(d_{z})  [cm];# tracks",200,0,0.01);
+  tkDetector_.DzSig         = trkDir.make<TH1F>("h_dzSig","Significance of d_{z};d_{z}/#sigma(d_{z});# tracks",100,-10000,10000);
   tkDetector_.Pt	    = trkDir.make<TH1F>("h_pt","transverse momentum p_{t};p_{t}  [GeV];# tracks",100,0,pMax);
+  tkDetector_.PtErr         = trkDir.make<TH1F>("h_ptErr","Error of p_{t};#sigma(p_{t})  [GeV];# tracks",100,0,1.6);
+  tkDetector_.PtSig         = trkDir.make<TH1F>("h_ptSig","Significance of p_{t};p_{t}/#sigma(p_{t});# tracks",100,0,200);
   tkDetector_.P	            = trkDir.make<TH1F>("h_p","momentum magnitude |p|;|p|  [GeV];# tracks",100,0,pMax);
   tkDetector_.MeanAngle     = trkDir.make<TH1F>("h_meanAngle","mean angle on module <#phi_{module}>;<#phi_{module}>  [ ^{o}];# tracks",100,-5,95);
   tkDetector_.HitsGood      = trkDir.make<TH1F>("h_hitsGood","# hits  [good];# hits  [good];# tracks",51,-1,50);
@@ -892,8 +902,8 @@ ApeEstimator::bookTrackHists(){
   tkDetector_.HitsGoodVsHitsValid = trkDir.make<TH2F>("h2_hitsGoodVsHitsValid","# hits  [good] vs. # hits  [valid];# hits  [valid];# hits  [good]",51,-1,50,51,-1,50);
   tkDetector_.HitsPixelVsEta      = trkDir.make<TH2F>("h2_hitsPixelVsEta","# hits  [pixel] vs. #eta;#eta;# hits  [pixel]",60,-3,3,11,-1,10);
   tkDetector_.HitsPixelVsTheta    = trkDir.make<TH2F>("h2_hitsPixelVsTheta","# hits  [pixel] vs. #theta;#theta;# hits  [pixel]",100,-10,190,11,-1,10);
-  tkDetector_.HitsStripVsEta      = trkDir.make<TH2F>("h2_hitsStripVsEta","# hits  [strip] vs. #eta;#eta;# hits  [strip]",60,-3,3,31,-1,30);
-  tkDetector_.HitsStripVsTheta    = trkDir.make<TH2F>("h2_hitsStripVsTheta","# hits  [strip] vs. #theta;#theta;# hits  [strip]",100,-10,190,31,-1,30);
+  tkDetector_.HitsStripVsEta      = trkDir.make<TH2F>("h2_hitsStripVsEta","# hits  [strip] vs. #eta;#eta;# hits  [strip]",60,-3,3,31,-1,40);
+  tkDetector_.HitsStripVsTheta    = trkDir.make<TH2F>("h2_hitsStripVsTheta","# hits  [strip] vs. #theta;#theta;# hits  [strip]",100,-10,190,31,-1,40);
   tkDetector_.PtVsEta             = trkDir.make<TH2F>("h2_ptVsEta","p_{t} vs. #eta;#eta;p_{t}  [GeV]",60,-3,3,100,0,pMax);
   tkDetector_.PtVsTheta           = trkDir.make<TH2F>("h2_ptVsTheta","p_{t} vs. #theta;#theta;p_{t}  [GeV]",100,-10,190,100,0,pMax);
   
@@ -935,16 +945,21 @@ ApeEstimator::fillTrackVariables(const reco::Track& track, const Trajectory& tra
   trkParams.chi2          = track.chi2();
   trkParams.ndof          = track.ndof();
   trkParams.norChi2       = trkParams.chi2/trkParams.ndof;
+  trkParams.prob          = TMath::Prob(trkParams.chi2,trkParams.ndof);
   trkParams.eta           = track.eta();
+  trkParams.etaErr        = track.etaError();
   trkParams.theta         = track.theta();
   trkParams.phi           = track.phi();
+  trkParams.phiErr        = track.phiError();
   trkParams.d0            = track.d0();
-  trkParams.dz            = track.dz();
   trkParams.d0Beamspot    = -1.*track.dxy(beamPoint);
-  trkParams.dzBeamspot    = track.dz(beamPoint);
   trkParams.d0BeamspotErr = d0BeamspotErr;
+  trkParams.dz            = track.dz();
+  trkParams.dzErr         = track.dzError();
+  trkParams.dzBeamspot    = track.dz(beamPoint);
   trkParams.p             = track.p();
   trkParams.pt            = track.pt();
+  trkParams.ptErr         = track.ptError();
   
   const std::vector<TrajectoryMeasurement>& v_meas = traj.measurements();
      
@@ -1744,15 +1759,24 @@ ApeEstimator::fillHistsForAnalyzerMode(const TrackStruct& trackStruct){
   tkDetector_.Chi2         ->Fill(trackStruct.trkParams.chi2);
   tkDetector_.Ndof         ->Fill(trackStruct.trkParams.ndof);
   tkDetector_.NorChi2      ->Fill(trackStruct.trkParams.norChi2);
+  tkDetector_.Prob         ->Fill(trackStruct.trkParams.prob);
   tkDetector_.Eta          ->Fill(trackStruct.trkParams.eta);
+  tkDetector_.EtaErr       ->Fill(trackStruct.trkParams.etaErr);
+  tkDetector_.EtaSig       ->Fill(trackStruct.trkParams.eta/trackStruct.trkParams.etaErr);
   tkDetector_.Theta        ->Fill(trackStruct.trkParams.theta*180./M_PI);
   tkDetector_.Phi          ->Fill(trackStruct.trkParams.phi*180./M_PI);
+  tkDetector_.PhiErr       ->Fill(trackStruct.trkParams.phiErr*180./M_PI);
+  tkDetector_.PhiSig       ->Fill(trackStruct.trkParams.phi/trackStruct.trkParams.phiErr);
   tkDetector_.D0Beamspot   ->Fill(trackStruct.trkParams.d0Beamspot);
-  tkDetector_.Dz           ->Fill(trackStruct.trkParams.dz);
   tkDetector_.D0BeamspotErr->Fill(trackStruct.trkParams.d0BeamspotErr);
   tkDetector_.D0BeamspotSig->Fill(trackStruct.trkParams.d0Beamspot/trackStruct.trkParams.d0BeamspotErr);
+  tkDetector_.Dz           ->Fill(trackStruct.trkParams.dz);
+  tkDetector_.DzErr        ->Fill(trackStruct.trkParams.dzErr);
+  tkDetector_.DzSig        ->Fill(trackStruct.trkParams.dz/trackStruct.trkParams.dzErr);
   tkDetector_.P	           ->Fill(trackStruct.trkParams.p);
   tkDetector_.Pt           ->Fill(trackStruct.trkParams.pt);
+  tkDetector_.PtErr        ->Fill(trackStruct.trkParams.ptErr);
+  tkDetector_.PtSig        ->Fill(trackStruct.trkParams.pt/trackStruct.trkParams.ptErr);
   tkDetector_.MeanAngle    ->Fill(trackStruct.trkParams.meanPhiSensToNorm*180./M_PI);
   
   tkDetector_.MeanAngleVsHits ->Fill(trackStruct.trkParams.hitsSize,trackStruct.trkParams.meanPhiSensToNorm*180./M_PI);

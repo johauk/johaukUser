@@ -84,21 +84,25 @@ struct TrackStruct{
 		   hits2D(-999), layersMissed(-999),
 		   hitsPixel(-999), hitsStrip(-999),
 		   charge(-999),
-		   chi2(-999.F), ndof(-999.F), norChi2(-999.F),
-                   eta(-999.F), theta(-999.F), phi(-999.F), d0(-999.F), dz(-999.F),
-		   d0Beamspot(-999.F), dzBeamspot(-999.F),
-		   d0BeamspotErr(-999.F),
-                   p(-999.F), pt(-999.F), meanPhiSensToNorm(-999.F){}
+		   chi2(-999.F), ndof(-999.F), norChi2(-999.F), prob(-999.F),
+                   eta(-999.F), etaErr(-999.F), theta(-999.F),
+		   phi(-999.F), phiErr(-999.F),
+		   d0(-999.F), d0Beamspot(-999.F), d0BeamspotErr(-999.F),
+		   dz(-999.F), dzErr(-999.F), dzBeamspot(-999.F),
+                   p(-999.F), pt(-999.F), ptErr(-999.F),
+		   meanPhiSensToNorm(-999.F){}
     
     int hitsSize, hitsValid, hitsInvalid,
         hits2D, layersMissed,
 	hitsPixel, hitsStrip,
 	charge;
-    float chi2, ndof, norChi2,
-          eta, theta, phi, d0, dz,
-	  d0Beamspot, dzBeamspot,
-	  d0BeamspotErr,
-	  p, pt, meanPhiSensToNorm;
+    float chi2, ndof, norChi2, prob,
+          eta, etaErr, theta,
+	  phi, phiErr,
+	  d0, d0Beamspot, d0BeamspotErr,
+	  dz, dzErr, dzBeamspot,
+	  p, pt, ptErr,
+	  meanPhiSensToNorm;
   };
   
   TrackParameterStruct trkParams;

@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,6 2-039,+41227673512,
 //         Created:  Mon Oct 11 13:44:03 CEST 2010
-// $Id: ApeEstimatorSummary.cc,v 1.11 2011/08/01 01:30:42 hauk Exp $
+// $Id: ApeEstimatorSummary.cc,v 1.12 2011/08/13 14:48:25 hauk Exp $
 //
 //
 
@@ -219,24 +219,26 @@ void
 ApeEstimatorSummary::bookHists(){
   const std::vector<double> v_binX(this->residualErrorBinning());
   for(std::map<unsigned int,TrackerSectorStruct>::iterator i_sector=m_tkSector_.begin(); i_sector!=m_tkSector_.end(); ++i_sector){
+    (*i_sector).second.WeightX         = new TH1F("h_weightX","relative weight w_{x}/w_{tot,x};#sigma_{x}  [cm];w_{x}/w_{tot,x}",v_binX.size()-1,&(v_binX[0]));
     (*i_sector).second.MeanX           = new TH1F("h_meanX","residual mean <r_{x}/#sigma_{x}>;#sigma_{x}  [cm];<r_{x}/#sigma_{x}>",v_binX.size()-1,&(v_binX[0]));
     (*i_sector).second.RmsX            = new TH1F("h_rmsX","residual rms RMS(r_{x}/#sigma_{x});#sigma_{x}  [cm];RMS(r_{x}/#sigma_{x})",v_binX.size()-1,&(v_binX[0]));
     (*i_sector).second.FitMeanX1       = new TH1F("h_fitMeanX1","fitted residual mean #mu_{x};#sigma_{x}  [cm];#mu_{x}",v_binX.size()-1,&(v_binX[0]));
     (*i_sector).second.ResidualWidthX1 = new TH1F("h_residualWidthX1","residual width #Delta_{x};#sigma_{x}  [cm];#Delta_{x}",v_binX.size()-1,&(v_binX[0]));
-    (*i_sector).second.CorrectionX1    = new TH1F("h_correctionX1","correction to APE_{x};#sigma_{x}  [cm];#DeltaAPE_{x}",v_binX.size()-1,&(v_binX[0]));
+    (*i_sector).second.CorrectionX1    = new TH1F("h_correctionX1","correction to APE_{x};#sigma_{x}  [cm];#Delta#sigma_{align,x}  [cm]",v_binX.size()-1,&(v_binX[0]));
     (*i_sector).second.FitMeanX2       = new TH1F("h_fitMeanX2","fitted residual mean #mu_{x};#sigma_{x}  [cm];#mu_{x}",v_binX.size()-1,&(v_binX[0]));
     (*i_sector).second.ResidualWidthX2 = new TH1F("h_residualWidthX2","residual width #Delta_{x};#sigma_{x}  [cm];#Delta_{x}",v_binX.size()-1,&(v_binX[0]));
-    (*i_sector).second.CorrectionX2    = new TH1F("h_correctionX2","correction to APE_{x};#sigma_{x}  [cm];#DeltaAPE_{x}",v_binX.size()-1,&(v_binX[0]));
+    (*i_sector).second.CorrectionX2    = new TH1F("h_correctionX2","correction to APE_{x};#sigma_{x}  [cm];#Delta#sigma_{align,x}  [cm]",v_binX.size()-1,&(v_binX[0]));
   
     if((*i_sector).second.isPixel){
+      (*i_sector).second.WeightY         = new TH1F("h_weightY","relative weight w_{y}/w_{tot,y};#sigma_{y}  [cm];w_{y}/w_{tot,y}",v_binX.size()-1,&(v_binX[0]));
       (*i_sector).second.MeanY           = new TH1F("h_meanY","residual mean <r_{y}/#sigma_{y}>;#sigma_{y}  [cm];<r_{y}/#sigma_{y}>",v_binX.size()-1,&(v_binX[0]));
       (*i_sector).second.RmsY            = new TH1F("h_rmsY","residual rms RMS(r_{y}/#sigma_{y});#sigma_{y}  [cm];RMS(r_{y}/#sigma_{y})",v_binX.size()-1,&(v_binX[0]));
       (*i_sector).second.FitMeanY1       = new TH1F("h_fitMeanY1","fitted residual mean #mu_{y};#sigma_{y}  [cm];#mu_{y}",v_binX.size()-1,&(v_binX[0]));
       (*i_sector).second.ResidualWidthY1 = new TH1F("h_residualWidthY1","residual width #Delta_{y};#sigma_{y}  [cm];#Delta_{y}",v_binX.size()-1,&(v_binX[0]));
-      (*i_sector).second.CorrectionY1    = new TH1F("h_correctionY1","correction to APE_{y};#sigma_{y}  [cm];#DeltaAPE_{y}",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.CorrectionY1    = new TH1F("h_correctionY1","correction to APE_{y};#sigma_{y}  [cm];#Delta#sigma_{align,y}  [cm]",v_binX.size()-1,&(v_binX[0]));
       (*i_sector).second.FitMeanY2       = new TH1F("h_fitMeanY2","fitted residual mean #mu_{y};#sigma_{y}  [cm];#mu_{y}",v_binX.size()-1,&(v_binX[0]));
       (*i_sector).second.ResidualWidthY2 = new TH1F("h_residualWidthY2","residual width #Delta_{y};#sigma_{y}  [cm];#Delta_{y}",v_binX.size()-1,&(v_binX[0]));
-      (*i_sector).second.CorrectionY2    = new TH1F("h_correctionY2","correction to APE_{y};#sigma_{y}  [cm];#DeltaAPE_{y}",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.CorrectionY2    = new TH1F("h_correctionY2","correction to APE_{y};#sigma_{y}  [cm];#Delta#sigma_{align,y}  [cm]",v_binX.size()-1,&(v_binX[0]));
     }
   }
 }
@@ -270,6 +272,7 @@ ApeEstimatorSummary::writeHists(){
     
     (*i_sector).second.Name->Write();
     
+    (*i_sector).second.WeightX->Write();
     (*i_sector).second.MeanX->Write();
     (*i_sector).second.RmsX->Write();	   
     (*i_sector).second.FitMeanX1->Write();	   
@@ -280,6 +283,7 @@ ApeEstimatorSummary::writeHists(){
     (*i_sector).second.CorrectionX2->Write();
     
     if((*i_sector).second.isPixel){
+      (*i_sector).second.WeightY->Write();
       (*i_sector).second.MeanY->Write();
       (*i_sector).second.RmsY->Write();	   
       (*i_sector).second.FitMeanY1->Write();	   
@@ -671,7 +675,7 @@ ApeEstimatorSummary::calculateApe(){
        }
        
        
-       // Use result for bin only when entries>1000
+       // Use result for bin only when entries>=minHitsPerInterval
        if(entriesX<minHitsPerInterval && entriesY<minHitsPerInterval)continue;
        
        double weightX(0.);
@@ -692,13 +696,17 @@ ApeEstimatorSummary::calculateApe(){
        const Error2AndResidualWidth2PerBin error2AndResidualWidth2PerBinX(meanSigmaX*meanSigmaX, residualWidthX_1*residualWidthX_1);
        const WeightAndResultsPerBin weightAndResultsPerBinX(weightX, error2AndResidualWidth2PerBinX);
        if(!(entriesX<minHitsPerInterval)){
-         v_weightAndResultsPerBinX.push_back(weightAndResultsPerBinX);
+         //Fill absolute weights
+	 (*i_sector).second.WeightX->SetBinContent((*i_errBins).first,weightX);
+	 v_weightAndResultsPerBinX.push_back(weightAndResultsPerBinX);
        }
        
        const Error2AndResidualWidth2PerBin error2AndResidualWidth2PerBinY(meanSigmaY*meanSigmaY, residualWidthY_1*residualWidthY_1);
        const WeightAndResultsPerBin weightAndResultsPerBinY(weightY, error2AndResidualWidth2PerBinY);
        if(!(entriesY<minHitsPerInterval)){
-         v_weightAndResultsPerBinY.push_back(weightAndResultsPerBinY);
+         //Fill absolute weights
+	 (*i_sector).second.WeightY->SetBinContent((*i_errBins).first,weightY);
+	 v_weightAndResultsPerBinY.push_back(weightAndResultsPerBinY);
        }
      }
      
@@ -718,15 +726,24 @@ ApeEstimatorSummary::calculateApe(){
      double correctionX2(999.);
      double correctionY2(999.);
      
+     // Get sum of all weights
+     double weightSumX(0.);
+     std::vector<WeightAndResultsPerBin>::const_iterator i_apeBin;
+     for(i_apeBin=v_weightAndResultsPerBinX.begin(); i_apeBin!=v_weightAndResultsPerBinX.end(); ++i_apeBin){
+       weightSumX += i_apeBin->first;
+     }
+     (*i_sector).second.WeightX->Scale(1/weightSumX);
+     double weightSumY(0.);
+     if((*i_sector).second.isPixel){
+       std::vector<WeightAndResultsPerBin>::const_iterator i_apeBin;
+       for(i_apeBin=v_weightAndResultsPerBinY.begin(); i_apeBin!=v_weightAndResultsPerBinY.end(); ++i_apeBin){
+         weightSumY += i_apeBin->first;
+       }
+       (*i_sector).second.WeightY->Scale(1/weightSumY);
+     }
+     
      
      if(!setBaseline){
-       // Get sum of all weights
-       double weightSumX(0.);
-       std::vector<WeightAndResultsPerBin>::const_iterator i_apeBin;
-       for(i_apeBin=v_weightAndResultsPerBinX.begin(); i_apeBin!=v_weightAndResultsPerBinX.end(); ++i_apeBin){
-         weightSumX += i_apeBin->first;
-       }
-       
        // Calculate weighted mean
        bool firstIntervalX(true);
        for(i_apeBin=v_weightAndResultsPerBinX.begin(); i_apeBin!=v_weightAndResultsPerBinX.end(); ++i_apeBin){
@@ -752,13 +769,6 @@ ApeEstimatorSummary::calculateApe(){
      
      if((*i_sector).second.isPixel){
        if(!setBaseline){
-         // Get sum of all weights
-         double weightSumY(0.);
-         std::vector<WeightAndResultsPerBin>::const_iterator i_apeBin;
-         for(i_apeBin=v_weightAndResultsPerBinY.begin(); i_apeBin!=v_weightAndResultsPerBinY.end(); ++i_apeBin){
-           weightSumY += i_apeBin->first;
-         }
-         
          // Calculate weighted mean
          bool firstIntervalY(true);
          for(i_apeBin=v_weightAndResultsPerBinY.begin(); i_apeBin!=v_weightAndResultsPerBinY.end(); ++i_apeBin){

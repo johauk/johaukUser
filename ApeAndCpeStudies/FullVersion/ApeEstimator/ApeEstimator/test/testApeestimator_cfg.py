@@ -125,7 +125,7 @@ elif isZmumu20:
 ## Number of Events (should be after input file)
 ##
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-if options.isTest: process.maxEvents.input = 1001
+if options.isTest: process.maxEvents.input = 10001
 
 
 ##
