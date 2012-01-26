@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.23 2011/10/21 13:34:18 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.24 2012/01/25 21:28:53 hauk Exp $
 //
 //
 
@@ -656,18 +656,18 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     }
     
     
-    // Hit Parameters
-    (*i_sector).second.m_correlationHistsX["SigmaXHit"] = (*i_sector).second.bookCorrHistsX("SigmaXHit","hit error","#sigma_{hit,x}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
-    (*i_sector).second.m_correlationHistsX["SigmaXTrk"] = (*i_sector).second.bookCorrHistsX("SigmaXTrk","track error","#sigma_{trk,x}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
-    (*i_sector).second.m_correlationHistsX["SigmaX"]    = (*i_sector).second.bookCorrHistsX("SigmaX","residual error","#sigma_{r,x}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
+    // Hit Parameters (transform errors and residuals from [cm] in [mum])
+    (*i_sector).second.m_correlationHistsX["SigmaXHit"] = (*i_sector).second.bookCorrHistsX("SigmaXHit","hit error","#sigma_{hit,x}","[#mum]",105,20,sigmaXMin*10000.,sigmaXMax*10000.,"np");
+    (*i_sector).second.m_correlationHistsX["SigmaXTrk"] = (*i_sector).second.bookCorrHistsX("SigmaXTrk","track error","#sigma_{trk,x}","[#mum]",105,20,sigmaXMin*10000.,sigmaXMax*10000.,"np");
+    (*i_sector).second.m_correlationHistsX["SigmaX"]    = (*i_sector).second.bookCorrHistsX("SigmaX","residual error","#sigma_{r,x}","[#mum]",105,20,sigmaXMin*10000.,sigmaXMax*10000.,"np");
     (*i_sector).second.m_correlationHistsX["PhiSens"]   = (*i_sector).second.bookCorrHistsX("PhiSens","track angle on sensor","#phi_{module}","[ ^{o}]",96,48,-3,93,"nphtr");
     (*i_sector).second.m_correlationHistsX["PhiSensX"]  = (*i_sector).second.bookCorrHistsX("PhiSensX","track angle on sensor","#phi_{module,x}","[ ^{o}]",186,93,-phiSensXMax,phiSensXMax,"nphtr");
     (*i_sector).second.m_correlationHistsX["PhiSensY"]  = (*i_sector).second.bookCorrHistsX("PhiSensY","track angle on sensor","#phi_{module,y}","[ ^{o}]",186,93,-93,93,"nphtr");
     
     (*i_sector).second.XHit    = secDir.make<TH1F>("h_XHit"," hit measurement x_{hit};x_{hit}  [cm];# hits",100,-20,20);
     (*i_sector).second.XTrk    = secDir.make<TH1F>("h_XTrk","track prediction x_{trk};x_{trk}  [cm];# hits",100,-20,20);
-    (*i_sector).second.SigmaX2 = secDir.make<TH1F>("h_SigmaX2","squared residual error #sigma_{r,x}^{2};#sigma_{r,x}^{2}  [cm^{2}];# hits",105,sigmaXMin,sigmaX2Max); //no mistake !
-    (*i_sector).second.ResX    = secDir.make<TH1F>("h_ResX","residual r_{x};x_{trk}-x_{hit}  [cm];# hits",100,-resXAbsMax,resXAbsMax);
+    (*i_sector).second.SigmaX2 = secDir.make<TH1F>("h_SigmaX2","squared residual error #sigma_{r,x}^{2};#sigma_{r,x}^{2}  [#mum^{2}];# hits",105,sigmaXMin*10000.,sigmaX2Max*10000.*10000.); //no mistake !
+    (*i_sector).second.ResX    = secDir.make<TH1F>("h_ResX","residual r_{x};x_{trk}-x_{hit}  [#mum];# hits",100,-resXAbsMax*10000.,resXAbsMax*10000.);
     (*i_sector).second.NorResX = secDir.make<TH1F>("h_NorResX","normalized residual r_{x}/#sigma_{r,x};(x_{trk}-x_{hit})/#sigma_{r,x};# hits",100,-norResXAbsMax,norResXAbsMax);
     (*i_sector).second.ProbX   = secDir.make<TH1F>("h_ProbX","residual probability;prob(r_{x}^{2}/#sigma_{r,x}^{2},1);# hits",60,probXMin,probXMax);
     
@@ -675,17 +675,17 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     (*i_sector).second.PPhiSensXVsBarycentreX = secDir.make<TProfile>("p_phiSensXVsBarycentreX","#phi_{module,x} vs. b_{cl,x};b_{cl,x}  [# channels];#phi_{module,x}  [ ^{o}]",200,-10.,790.);
     
     if(pixelSector){
-    (*i_sector).second.m_correlationHistsY["SigmaYHit"] = (*i_sector).second.bookCorrHistsY("SigmaYHit","hit error","#sigma_{hit,y}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
-    (*i_sector).second.m_correlationHistsY["SigmaYTrk"] = (*i_sector).second.bookCorrHistsY("SigmaYTrk","track error","#sigma_{trk,y}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
-    (*i_sector).second.m_correlationHistsY["SigmaY"]    = (*i_sector).second.bookCorrHistsY("SigmaY","residual error","#sigma_{r,y}","[cm]",105,20,sigmaXMin,sigmaXMax,"np");
+    (*i_sector).second.m_correlationHistsY["SigmaYHit"] = (*i_sector).second.bookCorrHistsY("SigmaYHit","hit error","#sigma_{hit,y}","[#mum]",105,20,sigmaXMin*10000.,sigmaXMax*10000.,"np");
+    (*i_sector).second.m_correlationHistsY["SigmaYTrk"] = (*i_sector).second.bookCorrHistsY("SigmaYTrk","track error","#sigma_{trk,y}","[#mum]",105,20,sigmaXMin*10000.,sigmaXMax*10000.,"np");
+    (*i_sector).second.m_correlationHistsY["SigmaY"]    = (*i_sector).second.bookCorrHistsY("SigmaY","residual error","#sigma_{r,y}","[#mum]",105,20,sigmaXMin*10000.,sigmaXMax*10000.,"np");
     (*i_sector).second.m_correlationHistsY["PhiSens"]   = (*i_sector).second.bookCorrHistsY("PhiSens","track angle on sensor","#phi_{module}","[ ^{o}]",96,48,-3,93,"nphtr");
     (*i_sector).second.m_correlationHistsY["PhiSensX"]  = (*i_sector).second.bookCorrHistsY("PhiSensX","track angle on sensor","#phi_{module,x}","[ ^{o}]",186,93,-phiSensXMax,phiSensXMax,"nphtr");
     (*i_sector).second.m_correlationHistsY["PhiSensY"]  = (*i_sector).second.bookCorrHistsY("PhiSensY","track angle on sensor","#phi_{module,y}","[ ^{o}]",186,93,-93,93,"nphtr");
     
     (*i_sector).second.YHit    = secDir.make<TH1F>("h_YHit"," hit measurement y_{hit};y_{hit}  [cm];# hits",100,-20,20);
     (*i_sector).second.YTrk    = secDir.make<TH1F>("h_YTrk","track prediction y_{trk};y_{trk}  [cm];# hits",100,-20,20);
-    (*i_sector).second.SigmaY2 = secDir.make<TH1F>("h_SigmaY2","squared residual error #sigma_{r,y}^{2};#sigma_{r,y}^{2}  [cm^{2}];# hits",105,sigmaXMin,sigmaX2Max); //no mistake !
-    (*i_sector).second.ResY    = secDir.make<TH1F>("h_ResY","residual r_{y};y_{trk}-y_{hit}  [cm];# hits",100,-resXAbsMax,resXAbsMax);
+    (*i_sector).second.SigmaY2 = secDir.make<TH1F>("h_SigmaY2","squared residual error #sigma_{r,y}^{2};#sigma_{r,y}^{2}  [#mum^{2}];# hits",105,sigmaXMin*10000.,sigmaX2Max*10000.*10000.); //no mistake !
+    (*i_sector).second.ResY    = secDir.make<TH1F>("h_ResY","residual r_{y};y_{trk}-y_{hit}  [#mum];# hits",100,-resXAbsMax*10000.,resXAbsMax*10000.);
     (*i_sector).second.NorResY = secDir.make<TH1F>("h_NorResY","normalized residual r_{y}/#sigma_{r,y};(y_{track}-y_{hit})/#sigma_{r,y};# hits",100,-norResXAbsMax,norResXAbsMax);
     (*i_sector).second.ProbY   = secDir.make<TH1F>("h_ProbY","residual probability;prob(r_{y}^{2}/#sigma_{r,y}^{2},1);# hits",60,probXMin,probXMax);
     
@@ -733,24 +733,24 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     }
     
     
-    
+    // (transform errors and residuals from [cm] in [mum])
     for(std::vector<unsigned int>::iterator i_errHists = v_errHists.begin(); i_errHists != v_errHists.end(); ++i_errHists){
       double xMin(0.01*(*i_errHists-1)), xMax(0.01*(*i_errHists));
       std::stringstream sigmaXHit, sigmaXTrk, sigmaX;
       sigmaXHit << "h_sigmaXHit_" << *i_errHists;
       sigmaXTrk << "h_sigmaXTrk_" << *i_errHists;
       sigmaX    << "h_sigmaX_"    << *i_errHists;
-      (*i_sector).second.m_sigmaX["sigmaXHit"].push_back(secDir.make<TH1F>(sigmaXHit.str().c_str(),"hit error #sigma_{hit,x};#sigma_{hit,x}  [cm];# hits",100,xMin,xMax));
-      (*i_sector).second.m_sigmaX["sigmaXTrk"].push_back(secDir.make<TH1F>(sigmaXTrk.str().c_str(),"track error #sigma_{trk,x};#sigma_{trk,x}  [cm];# hits",100,xMin,xMax));
-      (*i_sector).second.m_sigmaX["sigmaX"   ].push_back(secDir.make<TH1F>(sigmaX.str().c_str(),"residual error #sigma_{r,x};#sigma_{r,x}  [cm];# hits",100,xMin,xMax));
+      (*i_sector).second.m_sigmaX["sigmaXHit"].push_back(secDir.make<TH1F>(sigmaXHit.str().c_str(),"hit error #sigma_{hit,x};#sigma_{hit,x}  [#mum];# hits",100,xMin*10000.,xMax*10000.));
+      (*i_sector).second.m_sigmaX["sigmaXTrk"].push_back(secDir.make<TH1F>(sigmaXTrk.str().c_str(),"track error #sigma_{trk,x};#sigma_{trk,x}  [#mum];# hits",100,xMin*10000.,xMax*10000.));
+      (*i_sector).second.m_sigmaX["sigmaX"   ].push_back(secDir.make<TH1F>(sigmaX.str().c_str(),"residual error #sigma_{r,x};#sigma_{r,x}  [#mum];# hits",100,xMin*10000.,xMax*10000.));
       if(pixelSector){
       std::stringstream sigmaYHit, sigmaYTrk, sigmaY;
       sigmaYHit << "h_sigmaYHit_" << *i_errHists;
       sigmaYTrk << "h_sigmaYTrk_" << *i_errHists;
       sigmaY    << "h_sigmaY_"    << *i_errHists;
-      (*i_sector).second.m_sigmaY["sigmaYHit"].push_back(secDir.make<TH1F>(sigmaYHit.str().c_str(),"hit error #sigma_{hit,y};#sigma_{hit,y}  [cm];# hits",100,xMin,xMax));
-      (*i_sector).second.m_sigmaY["sigmaYTrk"].push_back(secDir.make<TH1F>(sigmaYTrk.str().c_str(),"track error #sigma_{trk,y};#sigma_{trk,y}  [cm];# hits",100,xMin,xMax));
-      (*i_sector).second.m_sigmaY["sigmaY"   ].push_back(secDir.make<TH1F>(sigmaY.str().c_str(),"residual error #sigma_{r,y};#sigma_{r,y}  [cm];# hits",100,xMin,xMax));
+      (*i_sector).second.m_sigmaY["sigmaYHit"].push_back(secDir.make<TH1F>(sigmaYHit.str().c_str(),"hit error #sigma_{hit,y};#sigma_{hit,y}  [#mum];# hits",100,xMin*10000.,xMax*10000.));
+      (*i_sector).second.m_sigmaY["sigmaYTrk"].push_back(secDir.make<TH1F>(sigmaYTrk.str().c_str(),"track error #sigma_{trk,y};#sigma_{trk,y}  [#mum];# hits",100,xMin*10000.,xMax*10000.));
+      (*i_sector).second.m_sigmaY["sigmaY"   ].push_back(secDir.make<TH1F>(sigmaY.str().c_str(),"residual error #sigma_{r,y};#sigma_{r,y}  [#mum];# hits",100,xMin*10000.,xMax*10000.));
       }
     }
     
@@ -797,6 +797,7 @@ ApeEstimator::bookSectorHistsForApeCalculation(){
     }
     
     
+    // Distributions in each interval (stay in [cm], to have all calculations in [cm])
     if(m_resErrBins_.size()==0){m_resErrBins_[1].first = 0.;m_resErrBins_[1].second = 0.01;} // default if no selection taken into account: calculate APE with one bin with residual error 0-100um
     for(std::map<unsigned int,std::pair<double,double> >::const_iterator i_errBins = m_resErrBins_.begin();
          i_errBins != m_resErrBins_.end(); ++i_errBins){
@@ -823,17 +824,22 @@ ApeEstimator::bookSectorHistsForApeCalculation(){
     }
     
     // Result plots (one hist per sector containing one bin per interval)
+    // (transform errors and residuals from [cm] in [mum])
     std::vector<double> v_binX(parameterSet_.getParameter<std::vector<double> >("residualErrorBinning"));
-    (*i_sector).second.EntriesX = resDir.make<TH1F>("h_entriesX","# hits used;#sigma_{x}  [cm];# hits",v_binX.size()-1,&(v_binX[0]));
+    for(std::vector<double>::iterator i_binX = v_binX.begin(); i_binX != v_binX.end(); ++i_binX){
+      *i_binX *= 10000.;
+    }
+    (*i_sector).second.EntriesX = resDir.make<TH1F>("h_entriesX","# hits used;#sigma_{x}  [#mum];# hits",v_binX.size()-1,&(v_binX[0]));
     if((*i_sector).second.isPixel){
-      (*i_sector).second.EntriesY = resDir.make<TH1F>("h_entriesY","# hits used;#sigma_{y}  [cm];# hits",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.EntriesY = resDir.make<TH1F>("h_entriesY","# hits used;#sigma_{y}  [#mum];# hits",v_binX.size()-1,&(v_binX[0]));
     }
     
     // In fact these are un-needed Analyzer plots, but I want to have them always for every sector visible
-    (*i_sector).second.ResX    = resDir.make<TH1F>("h_ResX","residual r_{x};x_{trk}-x_{hit}  [cm];# hits",100,-0.03,0.03);
+    // (transform errors and residuals from [cm] in [mum])
+    (*i_sector).second.ResX    = resDir.make<TH1F>("h_ResX","residual r_{x};x_{trk}-x_{hit}  [#mum];# hits",100,-0.03*10000.,0.03*10000.);
     (*i_sector).second.NorResX = resDir.make<TH1F>("h_NorResX","normalized residual r_{x}/#sigma_{r,x};(x_{trk}-x_{hit})/#sigma_{r,x};# hits",100,-5.,5.);
     if((*i_sector).second.isPixel){
-      (*i_sector).second.ResY    = resDir.make<TH1F>("h_ResY","residual r_{y};y_{trk}-y_{hit}  [cm];# hits",100,-0.03,0.03);
+      (*i_sector).second.ResY    = resDir.make<TH1F>("h_ResY","residual r_{y};y_{trk}-y_{hit}  [#mum];# hits",100,-0.03*10000.,0.03*10000.);
       (*i_sector).second.NorResY = resDir.make<TH1F>("h_NorResY","normalized residual r_{y}/#sigma_{r,y};(y_{trk}-y_{hit})/#sigma_{r,y};# hits",100,-5.,5.);
     }
   }
@@ -1216,8 +1222,6 @@ ApeEstimator::fillHitVariables(const TrajectoryMeasurement& i_meas, const edm::E
     hitParams.spansTwoRoc = pixelHit.spansTwoROCs();
     hitParams.qBin = pixelHit.qBin();
     //std::cout<<"\tTest 3: "<<hitParams.isOnEdge<<" "<<hitParams.hasBadPixels<<" "<<hitParams.spansTwoRoc<<" "<<hitParams.qBin<<"\n";
-    
-    
     
     hitParams.isPixelHit = true;
   }
@@ -1864,16 +1868,16 @@ ApeEstimator::fillHistsForAnalyzerMode(const TrackStruct& trackStruct){
       // Special Histograms 
       for(std::map<std::string,std::vector<TH1*> >::iterator i_sigmaX = sector.m_sigmaX.begin(); i_sigmaX != sector.m_sigmaX.end(); ++i_sigmaX){
         for(std::vector<TH1*>::iterator iHist = (*i_sigmaX).second.begin(); iHist != (*i_sigmaX).second.end(); ++iHist){
-	  if     ((*i_sigmaX).first=="sigmaXHit")(*iHist)->Fill(hit.errXHit);
-	  else if((*i_sigmaX).first=="sigmaXTrk")(*iHist)->Fill(hit.errXTrk);
-	  else if((*i_sigmaX).first=="sigmaX")   (*iHist)->Fill(hit.errX);
+	  if     ((*i_sigmaX).first=="sigmaXHit")(*iHist)->Fill(hit.errXHit*10000.);
+	  else if((*i_sigmaX).first=="sigmaXTrk")(*iHist)->Fill(hit.errXTrk*10000.);
+	  else if((*i_sigmaX).first=="sigmaX")   (*iHist)->Fill(hit.errX*10000.);
 	}
       }
       for(std::map<std::string,std::vector<TH1*> >::iterator i_sigmaY = sector.m_sigmaY.begin(); i_sigmaY != sector.m_sigmaY.end(); ++i_sigmaY){
         for(std::vector<TH1*>::iterator iHist = (*i_sigmaY).second.begin(); iHist != (*i_sigmaY).second.end(); ++iHist){
-	  if     ((*i_sigmaY).first=="sigmaYHit")(*iHist)->Fill(hit.errYHit);
-	  else if((*i_sigmaY).first=="sigmaYTrk")(*iHist)->Fill(hit.errYTrk);
-	  else if((*i_sigmaY).first=="sigmaY")   (*iHist)->Fill(hit.errY);
+	  if     ((*i_sigmaY).first=="sigmaYHit")(*iHist)->Fill(hit.errYHit*10000.);
+	  else if((*i_sigmaY).first=="sigmaYTrk")(*iHist)->Fill(hit.errYTrk*10000.);
+	  else if((*i_sigmaY).first=="sigmaY")   (*iHist)->Fill(hit.errY*10000.);
 	}
       }
     }
@@ -1929,9 +1933,9 @@ ApeEstimator::fillHitHistsXForAnalyzerMode(const TrackStruct::HitParameterStruct
   }
   
   // Hit Parameters
-  m_corrHists["SigmaXHit"].fillCorrHistsX(hit, hit.errXHit);
-  m_corrHists["SigmaXTrk"].fillCorrHistsX(hit, hit.errXTrk);
-  m_corrHists["SigmaX"].fillCorrHistsX(hit, hit.errX);
+  m_corrHists["SigmaXHit"].fillCorrHistsX(hit, hit.errXHit*10000.);
+  m_corrHists["SigmaXTrk"].fillCorrHistsX(hit, hit.errXTrk*10000.);
+  m_corrHists["SigmaX"].fillCorrHistsX(hit, hit.errX*10000.);
   
   m_corrHists["PhiSens"].fillCorrHistsX(hit, hit.phiSens*180./M_PI);
   m_corrHists["PhiSensX"].fillCorrHistsX(hit, hit.phiSensX*180./M_PI);
@@ -1939,9 +1943,9 @@ ApeEstimator::fillHitHistsXForAnalyzerMode(const TrackStruct::HitParameterStruct
   
   sector.XHit	->Fill(hit.xHit);
   sector.XTrk	->Fill(hit.xTrk);
-  sector.SigmaX2->Fill(hit.errX2);
+  sector.SigmaX2->Fill(hit.errX2*10000.*10000.);
   
-  sector.ResX	->Fill(hit.resX);
+  sector.ResX	->Fill(hit.resX*10000.);
   sector.NorResX->Fill(hit.norResX);
   
   sector.ProbX->Fill(hit.probX);
@@ -1973,9 +1977,9 @@ ApeEstimator::fillHitHistsYForAnalyzerMode(const TrackStruct::HitParameterStruct
   m_corrHists["QBin"].fillCorrHistsY(hit, hit.qBin);
   
   // Hit Parameters
-  m_corrHists["SigmaYHit"].fillCorrHistsY(hit, hit.errYHit);
-  m_corrHists["SigmaYTrk"].fillCorrHistsY(hit, hit.errYTrk);
-  m_corrHists["SigmaY"].fillCorrHistsY(hit, hit.errY);
+  m_corrHists["SigmaYHit"].fillCorrHistsY(hit, hit.errYHit*10000.);
+  m_corrHists["SigmaYTrk"].fillCorrHistsY(hit, hit.errYTrk*10000.);
+  m_corrHists["SigmaY"].fillCorrHistsY(hit, hit.errY*10000.);
   
   m_corrHists["PhiSens"].fillCorrHistsY(hit, hit.phiSens*180./M_PI);
   m_corrHists["PhiSensX"].fillCorrHistsY(hit, hit.phiSensX*180./M_PI);
@@ -1983,9 +1987,9 @@ ApeEstimator::fillHitHistsYForAnalyzerMode(const TrackStruct::HitParameterStruct
   
   sector.YHit	->Fill(hit.yHit);
   sector.YTrk	->Fill(hit.yTrk);
-  sector.SigmaY2->Fill(hit.errY2);
+  sector.SigmaY2->Fill(hit.errY2*10000.*10000.);
   
-  sector.ResY	->Fill(hit.resY);
+  sector.ResY	->Fill(hit.resY*10000.);
   sector.NorResY->Fill(hit.norResY);
   
   sector.ProbY->Fill(hit.probY);
@@ -2036,7 +2040,7 @@ ApeEstimator::fillHistsForApeCalculation(const TrackStruct& trackStruct){
 	  (*i_sector).second.m_binnedHists[(*i_errBins).first]["norResX"]->Fill((*i_hit).norResX);
 	  break;
         }
-	(*i_sector).second.ResX->Fill((*i_hit).resX);
+	(*i_sector).second.ResX->Fill((*i_hit).resX*10000.);
 	(*i_sector).second.NorResX->Fill((*i_hit).norResX);
       }
       
@@ -2054,7 +2058,7 @@ ApeEstimator::fillHistsForApeCalculation(const TrackStruct& trackStruct){
 	  (*i_sector).second.m_binnedHists[(*i_errBins).first]["norResY"]->Fill((*i_hit).norResY);
 	  break;
         }
-	(*i_sector).second.ResY->Fill((*i_hit).resY);
+	(*i_sector).second.ResY->Fill((*i_hit).resY*10000.);
 	(*i_sector).second.NorResY->Fill((*i_hit).norResY);
       }
     }

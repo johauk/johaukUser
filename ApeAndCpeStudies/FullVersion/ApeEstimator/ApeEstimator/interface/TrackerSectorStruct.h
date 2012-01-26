@@ -204,22 +204,22 @@ TrackerSectorStruct::bookCorrHists(TString xY,TString varName,TString varTitle,T
   if(options.find("p") != std::string::npos)
   correlationHists.ProbXVsVar = directory->make<TH2F>("h2_prob"+xY+"Vs"+varName,"prob_{"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";prob_{"+xy+"}",nBinX2D,minBinX,maxBinX,60,-0.1,1.1);
   if(options.find("h") != std::string::npos)
-  correlationHists.SigmaXHitVsVar = directory->make<TH2F>("h2_sigma"+xY+"HitVs"+varName,"#sigma_{hit,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{hit,"+xy+"}  [cm]",nBinX2D,minBinX,maxBinX,50,0,sigmaXHitMax);
+  correlationHists.SigmaXHitVsVar = directory->make<TH2F>("h2_sigma"+xY+"HitVs"+varName,"#sigma_{hit,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{hit,"+xy+"}  [#mum]",nBinX2D,minBinX,maxBinX,50,0*10000.,sigmaXHitMax*10000.);
   if(options.find("t") != std::string::npos)
-  correlationHists.SigmaXTrkVsVar = directory->make<TH2F>("h2_sigma"+xY+"TrkVs"+varName,"#sigma_{trk,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{trk,"+xy+"}  [cm]",nBinX2D,minBinX,maxBinX,50,0,sigmaXMax);
+  correlationHists.SigmaXTrkVsVar = directory->make<TH2F>("h2_sigma"+xY+"TrkVs"+varName,"#sigma_{trk,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{trk,"+xy+"}  [#mum]",nBinX2D,minBinX,maxBinX,50,0*10000.,sigmaXMax*10000.);
   if(options.find("r") != std::string::npos)
-  correlationHists.SigmaXVsVar = directory->make<TH2F>("h2_sigma"+xY+"Vs"+varName,"#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{r,"+xy+"}  [cm]",nBinX2D,minBinX,maxBinX,50,0,sigmaXMax);
+  correlationHists.SigmaXVsVar = directory->make<TH2F>("h2_sigma"+xY+"Vs"+varName,"#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{r,"+xy+"}  [#mum]",nBinX2D,minBinX,maxBinX,50,0*10000.,sigmaXMax*10000.);
     
   if(options.find("n") != std::string::npos)
   correlationHists.PNorResXVsVar = directory->make<TProfile>("p_norRes"+xY+"Vs"+varName,"r_{"+xy+"}/#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";(x_{trk}-x_{hit})/#sigma_{r,"+xy+"}",nBinX2D,minBinX,maxBinX,"s");
   if(options.find("p") != std::string::npos)
   correlationHists.PProbXVsVar = directory->make<TProfile>("p_prob"+xY+"Vs"+varName,"prob_{"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";prob_{"+xy+"}",nBinX2D,minBinX,maxBinX,"s");
   if(options.find("h") != std::string::npos)
-  correlationHists.PSigmaXHitVsVar = directory->make<TProfile>("p_sigma"+xY+"HitVs"+varName,"#sigma_{hit,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{hit,"+xy+"}  [cm]",nBinX2D,minBinX,maxBinX);
+  correlationHists.PSigmaXHitVsVar = directory->make<TProfile>("p_sigma"+xY+"HitVs"+varName,"#sigma_{hit,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{hit,"+xy+"}  [#mum]",nBinX2D,minBinX,maxBinX);
   if(options.find("t") != std::string::npos)
-  correlationHists.PSigmaXTrkVsVar = directory->make<TProfile>("p_sigma"+xY+"TrkVs"+varName,"#sigma_{trk,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{trk,"+xy+"}  [cm]",nBinX2D,minBinX,maxBinX);
+  correlationHists.PSigmaXTrkVsVar = directory->make<TProfile>("p_sigma"+xY+"TrkVs"+varName,"#sigma_{trk,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{trk,"+xy+"}  [#mum]",nBinX2D,minBinX,maxBinX);
   if(options.find("r") != std::string::npos)
-  correlationHists.PSigmaXVsVar = directory->make<TProfile>("p_sigma"+xY+"Vs"+varName,"#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{r,"+xy+"}  [cm]",nBinX2D,minBinX,maxBinX);
+  correlationHists.PSigmaXVsVar = directory->make<TProfile>("p_sigma"+xY+"Vs"+varName,"#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{r,"+xy+"}  [#mum]",nBinX2D,minBinX,maxBinX);
   
   return correlationHists;
 }
@@ -261,22 +261,22 @@ TrackerSectorStruct::bookCorrHists(TString xY,TString varName,TString labelX,TSt
   if(options.find("p") != std::string::npos)
   correlationHists.ProbXVsVar = directory->make<TH2F>("h2_prob"+xY+"Vs"+varName,"prob_{"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";prob_{"+xy+"}",nBinX,minBinX,maxBinX,60,-0.1,1.1);
   if(options.find("h") != std::string::npos)
-  correlationHists.SigmaXHitVsVar = directory->make<TH2F>("h2_sigma"+xY+"HitVs"+varName,"#sigma_{hit,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{hit,"+xy+"}  [cm]",nBinX,minBinX,maxBinX,50,0,sigmaXHitMax);
+  correlationHists.SigmaXHitVsVar = directory->make<TH2F>("h2_sigma"+xY+"HitVs"+varName,"#sigma_{hit,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{hit,"+xy+"}  [#mum]",nBinX,minBinX,maxBinX,50,0*10000.,sigmaXHitMax*10000.);
   if(options.find("t") != std::string::npos)
-  correlationHists.SigmaXTrkVsVar = directory->make<TH2F>("h2_sigma"+xY+"TrkVs"+varName,"#sigma_{trk,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{trk,"+xy+"}  [cm]",nBinX,minBinX,maxBinX,50,0,sigmaXMax);
+  correlationHists.SigmaXTrkVsVar = directory->make<TH2F>("h2_sigma"+xY+"TrkVs"+varName,"#sigma_{trk,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{trk,"+xy+"}  [#mum]",nBinX,minBinX,maxBinX,50,0*10000.,sigmaXMax*10000.);
   if(options.find("r") != std::string::npos)
-  correlationHists.SigmaXVsVar = directory->make<TH2F>("h2_sigma"+xY+"Vs"+varName,"#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{r,"+xy+"}  [cm]",nBinX,minBinX,maxBinX,50,0,sigmaXMax);
+  correlationHists.SigmaXVsVar = directory->make<TH2F>("h2_sigma"+xY+"Vs"+varName,"#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{r,"+xy+"}  [#mum]",nBinX,minBinX,maxBinX,50,0*10000.,sigmaXMax*10000.);
     
   if(options.find("n") != std::string::npos)
   correlationHists.PNorResXVsVar = directory->make<TProfile>("p_norRes"+xY+"Vs"+varName,"r_{"+xy+"}/#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";(x_{trk}-x_{hit})/#sigma_{r,"+xy+"}",nBinX,minBinX,maxBinX,"s");
   if(options.find("p") != std::string::npos)
   correlationHists.PProbXVsVar = directory->make<TProfile>("p_prob"+xY+"Vs"+varName,"prob_{"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";prob_{"+xy+"}",nBinX,minBinX,maxBinX,"s");
   if(options.find("h") != std::string::npos)
-  correlationHists.PSigmaXHitVsVar = directory->make<TProfile>("p_sigma"+xY+"HitVs"+varName,"#sigma_{hit,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{hit,"+xy+"}  [cm]",nBinX,minBinX,maxBinX);
+  correlationHists.PSigmaXHitVsVar = directory->make<TProfile>("p_sigma"+xY+"HitVs"+varName,"#sigma_{hit,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{hit,"+xy+"}  [#mum]",nBinX,minBinX,maxBinX);
   if(options.find("t") != std::string::npos)
-  correlationHists.PSigmaXTrkVsVar = directory->make<TProfile>("p_sigma"+xY+"TrkVs"+varName,"#sigma_{trk,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{trk,"+xy+"}  [cm]",nBinX,minBinX,maxBinX);
+  correlationHists.PSigmaXTrkVsVar = directory->make<TProfile>("p_sigma"+xY+"TrkVs"+varName,"#sigma_{trk,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{trk,"+xy+"}  [#mum]",nBinX,minBinX,maxBinX);
   if(options.find("r") != std::string::npos)
-  correlationHists.PSigmaXVsVar = directory->make<TProfile>("p_sigma"+xY+"Vs"+varName,"#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{r,"+xy+"}  [cm]",nBinX,minBinX,maxBinX);
+  correlationHists.PSigmaXVsVar = directory->make<TProfile>("p_sigma"+xY+"Vs"+varName,"#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{r,"+xy+"}  [#mum]",nBinX,minBinX,maxBinX);
   
   return correlationHists;
 }
@@ -325,16 +325,16 @@ TrackerSectorStruct::CorrelationHists::fillCorrHists(const TString xY, const Tra
     PProbXVsVar->Fill(variable,prob);
   }
   if(SigmaXHitVsVar){
-    SigmaXHitVsVar->Fill(variable,errHit);
-    PSigmaXHitVsVar->Fill(variable,errHit);
+    SigmaXHitVsVar->Fill(variable,errHit*10000.);
+    PSigmaXHitVsVar->Fill(variable,errHit*10000.);
   }
   if(SigmaXTrkVsVar){
-    SigmaXTrkVsVar->Fill(variable,errTrk);
-    PSigmaXTrkVsVar->Fill(variable,errTrk);
+    SigmaXTrkVsVar->Fill(variable,errTrk*10000.);
+    PSigmaXTrkVsVar->Fill(variable,errTrk*10000.);
   }
   if(SigmaXVsVar){
-    SigmaXVsVar->Fill(variable,err);
-    PSigmaXVsVar->Fill(variable,err);
+    SigmaXVsVar->Fill(variable,err*10000.);
+    PSigmaXVsVar->Fill(variable,err*10000.);
   }
   
 }

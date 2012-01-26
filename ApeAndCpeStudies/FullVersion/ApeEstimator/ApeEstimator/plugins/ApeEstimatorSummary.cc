@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk,6 2-039,+41227673512,
 //         Created:  Mon Oct 11 13:44:03 CEST 2010
-// $Id: ApeEstimatorSummary.cc,v 1.12 2011/08/13 14:48:25 hauk Exp $
+// $Id: ApeEstimatorSummary.cc,v 1.13 2012/01/25 21:28:53 hauk Exp $
 //
 //
 
@@ -219,26 +219,26 @@ void
 ApeEstimatorSummary::bookHists(){
   const std::vector<double> v_binX(this->residualErrorBinning());
   for(std::map<unsigned int,TrackerSectorStruct>::iterator i_sector=m_tkSector_.begin(); i_sector!=m_tkSector_.end(); ++i_sector){
-    (*i_sector).second.WeightX         = new TH1F("h_weightX","relative weight w_{x}/w_{tot,x};#sigma_{x}  [cm];w_{x}/w_{tot,x}",v_binX.size()-1,&(v_binX[0]));
-    (*i_sector).second.MeanX           = new TH1F("h_meanX","residual mean <r_{x}/#sigma_{x}>;#sigma_{x}  [cm];<r_{x}/#sigma_{x}>",v_binX.size()-1,&(v_binX[0]));
-    (*i_sector).second.RmsX            = new TH1F("h_rmsX","residual rms RMS(r_{x}/#sigma_{x});#sigma_{x}  [cm];RMS(r_{x}/#sigma_{x})",v_binX.size()-1,&(v_binX[0]));
-    (*i_sector).second.FitMeanX1       = new TH1F("h_fitMeanX1","fitted residual mean #mu_{x};#sigma_{x}  [cm];#mu_{x}",v_binX.size()-1,&(v_binX[0]));
-    (*i_sector).second.ResidualWidthX1 = new TH1F("h_residualWidthX1","residual width #Delta_{x};#sigma_{x}  [cm];#Delta_{x}",v_binX.size()-1,&(v_binX[0]));
-    (*i_sector).second.CorrectionX1    = new TH1F("h_correctionX1","correction to APE_{x};#sigma_{x}  [cm];#Delta#sigma_{align,x}  [cm]",v_binX.size()-1,&(v_binX[0]));
-    (*i_sector).second.FitMeanX2       = new TH1F("h_fitMeanX2","fitted residual mean #mu_{x};#sigma_{x}  [cm];#mu_{x}",v_binX.size()-1,&(v_binX[0]));
-    (*i_sector).second.ResidualWidthX2 = new TH1F("h_residualWidthX2","residual width #Delta_{x};#sigma_{x}  [cm];#Delta_{x}",v_binX.size()-1,&(v_binX[0]));
-    (*i_sector).second.CorrectionX2    = new TH1F("h_correctionX2","correction to APE_{x};#sigma_{x}  [cm];#Delta#sigma_{align,x}  [cm]",v_binX.size()-1,&(v_binX[0]));
+    (*i_sector).second.WeightX         = new TH1F("h_weightX","relative weight w_{x}/w_{tot,x};#sigma_{x}  [#mum];w_{x}/w_{tot,x}",v_binX.size()-1,&(v_binX[0]));
+    (*i_sector).second.MeanX           = new TH1F("h_meanX","residual mean <r_{x}/#sigma_{r,x}>;#sigma_{x}  [#mum];<r_{x}/#sigma_{r,x}>",v_binX.size()-1,&(v_binX[0]));
+    (*i_sector).second.RmsX            = new TH1F("h_rmsX","residual rms RMS(r_{x}/#sigma_{r,x});#sigma_{x}  [#mum];RMS(r_{x}/#sigma_{r,x})",v_binX.size()-1,&(v_binX[0]));
+    (*i_sector).second.FitMeanX1       = new TH1F("h_fitMeanX1","fitted residual mean #mu_{x};#sigma_{x}  [#mum];#mu_{x}",v_binX.size()-1,&(v_binX[0]));
+    (*i_sector).second.ResidualWidthX1 = new TH1F("h_residualWidthX1","residual width #Delta_{x};#sigma_{x}  [#mum];#Delta_{x}",v_binX.size()-1,&(v_binX[0]));
+    (*i_sector).second.CorrectionX1    = new TH1F("h_correctionX1","correction to APE_{x};#sigma_{x}  [#mum];#Delta#sigma_{align,x}  [#mum]",v_binX.size()-1,&(v_binX[0]));
+    (*i_sector).second.FitMeanX2       = new TH1F("h_fitMeanX2","fitted residual mean #mu_{x};#sigma_{x}  [#mum];#mu_{x}",v_binX.size()-1,&(v_binX[0]));
+    (*i_sector).second.ResidualWidthX2 = new TH1F("h_residualWidthX2","residual width #Delta_{x};#sigma_{x}  [#mum];#Delta_{x}",v_binX.size()-1,&(v_binX[0]));
+    (*i_sector).second.CorrectionX2    = new TH1F("h_correctionX2","correction to APE_{x};#sigma_{x}  [#mum];#Delta#sigma_{align,x}  [#mum]",v_binX.size()-1,&(v_binX[0]));
   
     if((*i_sector).second.isPixel){
-      (*i_sector).second.WeightY         = new TH1F("h_weightY","relative weight w_{y}/w_{tot,y};#sigma_{y}  [cm];w_{y}/w_{tot,y}",v_binX.size()-1,&(v_binX[0]));
-      (*i_sector).second.MeanY           = new TH1F("h_meanY","residual mean <r_{y}/#sigma_{y}>;#sigma_{y}  [cm];<r_{y}/#sigma_{y}>",v_binX.size()-1,&(v_binX[0]));
-      (*i_sector).second.RmsY            = new TH1F("h_rmsY","residual rms RMS(r_{y}/#sigma_{y});#sigma_{y}  [cm];RMS(r_{y}/#sigma_{y})",v_binX.size()-1,&(v_binX[0]));
-      (*i_sector).second.FitMeanY1       = new TH1F("h_fitMeanY1","fitted residual mean #mu_{y};#sigma_{y}  [cm];#mu_{y}",v_binX.size()-1,&(v_binX[0]));
-      (*i_sector).second.ResidualWidthY1 = new TH1F("h_residualWidthY1","residual width #Delta_{y};#sigma_{y}  [cm];#Delta_{y}",v_binX.size()-1,&(v_binX[0]));
-      (*i_sector).second.CorrectionY1    = new TH1F("h_correctionY1","correction to APE_{y};#sigma_{y}  [cm];#Delta#sigma_{align,y}  [cm]",v_binX.size()-1,&(v_binX[0]));
-      (*i_sector).second.FitMeanY2       = new TH1F("h_fitMeanY2","fitted residual mean #mu_{y};#sigma_{y}  [cm];#mu_{y}",v_binX.size()-1,&(v_binX[0]));
-      (*i_sector).second.ResidualWidthY2 = new TH1F("h_residualWidthY2","residual width #Delta_{y};#sigma_{y}  [cm];#Delta_{y}",v_binX.size()-1,&(v_binX[0]));
-      (*i_sector).second.CorrectionY2    = new TH1F("h_correctionY2","correction to APE_{y};#sigma_{y}  [cm];#Delta#sigma_{align,y}  [cm]",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.WeightY         = new TH1F("h_weightY","relative weight w_{y}/w_{tot,y};#sigma_{y}  [#mum];w_{y}/w_{tot,y}",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.MeanY           = new TH1F("h_meanY","residual mean <r_{y}/#sigma_{r,y}>;#sigma_{y}  [#mum];<r_{y}/#sigma_{r,y}>",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.RmsY            = new TH1F("h_rmsY","residual rms RMS(r_{y}/#sigma_{r,y});#sigma_{y}  [#mum];RMS(r_{y}/#sigma_{r,y})",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.FitMeanY1       = new TH1F("h_fitMeanY1","fitted residual mean #mu_{y};#sigma_{y}  [#mum];#mu_{y}",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.ResidualWidthY1 = new TH1F("h_residualWidthY1","residual width #Delta_{y};#sigma_{y}  [#mum];#Delta_{y}",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.CorrectionY1    = new TH1F("h_correctionY1","correction to APE_{y};#sigma_{y}  [#mum];#Delta#sigma_{align,y}  [#mum]",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.FitMeanY2       = new TH1F("h_fitMeanY2","fitted residual mean #mu_{y};#sigma_{y}  [#mum];#mu_{y}",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.ResidualWidthY2 = new TH1F("h_residualWidthY2","residual width #Delta_{y};#sigma_{y}  [#mum];#Delta_{y}",v_binX.size()-1,&(v_binX[0]));
+      (*i_sector).second.CorrectionY2    = new TH1F("h_correctionY2","correction to APE_{y};#sigma_{y}  [#mum];#Delta#sigma_{align,y}  [#mum]",v_binX.size()-1,&(v_binX[0]));
     }
   }
 }
@@ -655,11 +655,11 @@ ApeEstimatorSummary::calculateApe(){
        //std::cout<<"\nEntries, MeanError, ResWidth, APE \t"<<entriesX<<"\t"<<meanSigmaX<<"\t"<<residualWidthX<<"\t"<<apeX<<"\n";
        (*i_sector).second.FitMeanX1      ->SetBinContent((*i_errBins).first,fitMeanX_1);
        (*i_sector).second.ResidualWidthX1->SetBinContent((*i_errBins).first,residualWidthX_1);
-       (*i_sector).second.CorrectionX1   ->SetBinContent((*i_errBins).first,correctionX_1);
+       (*i_sector).second.CorrectionX1   ->SetBinContent((*i_errBins).first,correctionX_1*10000.);
        
        (*i_sector).second.FitMeanX2      ->SetBinContent((*i_errBins).first,fitMeanX_2);
        (*i_sector).second.ResidualWidthX2->SetBinContent((*i_errBins).first,residualWidthX_2);
-       (*i_sector).second.CorrectionX2   ->SetBinContent((*i_errBins).first,correctionX_2);
+       (*i_sector).second.CorrectionX2   ->SetBinContent((*i_errBins).first,correctionX_2*10000.);
        
        if((*i_sector).second.isPixel){
          (*i_sector).second.MeanY         ->SetBinContent((*i_errBins).first,meanY);
@@ -667,11 +667,11 @@ ApeEstimatorSummary::calculateApe(){
          
          (*i_sector).second.FitMeanY1      ->SetBinContent((*i_errBins).first,fitMeanY_1);
          (*i_sector).second.ResidualWidthY1->SetBinContent((*i_errBins).first,residualWidthY_1);
-         (*i_sector).second.CorrectionY1   ->SetBinContent((*i_errBins).first,correctionY_1);
+         (*i_sector).second.CorrectionY1   ->SetBinContent((*i_errBins).first,correctionY_1*10000.);
          
          (*i_sector).second.FitMeanY2      ->SetBinContent((*i_errBins).first,fitMeanY_2);
          (*i_sector).second.ResidualWidthY2->SetBinContent((*i_errBins).first,residualWidthY_2);
-         (*i_sector).second.CorrectionY2   ->SetBinContent((*i_errBins).first,correctionY_2);
+         (*i_sector).second.CorrectionY2   ->SetBinContent((*i_errBins).first,correctionY_2*10000.);
        }
        
        
