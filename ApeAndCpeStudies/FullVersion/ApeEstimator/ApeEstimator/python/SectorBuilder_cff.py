@@ -95,6 +95,24 @@ TIDTECSideAndRingAndOrientationSeparation = TIDSideAndRingAndOrientationSeparati
 ###======================================================================================================================================================================
 
 ##
+## Sectors used for validation
+##
+
+ValidationSectors = cms.VPSet(
+    BpixLayer1Out,
+    BpixLayer3In,
+    FpixMinusLayer1,
+    TibLayer1RphiOut,
+    TibLayer4In,
+    TobLayer1StereoOut,
+    TobLayer5Out,
+    TecPlusRing7,
+)
+
+
+###======================================================================================================================================================================
+
+##
 ## Recent definition for whole tracker
 ##
 

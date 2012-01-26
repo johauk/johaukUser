@@ -52,7 +52,7 @@ ApeEstimator.HitSelector.chargeOnEdges = [0.,0.5]
 
 
 ApeAnalyzer = ApeEstimator.clone(
-    Sectors = BPIXLayerAndOrientationSeparation + FPIXSideAndLayerSeparation,
+    Sectors = ValidationSectors,
     analyzerMode = True,
     calculateApe = False,
 )

@@ -299,7 +299,8 @@ process.ApeEstimator1.HitSelector.qBin = []
 
 
 process.ApeEstimator2 = process.ApeEstimator1.clone(
-    Sectors = BPIXLayerAndOrientationSeparation + FPIXSideAndLayerSeparation,
+    #Sectors = BPIXLayerAndOrientationSeparation + FPIXSideAndLayerSeparation,
+    Sectors = ValidationSectors,
     analyzerMode = True,
     calculateApe = False,
 )
