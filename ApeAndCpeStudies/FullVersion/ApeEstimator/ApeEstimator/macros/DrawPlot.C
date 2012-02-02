@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 
 #include <cmath>
 
@@ -11,8 +12,8 @@
 #include "TLine.h"
 #include "TBranch.h"
 #include "TPaveStats.h"
-#include "TLegend.h"
-
+#include "TStyle.h"
+#include "TGaxis.h"
 
 
 
@@ -20,7 +21,8 @@
 DrawPlot::DrawPlot(const unsigned int iterationNumber, const bool summaryFile):
 outpath_(0), file_(0), fileZeroApe_(0), designFile_(0), baselineTreeX_(0), baselineTreeY_(0), delta0_(0),
 legendEntry_("data (final APE)"), legendEntryZeroApe_("data (APE=0)"), designLegendEntry_("MCideal"),
-legendXmin_(0.41), legendYmin_(0.27), legendXmax_(0.71), legendYmax_(0.42)
+legendXmin_(0.41), legendYmin_(0.27), legendXmax_(0.71), legendYmax_(0.42),
+thesisMode_(false)
 {
   std::stringstream ss_inpath, ss_inpathZeroApe;
   ss_inpath<<"$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/workingArea/iter";
@@ -87,7 +89,13 @@ DrawPlot::setLegendEntry(const TString& legendEntry, const TString& legendEntryZ
   legendEntry_ = legendEntry;
   legendEntryZeroApe_ = legendEntryZeroApe;
   designLegendEntry_ = designLegendEntry;
+  
+  if(thesisMode_){
+    
+  }
 }
+
+
 void
 DrawPlot::setLegendCoordinate(const double legendXmin, const double legendYmin, const double legendXmax, const double legendYmax){
   legendXmin_ = legendXmin;
@@ -96,6 +104,220 @@ DrawPlot::setLegendCoordinate(const double legendXmin, const double legendYmin, 
   legendYmax_ = legendYmax;
 }
 
+
+DrawPlot::LegendEntries
+DrawPlot::adjustLegendEntry(const TString& histName, TH1*& hist, TH1*& histZeroApe, TH1*& designHist){
+  LegendEntries legendEntries;
+  legendEntries.legendEntry = legendEntry_;
+  legendEntries.legendEntryZeroApe = legendEntryZeroApe_;
+  legendEntries.designLegendEntry = designLegendEntry_;
+  if(!thesisMode_)return legendEntries;
+  
+  double mean(-999.);
+  double meanZeroApe(-999.);
+  double meanDesign(-999.);
+  double rms(-999.);
+  double rmsZeroApe(-999.);
+  double rmsDesign(-999.);
+  if(hist){
+    mean = hist->GetMean();
+    rms = hist->GetRMS();
+    hist->SetTitle("");
+  }
+  if(histZeroApe){
+    meanZeroApe = histZeroApe->GetMean();
+    rmsZeroApe = histZeroApe->GetRMS();
+    histZeroApe->SetTitle("");
+  }
+  if(designHist){
+    meanDesign = designHist->GetMean();
+    rmsDesign = designHist->GetRMS();
+    designHist->SetTitle("");
+  }
+  
+  
+/*  
+  std::stringstream legendEntry;
+  std::stringstream legendEntryZeroApe;
+  std::stringstream designLegendEntry;
+  if(histName.Contains("h_norChi2") || histName.Contains("h_etaErr")){
+    legendEntry<<"  #mu="<<std::fixed<<std::setprecision(2)<<mean;
+    legendEntryZeroApe<<"       #mu="<<std::fixed<<std::setprecision(2)<<meanZeroApe;
+    designLegendEntry<<"                  #mu="<<std::fixed<<std::setprecision(2)<<meanDesign;
+  }
+  else if(histName.Contains("h_etaSig") || histName.Contains("h_phiSig") || histName.Contains("h_ptSig") || histName.Contains("h_d0BeamspotSig") || histName.Contains("h_dzSig") ||
+          histName.Contains("h_NorResX") || histName.Contains("h_NorResY")){
+    legendEntry<<"  rms="<<std::fixed<<std::setprecision(2)<<rms;
+    legendEntryZeroApe<<"      rms="<<std::fixed<<std::setprecision(2)<<rmsZeroApe;
+    designLegendEntry<<"                 rms="<<std::fixed<<std::setprecision(2)<<rmsDesign;
+  }
+  else if(histName.Contains("h_d0BeamspotErr") || histName.Contains("h_dzErr")){
+    legendEntry<<"  #mu="<<std::fixed<<std::setprecision(2)<<mean<<" cm";
+    legendEntryZeroApe<<"       #mu="<<std::fixed<<std::setprecision(2)<<meanZeroApe<<" cm";
+    designLegendEntry<<"                  #mu="<<std::fixed<<std::setprecision(2)<<meanDesign<<" cm";
+  }
+  else if(histName.Contains("h_ptErr")){
+    legendEntry<<"  #mu="<<std::fixed<<std::setprecision(2)<<mean<<" GeV";
+    legendEntryZeroApe<<"       #mu="<<std::fixed<<std::setprecision(2)<<meanZeroApe<<" GeV";
+    designLegendEntry<<"                  #mu="<<std::fixed<<std::setprecision(2)<<meanDesign<<" GeV";
+  }
+  else if(histName.Contains("h_d0Beamspot") || histName.Contains("h_dz")){
+    legendEntry<<"  rms="<<std::fixed<<std::setprecision(2)<<rms<<" cm";
+    legendEntryZeroApe<<"      rms="<<std::fixed<<std::setprecision(2)<<rmsZeroApe<<" cm";
+    designLegendEntry<<"                 rms="<<std::fixed<<std::setprecision(2)<<rmsDesign<<" cm";
+  }
+  else if(histName.Contains("h_ResX") || histName.Contains("h_ResY")){
+    legendEntry<<"  rms="<<std::fixed<<std::setprecision(2)<<rms<<" #mum";
+    legendEntryZeroApe<<"      rms="<<std::fixed<<std::setprecision(2)<<rmsZeroApe<<" #mum";
+    designLegendEntry<<"                 rms="<<std::fixed<<std::setprecision(2)<<rmsDesign<<" #mum";
+  }
+*/  
+  
+  std::string mode("");
+  unsigned int precision(0);
+  std::string unit("");
+  
+  if(histName.Contains("h_norChi2")){
+    mode = "mean";
+    precision = 2;
+    unit = "";
+  }
+  else if(histName.Contains("h_etaSig")){
+    mode = "rms";
+    precision = 0;
+    unit = "";
+  }
+  else if(histName.Contains("h_etaErr")){
+    mode = "mean";
+    precision = 2;
+    unit = " x10^{-3}";
+    
+    mean *= 1000.;
+    meanZeroApe *= 1000.;
+    meanDesign *= 1000.;
+  }
+  else if(histName.Contains("h_phiSig")){
+    mode = "rms";
+    precision = 0;
+    unit = "";
+  }
+  else if(histName.Contains("h_phiErr")){
+    mode = "mean";
+    precision = 1;
+    unit = " x10^{-3} ^{o}";
+    
+    mean *= 1000.;
+    meanZeroApe *= 1000.;
+    meanDesign *= 1000.;
+  }
+  else if(histName.Contains("h_phi")){
+    //mode = "";
+    //precision = ;
+    //unit = "";
+  }
+  else if(histName.Contains("h_ptSig")){
+    mode = "rms";
+    precision = 1;
+    unit = "";
+  }
+  else if(histName.Contains("h_ptErr")){
+    mode = "mean";
+    precision = 2;
+    unit = " GeV";
+  }
+  else if(histName.Contains("h_pt")){
+    mode = "mean";
+    precision = 1;
+    unit = " GeV";
+  }
+  else if(histName.Contains("h_prob")){
+    mode = "mean";
+    precision = 2;
+    unit = "";
+  }
+  else if(histName.Contains("h_p")){
+    mode = "mean";
+    precision = 1;
+    unit = " GeV";
+  }
+  else if(histName.Contains("h_d0BeamspotSig")){
+    mode = "rms";
+    precision = 2;
+    unit = "";
+  }
+  else if(histName.Contains("h_d0BeamspotErr")){
+    mode = "mean";
+    precision = 1;
+    unit = " #mum";
+    
+    mean *= 10000.;
+    meanZeroApe *= 10000.;
+    meanDesign *= 10000.;
+  }
+  else if(histName.Contains("h_d0Beamspot")){
+    mode = "rms";
+    precision = 1;
+    unit = " #mum";
+    
+    rms *= 10000.;
+    rmsZeroApe *= 10000.;
+    rmsDesign *= 10000.;
+  }
+  else if(histName.Contains("h_dzSig")){
+    mode = "rms";
+    precision = 0;
+    unit = "";
+  }
+  else if(histName.Contains("h_dzErr")){
+    mode = "mean";
+    precision = 1;
+    unit = " #mum";
+    
+    mean *= 10000.;
+    meanZeroApe *= 10000.;
+    meanDesign *= 10000.;
+  }
+  else if(histName.Contains("h_dz")){
+    mode = "rms";
+    precision = 1;
+    unit = " cm";
+  }
+  else if(histName.Contains("h_NorResX") || histName.Contains("h_NorResY")){
+    mode = "rms";
+    precision = 2;
+    unit = "";
+  }
+  else if(histName.Contains("h_ResX") || histName.Contains("h_ResY")){
+    mode = "rms";
+    precision = 1;
+    unit = " #mum";
+  }
+  
+  std::stringstream legendEntry;
+  std::stringstream legendEntryZeroApe;
+  std::stringstream designLegendEntry;
+  if(mode == "mean"){
+    legendEntry<<"  #mu="<<std::fixed<<std::setprecision(precision)<<mean<<unit;
+    legendEntryZeroApe<<"      #mu="<<std::fixed<<std::setprecision(precision)<<meanZeroApe<<unit;
+    designLegendEntry<<"                  #mu="<<std::fixed<<std::setprecision(precision)<<meanDesign<<unit;
+  }
+  else if(mode == "rms"){
+    legendEntry<<"  rms="<<std::fixed<<std::setprecision(precision)<<rms<<unit;
+    legendEntryZeroApe<<"      rms="<<std::fixed<<std::setprecision(precision)<<rmsZeroApe<<unit;
+    designLegendEntry<<"                 rms="<<std::fixed<<std::setprecision(precision)<<rmsDesign<<unit;
+  }
+  else if(mode == ""){;}
+  else{
+    std::cout<<"Incorrect mode for legend adjustment, skip adjustment: "<<mode<<"\n";
+    return legendEntries;
+  }
+  
+  legendEntries.legendEntry += legendEntry.str().c_str();
+  legendEntries.legendEntryZeroApe += legendEntryZeroApe.str().c_str();
+  legendEntries.designLegendEntry += designLegendEntry.str().c_str();
+  
+  return legendEntries;
+}
 
 
 void
@@ -173,7 +395,9 @@ DrawPlot::drawEventPlot(const TString& pluginName, const TString& histName, cons
 
 
 void
-DrawPlot::printHist(const TString& fullName, const TString& sectorName, const bool normalise, const bool plotZeroApe)const{
+DrawPlot::printHist(const TString& fullName, const TString& sectorName, const bool normalise, const bool plotZeroApe){
+  if(thesisMode_)gStyle->SetOptStat(0);
+  
   TH1* hist(0);
   TH1* histZeroApe(0);
   TH1* designHist(0);
@@ -183,7 +407,7 @@ DrawPlot::printHist(const TString& fullName, const TString& sectorName, const bo
   if(hist && !plotZeroApe)histZeroApe = 0;
   if(!(hist || histZeroApe) || !designHist){std::cout<<"Histogram not found in file: "<<fullName<<"\n"; return;}
   else std::cout<<"Drawing histogram: "<<fullName<<"\n";
-  
+    
   std::vector<TH1*> v_hist;
   v_hist.push_back(designHist);
   if(histZeroApe)v_hist.push_back(histZeroApe);
@@ -194,6 +418,27 @@ DrawPlot::printHist(const TString& fullName, const TString& sectorName, const bo
   const double maxY(this->maximumY(v_hist));
   //const double minY(this->minimumY(v_hist));
   this->setRangeUser(v_hist, 0., 1.1*maxY);
+  
+  const double maxYAxis(1.1*maxY);
+  if(maxYAxis<10.)TGaxis::SetMaxDigits(3);
+  else TGaxis::SetMaxDigits(4);
+  if(sectorName.Contains("h_weightX") || sectorName.Contains("h_weightY")){
+    if(maxYAxis<0.6){
+      if(hist)hist->SetNdivisions(506, "Y");
+      if(histZeroApe)histZeroApe->SetNdivisions(506, "Y");
+      if(designHist)designHist->SetNdivisions(506, "Y");
+    }
+    if(maxYAxis<0.3){
+      if(hist)hist->SetNdivisions(503, "Y");
+      if(histZeroApe)histZeroApe->SetNdivisions(503, "Y");
+      if(designHist)designHist->SetNdivisions(503, "Y");
+    }
+  }
+  if(sectorName.Contains("h_d0BeamspotErr")){
+    if(hist)hist->GetXaxis()->SetNdivisions(506);
+    if(histZeroApe)histZeroApe->GetXaxis()->SetNdivisions(506);
+    if(designHist)designHist->GetXaxis()->SetNdivisions(506);
+  }
   
   this->setLineWidth(v_hist, 2);
   if(histZeroApe)histZeroApe->SetLineColor(2);
@@ -240,16 +485,12 @@ DrawPlot::printHist(const TString& fullName, const TString& sectorName, const bo
   canvas->Update();
   
   TLegend* legend(0);
+  const LegendEntries& legendEntries = this->adjustLegendEntry(sectorName, hist, histZeroApe, designHist);
   legend = new TLegend(legendXmin_, legendYmin_, legendXmax_, legendYmax_);
-  legend->SetFillColor(0);
-  legend->SetFillStyle(0);
-  legend->SetTextSize(0.04);
-  legend->SetMargin(0.12);
-  legend->SetFillStyle(1001);
-  //legend->SetBorderSize(0);
-  legend->AddEntry(designHist, designLegendEntry_, "l");
-  if(histZeroApe)legend->AddEntry(histZeroApe, legendEntryZeroApe_, "l");
-  if(hist)legend->AddEntry(hist, legendEntry_, "l");
+  this->adjustLegend(legend);
+  legend->AddEntry(designHist, legendEntries.designLegendEntry, "l");
+  if(histZeroApe)legend->AddEntry(histZeroApe, legendEntries.legendEntryZeroApe, "l");
+  if(hist)legend->AddEntry(hist, legendEntries.legendEntry, "l");
   legend->Draw("same");
   
   canvas->Modified();
@@ -267,6 +508,28 @@ DrawPlot::printHist(const TString& fullName, const TString& sectorName, const bo
   if(histZeroApe)histZeroApe->Delete();
   if(hist)hist->Delete();
 }
+
+
+void DrawPlot::adjustLegend(TLegend*& legend)const{
+  if(!thesisMode_){
+    legend->SetFillColor(0);
+    legend->SetFillStyle(0);
+    legend->SetTextSize(0.04);
+    legend->SetMargin(0.12);
+    legend->SetFillStyle(1001);
+    //legend->SetBorderSize(0);
+  }
+  else{
+    legend->SetFillColor(0);
+    legend->SetFillStyle(0);
+    legend->SetTextSize(0.035);
+    legend->SetMargin(0.12);
+    legend->SetFillStyle(1001);
+  }
+}
+
+
+
 
 
 void DrawPlot::scale(std::vector<TH1*>& v_hist, const double factor)const{

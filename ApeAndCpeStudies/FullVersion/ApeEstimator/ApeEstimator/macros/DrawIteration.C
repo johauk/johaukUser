@@ -22,7 +22,7 @@
 
 
 DrawIteration::DrawIteration(unsigned int iterationNumber, const bool overlayMode):
-outpath_(0), file_(0), overlayMode_(overlayMode), yAxisFixed_(false)
+outpath_(0), file_(0), overlayMode_(overlayMode), yAxisFixed_(false), systematics_(false)
 {
   if(!overlayMode_){
     std::stringstream ss_inpath;
@@ -687,6 +687,63 @@ void DrawIteration::drawFinals(const std::string& xOrY){
 	}
       }
       
+      TH1* systHist(0);
+      if(systematics_){
+	const std::vector<std::string>& v_name(*i_resultHist);
+	
+	bool pixel(false);
+	bool tob(false);
+        std::vector<std::string>::const_iterator i_name;
+        for(i_name=v_name.begin(); i_name!=v_name.end(); ++i_name){
+	  const TString name((*i_name).c_str());
+	  if(name.BeginsWith("Bpix") || name.BeginsWith("Fpix")){
+	    pixel = true;
+	    break;
+	  }
+	  if(name.BeginsWith("Tob")){
+	    tob = true;
+	    break;
+	  }
+	}
+	if(pixel || tob)systHist = new TH1F("systematics", "sytematics", v_name.size(), 0, v_name.size());
+	if(pixel){
+	  if(xOrY=="x"){
+	    systHist->SetBinContent(1, 10.);
+	    systHist->SetBinContent(2, 10.);
+	    systHist->SetBinContent(3, 10.);
+	    systHist->SetBinContent(4, 10.);
+	    systHist->SetBinContent(5, 10.);
+	    systHist->SetBinContent(6, 10.);
+	    systHist->SetBinContent(9, 5.);
+	  }
+	  else if(xOrY=="y"){
+	    systHist->SetBinContent(1, 15.);
+	    systHist->SetBinContent(2, 15.);
+	    systHist->SetBinContent(3, 15.);
+	    systHist->SetBinContent(4, 20.);
+	    systHist->SetBinContent(5, 15.);
+	    systHist->SetBinContent(6, 15.);
+	    systHist->SetBinContent(9, 5.);
+	  }
+	}
+	if(tob){
+	  systHist->SetBinContent(1, 15.);
+	  systHist->SetBinContent(2, 15.);
+	  systHist->SetBinContent(3, 10.);
+	  systHist->SetBinContent(4, 10.);
+	  systHist->SetBinContent(5, 10.);
+	  systHist->SetBinContent(6, 10.);
+	  systHist->SetBinContent(7, 15.);
+	  systHist->SetBinContent(8, 10.);
+	}
+      }
+      
+      if(systHist){
+        systHist->SetFillColor(1);
+	systHist->SetFillStyle(3004);
+	systHist->Draw("same");
+      }
+      
       canvas->Modified();
       canvas->Update();
       
@@ -714,6 +771,7 @@ void DrawIteration::drawFinals(const std::string& xOrY){
       canvas->Print(outpath_->Copy().Append("result_").Append(xOrY).Append(ss_hist.str()).Append(".png"));
       
       legend->Delete();
+      if(systHist)systHist->Delete();
     }
     
     std::vector<std::pair<TH1*, TString> >::iterator i_hist;
@@ -764,6 +822,12 @@ bool DrawIteration::createResultHist(TH1*& hist, const std::vector<std::string>&
   hist->SetAxisRange(0.,35.,"Y");
   
   return hasEntry;
+}
+
+
+
+void DrawIteration::addSystematics(){
+  systematics_ = true;
 }
 
 

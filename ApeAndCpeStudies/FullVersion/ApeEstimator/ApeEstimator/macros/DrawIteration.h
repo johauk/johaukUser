@@ -22,6 +22,8 @@ class DrawIteration{
     void drawIteration(unsigned int =0, unsigned int =99999);
     void drawResult();
     
+    void addSystematics();
+    
     void addInputFile(const TString&, const TString&);
     void outputDirectory(const TString&);
     
@@ -73,6 +75,7 @@ class DrawIteration{
     std::vector<TGraph*> v_graphCorrectionY_;
     
     std::vector<std::vector<std::string> > v_resultHist_;
+    bool systematics_;
     
     struct Input{
       Input(TString name, TString legend): fileName(name), legendEntry(legend), file(0){}

@@ -10,7 +10,7 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1.h"
-
+#include "TLegend.h"
 
 
 class DrawPlot{
@@ -24,8 +24,17 @@ class DrawPlot{
     void drawTrackPlot(const TString&, const TString&, const bool =true, const bool =true);
     void drawEventPlot(const TString&, const TString&, const bool =true, const bool =true);
     
+    void thesisMode(){thesisMode_ = true;}
+    
   private:
-    void printHist(const TString&, const TString&, const bool, const bool)const;
+    struct LegendEntries{
+      LegendEntries(): legendEntry(""), legendEntryZeroApe(""), designLegendEntry(""){}
+      TString legendEntry;
+      TString legendEntryZeroApe;
+      TString designLegendEntry;
+    };
+    
+    void printHist(const TString&, const TString&, const bool, const bool);
     void scale(std::vector<TH1*>&, const double =1.)const;
     double maximumY(std::vector<TH1*>&)const;
     double minimumY(std::vector<TH1*>&)const;
@@ -34,6 +43,8 @@ class DrawPlot{
     void draw(std::vector<TH1*>&)const;
     void cleanup(std::vector<TH1*>&)const;
     
+    LegendEntries adjustLegendEntry(const TString&, TH1*&, TH1*&, TH1*&);
+    void adjustLegend(TLegend*&)const;
     
     
     const TString* outpath_;
@@ -56,6 +67,8 @@ class DrawPlot{
     double legendYmin_;
     double legendXmax_;
     double legendYmax_;
+    
+    bool thesisMode_;
 };
 
 

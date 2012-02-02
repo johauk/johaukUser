@@ -148,15 +148,34 @@ ApeOverview::eventAndTrackHistos(){
   }
   this->setNewCanvas(dim1);
   
+  if(!onlyZoomedHists_){
+  this->drawHistToPad("h_etaErr");
+  this->drawHistToPad("h_phiErr");
+  this->drawHistToPad("h_ptErr");
+  this->drawHistToPad("h_etaSig");
+  this->drawHistToPad("h_phiSig");
+  this->drawHistToPad("h_ptSig");
+  }
+  this->setNewCanvas(dim1);
+  
   this->drawHistToPad("h_pt");
-  this->drawHistToPad("h_d0Beamspot");
-  this->drawHistToPad("h_dz");
   this->drawHistToPad("h_p");
-  this->drawHistToPad("h_d0BeamspotErr");
-  this->drawHistToPad("h_d0BeamspotSig");
+  this->drawHistToPad("h_prob");
   if(!onlyZoomedHists_){
   this->drawHistToPad("h_charge",false);
   this->drawHistToPad("h_meanAngle");
+  }
+  this->setNewCanvas(dim1);
+  
+  this->drawHistToPad("h_d0Beamspot");
+  if(!onlyZoomedHists_){
+  this->drawHistToPad("h_d0BeamspotErr");
+  this->drawHistToPad("h_d0BeamspotSig");
+  }
+  this->drawHistToPad("h_dz");
+  if(!onlyZoomedHists_){
+  this->drawHistToPad("h_dzErr");
+  this->drawHistToPad("h_dzSig");
   }
   this->setNewCanvas(dim1);
   
@@ -815,6 +834,7 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h_rmsX",false);
       this->drawHistToPad("h_residualWidthX1",false);
       this->drawHistToPad("h_residualWidthX2",false);
+      this->drawHistToPad("h_weightX",false);
       this->drawHistToPad("h_correctionX1",false);
       this->drawHistToPad("h_correctionX2",false);
       }
@@ -837,6 +857,7 @@ ApeOverview::eventAndTrackHistos(){
       this->drawHistToPad("h_rmsY",false);
       this->drawHistToPad("h_residualWidthY1",false);
       this->drawHistToPad("h_residualWidthY2",false);
+      this->drawHistToPad("h_weightY",false);
       this->drawHistToPad("h_correctionY1",false);
       this->drawHistToPad("h_correctionY2",false);
       }
@@ -966,10 +987,18 @@ ApeOverview::drawHistToPad(const TString histName, const bool setLogScale){
   
   else if(histName.BeginsWith("p_")){std::cout<<"\n\tProfile Plot chosen, but set up automatically"<<std::endl; return 1;}
   else if(histName == "sectorTitleSheet"){
+    const TString nameHistName("z_name");
+    TH1* nameHist(0);
+    inputFile_->GetObject(pluginDir_ + histDir_ + nameHistName + ";1", nameHist);
+    TString sectorName(histDir_);
+    if(nameHist){
+      sectorName += "  --  ";
+      sectorName += nameHist->GetTitle();
+    }
     TCanvas* canvas0 = new TCanvas(this->setCanvasName());
     canvasPair->first.push_back(canvas0);
     (*(--(canvasPair->first.end())))->cd();
-    TLatex *title1 = new TLatex(0.1583,0.925,histDir_);title1->SetNDC();//title1->SetTextSize(0.075);
+    TLatex *title1 = new TLatex(0.1583,0.925,sectorName);title1->SetNDC();//title1->SetTextSize(0.075);
     title1->Draw();
     this->setNewCanvas(dim1);
     return 0;

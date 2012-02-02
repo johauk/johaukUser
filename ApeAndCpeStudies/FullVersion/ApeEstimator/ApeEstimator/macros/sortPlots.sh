@@ -25,18 +25,30 @@ do
     mv ${plots}/h_entries*.* ${plots}/Sector/.
     mv ${plots}/h_residualWidth*.* ${plots}/Sector/.
     mv ${plots}/h_rms*.* ${plots}/Sector/.
+    mv ${plots}/h_weight*.* ${plots}/Sector/.
     
     mv ${plots}/h_charge.* ${plots}/Track/.
     mv ${plots}/h_d0Beamspot.* ${plots}/Track/.
     mv ${plots}/h_d0BeamspotErr.* ${plots}/Track/.
     mv ${plots}/h_d0BeamspotSig.* ${plots}/Track/.
+    mv ${plots}/h_dz.* ${plots}/Track/.
+    mv ${plots}/h_dzErr.* ${plots}/Track/.
+    mv ${plots}/h_dzSig.* ${plots}/Track/.
     mv ${plots}/h_eta.* ${plots}/Track/.
+    mv ${plots}/h_etaErr.* ${plots}/Track/.
+    mv ${plots}/h_etaSig.* ${plots}/Track/.
     mv ${plots}/h_norChi2.* ${plots}/Track/.
     mv ${plots}/h_p.* ${plots}/Track/.
+    mv ${plots}/h_prob.* ${plots}/Track/.
     mv ${plots}/h_phi.* ${plots}/Track/.
+    mv ${plots}/h_phiErr.* ${plots}/Track/.
+    mv ${plots}/h_phiSig.* ${plots}/Track/.
     mv ${plots}/h_pt.* ${plots}/Track/.
+    mv ${plots}/h_ptErr.* ${plots}/Track/.
+    mv ${plots}/h_ptSig.* ${plots}/Track/.
     mv ${plots}/h_theta.* ${plots}/Track/.
     mv ${plots}/h_trackSizeGood.* ${plots}/Track/.
+    
   fi
 
 done
