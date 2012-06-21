@@ -10,7 +10,14 @@ do
   plots="${folder}/plots"
   
   if [ -d "$plots" ]; then
-    rm ${plots}/*.eps
+    rm ${plots}/*.png
+    
+    for file in ${plots}/*.eps;
+    do
+      epstopdf $file
+    done
+    
+    #rm ${plots}/*.eps
     
     mkdir ${plots}/Result/
     mkdir ${plots}/Sector/
@@ -48,6 +55,8 @@ do
     mv ${plots}/h_ptSig.* ${plots}/Track/.
     mv ${plots}/h_theta.* ${plots}/Track/.
     mv ${plots}/h_trackSizeGood.* ${plots}/Track/.
+    mv ${plots}/h_hitsPixel.* ${plots}/Track/.
+    mv ${plots}/h_hitsStrip.* ${plots}/Track/.
     
   fi
 

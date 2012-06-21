@@ -69,16 +69,18 @@ setTDRStyle();
 gROOT->ProcessLine(".L DrawPlot.C+");
 
 
-/*
+
 
 DrawPlot drawPlot1(0, true);
 drawPlot1.thesisMode();
 
 drawPlot1.setLegendEntry("data (final #sigma_{align})","data (#sigma_{align}=0)","design");
 gStyle->SetOptStat(111110);
-drawPlot1.setLegendCoordinate(0.69, 0.20, 0.99, 0.35);
+drawPlot1.setLegendCoordinate(0.69, 0.70, 0.99, 0.85);
+//drawPlot1.setLegendCoordinate(0.69, 0.20, 0.99, 0.35);
 drawPlot1.drawPlot("ApeEstimatorSummary","h_weightX", false);
 drawPlot1.drawPlot("ApeEstimatorSummary","h_weightY", false);
+drawPlot1.setLegendCoordinate(0.69, 0.20, 0.99, 0.35);
 drawPlot1.drawPlot("ApeEstimatorSummary","h_residualWidthX1", false);
 drawPlot1.drawPlot("ApeEstimatorSummary","h_residualWidthY1", false);
 drawPlot1.drawPlot("ApeEstimatorSummary","h_rmsX", false);
@@ -90,17 +92,85 @@ DrawPlot drawPlot2(0, false);
 drawPlot2.thesisMode();
 
 drawPlot2.setLegendEntry("data (final #sigma_{align})","data (#sigma_{align}=0)","design");
-drawPlot2.setLegendCoordinate(0.69, 0.20, 0.99, 0.35);
+drawPlot2.setLegendCoordinate(0.69, 0.70, 0.99, 0.85);
+//drawPlot2.setLegendCoordinate(0.69, 0.20, 0.99, 0.35);
 gStyle->SetOptStat(111100);
 drawPlot2.drawPlot("ApeEstimator1","h_entriesX", false);
 drawPlot2.drawPlot("ApeEstimator1","h_entriesY", false);
+drawPlot2.setLegendCoordinate(0.395, 0.845, 0.995, 0.995);
 gStyle->SetOptStat(111110);
 drawPlot2.drawPlot("ApeEstimator1","h_NorResX", false);
 drawPlot2.drawPlot("ApeEstimator1","h_NorResY", false);
 drawPlot2.drawPlot("ApeEstimator1","h_ResX", false);
 drawPlot2.drawPlot("ApeEstimator1","h_ResY", false);
 
+// Additional plots for strip (mainly; some are common with pixel)
+drawPlot2.drawPlot("ApeEstimator2","h_ChargeStrip", false);
+drawPlot2.drawPlot("ApeEstimator2","h_SOverN", false);
+drawPlot2.drawPlot("ApeEstimator2","h_ChargeOnEdges", false);
+drawPlot2.drawPlot("ApeEstimator2","h_BaryStripX", false);
+drawPlot2.drawPlot("ApeEstimator2","h_WidthX", false);
+drawPlot2.drawPlot("ApeEstimator2","h_PhiSensX", false);
+drawPlot2.drawPlot("ApeEstimator2","h_sigmaXHit_1", false);
+drawPlot2.drawPlot("ApeEstimator2","h_sigmaXTrk_1", false);
 
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaXHitVsChargeStrip", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaXHitVsSOverN", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaXHitVsChargeOnEdges", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaXHitVsBaryStripX", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaXHitVsPhiSensX", false);
+
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaXTrkVsD0Beamspot", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaXTrkVsDz", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaXTrkVsHitsPixel", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaXTrkVsHitsStrip", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaXTrkVsP", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaXTrkVsPhiSensX", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaXTrkVsPt", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaXTrkVsTheta", false);
+
+drawPlot2.drawPlot("ApeEstimator2","p_widthVsPhiSensX", false);
+
+// Additional plots for pixel
+drawPlot2.drawPlot("ApeEstimator2","h_ChargePixel", false);
+drawPlot2.drawPlot("ApeEstimator2","h_ChargePixel_y", false);
+drawPlot2.drawPlot("ApeEstimator2","h_BaryStripY_y", false);
+drawPlot2.drawPlot("ApeEstimator2","h_ClusterProbXY", false);
+drawPlot2.drawPlot("ApeEstimator2","h_ClusterProbXY_y", false);
+drawPlot2.drawPlot("ApeEstimator2","h_LogClusterProb", false);
+drawPlot2.drawPlot("ApeEstimator2","h_LogClusterProb_y", false);
+drawPlot2.drawPlot("ApeEstimator2","h_PhiSensY_y", false);
+drawPlot2.drawPlot("ApeEstimator2","h_WidthY_y", false);
+drawPlot2.drawPlot("ApeEstimator2","h_sigmaYHit_1", false);
+drawPlot2.drawPlot("ApeEstimator2","h_sigmaYTrk_1", false);
+
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaXHitVsChargePixel", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaXHitVsClusterProbXY", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaXHitVsLogClusterProb", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaXHitVsWidthX", false);
+
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaYHitVsChargePixel", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaYHitVsBaryStripY", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaYHitVsClusterProbXY", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaYHitVsLogClusterProb", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaYHitVsWidthY", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaYHitVsPhiSensY", false);
+
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaYTrkVsD0Beamspot", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaYTrkVsDz", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaYTrkVsHitsPixel", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaYTrkVsHitsStrip", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaYTrkVsP", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaYTrkVsPhiSensX", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaYTrkVsPt", false);
+drawPlot2.drawPlot("ApeEstimator2","p_sigmaYTrkVsTheta", false);
+
+drawPlot2.drawPlot("ApeEstimator2","p_phiSensXVsBarycentreX", false);
+drawPlot2.drawPlot("ApeEstimator2","p_phiSensYVsBarycentreY", false);
+
+
+
+drawPlot2.setLegendCoordinate(0.395, 0.845, 0.995, 0.995);
 gStyle->SetOptStat(111110);
 drawPlot2.drawTrackPlot("ApeEstimator2","h_eta", false);
 drawPlot2.drawTrackPlot("ApeEstimator2","h_etaErr", false);
@@ -122,11 +192,13 @@ drawPlot2.drawTrackPlot("ApeEstimator2","h_dz", false);
 drawPlot2.drawTrackPlot("ApeEstimator2","h_dzErr", false);
 drawPlot2.drawTrackPlot("ApeEstimator2","h_dzSig", false);
 drawPlot2.drawTrackPlot("ApeEstimator2","h_prob", false);
+drawPlot2.drawTrackPlot("ApeEstimator2","h_hitsPixel", false);
+drawPlot2.drawTrackPlot("ApeEstimator2","h_hitsStrip", false);
 
 drawPlot2.drawEventPlot("ApeEstimator2","h_trackSizeGood", false);
 
 
-*/
+
 
 
 
@@ -174,7 +246,6 @@ drawPlot4.drawPlot("ApeEstimator1","h_NorResY");
 drawPlot4.drawPlot("ApeEstimator1","h_ResX");
 drawPlot4.drawPlot("ApeEstimator1","h_ResY");
 
-
 drawPlot4.setLegendCoordinate(0.395, 0.845, 0.995, 0.995);
 gStyle->SetOptStat(111110);
 drawPlot4.drawTrackPlot("ApeEstimator2","h_eta");
@@ -197,6 +268,8 @@ drawPlot4.drawTrackPlot("ApeEstimator2","h_dz");
 drawPlot4.drawTrackPlot("ApeEstimator2","h_dzErr");
 drawPlot4.drawTrackPlot("ApeEstimator2","h_dzSig");
 drawPlot4.drawTrackPlot("ApeEstimator2","h_prob");
+drawPlot4.drawTrackPlot("ApeEstimator2","h_hitsPixel");
+drawPlot4.drawTrackPlot("ApeEstimator2","h_hitsStrip");
 
 drawPlot4.drawEventPlot("ApeEstimator2","h_trackSizeGood");
 

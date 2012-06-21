@@ -30,9 +30,9 @@ echo
 #export alignmentRcd="globalTag"
 #export alignmentRcd="GR10_v6"
 #export alignmentRcd="GR10_v6_plus5"
-export alignmentRcd="GR10_v6_plus10"
+#export alignmentRcd="GR10_v6_plus10"
 #export alignmentRcd="GR10_v6_plus15"
-#export alignmentRcd="GR10_v6_plus20"
+export alignmentRcd="GR10_v6_plus20"
 echo "Alignment Record: $alignmentRcd"
 echo
 

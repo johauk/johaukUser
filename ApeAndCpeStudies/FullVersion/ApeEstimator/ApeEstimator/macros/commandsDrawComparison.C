@@ -30,8 +30,8 @@ gROOT->ProcessLine(".L DrawIteration.C+");
 
 DrawIteration drawIteration1(14, true);
 
-drawIteration1.addInputFile("/afs/cern.ch/user/h/hauk/scratch0/apeStudies/rootFiles/GlobalTag2011/workingArea/iter14/allData_iterationApe.root","Prompt");
-drawIteration1.addInputFile("/afs/cern.ch/user/h/hauk/scratch0/apeStudies/rootFiles/GR10_v6/workingArea/iter14/allData_iterationApe.root","Reprocessing");
+drawIteration1.addInputFile("/afs/cern.ch/user/h/hauk/scratch0/apeStudies/rootFiles/GlobalTag_final/workingArea/iter14/allData_iterationApe.root","Prompt");
+drawIteration1.addInputFile("/afs/cern.ch/user/h/hauk/scratch0/apeStudies/rootFiles/GR10_v6_final/workingArea/iter14/allData_iterationApe.root","Reprocessing");
 //drawIteration1.addInputFile("","");
 
 drawIteration1.drawResult();

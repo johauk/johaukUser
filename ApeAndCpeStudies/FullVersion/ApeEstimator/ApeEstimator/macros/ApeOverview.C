@@ -971,7 +971,7 @@ ApeOverview::drawHistToPad(const TString histName, const bool setLogScale){
 	  }
 	  rmsPlot->SetMarkerColor(2);
 	  rmsPlot->SetLineColor(2);
-	  rmsPlot->SetMarkerStyle(24);
+	  //rmsPlot->SetMarkerStyle(24);
 	  rmsPlot->Draw("same");
 	  //rmsPlot->Draw("hist p same");
 	}

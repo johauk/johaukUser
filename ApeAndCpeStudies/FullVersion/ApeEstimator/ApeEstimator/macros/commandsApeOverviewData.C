@@ -5,6 +5,7 @@
 gROOT->SetStyle("Plain");
 gROOT->ForceStyle();
 gStyle->SetOptStat(111110);
+//gStyle->SetOptStat(0);
 
 gStyle->SetPalette(1);      //Spektralpalette, Default: 0 resp. 50
 //gStyle->SetNumberContours(20);  // Default: 20
