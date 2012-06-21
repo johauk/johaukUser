@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.24 2012/01/25 21:28:53 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.25 2012/01/26 00:06:33 hauk Exp $
 //
 //
 
@@ -686,7 +686,7 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     (*i_sector).second.YTrk    = secDir.make<TH1F>("h_YTrk","track prediction y_{trk};y_{trk}  [cm];# hits",100,-20,20);
     (*i_sector).second.SigmaY2 = secDir.make<TH1F>("h_SigmaY2","squared residual error #sigma_{r,y}^{2};#sigma_{r,y}^{2}  [#mum^{2}];# hits",105,sigmaXMin*10000.,sigmaX2Max*10000.*10000.); //no mistake !
     (*i_sector).second.ResY    = secDir.make<TH1F>("h_ResY","residual r_{y};y_{trk}-y_{hit}  [#mum];# hits",100,-resXAbsMax*10000.,resXAbsMax*10000.);
-    (*i_sector).second.NorResY = secDir.make<TH1F>("h_NorResY","normalized residual r_{y}/#sigma_{r,y};(y_{track}-y_{hit})/#sigma_{r,y};# hits",100,-norResXAbsMax,norResXAbsMax);
+    (*i_sector).second.NorResY = secDir.make<TH1F>("h_NorResY","normalized residual r_{y}/#sigma_{r,y};(y_{trk}-y_{hit})/#sigma_{r,y};# hits",100,-norResXAbsMax,norResXAbsMax);
     (*i_sector).second.ProbY   = secDir.make<TH1F>("h_ProbY","residual probability;prob(r_{y}^{2}/#sigma_{r,y}^{2},1);# hits",60,probXMin,probXMax);
     
     (*i_sector).second.PhiSensYVsBarycentreY = secDir.make<TH2F>("h2_phiSensYVsBarycentreY","#phi_{module,y} vs. b_{cl,y};b_{cl,y}  [# channels];#phi_{module,y}  [ ^{o}]",200,-10.,790.,93,-93,93);

@@ -211,7 +211,7 @@ TrackerSectorStruct::bookCorrHists(TString xY,TString varName,TString varTitle,T
   correlationHists.SigmaXVsVar = directory->make<TH2F>("h2_sigma"+xY+"Vs"+varName,"#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{r,"+xy+"}  [#mum]",nBinX2D,minBinX,maxBinX,50,0*10000.,sigmaXMax*10000.);
     
   if(options.find("n") != std::string::npos)
-  correlationHists.PNorResXVsVar = directory->make<TProfile>("p_norRes"+xY+"Vs"+varName,"r_{"+xy+"}/#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";(x_{trk}-x_{hit})/#sigma_{r,"+xy+"}",nBinX2D,minBinX,maxBinX,"s");
+  correlationHists.PNorResXVsVar = directory->make<TProfile>("p_norRes"+xY+"Vs"+varName,"r_{"+xy+"}/#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";("+xy+"_{trk}-"+xy+"_{hit})/#sigma_{r,"+xy+"}",nBinX2D,minBinX,maxBinX,"s");
   if(options.find("p") != std::string::npos)
   correlationHists.PProbXVsVar = directory->make<TProfile>("p_prob"+xY+"Vs"+varName,"prob_{"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";prob_{"+xy+"}",nBinX2D,minBinX,maxBinX,"s");
   if(options.find("h") != std::string::npos)
@@ -257,7 +257,7 @@ TrackerSectorStruct::bookCorrHists(TString xY,TString varName,TString labelX,TSt
   
   
   if(options.find("n") != std::string::npos)
-  correlationHists.NorResXVsVar = directory->make<TH2F>("h2_norRes"+xY+"Vs"+varName,"r_{"+xy+"}/#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";(x_{trk}-x_{hit})/#sigma_{r,"+xy+"}",nBinX,minBinX,maxBinX,25,-norResXMax,norResXMax);
+  correlationHists.NorResXVsVar = directory->make<TH2F>("h2_norRes"+xY+"Vs"+varName,"r_{"+xy+"}/#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";("+xy+"_{trk}-"+xy+"_{hit})/#sigma_{r,"+xy+"}",nBinX,minBinX,maxBinX,25,-norResXMax,norResXMax);
   if(options.find("p") != std::string::npos)
   correlationHists.ProbXVsVar = directory->make<TH2F>("h2_prob"+xY+"Vs"+varName,"prob_{"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";prob_{"+xy+"}",nBinX,minBinX,maxBinX,60,-0.1,1.1);
   if(options.find("h") != std::string::npos)
@@ -268,7 +268,7 @@ TrackerSectorStruct::bookCorrHists(TString xY,TString varName,TString labelX,TSt
   correlationHists.SigmaXVsVar = directory->make<TH2F>("h2_sigma"+xY+"Vs"+varName,"#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";#sigma_{r,"+xy+"}  [#mum]",nBinX,minBinX,maxBinX,50,0*10000.,sigmaXMax*10000.);
     
   if(options.find("n") != std::string::npos)
-  correlationHists.PNorResXVsVar = directory->make<TProfile>("p_norRes"+xY+"Vs"+varName,"r_{"+xy+"}/#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";(x_{trk}-x_{hit})/#sigma_{r,"+xy+"}",nBinX,minBinX,maxBinX,"s");
+  correlationHists.PNorResXVsVar = directory->make<TProfile>("p_norRes"+xY+"Vs"+varName,"r_{"+xy+"}/#sigma_{r,"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";("+xy+"_{trk}-"+xy+"_{hit})/#sigma_{r,"+xy+"}",nBinX,minBinX,maxBinX,"s");
   if(options.find("p") != std::string::npos)
   correlationHists.PProbXVsVar = directory->make<TProfile>("p_prob"+xY+"Vs"+varName,"prob_{"+xy+"} vs. "+labelX+";"+labelX+"  "+unitX+";prob_{"+xy+"}",nBinX,minBinX,maxBinX,"s");
   if(options.find("h") != std::string::npos)
