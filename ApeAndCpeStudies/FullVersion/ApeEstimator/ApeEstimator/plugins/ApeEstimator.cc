@@ -13,7 +13,7 @@
 //
 // Original Author:  Johannes Hauk
 //         Created:  Tue Jan  6 15:02:09 CET 2009
-// $Id: ApeEstimator.cc,v 1.25 2012/01/26 00:06:33 hauk Exp $
+// $Id: ApeEstimator.cc,v 1.26 2012/06/21 13:27:14 hauk Exp $
 //
 //
 
@@ -601,11 +601,11 @@ ApeEstimator::bookSectorHistsForAnalyzerMode(){
     
     
     // Cluster Parameters
-    (*i_sector).second.m_correlationHistsX["WidthX"] = (*i_sector).second.bookCorrHistsX("WidthX","cluster width","w_{cl,x}","[# channels]",200,20,0.,widthMax,"nph");
+    (*i_sector).second.m_correlationHistsX["WidthX"] = (*i_sector).second.bookCorrHistsX("WidthX","cluster width","w_{cl,x}","[# channels]",static_cast<int>(widthMax),static_cast<int>(widthMax),0.,widthMax,"nph");
     (*i_sector).second.m_correlationHistsX["BaryStripX"] = (*i_sector).second.bookCorrHistsX("BaryStripX","barycenter of cluster charge","b_{cl,x}","[# channels]",800,100,-10.,790.,"nph");
     
     if(pixelSector){
-    (*i_sector).second.m_correlationHistsY["WidthY"] = (*i_sector).second.bookCorrHistsY("WidthY","cluster width","w_{cl,y}","[# channels]",200,20,0.,widthMax,"nph");
+    (*i_sector).second.m_correlationHistsY["WidthY"] = (*i_sector).second.bookCorrHistsY("WidthY","cluster width","w_{cl,y}","[# channels]",static_cast<int>(widthMax),static_cast<int>(widthMax),0.,widthMax,"nph");
     (*i_sector).second.m_correlationHistsY["BaryStripY"] = (*i_sector).second.bookCorrHistsY("BaryStripY","barycenter of cluster charge","b_{cl,y}","[# channels]",800,100,-10.,790.,"nph");
     
     (*i_sector).second.m_correlationHistsX["ChargePixel"] = (*i_sector).second.bookCorrHistsX("ChargePixel","cluster charge","c_{cl}","[e]",100,50,0.,chargePixelMax,"nph");
