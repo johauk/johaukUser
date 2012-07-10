@@ -27,7 +27,8 @@ echo
 
 
 ## Alignment
-export alignmentRcd="design"
+export alignmentRcd="useStartGlobalTagForAllConditions"
+#export alignmentRcd="design"
 #export alignmentRcd="idealAligned"
 echo "Alignment Record: $alignmentRcd"
 echo
