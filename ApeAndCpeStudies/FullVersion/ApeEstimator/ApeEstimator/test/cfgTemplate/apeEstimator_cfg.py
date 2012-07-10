@@ -210,6 +210,8 @@ elif isMc:
     #process.GlobalTag.globaltag = 'DESIGN42_V12::All'
     #process.GlobalTag.globaltag = 'START42_V12::All'
     process.GlobalTag.globaltag = 'MC_42_V12::All'
+    if options.alignRcd=='useStartGlobalTagForAllConditions':
+        process.GlobalTag.globaltag = 'START42_V12::All'
 elif isData:
     process.GlobalTag.globaltag = 'GR_R_42_V21::All'
 ## --- Further information (Monte Carlo and Data) ---
@@ -386,6 +388,8 @@ elif options.alignRcd == 'GR10_v6_plus20':
   )
   process.es_prefer_trackerAlignmentKinksAndBows = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentKinksAndBows")
 elif options.alignRcd == 'globalTag':
+  pass
+elif options.alignRcd == 'useStartGlobalTagForAllConditions':
   pass
 elif options.alignRcd == '':
   pass
