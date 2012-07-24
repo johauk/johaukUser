@@ -1,3 +1,0 @@
-need the following:
-
-cvs co -r V05-00-03 RecoLocalTracker/SiStripRecHitConverter
