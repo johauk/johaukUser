@@ -11,10 +11,16 @@ mkdir $CMSSW_BASE/src/ApeEstimator/Utils/hists/
 mkdir $DIRBASE/hists/
 mkdir $DIRBASE/hists/workingArea/
 mkdir $DIRBASE/test/batch/workingArea/
+mkdir $DIRBASE/test/cfgTemplateDesign/workingArea/
 mkdir $DIRBASE/test/cfgTemplateMc/workingArea/
 mkdir $DIRBASE/test/cfgTemplateData/workingArea/
-mkdir $DIRBASE/test/cfgTemplateParticleGun/workingArea/
+#mkdir $DIRBASE/test/cfgTemplateParticleGun/workingArea/
 
+
+
+cp $DIRBASE/test/cfgTemplate/createStep2.bash $DIRBASE/test/cfgTemplateDesign/createStep2.bash
+cp $DIRBASE/test/cfgTemplate/startStep1.bash $DIRBASE/test/cfgTemplateDesign/startStep1.bash
+cp $DIRBASE/test/cfgTemplate/startStep2.bash $DIRBASE/test/cfgTemplateDesign/startStep2.bash
 
 
 cp $DIRBASE/test/cfgTemplate/createStep2.bash $DIRBASE/test/cfgTemplateMc/createStep2.bash
@@ -27,9 +33,9 @@ cp $DIRBASE/test/cfgTemplate/startStep1.bash $DIRBASE/test/cfgTemplateData/start
 cp $DIRBASE/test/cfgTemplate/startStep2.bash $DIRBASE/test/cfgTemplateData/startStep2.bash
 
 
-cp $DIRBASE/test/cfgTemplate/createStep2.bash $DIRBASE/test/cfgTemplateParticleGun/createStep2.bash
-cp $DIRBASE/test/cfgTemplate/startStep1.bash $DIRBASE/test/cfgTemplateParticleGun/startStep1.bash
-cp $DIRBASE/test/cfgTemplate/startStep2.bash $DIRBASE/test/cfgTemplateParticleGun/startStep2.bash
+#cp $DIRBASE/test/cfgTemplate/createStep2.bash $DIRBASE/test/cfgTemplateParticleGun/createStep2.bash
+#cp $DIRBASE/test/cfgTemplate/startStep1.bash $DIRBASE/test/cfgTemplateParticleGun/startStep1.bash
+#cp $DIRBASE/test/cfgTemplate/startStep2.bash $DIRBASE/test/cfgTemplateParticleGun/startStep2.bash
 
 
 
