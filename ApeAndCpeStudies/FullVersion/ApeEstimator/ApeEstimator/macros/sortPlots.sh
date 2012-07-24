@@ -10,14 +10,17 @@ do
   plots="${folder}/plots"
   
   if [ -d "$plots" ]; then
-    rm ${plots}/*.png
     
-    for file in ${plots}/*.eps;
-    do
-      epstopdf $file
-    done
+    ## FIXME: make script configurable for output types? or create automatically .png's from .eps? ROOT .png's are often incorrect
     
+    #rm ${plots}/*.png
     #rm ${plots}/*.eps
+    
+    #for file in ${plots}/*.eps;
+    #do
+    #  epstopdf $file
+    #done
+    
     
     mkdir ${plots}/Result/
     mkdir ${plots}/Sector/
@@ -33,6 +36,21 @@ do
     mv ${plots}/h_residualWidth*.* ${plots}/Sector/.
     mv ${plots}/h_rms*.* ${plots}/Sector/.
     mv ${plots}/h_weight*.* ${plots}/Sector/.
+    
+    #mkdir ${plots}/Sector2/
+    #mv ${plots}/h_BaryStrip*.* ${plots}/Sector2/.
+    #mv ${plots}/h_ChargeOnEdges*.* ${plots}/Sector2/.
+    #mv ${plots}/h_ChargePixel*.* ${plots}/Sector2/.
+    #mv ${plots}/h_ChargeStrip*.* ${plots}/Sector2/.
+    #mv ${plots}/h_ClusterProbXY*.* ${plots}/Sector2/.
+    #mv ${plots}/h_LogClusterProb*.* ${plots}/Sector2/.
+    #mv ${plots}/h_PhiSens*.* ${plots}/Sector2/.
+    #mv ${plots}/h_SOverN*.* ${plots}/Sector2/.
+    #mv ${plots}/h_Width*.* ${plots}/Sector2/.
+    #mv ${plots}/h_sigma*.* ${plots}/Sector2/.
+    #mv ${plots}/p_phiSens*.* ${plots}/Sector2/.
+    #mv ${plots}/p_sigma*.* ${plots}/Sector2/.
+    #mv ${plots}/p_width*.* ${plots}/Sector2/.
     
     mv ${plots}/h_charge.* ${plots}/Track/.
     mv ${plots}/h_d0Beamspot.* ${plots}/Track/.

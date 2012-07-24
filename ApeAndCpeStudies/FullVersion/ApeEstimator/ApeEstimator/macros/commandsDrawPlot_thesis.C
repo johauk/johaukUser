@@ -72,12 +72,12 @@ gROOT->ProcessLine(".L DrawPlot.C+");
 
 
 DrawPlot drawPlot1(0, true);
-//drawPlot1.thesisMode();
+drawPlot1.thesisMode();
 
 drawPlot1.setLegendEntry("data (final #sigma_{align})","data (#sigma_{align}=0)","design");
 gStyle->SetOptStat(111110);
-//drawPlot1.setLegendCoordinate(0.69, 0.70, 0.99, 0.85);
-drawPlot1.setLegendCoordinate(0.69, 0.20, 0.99, 0.35);
+drawPlot1.setLegendCoordinate(0.69, 0.70, 0.99, 0.85);
+//drawPlot1.setLegendCoordinate(0.69, 0.20, 0.99, 0.35);
 drawPlot1.drawPlot("ApeEstimatorSummary","h_weightX", false);
 drawPlot1.drawPlot("ApeEstimatorSummary","h_weightY", false);
 drawPlot1.setLegendCoordinate(0.69, 0.20, 0.99, 0.35);
@@ -89,15 +89,15 @@ drawPlot1.drawPlot("ApeEstimatorSummary","h_rmsY", false);
 
 
 DrawPlot drawPlot2(0, false);
-//drawPlot2.thesisMode();
+drawPlot2.thesisMode();
 
 drawPlot2.setLegendEntry("data (final #sigma_{align})","data (#sigma_{align}=0)","design");
-//drawPlot2.setLegendCoordinate(0.69, 0.70, 0.99, 0.85);
-drawPlot2.setLegendCoordinate(0.69, 0.20, 0.99, 0.35);
+drawPlot2.setLegendCoordinate(0.69, 0.70, 0.99, 0.85);
+//drawPlot2.setLegendCoordinate(0.69, 0.20, 0.99, 0.35);
 gStyle->SetOptStat(111100);
 drawPlot2.drawPlot("ApeEstimator1","h_entriesX", false);
 drawPlot2.drawPlot("ApeEstimator1","h_entriesY", false);
-//drawPlot2.setLegendCoordinate(0.395, 0.845, 0.995, 0.995);
+drawPlot2.setLegendCoordinate(0.395, 0.845, 0.995, 0.995);
 gStyle->SetOptStat(111110);
 drawPlot2.drawPlot("ApeEstimator1","h_NorResX", false);
 drawPlot2.drawPlot("ApeEstimator1","h_NorResY", false);
@@ -170,7 +170,7 @@ drawPlot2.drawPlot("ApeEstimator2","p_phiSensYVsBarycentreY", false);
 
 
 
-//drawPlot2.setLegendCoordinate(0.395, 0.845, 0.995, 0.995);
+drawPlot2.setLegendCoordinate(0.395, 0.845, 0.995, 0.995);
 gStyle->SetOptStat(111110);
 drawPlot2.drawTrackPlot("ApeEstimator2","h_eta", false);
 drawPlot2.drawTrackPlot("ApeEstimator2","h_etaErr", false);
@@ -203,7 +203,7 @@ drawPlot2.drawEventPlot("ApeEstimator2","h_trackSizeGood", false);
 
 
 DrawPlot drawPlot3(15, true);
-//drawPlot3.thesisMode();
+drawPlot3.thesisMode();
 
 drawPlot3.setLegendEntry("data (final #sigma_{align})","data (#sigma_{align}=0)","design");
 drawPlot3.setLegendCoordinate(0.41, 0.27, 0.71, 0.42);
@@ -218,8 +218,7 @@ gStyle->SetOptStat(111110);
 // drawPlot3.drawPlot("ApeEstimatorSummary","h_fitMeanY2", false);
 // drawPlot3.drawPlot("ApeEstimatorSummary","meanX", false);
 // drawPlot3.drawPlot("ApeEstimatorSummary","meanY", false);
-drawPlot3.setLegendCoordinate(0.69, 0.20, 0.99, 0.35);
-//drawPlot3.setLegendCoordinate(0.69, 0.70, 0.99, 0.85);
+drawPlot3.setLegendCoordinate(0.69, 0.70, 0.99, 0.85);
 drawPlot3.drawPlot("ApeEstimatorSummary","h_weightX", false);
 drawPlot3.drawPlot("ApeEstimatorSummary","h_weightY", false);
 drawPlot3.setLegendCoordinate(0.69, 0.20, 0.99, 0.35);
@@ -233,22 +232,21 @@ drawPlot3.drawPlot("ApeEstimatorSummary","h_rmsY", false);
 
 
 DrawPlot drawPlot4(15, false);
-//drawPlot4.thesisMode();
+drawPlot4.thesisMode();
 
 drawPlot4.setLegendEntry("data (final #sigma_{align})","data (#sigma_{align}=0)","design");
-drawPlot4.setLegendCoordinate(0.69, 0.20, 0.99, 0.35);
-//drawPlot4.setLegendCoordinate(0.69, 0.70, 0.99, 0.85);
+drawPlot4.setLegendCoordinate(0.69, 0.70, 0.99, 0.85);
 gStyle->SetOptStat(111100);
 drawPlot4.drawPlot("ApeEstimator1","h_entriesX", false);
 drawPlot4.drawPlot("ApeEstimator1","h_entriesY", false);
-//drawPlot4.setLegendCoordinate(0.395, 0.845, 0.995, 0.995);
+drawPlot4.setLegendCoordinate(0.395, 0.845, 0.995, 0.995);
 gStyle->SetOptStat(111110);
 drawPlot4.drawPlot("ApeEstimator1","h_NorResX");
 drawPlot4.drawPlot("ApeEstimator1","h_NorResY");
 drawPlot4.drawPlot("ApeEstimator1","h_ResX");
 drawPlot4.drawPlot("ApeEstimator1","h_ResY");
 
-//drawPlot4.setLegendCoordinate(0.395, 0.845, 0.995, 0.995);
+drawPlot4.setLegendCoordinate(0.395, 0.845, 0.995, 0.995);
 gStyle->SetOptStat(111110);
 drawPlot4.drawTrackPlot("ApeEstimator2","h_eta");
 drawPlot4.drawTrackPlot("ApeEstimator2","h_etaErr");
