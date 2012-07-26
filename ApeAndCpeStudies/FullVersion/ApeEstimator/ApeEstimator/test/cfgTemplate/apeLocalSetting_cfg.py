@@ -1,3 +1,5 @@
+import os
+
 import FWCore.ParameterSet.Config as cms
 
 
@@ -111,7 +113,7 @@ process.PoolDBOutputService = cms.Service(
     "PoolDBOutputService",
     CondDBSetup,
     timetype = cms.untracked.string('runnumber'),
-    connect = cms.string('sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/apeObjects/apeIter'+str(options.iterNumber)+'.db'),
+    connect = cms.string('sqlite_file:'+os.environ['CMSSW_BASE']+'/src/ApeEstimator/ApeEstimator/hists/apeObjects/apeIter'+str(options.iterNumber)+'.db'),
     toPut = cms.VPSet(
         cms.PSet(
 	    record = cms.string('TrackerAlignmentErrorRcd'),

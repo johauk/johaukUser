@@ -411,7 +411,7 @@ if options.iterNumber==0:
     process.es_prefer_trackerAlignmentErr = cms.ESPrefer("PoolDBESSource","myTrackerAlignmentErr")
 else:
     process.myTrackerAlignmentErr = CalibTracker.Configuration.Common.PoolDBESSource_cfi.poolDBESSource.clone(
-      connect = 'sqlite_file:/afs/cern.ch/user/h/hauk/scratch0/apeStudies/apeObjects/apeIter'+str(options.iterNumber-1)+'.db',
+      connect = 'sqlite_file:'+os.environ['CMSSW_BASE']+'/src/ApeEstimator/ApeEstimator/hists/apeObjects/apeIter'+str(options.iterNumber-1)+'.db',
       toGet = [
         cms.PSet(
           record = cms.string('TrackerAlignmentErrorRcd'),

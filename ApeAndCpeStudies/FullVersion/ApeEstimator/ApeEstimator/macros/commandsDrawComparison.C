@@ -30,7 +30,10 @@ gROOT->ProcessLine(".L DrawIteration.C+");
 
 DrawIteration drawIteration1(14, true);
 
-drawIteration1.addInputFile("/afs/cern.ch/user/h/hauk/scratch0/apeStudies/rootFiles/GlobalTag_final/workingArea/iter14/allData_iterationApe.root","Prompt");
+//drawIteration1.outputDirectory("$CMSSW_BASE/src/ApeEstimator/ApeEstimator/hists/comparison/");  // default
+
+drawIteration1.addInputFile("/afs/cern.ch/user/h/hauk/scratch0/apeStudies/rootFiles/MC_start/workingArea/iter14/allData_iterationApe.root","MC start");
+//drawIteration1.addInputFile("/afs/cern.ch/user/h/hauk/scratch0/apeStudies/rootFiles/GlobalTag_final/workingArea/iter14/allData_iterationApe.root","Prompt");
 drawIteration1.addInputFile("/afs/cern.ch/user/h/hauk/scratch0/apeStudies/rootFiles/GR10_v6_final/workingArea/iter14/allData_iterationApe.root","Reprocessing");
 //drawIteration1.addInputFile("","");
 
@@ -38,7 +41,7 @@ drawIteration1.drawResult();
 
 
 
-
+/*
 
 DrawIteration drawIteration2(14, true);
 
@@ -53,7 +56,7 @@ drawIteration2.addInputFile("/afs/cern.ch/user/h/hauk/private/rootFilesApe/GR10_
 
 drawIteration2.drawResult();
 
-
+*/
 
 
 

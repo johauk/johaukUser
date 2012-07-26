@@ -9,6 +9,7 @@ mkdir $CMSSW_BASE/src/ApeEstimator/Utils/hists/
 
 
 mkdir $DIRBASE/hists/
+mkdir $DIRBASE/hists/apeObjects/
 mkdir $DIRBASE/hists/workingArea/
 mkdir $DIRBASE/test/batch/workingArea/
 mkdir $DIRBASE/test/cfgTemplateDesign/workingArea/
