@@ -1,6 +1,5 @@
 #!/bin/bash
 
-## Do this from directory test/cfgTemplate/workingArea/
 
 declare -i counter=1
 

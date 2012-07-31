@@ -13,9 +13,9 @@ cmsRun $base/apeLocalSetting_cfg.py_THE_COMMANDS_
 
 
 if [ $? -eq 0 ] ; then
-  echo "APE DB-Object created"
+  echo "\nAPE DB-Object created"
 else
-  echo "No APE DB-Object created"
+  echo "\nNo APE DB-Object created"
 fi
 
 if [ -a alignment.log ] ; then
