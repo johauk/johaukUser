@@ -2,7 +2,15 @@
 
 
 cd $CMSSW_BASE/src
-eval `scram runtime -sh`
+if [[ "$SHELL" == /bin/sh || "$SHELL" == /bin/bash || "$SHELL" == /bin/zsh ]] ; then
+  eval `scram runtime -sh`
+elif [[ "$SHELL" == /bin/csh || "$SHELL" == /bin/tcsh ]] ; then
+  eval `scram runtime -csh`
+else
+  echo "Unknown shell: $SHELL"
+  echo "cannot set CMSSW environment, stop processing"
+  exit 5
+fi
 cd -
 
 
