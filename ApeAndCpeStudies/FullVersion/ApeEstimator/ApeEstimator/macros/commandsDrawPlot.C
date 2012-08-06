@@ -104,6 +104,7 @@ drawPlot2.drawPlot("ApeEstimator1","h_NorResY", false);
 drawPlot2.drawPlot("ApeEstimator1","h_ResX", false);
 drawPlot2.drawPlot("ApeEstimator1","h_ResY", false);
 
+/*
 // Additional plots for strip (mainly; some are common with pixel)
 drawPlot2.drawPlot("ApeEstimator2","h_ChargeStrip", false);
 drawPlot2.drawPlot("ApeEstimator2","h_SOverN", false);
@@ -167,7 +168,7 @@ drawPlot2.drawPlot("ApeEstimator2","p_sigmaYTrkVsTheta", false);
 
 drawPlot2.drawPlot("ApeEstimator2","p_phiSensXVsBarycentreX", false);
 drawPlot2.drawPlot("ApeEstimator2","p_phiSensYVsBarycentreY", false);
-
+*/
 
 
 //drawPlot2.setLegendCoordinate(0.395, 0.845, 0.995, 0.995);
