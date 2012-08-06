@@ -18,11 +18,13 @@
 #include "TGaxis.h"
 #include "TLegend.h"
 
+#include "TLatex.h"
+
 
 
 
 DrawIteration::DrawIteration(unsigned int iterationNumber, const bool overlayMode):
-outpath_(0), file_(0), overlayMode_(overlayMode), yAxisFixed_(false), systematics_(false)
+outpath_(0), file_(0), overlayMode_(overlayMode), yAxisFixed_(false), systematics_(false), cmsText_("")
 {
   if(!overlayMode_){
     std::stringstream ss_inpath;
@@ -765,12 +767,22 @@ void DrawIteration::drawFinals(const std::string& xOrY){
       canvas->Modified();
       canvas->Update();
       
+      TLatex* cmsText(0);
+      if(cmsText_!=""){
+        cmsText = new TLatex(0.55,0.96,cmsText_);
+        cmsText->SetNDC();
+        cmsText->Draw("same");
+      }
+      
+      canvas->Modified();
+      canvas->Update();
+      
       std::stringstream ss_hist;
       ss_hist<<"_"<<iCanvas;
       canvas->Print(outpath_->Copy().Append("result_").Append(xOrY).Append(ss_hist.str()).Append(".eps"));
       canvas->Print(outpath_->Copy().Append("result_").Append(xOrY).Append(ss_hist.str()).Append(".png"));
-      
-      legend->Delete();
+      if(cmsText)cmsText->Delete();
+      if(legend)legend->Delete();
       if(systHist)systHist->Delete();
     }
     
@@ -829,6 +841,13 @@ bool DrawIteration::createResultHist(TH1*& hist, const std::vector<std::string>&
 void DrawIteration::addSystematics(){
   systematics_ = true;
 }
+
+
+
+void DrawIteration::addCmsText(const TString& cmsText){
+  cmsText_ = cmsText;
+}
+
 
 
 

@@ -23,6 +23,7 @@ class DrawIteration{
     void drawResult();
     
     void addSystematics();
+    void addCmsText(const TString&);
     
     void addInputFile(const TString&, const TString&);
     void outputDirectory(const TString&);
@@ -76,6 +77,7 @@ class DrawIteration{
     
     std::vector<std::vector<std::string> > v_resultHist_;
     bool systematics_;
+    TString cmsText_;
     
     struct Input{
       Input(TString name, TString legend): fileName(name), legendEntry(legend), file(0){}
