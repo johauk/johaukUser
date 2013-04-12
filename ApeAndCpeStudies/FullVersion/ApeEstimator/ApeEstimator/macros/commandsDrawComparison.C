@@ -37,7 +37,7 @@ drawIteration1.addInputFile("/afs/cern.ch/user/h/hauk/scratch0/apeStudies/rootFi
 drawIteration1.addInputFile("/afs/cern.ch/user/h/hauk/scratch0/apeStudies/rootFiles/GR10_v6_final/workingArea/iter14/allData_iterationApe.root","Reprocessing");
 //drawIteration1.addInputFile("","");
 
-//drawIteration1.addCmsText("CMS Preliminary");
+drawIteration1.addCmsText("CMS 2011");
 drawIteration1.drawResult();
 
 

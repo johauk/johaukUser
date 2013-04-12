@@ -584,8 +584,8 @@ TString DrawIteration::associateLabel(const std::string& sectorName){
   nameHelp += subdet;
   
   TString side, sideLabel;
-  if(name.BeginsWith(nameHelp+"Minus")){side="Minus"; sideLabel="m";}
-  else if(name.BeginsWith(nameHelp+"Plus")){side="Plus"; sideLabel="p";}
+  if(name.BeginsWith(nameHelp+"Minus")){side="Minus"; sideLabel="-";}
+  else if(name.BeginsWith(nameHelp+"Plus")){side="Plus"; sideLabel="+";}
   else {side=""; sideLabel="";}
   nameHelp += side;
   
@@ -684,6 +684,7 @@ void DrawIteration::drawFinals(const std::string& xOrY){
 	}
 	else{
 	  hist->SetLineColor(iHist);
+	  hist->SetMarkerStyle(iHist + 20);
 	  hist->SetMarkerColor(iHist);
 	  hist->Draw("e0same");
 	}
@@ -781,6 +782,7 @@ void DrawIteration::drawFinals(const std::string& xOrY){
       ss_hist<<"_"<<iCanvas;
       canvas->Print(outpath_->Copy().Append("result_").Append(xOrY).Append(ss_hist.str()).Append(".eps"));
       canvas->Print(outpath_->Copy().Append("result_").Append(xOrY).Append(ss_hist.str()).Append(".png"));
+      //canvas->Print(outpath_->Copy().Append("result_").Append(xOrY).Append(ss_hist.str()).Append(".root"));
       if(cmsText)cmsText->Delete();
       if(legend)legend->Delete();
       if(systHist)systHist->Delete();
