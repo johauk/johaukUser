@@ -681,6 +681,8 @@ void DrawIteration::drawFinals(const std::string& xOrY){
         TH1* hist((*i_hist).first);
 	if(iHist==1){
 	  hist->Draw("e0");
+	  hist->GetYaxis()->SetTitleOffset(1.0/i_resultHist->size()*10.);
+	  hist->GetYaxis()->SetTickLength(0.03/i_resultHist->size()*10.);
 	}
 	else{
 	  hist->SetLineColor(iHist);
@@ -754,8 +756,8 @@ void DrawIteration::drawFinals(const std::string& xOrY){
       legend = new TLegend(0.2,0.65,0.5,0.85);
       legend->SetFillColor(0);
       legend->SetFillStyle(0);
-      legend->SetTextSize(0.04);
-      legend->SetMargin(0.30);
+      legend->SetTextSize(0.042);
+      legend->SetMargin(0.30/i_resultHist->size()*10.);
       legend->SetBorderSize(0);
       
       if(v_hist.size()>1){
@@ -770,7 +772,7 @@ void DrawIteration::drawFinals(const std::string& xOrY){
       
       TLatex* cmsText(0);
       if(cmsText_!=""){
-        cmsText = new TLatex(0.55,0.96,cmsText_);
+        cmsText = new TLatex(0.15,0.96,cmsText_);
         cmsText->SetNDC();
         cmsText->Draw("same");
       }

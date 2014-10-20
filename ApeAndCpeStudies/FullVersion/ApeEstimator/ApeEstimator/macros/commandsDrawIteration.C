@@ -73,11 +73,11 @@ gStyle->SetTitleOffset(1.0,"Y");
 
 
 //drawIteration1.addSystematics();
-//drawIteration1.addCmsText("CMS Preliminary");
+drawIteration1.addCmsText("CMS Preliminary");
 drawIteration1.drawResult();
 
 //drawIteration2.addSystematics();
-//drawIteration2.addCmsText("CMS Preliminary");
+drawIteration2.addCmsText("CMS Preliminary");
 drawIteration2.drawResult();
 
 
